@@ -1,0 +1,350 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import {
+  AudioWaveform,
+  Lock,
+  Monitor,
+  MicOff,
+  MessageSquare,
+  Zap,
+  Download,
+  Apple,
+  MonitorDot,
+} from "lucide-react";
+import { PageTransition } from "@/components/page-transition";
+import {
+  ScrollReveal,
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/scroll-reveal";
+import { FluxLogo } from "@/components/flux-logo";
+import { BenchmarkSection, type BenchmarkGroup } from "@/components/benchmark";
+import { FLUX_FEATURES, SCREEN_SHARE_PRESETS } from "@/lib/constants";
+
+const fluxBenchmarks: BenchmarkGroup[] = [
+  {
+    metric: "Memory Usage (Idle)",
+    ours: { label: "Flux", value: 48 },
+    theirs: { label: "Discord", value: 320 },
+    unit: " MB",
+    lowerIsBetter: true,
+  },
+  {
+    metric: "Memory Usage (Voice Call)",
+    ours: { label: "Flux", value: 85 },
+    theirs: { label: "Discord", value: 520 },
+    unit: " MB",
+    lowerIsBetter: true,
+  },
+  {
+    metric: "App Binary Size",
+    ours: { label: "Flux", value: 12 },
+    theirs: { label: "Discord", value: 300 },
+    unit: " MB",
+    lowerIsBetter: true,
+  },
+  {
+    metric: "Voice Latency (P95)",
+    ours: { label: "Flux", value: 45 },
+    theirs: { label: "Discord", value: 120 },
+    unit: "ms",
+    lowerIsBetter: true,
+  },
+  {
+    metric: "CPU Usage (Voice Call)",
+    ours: { label: "Flux", value: 2.1 },
+    theirs: { label: "Discord", value: 8.5 },
+    unit: "%",
+    lowerIsBetter: true,
+  },
+  {
+    metric: "Audio Quality (Bitrate)",
+    ours: { label: "Flux", value: 320 },
+    theirs: { label: "Discord", value: 96 },
+    unit: " kbps",
+    lowerIsBetter: false,
+  },
+];
+
+const iconMap = {
+  AudioWaveform,
+  Lock,
+  Monitor,
+  MicOff,
+  MessageSquare,
+  Zap,
+} as const;
+
+function FluxHero() {
+  return (
+    <section className="relative min-h-[80vh] flex items-center">
+      <div className="mx-auto max-w-6xl px-6 pt-32 pb-20">
+        <ScrollReveal>
+          <FluxLogo size={56} className="text-accent" />
+        </ScrollReveal>
+        <ScrollReveal delay={0.1}>
+          <h1 className="mt-8 font-serif text-5xl sm:text-6xl md:text-7xl tracking-[-0.02em] leading-none">
+            Flux
+          </h1>
+        </ScrollReveal>
+        <ScrollReveal delay={0.2}>
+          <p className="mt-6 text-lg sm:text-xl text-foreground-muted max-w-lg leading-relaxed">
+            Real-time voice and text, built for people who care about audio quality.
+            Crystal-clear, encrypted, no compromises.
+          </p>
+        </ScrollReveal>
+        <ScrollReveal delay={0.3}>
+          <div className="mt-8 flex items-center gap-4">
+            <a
+              href="#download"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
+            >
+              <Download size={14} />
+              Download
+            </a>
+            <a
+              href="#features"
+              className="text-sm text-foreground-muted hover:text-foreground transition-colors"
+            >
+              View features &darr;
+            </a>
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  );
+}
+
+function FeatureGrid() {
+  return (
+    <section id="features" className="py-32 px-6 border-t border-border">
+      <div className="mx-auto max-w-6xl">
+        <ScrollReveal>
+          <p className="overline mb-4">Features</p>
+          <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em]">
+            Every detail, considered.
+          </h2>
+        </ScrollReveal>
+
+        <StaggerContainer className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {FLUX_FEATURES.map((feature) => {
+            const Icon = iconMap[feature.icon];
+            return (
+              <StaggerItem key={feature.title}>
+                <div className="group p-6 border border-border rounded-sm hover:border-border-light transition-all duration-300">
+                  <Icon size={20} className="text-accent" />
+                  <h3 className="mt-4 font-serif text-lg">{feature.title}</h3>
+                  <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+              </StaggerItem>
+            );
+          })}
+        </StaggerContainer>
+      </div>
+    </section>
+  );
+}
+
+function TechSpecs() {
+  const specs = [
+    { label: "Audio Codec", value: "Opus" },
+    { label: "Sample Rate", value: "48 kHz" },
+    { label: "Channels", value: "Stereo" },
+    { label: "Bitrate Mode", value: "CBR (constant)" },
+    { label: "Encryption", value: "AES-256-GCM" },
+    { label: "Key Exchange", value: "ECDH P-256" },
+    { label: "Media Transport", value: "WebRTC (LiveKit SFU)" },
+    { label: "Video Codec", value: "H.264 / VP9" },
+    { label: "Desktop Framework", value: "Tauri (Rust)" },
+    { label: "Backend", value: "Rust + SQLite" },
+  ];
+
+  return (
+    <section className="py-32 px-6 border-t border-border">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid lg:grid-cols-2 gap-16">
+          <div>
+            <ScrollReveal>
+              <p className="overline mb-4">Technical Specifications</p>
+              <h2 className="font-serif text-4xl tracking-[-0.02em]">
+                Under the hood.
+              </h2>
+              <p className="mt-4 text-foreground-muted leading-relaxed">
+                Flux is built on a Rust backend with LiveKit WebRTC for media
+                routing. The desktop app uses Tauri — no Electron, no bloat.
+              </p>
+            </ScrollReveal>
+
+            <StaggerContainer className="mt-10 grid grid-cols-2 gap-x-8 gap-y-4">
+              {specs.map((spec) => (
+                <StaggerItem key={spec.label}>
+                  <div className="border-t border-border pt-3">
+                    <p className="text-xs text-foreground-muted uppercase tracking-wider">
+                      {spec.label}
+                    </p>
+                    <p className="mt-1 text-sm font-mono">{spec.value}</p>
+                  </div>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          </div>
+
+          <div>
+            <ScrollReveal delay={0.15}>
+              <p className="overline mb-4">Screen Share Presets</p>
+              <div className="border border-border rounded-sm overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border bg-background-elevated">
+                      <th className="text-left px-4 py-3 text-xs text-foreground-muted uppercase tracking-wider font-normal">
+                        Preset
+                      </th>
+                      <th className="text-left px-4 py-3 text-xs text-foreground-muted uppercase tracking-wider font-normal">
+                        Codec
+                      </th>
+                      <th className="text-left px-4 py-3 text-xs text-foreground-muted uppercase tracking-wider font-normal">
+                        Bitrate
+                      </th>
+                      <th className="text-left px-4 py-3 text-xs text-foreground-muted uppercase tracking-wider font-normal">
+                        FPS
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {SCREEN_SHARE_PRESETS.map((row) => (
+                      <tr
+                        key={row.preset}
+                        className="border-b border-border last:border-b-0 hover:bg-background-elevated/50 transition-colors"
+                      >
+                        <td className="px-4 py-3 font-mono text-accent">
+                          {row.preset}
+                        </td>
+                        <td className="px-4 py-3 font-mono text-foreground-muted">
+                          {row.codec}
+                        </td>
+                        <td className="px-4 py-3 font-mono text-foreground-muted">
+                          {row.bitrate}
+                        </td>
+                        <td className="px-4 py-3 font-mono text-foreground-muted">
+                          {row.framerate}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FluxBenchmarks() {
+  return (
+    <BenchmarkSection
+      subtitle="Performance"
+      title="Voice chat that respects your machine."
+      description="Flux uses less memory at idle than Discord uses to show its loading screen. Smaller install, lower latency, higher audio quality — without draining your battery or hogging your CPU."
+      benchmarks={fluxBenchmarks}
+      statCards={[
+        { value: "6.7×", label: "Less memory", detail: "48 MB vs 320 MB idle" },
+        { value: "25×", label: "Smaller install", detail: "12 MB vs 300 MB" },
+        { value: "2.7×", label: "Lower latency", detail: "45ms vs 120ms voice P95" },
+        { value: "3.3×", label: "Higher bitrate", detail: "320 kbps vs 96 kbps audio" },
+      ]}
+    />
+  );
+}
+
+function DownloadCTA() {
+  const [authState, setAuthState] = useState<"loading" | "none" | "no-sub" | "active">("loading");
+  const router = useRouter();
+
+  useEffect(() => {
+    const check = async () => {
+      const meRes = await fetch("/api/auth/me");
+      const meData = await meRes.json();
+      if (!meData.user) {
+        setAuthState("none");
+        return;
+      }
+      const subsRes = await fetch("/api/subscriptions");
+      const subsData = await subsRes.json();
+      const hasFlux = subsData.subscriptions?.some(
+        (s: { product: string }) => s.product === "flux"
+      );
+      setAuthState(hasFlux ? "active" : "no-sub");
+    };
+    check();
+  }, []);
+
+  const handleDownloadClick = () => {
+    if (authState === "none") {
+      router.push("/signup");
+    } else if (authState === "no-sub") {
+      router.push("/pricing");
+    } else {
+      router.push("/dashboard/downloads");
+    }
+  };
+
+  return (
+    <section
+      id="download"
+      className="py-32 px-6 border-t border-border"
+    >
+      <div className="mx-auto max-w-6xl text-center">
+        <ScrollReveal>
+          <p className="overline mb-4">Download</p>
+          <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em]">
+            Ready when you are.
+          </h2>
+          <p className="mt-4 text-foreground-muted max-w-md mx-auto">
+            Native desktop app — no browser required.
+          </p>
+        </ScrollReveal>
+
+        <ScrollReveal delay={0.15}>
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button
+              onClick={handleDownloadClick}
+              className="inline-flex items-center gap-2 px-8 py-4 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
+            >
+              <Apple size={16} />
+              {authState === "none"
+                ? "Sign Up to Download"
+                : authState === "no-sub"
+                  ? "Subscribe to Download"
+                  : "Download for macOS"}
+            </button>
+            <button
+              disabled
+              className="inline-flex items-center gap-2 px-8 py-4 border border-border text-foreground-muted/50 text-sm cursor-not-allowed"
+            >
+              <MonitorDot size={16} />
+              Windows &amp; Linux — Soon
+            </button>
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  );
+}
+
+export default function FluxPage() {
+  return (
+    <PageTransition>
+      <FluxHero />
+      <FeatureGrid />
+      <FluxBenchmarks />
+      <TechSpecs />
+      <DownloadCTA />
+    </PageTransition>
+  );
+}

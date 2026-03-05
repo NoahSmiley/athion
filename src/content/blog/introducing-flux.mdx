@@ -1,0 +1,29 @@
+---
+title: "Introducing Flux — Voice Chat, Rebuilt"
+date: "2026-02-18"
+category: "Product"
+excerpt: "We built Flux because voice communication deserved better. Less memory, lower latency, higher audio quality — without compromise."
+---
+
+We built Flux because voice communication deserved better.
+
+The dominant voice chat applications today use more memory at idle than many entire operating systems did a decade ago. They ship hundreds of megabytes of Electron-based bloat for what is fundamentally a simple task: sending audio between people.
+
+## Why we started from scratch
+
+Rather than building on top of existing frameworks, we chose to build Flux from the ground up:
+
+- **Tauri instead of Electron.** A 12 MB binary instead of 300 MB. Native performance without the Chromium tax.
+- **Rust backend.** Memory safety without garbage collection. Predictable performance at every connection count.
+- **LiveKit SFU architecture.** WebRTC-based media routing with sub-100ms latency, globally distributed.
+- **Opus at 48kHz stereo.** Constant bitrate encoding at 320 kbps — more than 3× Discord's default audio quality.
+
+## Encryption by default
+
+Every voice call in Flux is end-to-end encrypted. ECDH P-256 key exchange with AES-256-GCM encryption. This isn't a premium feature or a toggle — it's how Flux works.
+
+## What's next
+
+Flux is currently in beta for macOS. Windows and Linux builds are in development. We're focused on stability, audio quality, and getting the fundamentals right before adding features.
+
+If you're interested, check out the [Flux page](/flux) or [create an account](/signup) to get started.

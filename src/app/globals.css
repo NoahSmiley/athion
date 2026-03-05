@@ -1,0 +1,86 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-serif: "EB Garamond", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-background: var(--bg);
+  --color-background-elevated: var(--bg-elevated);
+  --color-foreground: var(--fg);
+  --color-foreground-muted: var(--fg-muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-border: var(--border-color);
+  --color-border-light: var(--border-light);
+
+  --animate-float: float 8s ease-in-out infinite;
+
+  --text-display: 4.5rem;
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.02em;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(10px, -20px); }
+  50% { transform: translate(-5px, 10px); }
+  75% { transform: translate(-15px, -10px); }
+}
+
+/* Dark mode (default) */
+:root {
+  --bg: #09090b;
+  --bg-elevated: #131316;
+  --fg: #ededef;
+  --fg-muted: #7e7e86;
+  --accent: #b0b0b8;
+  --accent-hover: #d0d0d6;
+  --border-color: #1c1c20;
+  --border-light: #27272b;
+  color-scheme: dark;
+}
+
+/* Light mode */
+[data-theme="light"] {
+  --bg: #fafafa;
+  --bg-elevated: #f0f0f2;
+  --fg: #18181b;
+  --fg-muted: #5f5f68;
+  --accent: #52525b;
+  --accent-hover: #3f3f46;
+  --border-color: #e0e0e4;
+  --border-light: #d0d0d6;
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* Invert images in light mode */
+[data-theme="light"] .light-invert {
+  filter: invert(1);
+}
+
+/* Overline utility */
+.overline {
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}

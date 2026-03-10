@@ -5,6 +5,7 @@ import { BrainLogo } from "@/components/brain-logo";
 
 const sidebarLinks = [
   { href: "/dashboard", label: "Overview" },
+  { href: "/dashboard/setup", label: "Setup" },
   { href: "/dashboard/billing", label: "Billing" },
   { href: "/dashboard/downloads", label: "Downloads" },
   { href: "/dashboard/settings", label: "Settings" },

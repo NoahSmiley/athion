@@ -40,10 +40,6 @@ export default function SignupPage() {
     }
   };
 
-  const handleOAuth = (provider: "github" | "google") => {
-    window.location.href = `/api/auth/oauth/${provider}`;
-  };
-
   return (
     <>
       <h1 className="font-serif text-3xl tracking-[-0.02em] text-center">
@@ -108,27 +104,6 @@ export default function SignupPage() {
           {loading ? "Creating account..." : "Create Account"}
         </button>
       </form>
-
-      <div className="mt-6 flex items-center gap-3">
-        <div className="flex-1 h-px bg-border" />
-        <span className="text-xs text-foreground-muted">or</span>
-        <div className="flex-1 h-px bg-border" />
-      </div>
-
-      <div className="mt-6 flex flex-col gap-3">
-        <button
-          onClick={() => handleOAuth("github")}
-          className="w-full px-6 py-3 border border-border text-sm text-foreground-muted hover:text-foreground hover:border-border-light transition-colors"
-        >
-          Continue with GitHub
-        </button>
-        <button
-          onClick={() => handleOAuth("google")}
-          className="w-full px-6 py-3 border border-border text-sm text-foreground-muted hover:text-foreground hover:border-border-light transition-colors"
-        >
-          Continue with Google
-        </button>
-      </div>
 
       <p className="mt-8 text-sm text-foreground-muted text-center">
         Already have an account?{" "}

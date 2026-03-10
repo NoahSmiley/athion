@@ -1,15 +1,28 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { BrainLogo } from "@/components/brain-logo";
 
-export default function LoginPage() {
+function IdeLoginContent() {
+  const params = useSearchParams();
+  const router = useRouter();
+  const code = params.get("code");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(params.get("error") ? "Authentication failed. Please try again." : "");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+
+  if (!code) {
+    return (
+      <p className="text-sm text-red-400 text-center">
+        Invalid login link. Please try again from Liminal IDE.
+      </p>
+    );
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,10 +30,10 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch("/api/auth/ide/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, code }),
       });
 
       const data = await res.json();
@@ -31,8 +44,7 @@ export default function LoginPage() {
         return;
       }
 
-      router.push("/dashboard");
-      router.refresh();
+      router.push("/auth/ide-success");
     } catch {
       setError("Something went wrong");
       setLoading(false);
@@ -42,10 +54,10 @@ export default function LoginPage() {
   return (
     <>
       <h1 className="font-serif text-3xl tracking-[-0.02em] text-center">
-        Sign in
+        Sign in to Liminal
       </h1>
       <p className="mt-2 text-sm text-foreground-muted text-center">
-        Welcome back to Athion.
+        Connect your Athion account to the IDE.
       </p>
 
       {error && (
@@ -86,21 +98,39 @@ export default function LoginPage() {
           disabled={loading}
           className="mt-2 w-full px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors disabled:opacity-50"
         >
-          {loading ? "Signing in..." : "Sign In"}
+          {loading ? "Signing in..." : "Sign in with Athion"}
         </button>
       </form>
 
-      <div className="mt-8 flex flex-col items-center gap-2 text-sm text-foreground-muted">
-        <Link href="/reset-password" className="hover:text-foreground transition-colors">
-          Forgot your password?
+      <p className="mt-6 text-sm text-foreground-muted text-center">
+        Don&apos;t have an account?{" "}
+        <Link href="/signup" className="text-accent hover:text-foreground transition-colors">
+          Sign up
         </Link>
-        <p>
-          Don&apos;t have an account?{" "}
-          <Link href="/signup" className="text-accent hover:text-foreground transition-colors">
-            Sign up
-          </Link>
-        </p>
-      </div>
+      </p>
+
+      <p className="mt-4 text-xs text-foreground-muted text-center">
+        After signing in, you can close this tab and return to the IDE.
+      </p>
     </>
+  );
+}
+
+export default function IdeLoginPage() {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12">
+      <Link
+        href="/"
+        className="mb-10 flex items-center gap-2 text-foreground hover:text-accent transition-colors"
+      >
+        <BrainLogo size={28} />
+        <span className="font-serif text-xl tracking-tight">Athion</span>
+      </Link>
+      <div className="w-full max-w-sm">
+        <Suspense>
+          <IdeLoginContent />
+        </Suspense>
+      </div>
+    </div>
   );
 }

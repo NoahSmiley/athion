@@ -8,6 +8,13 @@
       "when": 1772751059383,
       "tag": "0000_worthless_johnny_storm",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773110844906,
+      "tag": "0001_loose_goliath",
+      "breakpoints": true
     }
   ]
 }

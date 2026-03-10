@@ -1,12 +1,13 @@
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 // GitHub OAuth
-export function getGitHubAuthUrl(): string {
+export function getGitHubAuthUrl(ideCode?: string): string {
   const params = new URLSearchParams({
     client_id: process.env.GITHUB_CLIENT_ID!,
     redirect_uri: `${SITE_URL}/auth/callback?provider=github`,
     scope: "user:email",
   });
+  if (ideCode) params.set("state", `ide:${ideCode}`);
   return `https://github.com/login/oauth/authorize?${params}`;
 }
 
@@ -58,7 +59,7 @@ export async function exchangeGitHubCode(code: string): Promise<{ email: string;
 }
 
 // Google OAuth
-export function getGoogleAuthUrl(): string {
+export function getGoogleAuthUrl(ideCode?: string): string {
   const params = new URLSearchParams({
     client_id: process.env.GOOGLE_CLIENT_ID!,
     redirect_uri: `${SITE_URL}/auth/callback?provider=google`,
@@ -66,6 +67,7 @@ export function getGoogleAuthUrl(): string {
     scope: "openid email profile",
     access_type: "offline",
   });
+  if (ideCode) params.set("state", `ide:${ideCode}`);
   return `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
 }
 

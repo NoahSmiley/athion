@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ApiKeySection } from "./api-key-section";
 
 export default function SettingsPage() {
   const [displayName, setDisplayName] = useState("");
@@ -146,8 +145,6 @@ export default function SettingsPage() {
         </button>
       </form>
 
-      {/* API Key */}
-      <ApiKeySection />
 
       {/* Danger zone */}
       <div className="mt-12 border-t border-border pt-8">

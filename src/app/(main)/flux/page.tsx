@@ -4,8 +4,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   AudioWaveform, Lock, Monitor, MicOff, MessageSquare, Zap,
-  Download, Apple, MonitorDot, ArrowRight, Shield, Gauge,
-  Volume2, Sparkles, ChevronLeft, ChevronRight,
+  Download, Apple, MonitorDot, ArrowRight, Shield,
+  Volume2, ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
 import { PageTransition } from "@/components/page-transition";
@@ -440,41 +440,6 @@ function FeatureShowcase() {
   );
 }
 
-// ── "Discord vs Flux" comparison strip ──
-
-function WhyFlux() {
-  const comparisons = [
-    { them: "320 MB install", us: "12 MB install", icon: Gauge },
-    { them: "96 kbps audio", us: "320 kbps audio", icon: Volume2 },
-    { them: "No E2EE", us: "E2EE everything", icon: Lock },
-    { them: "Electron bloat", us: "Native Rust (Tauri)", icon: Sparkles },
-  ];
-
-  return (
-    <section className="relative py-20 px-6 overflow-hidden bg-[#1a1040]">
-      <div className="relative mx-auto max-w-5xl">
-        <ScrollReveal>
-          <h2 className="font-serif text-3xl sm:text-4xl tracking-[-0.02em] text-center uppercase font-bold italic text-white mb-12">
-            Discord vs Flux
-          </h2>
-        </ScrollReveal>
-
-        <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {comparisons.map((item) => (
-            <StaggerItem key={item.us}>
-              <div className="relative rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5 text-center group hover:border-violet-500/20 transition-all duration-500">
-                <item.icon size={20} className="mx-auto text-violet-400 mb-3" />
-                <div className="text-xs text-white/30 line-through mb-1">{item.them}</div>
-                <div className="text-sm font-semibold text-white">{item.us}</div>
-              </div>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
-      </div>
-    </section>
-  );
-}
-
 // ── Marquee Section ──
 
 function MarqueeSection() {
@@ -697,7 +662,6 @@ export default function FluxPage() {
     <PageTransition>
       <FluxHero />
       <FeatureShowcase />
-      <WhyFlux />
       <MarqueeSection />
       <FeatureGrid />
       <FluxBenchmarks />

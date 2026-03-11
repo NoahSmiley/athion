@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   AudioWaveform, Lock, Monitor, MicOff, MessageSquare, Zap,
   Download, Apple, MonitorDot, ArrowRight, Volume2, Mic, MicOff as MicOffIcon,
   Headphones, HeadphoneOff, MonitorUp, PhoneOff, Pause, SkipForward,
-  Hash, Search, Paperclip, Smile, Send, ChevronDown, ChevronRight,
+  Search, Paperclip, Smile, Send, ChevronDown, ChevronRight,
+  Settings, Map,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageTransition } from "@/components/page-transition";
@@ -40,57 +41,70 @@ const fadeUp = {
   }),
 };
 
-// ── Chat Replica Data ──
+// ── Channel icon (chat bubble, not hashtag) ──
 
-const CHAT_CHANNELS = [
+function ChannelIcon({ size = 14, color = "#555" }: { size?: number; color?: string }) {
+  return (
+    <MessageSquare size={size} style={{ color }} />
+  );
+}
+
+// ── Shared sidebar data ──
+
+const SIDEBAR_CHANNELS = [
   { name: "general", active: true },
   { name: "dev", active: false },
   { name: "music", active: false },
   { name: "off-topic", active: false },
 ];
 
-const INITIAL_MESSAGES = [
-  {
-    id: 1,
-    user: "noah",
-    avatar: "N",
-    color: "#6366f1",
-    time: "2:14 PM",
-    text: "just pushed the new voice engine. latency is down to 38ms",
-  },
-  {
-    id: 2,
-    user: "alex",
-    avatar: "A",
-    color: "#0ea5e9",
-    time: "2:15 PM",
-    text: "no way, that's insane. testing now",
-  },
-  {
-    id: 3,
-    user: "sarah",
-    avatar: "S",
-    color: "#8b5cf6",
-    time: "2:16 PM",
-    text: "the noise suppression update is live too. keyboard sounds are completely gone",
-  },
-  {
-    id: 4,
-    user: "james",
-    avatar: "J",
-    color: "#f59e0b",
-    time: "2:18 PM",
-    text: "screen share looks crisp at 4K. huge improvement over last week",
-  },
+const USERS = {
+  noah: { id: "N", avatar: "N", color: "#6366f1" },
+  sarah: { id: "S", avatar: "S", color: "#8b5cf6" },
+  james: { id: "J", avatar: "J", color: "#f59e0b" },
+  alex: { id: "A", avatar: "A", color: "#0ea5e9" },
+};
+
+// ── Hero Replica Messages (matching real app conversation) ──
+
+const HERO_INITIAL_MESSAGES = [
+  { id: 1, user: "noah", time: "1m ago", text: "Opus at 48kHz stereo, constant bitrate. The quality difference is insane compared to what we had before" },
+  { id: 2, user: "sarah", time: "1m ago", text: "Just tested it — the noise suppression is so clean. I had my mechanical keyboard going and nobody could hear it" },
+  { id: 3, user: "james", time: "1m ago", text: "That's the Krisp integration right?" },
+  { id: 4, user: "sarah", time: "1m ago", text: "Yeah, it runs locally too. No audio gets sent to any third party" },
+  { id: 5, user: "alex", time: "1m ago", text: "What about screen share? I noticed the preset selector got updated" },
+  { id: 6, user: "noah", time: "1m ago", text: "We now have 6 presets from 480p30 all the way up to lossless VP9 at 4K. The lossless mode does 20 Mbps" },
+  { id: 7, user: "james", time: "1m ago", text: "20 Mbps?? That's wild. Discord caps at like 720p on Nitro" },
+  { id: 8, user: "alex", time: "1m ago", text: "How's the latency looking?" },
 ];
 
-const EXTRA_MESSAGES = [
-  { user: "alex", avatar: "A", color: "#0ea5e9", text: "anyone want to test the new update?" },
-  { user: "noah", avatar: "N", color: "#6366f1", text: "the latency improvement is wild" },
-  { user: "sarah", avatar: "S", color: "#8b5cf6", text: "just ran a voice test — zero crackling" },
-  { user: "james", avatar: "J", color: "#f59e0b", text: "the new codec sounds way better on bluetooth" },
-  { user: "alex", avatar: "A", color: "#0ea5e9", text: "screen share is buttery smooth now" },
-  { user: "noah", avatar: "N", color: "#6366f1", text: "pushed a fix for the reconnect issue" },
+const HERO_EXTRA_MESSAGES = [
+  { user: "noah", text: "P95 is under 45ms. LiveKit's SFU architecture is really paying off" },
+  { user: "sarah", text: "The memory usage is what gets me. 48MB idle vs Discord eating 300+ MB just sitting there" },
+  { user: "james", text: "My laptop thanks you" },
+  { user: "alex", text: "Are we still on track for the encryption rollout?" },
+  { user: "noah", text: "E2EE is already live — AES-256-GCM with ECDH key exchange. Every message, every file, every reaction" },
+  { user: "sarah", text: "Love that it's on by default and not some premium upsell" },
+  { user: "james", text: "This is genuinely the best voice app I've used. The whole thing feels so fast" },
+  { user: "alex", text: "Agreed. Switching to this full time, no question" },
+];
+
+// ── Section Chat Replica Messages ──
+
+const SECTION_INITIAL_MESSAGES = [
+  { id: 1, user: "noah", time: "2:14 PM", text: "just pushed the new voice engine. latency is down to 38ms" },
+  { id: 2, user: "alex", time: "2:15 PM", text: "no way, that's insane. testing now" },
+  { id: 3, user: "sarah", time: "2:16 PM", text: "the noise suppression update is live too. keyboard sounds are completely gone" },
+  { id: 4, user: "james", time: "2:18 PM", text: "screen share looks crisp at 4K. huge improvement over last week" },
+];
+
+const SECTION_EXTRA_MESSAGES = [
+  { user: "alex", text: "anyone want to test the new update?" },
+  { user: "noah", text: "the latency improvement is wild" },
+  { user: "sarah", text: "just ran a voice test — zero crackling" },
+  { user: "james", text: "the new codec sounds way better on bluetooth" },
+  { user: "alex", text: "screen share is buttery smooth now" },
+  { user: "noah", text: "pushed a fix for the reconnect issue" },
 ];
 
 // ── Voice Replica Data ──
@@ -155,48 +169,437 @@ function TypingIndicator({ user }: { user: string }) {
   );
 }
 
-// ── FluxChatReplica ──
+// ── Flux App Sidebar (shared between hero and section replicas) ──
+
+function FluxSidebar({
+  showRoom,
+  roomParticipants,
+  compact,
+}: {
+  showRoom?: boolean;
+  roomParticipants?: { id: string; name: string; color: string }[];
+  compact?: boolean;
+}) {
+  return (
+    <div
+      className="flex-shrink-0 flex-col hidden md:flex"
+      style={{
+        width: compact ? "200px" : "240px",
+        background: "#0e0e0e",
+        borderRight: "1px solid #161616",
+      }}
+    >
+      {/* Server header */}
+      <div
+        className="flex items-center gap-2 px-4"
+        style={{ height: "40px" }}
+      >
+        <span style={{ fontSize: "14px", fontWeight: 600, color: "#e8e8e8" }}>
+          flux
+        </span>
+      </div>
+
+      {/* Navigation */}
+      <div className="flex-1 overflow-hidden px-2 pt-1 flex flex-col">
+        {/* Roadmap */}
+        <div className="flex items-center gap-2 px-2 py-1.5 rounded mb-1">
+          <Map size={14} style={{ color: "#888" }} />
+          <span style={{ fontSize: "13px", color: "#888" }}>Roadmap</span>
+        </div>
+
+        {/* Channels — flat list, no categories */}
+        {SIDEBAR_CHANNELS.map((ch) => (
+          <div
+            key={ch.name}
+            className="flex items-center gap-2 px-2 py-1.5 rounded"
+            style={{
+              background: ch.active ? "rgba(255,255,255,0.06)" : "transparent",
+              cursor: "pointer",
+            }}
+          >
+            <ChannelIcon size={14} color={ch.active ? "#e8e8e8" : "#555"} />
+            <span
+              style={{
+                fontSize: "13px",
+                fontWeight: ch.active ? 500 : 400,
+                color: ch.active ? "#e8e8e8" : "#888",
+              }}
+            >
+              {ch.name}
+            </span>
+          </div>
+        ))}
+
+        <div className="flex-1" />
+
+        {/* Room section at bottom */}
+        {showRoom && roomParticipants && (
+          <div
+            className="mx-1 mb-2 rounded-lg"
+            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid #1a1a1a" }}
+          >
+            <div className="flex items-center justify-between px-3 py-2">
+              <div className="flex items-center gap-1.5">
+                <ChevronDown size={10} style={{ color: "#555" }} />
+                <span style={{ fontSize: "11px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em", color: "#888" }}>
+                  Room 1
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span
+                  className="flex items-center justify-center rounded-full"
+                  style={{
+                    fontSize: "10px",
+                    fontWeight: 600,
+                    color: "#fff",
+                    background: "#43b581",
+                    width: 16,
+                    height: 16,
+                  }}
+                >
+                  {roomParticipants.length}
+                </span>
+                <Lock size={10} style={{ color: "#555" }} />
+              </div>
+            </div>
+            <div className="px-3 pb-2.5 flex flex-col gap-1.5">
+              {roomParticipants.map((p) => (
+                <div key={p.id} className="flex items-center gap-2">
+                  <div
+                    className="w-5 h-5 rounded-full flex items-center justify-center"
+                    style={{
+                      background: p.color + "33",
+                      fontSize: "9px",
+                      fontWeight: 600,
+                      color: p.color,
+                    }}
+                  >
+                    {p.id}
+                  </div>
+                  <span style={{ fontSize: "12px", color: "#ccc" }}>{p.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Bottom controls */}
+      {showRoom && (
+        <div style={{ borderTop: "1px solid #161616" }}>
+          <div className="flex items-center justify-between px-3 py-2">
+            <div className="flex items-center gap-1.5">
+              <span style={{ fontSize: "11px", fontWeight: 500, color: "#43b581" }}>Connected</span>
+              <span style={{ fontSize: "10px", color: "#555" }}>Room 1</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 px-3 pb-2">
+            <div className="flex items-center justify-center rounded-md" style={{ width: 28, height: 28, background: "#1a1a1a" }}>
+              <Mic size={14} style={{ color: "#e8e8e8" }} />
+            </div>
+            <div className="flex items-center justify-center rounded-md" style={{ width: 28, height: 28, background: "#1a1a1a" }}>
+              <Headphones size={14} style={{ color: "#e8e8e8" }} />
+            </div>
+            <div className="flex items-center justify-center rounded-md" style={{ width: 28, height: 28, background: "#1a1a1a" }}>
+              <HeadphoneOff size={14} style={{ color: "#555" }} />
+            </div>
+            <div className="flex items-center justify-center rounded-md" style={{ width: 28, height: 28, background: "#ff4444" }}>
+              <PhoneOff size={14} style={{ color: "#fff" }} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Settings */}
+      <div className="px-3 pb-2">
+        <Settings size={14} style={{ color: "#555" }} />
+      </div>
+    </div>
+  );
+}
+
+// ── Icon Rail (left edge of app) ──
+
+function IconRail() {
+  return (
+    <div
+      className="flex-shrink-0 flex-col items-center pt-3 gap-3 hidden md:flex"
+      style={{
+        width: "48px",
+        background: "#080808",
+        borderRight: "1px solid #111",
+      }}
+    >
+      <FluxLogo size={24} className="text-foreground-muted/60" />
+      <div className="w-6 h-px bg-white/10 my-1" />
+      {/* Server avatars */}
+      {[USERS.noah, USERS.sarah].map((u) => (
+        <div
+          key={u.id}
+          className="w-8 h-8 rounded-full flex items-center justify-center"
+          style={{
+            background: u.color + "33",
+            fontSize: "11px",
+            fontWeight: 600,
+            color: u.color,
+          }}
+        >
+          {u.id}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Message Row (shared) ──
+
+function MessageRow({
+  user,
+  time,
+  text,
+}: {
+  user: string;
+  time: string;
+  text: string;
+}) {
+  const u = USERS[user as keyof typeof USERS];
+  if (!u) return null;
+  return (
+    <div className="flex gap-3 py-1.5 px-2">
+      <div
+        className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+        style={{
+          background: u.color + "22",
+          border: `2px solid ${u.color}`,
+          fontSize: "11px",
+          fontWeight: 600,
+          color: u.color,
+        }}
+      >
+        {u.avatar}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-baseline gap-2">
+          <span style={{ fontSize: "13px", fontWeight: 700, color: "#e8e8e8" }}>
+            {user}
+          </span>
+          <span style={{ fontSize: "10px", color: "#555" }}>
+            {time}
+          </span>
+        </div>
+        <p style={{ fontSize: "13px", color: "#ccc", lineHeight: 1.45, marginTop: "1px" }}>
+          {text}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ── FluxAppReplica (Hero — full app layout, animated) ──
+
+function FluxAppReplica() {
+  const [messages, setMessages] = useState(HERO_INITIAL_MESSAGES);
+  const [visibleCount, setVisibleCount] = useState(0);
+  const [typingUser, setTypingUser] = useState<string | null>(null);
+  const nextMsgIdx = useRef(0);
+  const nextId = useRef(HERO_INITIAL_MESSAGES.length + 1);
+
+  // Staggered entrance
+  useEffect(() => {
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    HERO_INITIAL_MESSAGES.forEach((_, i) => {
+      timers.push(setTimeout(() => setVisibleCount((c) => c + 1), 200 * (i + 1)));
+    });
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  // New messages every ~5s
+  useEffect(() => {
+    const initialDelay = setTimeout(() => {
+      const interval = setInterval(() => {
+        const extra = HERO_EXTRA_MESSAGES[nextMsgIdx.current % HERO_EXTRA_MESSAGES.length];
+        setTypingUser(extra.user);
+
+        setTimeout(() => {
+          setTypingUser(null);
+          const newMsg = {
+            id: nextId.current++,
+            user: extra.user,
+            time: "just now",
+            text: extra.text,
+          };
+          setMessages((prev) => {
+            const next = [...prev, newMsg];
+            if (next.length > 10) return next.slice(next.length - 10);
+            return next;
+          });
+          setVisibleCount((c) => Math.min(c + 1, 10));
+          nextMsgIdx.current++;
+        }, 2000);
+      }, 5000);
+
+      return () => clearInterval(interval);
+    }, HERO_INITIAL_MESSAGES.length * 200 + 2000);
+
+    return () => clearTimeout(initialDelay);
+  }, []);
+
+  return (
+    <div
+      className="rounded-xl overflow-hidden w-full mx-auto"
+      style={{
+        background: "#0a0a0a",
+        border: "1px solid #161616",
+        maxWidth: "1100px",
+      }}
+    >
+      {/* macOS traffic lights */}
+      <div className="flex items-center gap-2 px-4 pt-3 pb-0">
+        <div className="w-3 h-3 rounded-full" style={{ background: "#ff5f57" }} />
+        <div className="w-3 h-3 rounded-full" style={{ background: "#febc2e" }} />
+        <div className="w-3 h-3 rounded-full" style={{ background: "#28c840" }} />
+      </div>
+
+      <div className="flex" style={{ height: "520px" }}>
+        {/* Icon rail */}
+        <IconRail />
+
+        {/* Sidebar */}
+        <FluxSidebar
+          showRoom
+          roomParticipants={[
+            { id: "N", name: "noah", color: "#6366f1" },
+            { id: "A", name: "alex", color: "#0ea5e9" },
+            { id: "S", name: "sarah", color: "#8b5cf6" },
+          ]}
+        />
+
+        {/* Main chat area */}
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Channel header */}
+          <div
+            className="flex items-center justify-between px-4 flex-shrink-0"
+            style={{
+              height: "40px",
+              borderBottom: "1px solid #161616",
+            }}
+          >
+            <span style={{ fontSize: "14px", fontWeight: 600, color: "#e8e8e8" }}>
+              general
+            </span>
+            <div className="flex items-center gap-3">
+              <Search size={14} style={{ color: "#555" }} />
+            </div>
+          </div>
+
+          {/* Messages */}
+          <div className="flex-1 overflow-hidden px-3 py-2 flex flex-col gap-0 justify-end">
+            <AnimatePresence mode="popLayout">
+              {messages.slice(0, visibleCount).map((msg) => (
+                <motion.div
+                  key={msg.id}
+                  layout
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25, ease: EASE }}
+                >
+                  <MessageRow user={msg.user} time={msg.time} text={msg.text} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+
+          {/* Typing / input */}
+          <div className="px-4 pb-3 flex-shrink-0">
+            <div className="h-5 mb-1">
+              <AnimatePresence>
+                {typingUser && <TypingIndicator user={typingUser} />}
+              </AnimatePresence>
+            </div>
+            <div
+              className="flex items-center gap-2 px-3 py-2 rounded-lg"
+              style={{
+                background: "#0e0e0e",
+                border: "1px solid #161616",
+              }}
+            >
+              <Paperclip size={16} style={{ color: "#555", flexShrink: 0 }} />
+              <span className="flex-1" style={{ fontSize: "13px", color: "#555" }}>
+                Message #general
+              </span>
+              <Smile size={16} style={{ color: "#555", flexShrink: 0 }} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom bar (voice controls) */}
+      <div
+        className="flex items-center justify-between px-4 py-2"
+        style={{ borderTop: "1px solid #161616" }}
+      >
+        <div />
+        <div className="flex items-center gap-1.5">
+          <div className="flex items-center justify-center rounded-full" style={{ width: 32, height: 32, background: "#1a1a1a" }}>
+            <Mic size={16} style={{ color: "#e8e8e8" }} />
+          </div>
+          <div className="flex items-center justify-center rounded-full" style={{ width: 32, height: 32, background: "#1a1a1a" }}>
+            <Headphones size={16} style={{ color: "#e8e8e8" }} />
+          </div>
+          <div className="flex items-center justify-center rounded-full" style={{ width: 32, height: 32, background: "#1a1a1a" }}>
+            <MonitorUp size={16} style={{ color: "#e8e8e8" }} />
+          </div>
+          <div className="flex items-center justify-center rounded-full" style={{ width: 32, height: 32, background: "#ff4444" }}>
+            <PhoneOff size={16} style={{ color: "#fff" }} />
+          </div>
+        </div>
+        <div />
+      </div>
+    </div>
+  );
+}
+
+// ── FluxChatReplica (Messaging Section) ──
 
 function FluxChatReplica() {
-  const [messages, setMessages] = useState(INITIAL_MESSAGES);
+  const [messages, setMessages] = useState(
+    SECTION_INITIAL_MESSAGES.map((m) => ({ ...m, avatar: USERS[m.user as keyof typeof USERS]?.avatar || "?", color: USERS[m.user as keyof typeof USERS]?.color || "#888" }))
+  );
   const [visibleCount, setVisibleCount] = useState(0);
   const [typingUser, setTypingUser] = useState<string | null>(null);
   const nextMsgIdx = useRef(0);
   const nextId = useRef(5);
 
-  // Staggered entrance on mount
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
-    INITIAL_MESSAGES.forEach((_, i) => {
+    SECTION_INITIAL_MESSAGES.forEach((_, i) => {
       timers.push(setTimeout(() => setVisibleCount((c) => c + 1), 300 * (i + 1)));
     });
     return () => timers.forEach(clearTimeout);
   }, []);
 
-  // New messages arriving every ~5s
   useEffect(() => {
     const initialDelay = setTimeout(() => {
       const interval = setInterval(() => {
-        const extra = EXTRA_MESSAGES[nextMsgIdx.current % EXTRA_MESSAGES.length];
-
-        // Show typing indicator
+        const extra = SECTION_EXTRA_MESSAGES[nextMsgIdx.current % SECTION_EXTRA_MESSAGES.length];
         setTypingUser(extra.user);
 
         setTimeout(() => {
           setTypingUser(null);
+          const u = USERS[extra.user as keyof typeof USERS];
           const now = new Date();
           const timeStr = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
           const newMsg = {
-            id: nextId.current++,
+            id: nextMsgIdx.current + 100,
             user: extra.user,
-            avatar: extra.avatar,
-            color: extra.color,
+            avatar: u?.avatar || "?",
+            color: u?.color || "#888",
             time: timeStr,
             text: extra.text,
           };
           setMessages((prev) => {
             const next = [...prev, newMsg];
-            // Keep max 6 messages visible
             if (next.length > 6) return next.slice(next.length - 6);
             return next;
           });
@@ -206,7 +609,7 @@ function FluxChatReplica() {
       }, 5000);
 
       return () => clearInterval(interval);
-    }, INITIAL_MESSAGES.length * 300 + 2000);
+    }, SECTION_INITIAL_MESSAGES.length * 300 + 2000);
 
     return () => clearTimeout(initialDelay);
   }, []);
@@ -220,114 +623,8 @@ function FluxChatReplica() {
       }}
     >
       <div className="flex h-full">
-        {/* Sidebar — hidden on mobile */}
-        <div
-          className="flex-shrink-0 flex-col hidden md:flex"
-          style={{
-            width: "240px",
-            background: "#0e0e0e",
-            borderRight: "1px solid #161616",
-          }}
-        >
-          {/* Server header */}
-          <div
-            className="flex items-center justify-between px-4"
-            style={{
-              height: "48px",
-              borderBottom: "1px solid #161616",
-            }}
-          >
-            <span
-              style={{
-                fontSize: "15px",
-                fontWeight: 700,
-                color: "#e8e8e8",
-              }}
-            >
-              Flux
-            </span>
-            <ChevronDown size={14} style={{ color: "#555" }} />
-          </div>
-
-          {/* Channels */}
-          <div className="flex-1 overflow-hidden px-2 pt-4">
-            {/* Text channels category */}
-            <div className="flex items-center gap-1 px-2 mb-1">
-              <ChevronDown size={10} style={{ color: "#555" }} />
-              <span
-                style={{
-                  fontSize: "11px",
-                  fontWeight: 600,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.04em",
-                  color: "#555",
-                }}
-              >
-                Text Channels
-              </span>
-            </div>
-            {CHAT_CHANNELS.map((ch) => (
-              <div
-                key={ch.name}
-                className="flex items-center gap-2 px-2 py-1.5 rounded"
-                style={{
-                  background: ch.active ? "rgba(255,255,255,0.06)" : "transparent",
-                  cursor: "pointer",
-                }}
-              >
-                <Hash size={14} style={{ color: ch.active ? "#e8e8e8" : "#555" }} />
-                <span
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: ch.active ? 500 : 400,
-                    color: ch.active ? "#e8e8e8" : "#888",
-                  }}
-                >
-                  {ch.name}
-                </span>
-              </div>
-            ))}
-
-            {/* Voice channels category */}
-            <div className="flex items-center gap-1 px-2 mb-1 mt-4">
-              <ChevronRight size={10} style={{ color: "#555" }} />
-              <span
-                style={{
-                  fontSize: "11px",
-                  fontWeight: 600,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.04em",
-                  color: "#555",
-                }}
-              >
-                Voice Channels
-              </span>
-            </div>
-            <div className="flex items-center gap-2 px-2 py-1.5 rounded">
-              <Volume2 size={14} style={{ color: "#888" }} />
-              <span style={{ fontSize: "14px", color: "#888" }}>Room 1</span>
-            </div>
-            {/* Voice participants */}
-            <div className="pl-7 flex flex-col gap-1 mt-0.5">
-              {VOICE_PARTICIPANTS.slice(0, 3).map((p) => (
-                <div key={p.id} className="flex items-center gap-2">
-                  <div
-                    className="w-5 h-5 rounded-full flex items-center justify-center"
-                    style={{
-                      background: p.color + "33",
-                      fontSize: "9px",
-                      fontWeight: 600,
-                      color: p.color,
-                    }}
-                  >
-                    {p.id}
-                  </div>
-                  <span style={{ fontSize: "12px", color: "#888" }}>{p.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        {/* Sidebar */}
+        <FluxSidebar compact />
 
         {/* Chat area */}
         <div className="flex-1 flex flex-col min-w-0">
@@ -335,21 +632,18 @@ function FluxChatReplica() {
           <div
             className="flex items-center justify-between px-4 flex-shrink-0"
             style={{
-              height: "48px",
+              height: "40px",
               borderBottom: "1px solid #161616",
             }}
           >
-            <div className="flex items-center gap-2">
-              <Hash size={16} style={{ color: "#555" }} />
-              <span style={{ fontSize: "15px", fontWeight: 600, color: "#e8e8e8" }}>
-                general
-              </span>
-            </div>
-            <Search size={16} style={{ color: "#555" }} />
+            <span style={{ fontSize: "14px", fontWeight: 600, color: "#e8e8e8" }}>
+              general
+            </span>
+            <Search size={14} style={{ color: "#555" }} />
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-hidden px-4 py-3 flex flex-col gap-1 justify-end">
+          <div className="flex-1 overflow-hidden px-3 py-2 flex flex-col gap-0 justify-end">
             <AnimatePresence mode="popLayout">
               {messages.slice(0, visibleCount).map((msg) => (
                 <motion.div
@@ -359,34 +653,8 @@ function FluxChatReplica() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.3, ease: EASE }}
-                  className="flex gap-3 py-2 px-2 rounded"
                 >
-                  {/* Avatar */}
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{
-                      background: msg.color + "22",
-                      border: `2px solid ${msg.color}`,
-                      fontSize: "14px",
-                      fontWeight: 600,
-                      color: msg.color,
-                    }}
-                  >
-                    {msg.avatar}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2">
-                      <span style={{ fontSize: "14px", fontWeight: 700, color: "#e8e8e8" }}>
-                        {msg.user}
-                      </span>
-                      <span style={{ fontSize: "11px", color: "#555" }}>
-                        {msg.time}
-                      </span>
-                    </div>
-                    <p style={{ fontSize: "14px", color: "#e8e8e8", lineHeight: 1.45, marginTop: "2px" }}>
-                      {msg.text}
-                    </p>
-                  </div>
+                  <MessageRow user={msg.user} time={msg.time} text={msg.text} />
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -406,15 +674,12 @@ function FluxChatReplica() {
                 border: "1px solid #161616",
               }}
             >
-              <Paperclip size={18} style={{ color: "#555", flexShrink: 0 }} />
-              <span
-                className="flex-1"
-                style={{ fontSize: "14px", color: "#555" }}
-              >
+              <Paperclip size={16} style={{ color: "#555", flexShrink: 0 }} />
+              <span className="flex-1" style={{ fontSize: "13px", color: "#555" }}>
                 Message #general
               </span>
-              <Smile size={18} style={{ color: "#555", flexShrink: 0 }} />
-              <Send size={18} style={{ color: "#555", flexShrink: 0 }} />
+              <Smile size={16} style={{ color: "#555", flexShrink: 0 }} />
+              <Send size={16} style={{ color: "#555", flexShrink: 0 }} />
             </div>
           </div>
         </div>
@@ -475,11 +740,9 @@ function FluxVoiceReplica() {
   const [speakingSet, setSpeakingSet] = useState<Set<string>>(new Set(["N", "A"]));
   const [emmaPresent, setEmmaPresent] = useState(false);
 
-  // Toggle speaking states every ~3s
   useEffect(() => {
     const allIds = ["N", "A", "S", "J"];
     const interval = setInterval(() => {
-      // Randomly pick 1-2 speakers
       const shuffled = [...allIds].sort(() => Math.random() - 0.5);
       const count = Math.random() > 0.5 ? 2 : 1;
       setSpeakingSet(new Set(shuffled.slice(0, count)));
@@ -487,14 +750,11 @@ function FluxVoiceReplica() {
     return () => clearInterval(interval);
   }, []);
 
-  // Emma join/leave cycle
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>;
     const cycle = () => {
-      // Emma joins
       setEmmaPresent(true);
       timeout = setTimeout(() => {
-        // Emma leaves after 4s
         setEmmaPresent(false);
         timeout = setTimeout(cycle, 6000);
       }, 4000);
@@ -534,21 +794,13 @@ function FluxVoiceReplica() {
             {tab.active && (
               <div
                 className="absolute bottom-0 left-3 right-3"
-                style={{
-                  height: "2px",
-                  background: "#e8e8e8",
-                  borderRadius: "1px",
-                }}
+                style={{ height: "2px", background: "#e8e8e8", borderRadius: "1px" }}
               />
             )}
           </div>
         ))}
-        {/* Participant count */}
         <div className="ml-auto flex items-center gap-1.5 pr-1">
-          <div
-            className="rounded-full"
-            style={{ width: 6, height: 6, background: "#43b581" }}
-          />
+          <div className="rounded-full" style={{ width: 6, height: 6, background: "#43b581" }} />
           <span style={{ fontSize: "12px", color: "#888", fontFamily: "monospace" }}>
             {participants.length}
           </span>
@@ -556,10 +808,7 @@ function FluxVoiceReplica() {
       </div>
 
       {/* Participant grid */}
-      <div
-        className="flex flex-wrap justify-center gap-5 p-6"
-        style={{ minHeight: "200px" }}
-      >
+      <div className="flex flex-wrap justify-center gap-5 p-6" style={{ minHeight: "200px" }}>
         <AnimatePresence mode="popLayout">
           {participants.map((p) => {
             const isSpeaking = speakingSet.has(p.id);
@@ -572,16 +821,9 @@ function FluxVoiceReplica() {
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.3, ease: EASE }}
                 className="relative flex flex-col items-center rounded-xl"
-                style={{
-                  width: "140px",
-                  background: "#0e0e0e",
-                  padding: "16px 12px 12px",
-                }}
+                style={{ width: "140px", background: "#0e0e0e", padding: "16px 12px 12px" }}
               >
-                {/* Speaking glow on tile */}
                 {isSpeaking && <SpeakingGlow />}
-
-                {/* Avatar */}
                 <motion.div
                   className="relative w-[72px] h-[72px] rounded-full flex items-center justify-center mb-2"
                   style={{
@@ -596,29 +838,15 @@ function FluxVoiceReplica() {
                 >
                   {p.id}
                 </motion.div>
-
-                {/* Username + waveform */}
                 <div className="flex items-center gap-1.5" style={{ position: "relative", zIndex: 1 }}>
-                  <span
-                    style={{
-                      fontSize: "13px",
-                      fontWeight: 500,
-                      color: "#e8e8e8",
-                    }}
-                  >
+                  <span style={{ fontSize: "13px", fontWeight: 500, color: "#e8e8e8" }}>
                     {p.name}
                   </span>
                   {isSpeaking && <WaveformBars />}
                 </div>
-
-                {/* Status icons */}
                 <div className="flex items-center gap-1.5 mt-1.5" style={{ position: "relative", zIndex: 1 }}>
-                  {p.muted && (
-                    <MicOffIcon size={14} style={{ color: "#555" }} />
-                  )}
-                  {p.deafened && (
-                    <HeadphoneOff size={14} style={{ color: "#555" }} />
-                  )}
+                  {p.muted && <MicOffIcon size={14} style={{ color: "#555" }} />}
+                  {p.deafened && <HeadphoneOff size={14} style={{ color: "#555" }} />}
                 </div>
               </motion.div>
             );
@@ -627,32 +855,17 @@ function FluxVoiceReplica() {
       </div>
 
       {/* Controls bar */}
-      <div
-        className="flex items-center justify-center gap-1 px-4 py-2.5"
-        style={{ borderTop: "1px solid #161616" }}
-      >
-        <div
-          className="flex items-center justify-center rounded-full"
-          style={{ width: "36px", height: "36px", background: "#1a1a1a" }}
-        >
+      <div className="flex items-center justify-center gap-1 px-4 py-2.5" style={{ borderTop: "1px solid #161616" }}>
+        <div className="flex items-center justify-center rounded-full" style={{ width: "36px", height: "36px", background: "#1a1a1a" }}>
           <Mic size={20} style={{ color: "#e8e8e8" }} />
         </div>
-        <div
-          className="flex items-center justify-center rounded-full"
-          style={{ width: "36px", height: "36px", background: "#1a1a1a" }}
-        >
+        <div className="flex items-center justify-center rounded-full" style={{ width: "36px", height: "36px", background: "#1a1a1a" }}>
           <Headphones size={20} style={{ color: "#e8e8e8" }} />
         </div>
-        <div
-          className="flex items-center justify-center rounded-full"
-          style={{ width: "36px", height: "36px", background: "#1a1a1a" }}
-        >
+        <div className="flex items-center justify-center rounded-full" style={{ width: "36px", height: "36px", background: "#1a1a1a" }}>
           <MonitorUp size={20} style={{ color: "#e8e8e8" }} />
         </div>
-        <div
-          className="flex items-center justify-center rounded-full"
-          style={{ width: "36px", height: "36px", background: "#ff4444" }}
-        >
+        <div className="flex items-center justify-center rounded-full" style={{ width: "36px", height: "36px", background: "#ff4444" }}>
           <PhoneOff size={20} style={{ color: "#ffffff" }} />
         </div>
       </div>
@@ -670,7 +883,7 @@ function formatTime(seconds: number) {
 
 function FluxMusicReplica() {
   const [trackIndex, setTrackIndex] = useState(0);
-  const [progress, setProgress] = useState(0.62); // start at 62%
+  const [progress, setProgress] = useState(0.62);
   const [transitioning, setTransitioning] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -682,14 +895,12 @@ function FluxMusicReplica() {
 
   const currentSeconds = Math.floor(progress * currentTrack.totalSeconds);
 
-  // Progress bar crawling
   useEffect(() => {
     intervalRef.current = setInterval(() => {
       setProgress((prev) => {
-        const increment = 1 / (currentTrack.totalSeconds * 3.33); // ~30s from 62% to 100%
+        const increment = 1 / (currentTrack.totalSeconds * 3.33);
         const next = prev + increment;
         if (next >= 1) {
-          // Track ended — advance
           setTransitioning(true);
           setTimeout(() => {
             setTrackIndex((i) => i + 1);
@@ -728,9 +939,9 @@ function FluxMusicReplica() {
 
       {/* Vinyl + track info */}
       <div className="relative flex flex-col items-center pt-8 pb-4 px-6">
-        {/* Spinning vinyl disc */}
+        {/* Spinning vinyl disc — uses CSS animation for true continuous spin */}
         <div className="relative mb-6">
-          <motion.div
+          <div
             className="relative rounded-full"
             style={{
               width: "260px",
@@ -745,25 +956,45 @@ function FluxMusicReplica() {
                 )
               `,
               boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+              animation: "vinyl-spin 4s linear infinite",
             }}
-            animate={{ rotate: 360 }}
-            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
           >
-            {/* Center album art */}
+            {/* Center album art — gradient as album cover */}
             <motion.div
-              className="absolute rounded-full"
+              className="absolute rounded-full overflow-hidden"
               style={{
                 width: "42%",
                 height: "42%",
                 top: "29%",
                 left: "29%",
+                boxShadow: `0 0 0 3px #1a1a1a`,
               }}
-              animate={{
-                background: `linear-gradient(135deg, ${currentTrack.gradientFrom}, ${currentTrack.gradientTo})`,
-                boxShadow: `0 0 20px ${currentTrack.gradientFrom}44`,
-              }}
-              transition={{ duration: 0.6 }}
-            />
+            >
+              <motion.div
+                className="w-full h-full"
+                animate={{
+                  background: `linear-gradient(135deg, ${currentTrack.gradientFrom}, ${currentTrack.gradientTo})`,
+                }}
+                transition={{ duration: 0.6 }}
+              />
+              {/* Album art overlay — subtle design elements */}
+              <div
+                className="absolute inset-0 flex items-center justify-center"
+                style={{
+                  background: "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15) 0%, transparent 60%)",
+                }}
+              >
+                <div
+                  className="rounded-full"
+                  style={{
+                    width: "30%",
+                    height: "30%",
+                    background: "rgba(255,255,255,0.1)",
+                    backdropFilter: "blur(4px)",
+                  }}
+                />
+              </div>
+            </motion.div>
             {/* Center hole */}
             <div
               className="absolute rounded-full"
@@ -773,9 +1004,21 @@ function FluxMusicReplica() {
                 top: "46%",
                 left: "46%",
                 background: "#0a0a0a",
+                boxShadow: "inset 0 1px 2px rgba(0,0,0,0.8), 0 0 0 2px #222",
               }}
             />
-          </motion.div>
+            {/* Groove highlight */}
+            <div
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                width: "80%",
+                height: "80%",
+                top: "10%",
+                left: "10%",
+                border: "1px solid rgba(255,255,255,0.02)",
+              }}
+            />
+          </div>
         </div>
 
         {/* Track info */}
@@ -788,23 +1031,10 @@ function FluxMusicReplica() {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.3 }}
             >
-              <p
-                style={{
-                  fontSize: "16px",
-                  fontWeight: 700,
-                  color: "#ffffff",
-                  textShadow: "0 2px 8px rgba(0,0,0,0.5)",
-                }}
-              >
+              <p style={{ fontSize: "16px", fontWeight: 700, color: "#ffffff", textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}>
                 {currentTrack.title}
               </p>
-              <p
-                style={{
-                  fontSize: "13px",
-                  color: "rgba(255,255,255,0.7)",
-                  marginTop: "4px",
-                }}
-              >
+              <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)", marginTop: "4px" }}>
                 {currentTrack.artist}
               </p>
             </motion.div>
@@ -813,13 +1043,7 @@ function FluxMusicReplica() {
 
         {/* Progress bar */}
         <div className="w-full mb-4">
-          <div
-            className="w-full rounded-full overflow-hidden"
-            style={{
-              height: "5px",
-              background: "rgba(255,255,255,0.12)",
-            }}
-          >
+          <div className="w-full rounded-full overflow-hidden" style={{ height: "5px", background: "rgba(255,255,255,0.12)" }}>
             <motion.div
               className="h-full rounded-full"
               style={{ background: "#ffffff" }}
@@ -839,46 +1063,22 @@ function FluxMusicReplica() {
 
         {/* Playback controls */}
         <div className="flex items-center justify-center gap-4">
-          <div
-            className="flex items-center justify-center rounded-full"
-            style={{ width: "34px", height: "34px" }}
-          >
+          <div className="flex items-center justify-center rounded-full" style={{ width: "34px", height: "34px" }}>
             <SkipForward size={18} style={{ color: "#e8e8e8", transform: "scaleX(-1)" }} />
           </div>
-          <div
-            className="flex items-center justify-center rounded-full"
-            style={{
-              width: "34px",
-              height: "34px",
-              background: "#e8e8e8",
-            }}
-          >
+          <div className="flex items-center justify-center rounded-full" style={{ width: "34px", height: "34px", background: "#e8e8e8" }}>
             <Pause size={16} style={{ color: "#0a0a0a" }} />
           </div>
-          <div
-            className="flex items-center justify-center rounded-full"
-            style={{ width: "34px", height: "34px" }}
-          >
+          <div className="flex items-center justify-center rounded-full" style={{ width: "34px", height: "34px" }}>
             <SkipForward size={18} style={{ color: "#e8e8e8" }} />
           </div>
         </div>
       </div>
 
       {/* Queue */}
-      <div
-        className="relative"
-        style={{ borderTop: "1px solid #161616" }}
-      >
+      <div className="relative" style={{ borderTop: "1px solid #161616" }}>
         <div className="px-4 py-2">
-          <span
-            style={{
-              fontSize: "12px",
-              fontWeight: 600,
-              color: "#888",
-            }}
-          >
-            Queue
-          </span>
+          <span style={{ fontSize: "12px", fontWeight: 600, color: "#888" }}>Queue</span>
         </div>
         <AnimatePresence mode="popLayout">
           {queueTracks.map((track, i) => (
@@ -894,31 +1094,27 @@ function FluxMusicReplica() {
             >
               <motion.div
                 className="rounded flex-shrink-0"
-                style={{
-                  width: "32px",
-                  height: "32px",
-                  borderRadius: "4px",
-                }}
-                animate={{
-                  background: `linear-gradient(135deg, ${track.gradientFrom}, ${track.gradientTo})`,
-                }}
+                style={{ width: "32px", height: "32px", borderRadius: "4px" }}
+                animate={{ background: `linear-gradient(135deg, ${track.gradientFrom}, ${track.gradientTo})` }}
                 transition={{ duration: 0.4 }}
               />
               <div className="flex-1 min-w-0">
-                <p style={{ fontSize: "12px", fontWeight: 500, color: "#e8e8e8" }}>
-                  {track.title}
-                </p>
-                <p style={{ fontSize: "11px", color: "#888" }}>
-                  {track.artist}
-                </p>
+                <p style={{ fontSize: "12px", fontWeight: 500, color: "#e8e8e8" }}>{track.title}</p>
+                <p style={{ fontSize: "11px", color: "#888" }}>{track.artist}</p>
               </div>
-              <span style={{ fontSize: "11px", color: "#555", flexShrink: 0 }}>
-                {track.duration}
-              </span>
+              <span style={{ fontSize: "11px", color: "#555", flexShrink: 0 }}>{track.duration}</span>
             </motion.div>
           ))}
         </AnimatePresence>
       </div>
+
+      {/* CSS for vinyl spin */}
+      <style>{`
+        @keyframes vinyl-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }
@@ -1012,9 +1208,9 @@ function FluxHero() {
   );
 }
 
-// ── Hero Screenshot ──
+// ── Hero App Replica (replaces screenshot) ──
 
-function HeroScreenshot() {
+function HeroAppSection() {
   return (
     <section className="relative px-6 pt-16 pb-32">
       <div className="mx-auto max-w-6xl">
@@ -1024,12 +1220,8 @@ function HeroScreenshot() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          <div className="relative overflow-hidden">
-            <img
-              src="/flux/hero.png"
-              alt="Flux — Desktop chat application with voice, messaging, and screen sharing"
-              className="w-full h-auto block"
-            />
+          <div className="relative overflow-hidden rounded-xl">
+            <FluxAppReplica />
             {/* Bottom gradient mask — fade into background */}
             <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none" />
             {/* Left gradient mask */}
@@ -1043,7 +1235,7 @@ function HeroScreenshot() {
   );
 }
 
-// ── Section Header ── (reusable)
+// ── Section Header ──
 
 function SectionHeader({
   number,
@@ -1105,7 +1297,7 @@ function MessagingSection() {
         <SectionHeader
           number="1.0"
           label="Messaging"
-          title={"Encrypted by default.\nConversations that stay yours."}
+          title={"Conversations that stay yours."}
           description="Every message, file, and reaction is encrypted end-to-end with AES-256-GCM before leaving your device. Rich text, emoji, reactions, and threaded replies — without compromising privacy."
         />
 
@@ -1139,7 +1331,6 @@ function VoiceSection() {
           description="48kHz stereo Opus audio with Krisp AI noise suppression running locally on your device. Keyboard clatter, fans, and background chatter vanish — your voice stays untouched. Sub-45ms latency over LiveKit's globally distributed SFU."
         />
 
-        {/* Powered by Krisp badge */}
         <ScrollReveal>
           <div className="flex items-center gap-2 mb-8">
             <KrispLogo size={20} />
@@ -1400,7 +1591,7 @@ export default function FluxPage() {
   return (
     <PageTransition>
       <FluxHero />
-      <HeroScreenshot />
+      <HeroAppSection />
       <FeatureSections />
       <FeatureGrid />
       <FluxBenchmarks />

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   AudioWaveform, Lock, Monitor, MicOff, MessageSquare, Zap,
-  Download, Apple, MonitorDot, ArrowRight,
+  Download, Apple, MonitorDot, ArrowRight, Volume2, Mic, MicOff as MicOffIcon,
+  Headphones, MonitorUp, PhoneOff, Play, Pause, SkipForward, Music2,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { PageTransition } from "@/components/page-transition";
@@ -24,8 +25,6 @@ const fluxBenchmarks: BenchmarkGroup[] = [
   { metric: "Audio Quality (Bitrate)", ours: { label: "Flux", value: 320 }, theirs: { label: "Discord", value: 96 }, unit: " kbps", lowerIsBetter: false },
 ];
 
-// Feature section data — images are composed per-section in the render
-
 const iconMap = { AudioWaveform, Lock, Monitor, MicOff, MessageSquare, Zap } as const;
 
 const EASE: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
@@ -39,8 +38,321 @@ const fadeUp = {
   }),
 };
 
+// ── Voice Room Component ──
+
+const PARTICIPANTS = [
+  { id: "N", name: "noah", color: "#6366f1", speaking: true, muted: false, deafened: false },
+  { id: "A", name: "alex", color: "#0ea5e9", speaking: true, muted: false, deafened: false },
+  { id: "S", name: "sarah", color: "#8b5cf6", speaking: false, muted: true, deafened: false },
+  { id: "J", name: "james", color: "#f59e0b", speaking: false, muted: false, deafened: true },
+];
+
+function SpeakingRing({ color }: { color: string }) {
+  return (
+    <>
+      <motion.div
+        className="absolute inset-0 rounded-full"
+        style={{ border: `2px solid ${color}` }}
+        animate={{ opacity: [0.8, 0.3, 0.8], scale: [1, 1.12, 1] }}
+        transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute inset-0 rounded-full"
+        style={{ border: `1px solid ${color}`, margin: "-6px" }}
+        animate={{ opacity: [0.3, 0, 0.3], scale: [1, 1.18, 1] }}
+        transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+      />
+    </>
+  );
+}
+
+function VoiceRoomVisualization() {
+  const [isMicOn, setIsMicOn] = useState(true);
+  const [isDeafened, setIsDeafened] = useState(false);
+
+  return (
+    <div
+      className="rounded-xl overflow-hidden w-full max-w-[480px] mx-auto"
+      style={{ background: "#131316", border: "1px solid #1c1c20" }}
+    >
+      {/* Room header */}
+      <div
+        className="flex items-center justify-between px-4 py-3"
+        style={{ borderBottom: "1px solid #1c1c20" }}
+      >
+        <div className="flex items-center gap-2">
+          <Volume2 size={14} style={{ color: "#22c55e" }} />
+          <span className="text-sm font-medium" style={{ color: "#ededef" }}>Room 1</span>
+          <span
+            className="text-[10px] px-1.5 py-0.5 rounded"
+            style={{ background: "#1c1c20", color: "#7e7e86" }}
+          >
+            4 connected
+          </span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#22c55e" }} />
+          <span className="text-[11px]" style={{ color: "#7e7e86" }}>live</span>
+        </div>
+      </div>
+
+      {/* Participant grid */}
+      <div className="p-4 grid grid-cols-2 gap-3">
+        {PARTICIPANTS.map((p) => (
+          <div
+            key={p.id}
+            className="relative flex flex-col items-center gap-2 rounded-lg py-5 px-3"
+            style={{ background: "#0d0d0f", border: "1px solid #1c1c20" }}
+          >
+            {/* Speaking ring */}
+            {p.speaking && (
+              <div className="relative flex items-center justify-center">
+                <div className="relative w-12 h-12">
+                  <SpeakingRing color={p.color} />
+                  <div
+                    className="relative w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold z-10"
+                    style={{ background: p.color + "22", color: p.color, border: `2px solid ${p.color}` }}
+                  >
+                    {p.id}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Non-speaking avatar */}
+            {!p.speaking && (
+              <div
+                className="w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold"
+                style={{ background: p.color + "22", color: p.color, border: `2px solid ${p.color}33` }}
+              >
+                {p.id}
+              </div>
+            )}
+
+            <span className="text-[12px]" style={{ color: "#7e7e86" }}>{p.name}</span>
+
+            {/* Status icons */}
+            <div className="flex items-center gap-1.5">
+              {p.muted && (
+                <div
+                  className="flex items-center justify-center w-5 h-5 rounded-full"
+                  style={{ background: "#ef444422" }}
+                >
+                  <MicOffIcon size={10} style={{ color: "#ef4444" }} />
+                </div>
+              )}
+              {p.deafened && (
+                <div
+                  className="flex items-center justify-center w-5 h-5 rounded-full"
+                  style={{ background: "#f59e0b22" }}
+                >
+                  <Headphones size={10} style={{ color: "#f59e0b" }} />
+                </div>
+              )}
+              {!p.muted && !p.deafened && p.speaking && (
+                <div
+                  className="flex items-center justify-center w-5 h-5 rounded-full"
+                  style={{ background: "#22c55e22" }}
+                >
+                  <Mic size={10} style={{ color: "#22c55e" }} />
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Voice controls bar */}
+      <div
+        className="flex items-center justify-between px-4 py-3"
+        style={{ borderTop: "1px solid #1c1c20" }}
+      >
+        <div className="flex items-center gap-1.5">
+          {/* Mic toggle */}
+          <button
+            onClick={() => setIsMicOn((v) => !v)}
+            className="flex items-center justify-center w-8 h-8 rounded-md transition-colors"
+            style={{
+              background: isMicOn ? "#1c1c20" : "#ef444422",
+              border: "1px solid #2a2a30",
+            }}
+            title={isMicOn ? "Mute" : "Unmute"}
+          >
+            {isMicOn
+              ? <Mic size={13} style={{ color: "#ededef" }} />
+              : <MicOffIcon size={13} style={{ color: "#ef4444" }} />
+            }
+          </button>
+
+          {/* Deafen toggle */}
+          <button
+            onClick={() => setIsDeafened((v) => !v)}
+            className="flex items-center justify-center w-8 h-8 rounded-md transition-colors"
+            style={{
+              background: isDeafened ? "#f59e0b22" : "#1c1c20",
+              border: "1px solid #2a2a30",
+            }}
+            title={isDeafened ? "Undeafen" : "Deafen"}
+          >
+            <Headphones size={13} style={{ color: isDeafened ? "#f59e0b" : "#7e7e86" }} />
+          </button>
+
+          {/* Screen share */}
+          <button
+            className="flex items-center justify-center w-8 h-8 rounded-md transition-colors"
+            style={{ background: "#1c1c20", border: "1px solid #2a2a30" }}
+            title="Share screen"
+          >
+            <MonitorUp size={13} style={{ color: "#7e7e86" }} />
+          </button>
+        </div>
+
+        {/* Disconnect */}
+        <button
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-opacity hover:opacity-90"
+          style={{ background: "#ef444422", color: "#ef4444", border: "1px solid #ef444433" }}
+          title="Disconnect"
+        >
+          <PhoneOff size={11} />
+          Leave
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Music Player Component ──
+
+const QUEUE = [
+  { title: "Midnight City", artist: "M83", duration: "4:03", gradientFrom: "#6366f1", gradientTo: "#8b5cf6" },
+  { title: "Do I Wanna Know?", artist: "Arctic Monkeys", duration: "4:32", gradientFrom: "#0ea5e9", gradientTo: "#6366f1" },
+  { title: "Electric Feel", artist: "MGMT", duration: "3:50", gradientFrom: "#f59e0b", gradientTo: "#f97316" },
+];
+
+function MusicPlayerVisualization() {
+  const [isPlaying, setIsPlaying] = useState(true);
+  const currentTrack = QUEUE[0];
+
+  return (
+    <div
+      className="rounded-xl overflow-hidden w-full max-w-[340px]"
+      style={{ background: "#131316", border: "1px solid #1c1c20" }}
+    >
+      {/* Header */}
+      <div
+        className="flex items-center gap-2 px-4 py-3"
+        style={{ borderBottom: "1px solid #1c1c20" }}
+      >
+        <Music2 size={13} style={{ color: "#7e7e86" }} />
+        <span className="text-[12px] font-medium" style={{ color: "#7e7e86" }}>Now Playing</span>
+      </div>
+
+      {/* Current track */}
+      <div className="p-4">
+        <div className="flex items-center gap-3 mb-4">
+          {/* Album art */}
+          <div
+            className="w-12 h-12 rounded-lg flex-shrink-0"
+            style={{
+              background: `linear-gradient(135deg, ${currentTrack.gradientFrom}, ${currentTrack.gradientTo})`,
+              boxShadow: `0 4px 20px ${currentTrack.gradientFrom}44`,
+            }}
+          />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium truncate" style={{ color: "#ededef" }}>
+              {currentTrack.title}
+            </p>
+            <p className="text-[12px] truncate mt-0.5" style={{ color: "#7e7e86" }}>
+              {currentTrack.artist}
+            </p>
+          </div>
+        </div>
+
+        {/* Progress bar */}
+        <div className="mb-3">
+          <div
+            className="w-full h-1 rounded-full overflow-hidden"
+            style={{ background: "#1c1c20" }}
+          >
+            <motion.div
+              className="h-full rounded-full"
+              style={{ background: "linear-gradient(90deg, #6366f1, #8b5cf6)" }}
+              initial={{ width: "0%" }}
+              animate={{ width: isPlaying ? "62%" : "62%" }}
+              transition={{ duration: 0 }}
+            />
+          </div>
+          <div className="flex justify-between mt-1.5">
+            <span className="text-[10px]" style={{ color: "#7e7e86" }}>2:30</span>
+            <span className="text-[10px]" style={{ color: "#7e7e86" }}>{currentTrack.duration}</span>
+          </div>
+        </div>
+
+        {/* Playback controls */}
+        <div className="flex items-center justify-center gap-4">
+          <button
+            className="flex items-center justify-center w-7 h-7 rounded-md transition-colors"
+            style={{ color: "#7e7e86" }}
+          >
+            <SkipForward size={14} style={{ transform: "scaleX(-1)" }} />
+          </button>
+
+          <button
+            onClick={() => setIsPlaying((v) => !v)}
+            className="flex items-center justify-center w-9 h-9 rounded-full transition-opacity hover:opacity-90"
+            style={{ background: "#ededef" }}
+          >
+            {isPlaying
+              ? <Pause size={14} style={{ color: "#09090b" }} />
+              : <Play size={14} style={{ color: "#09090b", marginLeft: "1px" }} />
+            }
+          </button>
+
+          <button
+            className="flex items-center justify-center w-7 h-7 rounded-md transition-colors"
+            style={{ color: "#7e7e86" }}
+          >
+            <SkipForward size={14} />
+          </button>
+        </div>
+      </div>
+
+      {/* Queue */}
+      <div style={{ borderTop: "1px solid #1c1c20" }}>
+        <div className="px-4 py-2">
+          <span className="text-[10px] uppercase tracking-[0.12em]" style={{ color: "#7e7e86" }}>
+            Up Next
+          </span>
+        </div>
+        {QUEUE.slice(1).map((track, i) => (
+          <div
+            key={i}
+            className="flex items-center gap-3 px-4 py-2 transition-colors"
+            style={{ borderTop: "1px solid #1c1c2066" }}
+          >
+            <div
+              className="w-7 h-7 rounded flex-shrink-0"
+              style={{ background: `linear-gradient(135deg, ${track.gradientFrom}, ${track.gradientTo})` }}
+            />
+            <div className="flex-1 min-w-0">
+              <p className="text-[12px] font-medium truncate" style={{ color: "#ededef" }}>
+                {track.title}
+              </p>
+              <p className="text-[11px] truncate" style={{ color: "#7e7e86" }}>
+                {track.artist}
+              </p>
+            </div>
+            <span className="text-[11px] flex-shrink-0" style={{ color: "#7e7e86" }}>
+              {track.duration}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Hero ──
-// Linear-style: large thin headline, subtitle in muted color, screenshot below
 
 function FluxHero() {
   return (
@@ -57,7 +369,8 @@ function FluxHero() {
         </motion.p>
 
         <motion.h1
-          className="text-[clamp(2.5rem,6vw,4.5rem)] font-light tracking-[-0.03em] leading-[1.1]"
+          className="text-[clamp(2.75rem,7vw,5.5rem)] font-medium tracking-[-0.025em] leading-[1.08]"
+          style={{ textWrap: "balance" } as React.CSSProperties}
           initial="hidden"
           animate="visible"
           custom={0.1}
@@ -106,14 +419,18 @@ function HeroScreenshot() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          <div className="relative rounded-lg overflow-hidden border border-border/50">
+          <div className="relative overflow-hidden">
             <img
               src="/flux/hero.png"
               alt="Flux — Desktop chat application with voice, messaging, and screen sharing"
               className="w-full h-auto block"
             />
-            {/* Bottom fade to blend into background */}
-            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+            {/* Bottom gradient mask — fade into background */}
+            <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none" />
+            {/* Left gradient mask */}
+            <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent pointer-events-none" />
+            {/* Right gradient mask */}
+            <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent pointer-events-none" />
           </div>
         </motion.div>
       </div>
@@ -138,14 +455,14 @@ function SectionHeader({
     <>
       <ScrollReveal>
         <div className="flex items-center gap-2 mb-16">
-          <span className="text-sm font-mono text-foreground-muted">{number}</span>
-          <span className="text-sm text-foreground-muted">{label}</span>
-          <ArrowRight size={14} className="text-foreground-muted" />
+          <span className="text-sm font-mono text-foreground-muted/30">{number}</span>
+          <span className="text-sm text-foreground-muted/60">{label}</span>
+          <ArrowRight size={14} className="text-foreground-muted/40" />
         </div>
       </ScrollReveal>
       <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-16">
         <ScrollReveal>
-          <h2 className="text-[clamp(2rem,4vw,3rem)] font-light tracking-[-0.02em] leading-[1.15] text-foreground whitespace-pre-line">
+          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-medium tracking-[-0.025em] leading-[1.12] text-foreground whitespace-pre-line">
             {title}
           </h2>
         </ScrollReveal>
@@ -165,8 +482,8 @@ function SubFeatures({ items }: { items: { number: string; label: string }[] }) 
       <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4">
         {items.map((sf) => (
           <div key={sf.number} className="flex items-baseline gap-2">
-            <span className="text-sm font-mono text-foreground-muted/50">{sf.number}</span>
-            <span className="text-sm text-foreground-muted">{sf.label}</span>
+            <span className="text-sm font-mono text-foreground-muted/30">{sf.number}</span>
+            <span className="text-sm text-foreground-muted/60">{sf.label}</span>
           </div>
         ))}
       </div>
@@ -175,7 +492,6 @@ function SubFeatures({ items }: { items: { number: string; label: string }[] }) 
 }
 
 // ── 1.0 Messaging ──
-// Composited: channel sidebar floating over the message stream
 
 function MessagingSection() {
   return (
@@ -191,23 +507,28 @@ function MessagingSection() {
         {/* Composited image: sidebar floating over message area */}
         <ScrollReveal>
           <div className="relative">
-            {/* Message area — the main piece */}
-            <div className="rounded-xl overflow-hidden border border-border/50 shadow-2xl">
+            {/* Message area — gradient mask edges */}
+            <div className="relative overflow-hidden">
               <img
                 src="/flux/chat.png"
                 alt="Flux encrypted conversation in #general"
                 className="w-full h-auto block"
               />
+              <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background via-background/50 to-transparent pointer-events-none" />
+              <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent pointer-events-none" />
             </div>
 
-            {/* Channel sidebar — floating offset card */}
-            <div className="absolute -left-4 sm:-left-8 top-8 sm:top-12 w-[140px] sm:w-[180px] rounded-xl overflow-hidden border border-border/50 shadow-2xl bg-background">
+            {/* Channel sidebar — floating offset card with gradient mask */}
+            <div className="absolute -left-4 sm:-left-8 top-8 sm:top-12 w-[140px] sm:w-[180px] overflow-hidden shadow-2xl">
               <img
                 src="/flux/sidebar.png"
                 alt="Flux channel sidebar"
                 className="w-full h-auto block"
                 style={{ maxHeight: "400px", objectFit: "cover", objectPosition: "top" }}
               />
+              {/* Gradient masks on sidebar card */}
+              <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none" />
+              <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" />
             </div>
           </div>
         </ScrollReveal>
@@ -226,7 +547,6 @@ function MessagingSection() {
 }
 
 // ── 2.0 Voice ──
-// Shows the Voice & Audio settings panel — a completely different UI from the chat
 
 function VoiceSection() {
   return (
@@ -239,18 +559,9 @@ function VoiceSection() {
           description="48kHz stereo Opus audio with Krisp AI noise suppression running locally on your device. Keyboard clatter, fans, and background chatter vanish — your voice stays untouched. Sub-45ms latency over LiveKit's globally distributed SFU."
         />
 
-        {/* Voice & Audio settings — shows the audio engine controls */}
         <ScrollReveal>
           <div className="flex justify-center">
-            <div className="relative max-w-lg w-full">
-              <div className="rounded-xl overflow-hidden border border-border/50 shadow-2xl">
-                <img
-                  src="/flux/settings.png"
-                  alt="Flux Voice & Audio settings with noise suppression, echo cancellation, and adaptive bitrate controls"
-                  className="w-full h-auto block"
-                />
-              </div>
-            </div>
+            <VoiceRoomVisualization />
           </div>
         </ScrollReveal>
 
@@ -267,37 +578,31 @@ function VoiceSection() {
   );
 }
 
-// ── 3.0 Screen Share ──
-// Shows the #dev channel messages about screen sharing — technical discussion
+// ── 3.0 Music ──
 
-function ScreenShareSection() {
+function MusicSection() {
   return (
     <section className="py-24 sm:py-32 px-6 border-t border-border/50">
       <div className="mx-auto max-w-6xl">
         <SectionHeader
           number="3.0"
-          label="Screen Share"
-          title={"Lossless streaming.\nEvery pixel, exactly as you see it."}
-          description="VP9 screen sharing up to 4K at 20 Mbps with six quality presets. Share your IDE, your game, or your design — from 480p30 all the way to lossless. No Nitro required."
+          label="Music"
+          title={"Shared listening.\nSoundtrack your team."}
+          description="Listen together in real time. Queue tracks, skip, and control playback collectively — without leaving your voice channel. Everyone hears the same beat, in perfect sync."
         />
 
-        {/* #dev conversation about screen sharing — cropped message fragment */}
         <ScrollReveal>
-          <div className="rounded-xl overflow-hidden border border-border/50 shadow-2xl">
-            <img
-              src="/flux/voice.png"
-              alt="Flux dev channel discussing screen share quality presets and VP9 encoding"
-              className="w-full h-auto block"
-            />
+          <div className="flex justify-center">
+            <MusicPlayerVisualization />
           </div>
         </ScrollReveal>
 
         <SubFeatures
           items={[
-            { number: "3.1", label: "4K resolution" },
-            { number: "3.2", label: "60fps streaming" },
-            { number: "3.3", label: "VP9 codec" },
-            { number: "3.4", label: "6 quality presets" },
+            { number: "3.1", label: "Synchronized playback" },
+            { number: "3.2", label: "Shared queue" },
+            { number: "3.3", label: "In-channel controls" },
+            { number: "3.4", label: "High-fidelity audio" },
           ]}
         />
       </div>
@@ -310,7 +615,7 @@ function FeatureSections() {
     <div id="features">
       <MessagingSection />
       <VoiceSection />
-      <ScreenShareSection />
+      <MusicSection />
     </div>
   );
 }
@@ -323,7 +628,7 @@ function FeatureGrid() {
       <div className="mx-auto max-w-6xl">
         <ScrollReveal>
           <p className="overline mb-4">Details</p>
-          <h2 className="text-[clamp(2rem,4vw,3rem)] font-light tracking-[-0.02em] leading-[1.15] max-w-2xl">
+          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-medium tracking-[-0.025em] leading-[1.12] max-w-2xl">
             Every detail, considered.
           </h2>
         </ScrollReveal>
@@ -391,7 +696,7 @@ function TechSpecs() {
           <div>
             <ScrollReveal>
               <p className="overline mb-4">Specifications</p>
-              <h2 className="text-[clamp(2rem,4vw,3rem)] font-light tracking-[-0.02em] leading-[1.15]">
+              <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-medium tracking-[-0.025em] leading-[1.12]">
                 Under the hood.
               </h2>
               <p className="mt-6 text-foreground-muted leading-relaxed">
@@ -473,7 +778,7 @@ function DownloadCTA() {
     <section id="download" className="py-32 px-6 border-t border-border/50">
       <div className="mx-auto max-w-5xl">
         <ScrollReveal>
-          <h2 className="text-[clamp(2.5rem,5vw,4rem)] font-light tracking-[-0.03em] leading-[1.1]">
+          <h2 className="text-[clamp(2.75rem,5vw,4.5rem)] font-medium tracking-[-0.025em] leading-[1.1]">
             <span className="text-foreground">Ready to switch? </span>
             <span className="text-foreground-muted">Join the voice chat that respects your privacy and your machine.</span>
           </h2>

@@ -55,28 +55,30 @@ const FEATURE_SECTIONS = [
   },
   {
     number: "3.0",
-    label: "Screen Share",
-    title: "Lossless streaming.\nEvery pixel, exactly as you see it.",
-    description: "VP9 screen sharing up to 4K at 20 Mbps with six quality presets. Share your IDE, your game, or your design — from 480p30 all the way to lossless. No Nitro required.",
-    image: "/flux/channels.png",
-    imageAlt: "Flux application showing channel organization and screen sharing",
+    label: "Customization",
+    title: "Make it yours.\nThemes, layouts, and fine-tuned audio.",
+    description: "Dark and light themes, custom backgrounds, adjustable sidebar positioning, noise suppression levels, and per-user volume controls. Every setting you need, nothing you don't.",
+    image: "/flux/settings.png",
+    imageAlt: "Flux settings panel showing appearance customization options",
     subFeatures: [
-      { number: "3.1", label: "4K resolution" },
-      { number: "3.2", label: "60fps streaming" },
-      { number: "3.3", label: "VP9 codec" },
-      { number: "3.4", label: "6 quality presets" },
+      { number: "3.1", label: "Theme system" },
+      { number: "3.2", label: "Audio tuning" },
+      { number: "3.3", label: "Custom keybinds" },
+      { number: "3.4", label: "Gallery backgrounds" },
     ],
   },
 ];
 
 const iconMap = { AudioWaveform, Lock, Monitor, MicOff, MessageSquare, Zap } as const;
 
+const EASE: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
+
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (delay: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] as const },
+    transition: { duration: 0.6, delay, ease: EASE },
   }),
 };
 

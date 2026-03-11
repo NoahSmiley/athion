@@ -24,35 +24,38 @@ const fluxBenchmarks: BenchmarkGroup[] = [
   { metric: "Audio Quality (Bitrate)", ours: { label: "Flux", value: 320 }, theirs: { label: "Discord", value: 96 }, unit: " kbps", lowerIsBetter: false },
 ];
 
-const PILLARS = [
+const FEATURE_SHOWCASES = [
   {
-    Icon: Volume2,
-    title: "Crystal-clear voice",
+    overline: "Messaging",
+    title: "Conversations that flow.",
+    description: "Rich text messaging with inline emoji, reactions, threaded replies, and file sharing — all encrypted end-to-end before leaving your device.",
+    image: "/flux/chat.png",
+    imageAlt: "Flux chat interface with active conversation",
+    stats: [
+      { value: "AES-256", label: "Encryption" },
+      { value: "E2EE", label: "Every Message" },
+    ],
+  },
+  {
+    overline: "Voice",
+    title: "Audio that disappears.",
     description: "48kHz stereo Opus audio with Krisp AI noise suppression. Keyboard clatter, fans, and background chatter vanish — your voice stays untouched.",
+    image: "/flux/voice.png",
+    imageAlt: "Flux voice channel with connected users",
     stats: [
       { value: "48kHz", label: "Sample Rate" },
       { value: "320kbps", label: "Bitrate" },
-      { value: "Krisp AI", label: "Noise Filter" },
     ],
   },
   {
-    Icon: Monitor,
-    title: "Lossless streaming",
-    description: "VP9 screen sharing up to 4K at 20 Mbps with six quality presets. Your IDE, your game, your design — every pixel, exactly as you see it.",
+    overline: "Screen Share",
+    title: "Every pixel, exactly as you see it.",
+    description: "VP9 screen sharing up to 4K at 20 Mbps with six quality presets. Your IDE, your game, your design — lossless when you need it.",
+    image: "/flux/screenshare.png",
+    imageAlt: "Flux screen sharing interface",
     stats: [
       { value: "4K", label: "Max Resolution" },
       { value: "60fps", label: "Frame Rate" },
-      { value: "VP9", label: "Codec" },
-    ],
-  },
-  {
-    Icon: Shield,
-    title: "Encrypted by default",
-    description: "Every message, every file, every reaction — encrypted end-to-end with AES-256-GCM before it leaves your device. We can't read your messages.",
-    stats: [
-      { value: "AES-256", label: "Encryption" },
-      { value: "ECDH", label: "Key Exchange" },
-      { value: "E2EE", label: "Every Message" },
     ],
   },
 ];
@@ -64,7 +67,7 @@ const fadeUp = {
   visible: (delay: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] },
+    transition: { duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] as const },
   }),
 };
 
@@ -72,14 +75,14 @@ const fadeUp = {
 
 function FluxHero() {
   return (
-    <section className="relative pt-32 sm:pt-40 pb-16 px-6">
-      <div className="relative mx-auto max-w-3xl text-center">
+    <section className="relative pt-40 sm:pt-48 pb-20 px-6">
+      <div className="relative mx-auto max-w-4xl text-center">
         <motion.div initial="hidden" animate="visible" custom={0} variants={fadeUp}>
-          <FluxLogo size={32} className="text-white/50 mx-auto" />
+          <FluxLogo size={36} className="text-foreground-muted/50 mx-auto" />
         </motion.div>
 
         <motion.h1
-          className="mt-8 text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.035em] leading-[1.08] text-white"
+          className="mt-10 font-serif text-5xl sm:text-6xl md:text-7xl tracking-[-0.02em] leading-[1.05]"
           initial="hidden"
           animate="visible"
           custom={0.1}
@@ -91,7 +94,7 @@ function FluxHero() {
         </motion.h1>
 
         <motion.p
-          className="mt-5 text-base sm:text-lg text-white/45 max-w-lg mx-auto leading-relaxed"
+          className="mt-6 text-lg sm:text-xl text-foreground-muted max-w-xl mx-auto leading-relaxed"
           initial="hidden"
           animate="visible"
           custom={0.2}
@@ -101,7 +104,7 @@ function FluxHero() {
         </motion.p>
 
         <motion.div
-          className="mt-8 flex flex-wrap items-center justify-center gap-3"
+          className="mt-10 flex flex-wrap items-center justify-center gap-3"
           initial="hidden"
           animate="visible"
           custom={0.3}
@@ -109,14 +112,14 @@ function FluxHero() {
         >
           <a
             href="#download"
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-white text-[#09090b] text-sm font-medium rounded-lg hover:bg-white/90 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-accent-foreground text-sm font-medium rounded-sm hover:opacity-90 transition-opacity"
           >
             <Download size={14} />
             Download for Free
           </a>
           <a
             href="#features"
-            className="inline-flex items-center gap-2 px-6 py-2.5 border border-white/12 text-white/60 text-sm rounded-lg hover:text-white hover:border-white/25 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm rounded-sm hover:text-foreground hover:border-foreground/20 transition-colors"
           >
             See Features
             <ArrowRight size={14} />
@@ -124,7 +127,7 @@ function FluxHero() {
         </motion.div>
 
         <motion.div
-          className="mt-14 flex items-center justify-center gap-12"
+          className="mt-16 flex items-center justify-center gap-16"
           initial="hidden"
           animate="visible"
           custom={0.4}
@@ -136,8 +139,8 @@ function FluxHero() {
             { value: "320kbps", label: "Audio" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
-              <div className="text-lg font-mono font-medium text-white tracking-tight">{stat.value}</div>
-              <div className="text-[10px] uppercase tracking-[0.15em] text-white/25 mt-1">{stat.label}</div>
+              <div className="text-xl font-mono font-medium text-foreground tracking-tight">{stat.value}</div>
+              <div className="text-[10px] uppercase tracking-[0.15em] text-foreground-muted/50 mt-1">{stat.label}</div>
             </div>
           ))}
         </motion.div>
@@ -146,23 +149,26 @@ function FluxHero() {
   );
 }
 
-// ── Product Screenshot ──
+// ── App Showcase (Hero Screenshot) ──
 
-function ProductScreenshot() {
+function AppShowcase() {
   return (
-    <section className="relative px-6 pb-24 sm:pb-32">
-      <div className="mx-auto max-w-5xl">
+    <section className="relative px-6 pb-32">
+      <div className="mx-auto max-w-6xl">
         <motion.div
           className="relative"
           initial={{ opacity: 0, y: 40, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          <div className="absolute -inset-12 bg-white/[0.015] rounded-[2rem] blur-3xl pointer-events-none" />
-          <div className="relative rounded-xl overflow-hidden border border-white/[0.08]">
+          {/* Glow effect */}
+          <div className="absolute -inset-16 bg-accent/[0.03] rounded-[3rem] blur-3xl pointer-events-none" />
+          <div className="absolute -inset-8 bg-accent/[0.02] rounded-[2rem] blur-2xl pointer-events-none" />
+
+          <div className="relative rounded-sm overflow-hidden border border-border shadow-2xl shadow-black/20">
             <img
               src="/flux/hero.png"
-              alt="Flux — Music and voice channels"
+              alt="Flux — Desktop chat application with voice, messaging, and screen sharing"
               className="w-full h-auto block"
             />
           </div>
@@ -172,44 +178,83 @@ function ProductScreenshot() {
   );
 }
 
-// ── Feature Pillars ──
+// ── Feature Showcase Sections ──
 
-function FeaturePillars() {
+function FeatureShowcase({
+  overline,
+  title,
+  description,
+  image,
+  imageAlt,
+  stats,
+  reversed,
+}: {
+  overline: string;
+  title: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+  stats: { value: string; label: string }[];
+  reversed?: boolean;
+}) {
   return (
-    <section id="features" className="py-24 px-6 border-t border-white/[0.04]">
+    <section className="py-32 px-6 border-t border-border">
       <div className="mx-auto max-w-6xl">
-        <ScrollReveal>
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/30 text-center mb-3">Core Features</p>
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.025em] text-center text-white">
-            Built for serious communication.
-          </h2>
-        </ScrollReveal>
-
-        <StaggerContainer className="mt-14 grid md:grid-cols-3 gap-4">
-          {PILLARS.map((pillar) => (
-            <StaggerItem key={pillar.title}>
-              <div className="p-6 rounded-xl border border-white/[0.06] bg-white/[0.015] h-full flex flex-col">
-                <div className="w-9 h-9 rounded-lg bg-white/[0.06] flex items-center justify-center">
-                  <pillar.Icon size={16} className="text-white/50" />
-                </div>
-                <h3 className="mt-4 text-[15px] font-medium text-white/90">{pillar.title}</h3>
-                <p className="mt-2 text-sm text-white/35 leading-relaxed flex-1">
-                  {pillar.description}
-                </p>
-                <div className="mt-6 pt-4 border-t border-white/[0.05] flex gap-6">
-                  {pillar.stats.map((stat) => (
-                    <div key={stat.label}>
-                      <div className="text-sm font-mono font-medium text-white/70">{stat.value}</div>
-                      <div className="text-[9px] uppercase tracking-[0.15em] text-white/20 mt-0.5">{stat.label}</div>
-                    </div>
-                  ))}
-                </div>
+        <div className={`grid lg:grid-cols-2 gap-16 items-center ${reversed ? "direction-rtl" : ""}`}>
+          {/* Image */}
+          <ScrollReveal direction={reversed ? "right" : "left"} className={reversed ? "lg:order-2" : ""}>
+            <div className="relative">
+              <div className="absolute -inset-8 bg-accent/[0.02] rounded-2xl blur-2xl pointer-events-none" />
+              <div className="relative rounded-sm overflow-hidden border border-border">
+                <img
+                  src={image}
+                  alt={imageAlt}
+                  className="w-full h-auto block"
+                />
               </div>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
+            </div>
+          </ScrollReveal>
+
+          {/* Content */}
+          <div className={reversed ? "lg:order-1" : ""}>
+            <ScrollReveal delay={0.1}>
+              <p className="overline mb-4">{overline}</p>
+              <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] leading-tight">
+                {title}
+              </h2>
+              <p className="mt-6 text-foreground-muted leading-relaxed max-w-lg">
+                {description}
+              </p>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.2}>
+              <div className="mt-10 flex gap-10">
+                {stats.map((stat) => (
+                  <div key={stat.label}>
+                    <div className="text-2xl font-mono font-medium text-accent">{stat.value}</div>
+                    <div className="text-xs text-foreground-muted mt-1">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
       </div>
     </section>
+  );
+}
+
+function FeatureShowcases() {
+  return (
+    <>
+      {FEATURE_SHOWCASES.map((feature, i) => (
+        <FeatureShowcase
+          key={feature.overline}
+          {...feature}
+          reversed={i % 2 === 1}
+        />
+      ))}
+    </>
   );
 }
 
@@ -217,26 +262,26 @@ function FeaturePillars() {
 
 function FeatureGrid() {
   return (
-    <section className="py-24 px-6 border-t border-white/[0.04]">
+    <section id="features" className="py-32 px-6 border-t border-border">
       <div className="mx-auto max-w-6xl">
         <ScrollReveal>
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/30 text-center mb-3">Details</p>
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.025em] text-center text-white">
+          <p className="overline mb-4">Details</p>
+          <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] leading-tight max-w-2xl">
             Every detail, considered.
           </h2>
         </ScrollReveal>
 
-        <StaggerContainer className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <StaggerContainer className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {FLUX_FEATURES.map((feature) => {
             const Icon = iconMap[feature.icon];
             return (
               <StaggerItem key={feature.title}>
-                <div className="group p-5 rounded-xl border border-white/[0.05] bg-white/[0.015] hover:bg-white/[0.03] hover:border-white/[0.08] transition-all duration-300">
-                  <div className="w-8 h-8 rounded-lg bg-white/[0.06] flex items-center justify-center">
-                    <Icon size={14} className="text-white/50" />
+                <div className="group p-6 rounded-sm border border-border bg-background-elevated hover:bg-background-elevated/80 transition-colors duration-300 h-full">
+                  <div className="w-10 h-10 rounded-sm bg-accent/10 flex items-center justify-center">
+                    <Icon size={16} className="text-accent" />
                   </div>
-                  <h3 className="mt-3 text-sm font-medium text-white/85">{feature.title}</h3>
-                  <p className="mt-1.5 text-[13px] text-white/30 leading-relaxed">
+                  <h3 className="mt-4 text-sm font-medium text-foreground">{feature.title}</h3>
+                  <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
@@ -285,23 +330,25 @@ function TechSpecs() {
   ];
 
   return (
-    <section className="py-24 px-6 border-t border-white/[0.04]">
+    <section className="py-32 px-6 border-t border-border">
       <div className="mx-auto max-w-6xl">
         <div className="grid lg:grid-cols-2 gap-16">
           <div>
             <ScrollReveal>
-              <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/30 mb-3">Specifications</p>
-              <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.025em] text-white">Under the hood.</h2>
-              <p className="mt-4 text-white/35 leading-relaxed">
+              <p className="overline mb-4">Specifications</p>
+              <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] leading-tight">
+                Under the hood.
+              </h2>
+              <p className="mt-6 text-foreground-muted leading-relaxed">
                 Flux is built on a Rust backend with LiveKit WebRTC for media routing. The desktop app uses Tauri — no Electron, no bloat.
               </p>
             </ScrollReveal>
-            <StaggerContainer className="mt-8 grid grid-cols-2 gap-x-8 gap-y-3">
+            <StaggerContainer className="mt-10 grid grid-cols-2 gap-x-8 gap-y-4">
               {specs.map((spec) => (
                 <StaggerItem key={spec.label}>
-                  <div className="border-t border-white/[0.04] pt-3">
-                    <p className="text-[10px] text-white/25 uppercase tracking-[0.15em]">{spec.label}</p>
-                    <p className="mt-0.5 text-sm font-mono text-white/55">{spec.value}</p>
+                  <div className="border-t border-border pt-4">
+                    <p className="text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em]">{spec.label}</p>
+                    <p className="mt-1 text-sm font-mono text-foreground/70">{spec.value}</p>
                   </div>
                 </StaggerItem>
               ))}
@@ -309,24 +356,24 @@ function TechSpecs() {
           </div>
           <div>
             <ScrollReveal delay={0.15}>
-              <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/30 mb-3">Screen Share Presets</p>
-              <div className="border border-white/[0.05] rounded-xl overflow-hidden">
+              <p className="overline mb-4">Screen Share Presets</p>
+              <div className="border border-border rounded-sm overflow-hidden">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-white/[0.05] bg-white/[0.015]">
-                      <th className="text-left px-4 py-2.5 text-[10px] text-white/25 uppercase tracking-[0.15em] font-normal">Preset</th>
-                      <th className="text-left px-4 py-2.5 text-[10px] text-white/25 uppercase tracking-[0.15em] font-normal">Codec</th>
-                      <th className="text-left px-4 py-2.5 text-[10px] text-white/25 uppercase tracking-[0.15em] font-normal">Bitrate</th>
-                      <th className="text-left px-4 py-2.5 text-[10px] text-white/25 uppercase tracking-[0.15em] font-normal">FPS</th>
+                    <tr className="border-b border-border bg-background-elevated">
+                      <th className="text-left px-5 py-3 text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em] font-normal">Preset</th>
+                      <th className="text-left px-5 py-3 text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em] font-normal">Codec</th>
+                      <th className="text-left px-5 py-3 text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em] font-normal">Bitrate</th>
+                      <th className="text-left px-5 py-3 text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em] font-normal">FPS</th>
                     </tr>
                   </thead>
                   <tbody>
                     {SCREEN_SHARE_PRESETS.map((row) => (
-                      <tr key={row.preset} className="border-b border-white/[0.03] last:border-b-0 hover:bg-white/[0.015] transition-colors">
-                        <td className="px-4 py-2 font-mono text-white/45 text-xs">{row.preset}</td>
-                        <td className="px-4 py-2 font-mono text-white/30 text-xs">{row.codec}</td>
-                        <td className="px-4 py-2 font-mono text-white/30 text-xs">{row.bitrate}</td>
-                        <td className="px-4 py-2 font-mono text-white/30 text-xs">{row.framerate}</td>
+                      <tr key={row.preset} className="border-b border-border/50 last:border-b-0 hover:bg-background-elevated/50 transition-colors">
+                        <td className="px-5 py-3 font-mono text-foreground/60 text-xs">{row.preset}</td>
+                        <td className="px-5 py-3 font-mono text-foreground-muted text-xs">{row.codec}</td>
+                        <td className="px-5 py-3 font-mono text-foreground-muted text-xs">{row.bitrate}</td>
+                        <td className="px-5 py-3 font-mono text-foreground-muted text-xs">{row.framerate}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -368,35 +415,36 @@ function DownloadCTA() {
   const ctaLabel = authState === "none" ? "Sign Up to Download" : authState === "no-sub" ? "Subscribe to Download" : "Download for macOS";
 
   return (
-    <section id="download" className="py-32 px-6 border-t border-white/[0.04]">
+    <section id="download" className="py-32 px-6 border-t border-border">
       <div className="mx-auto max-w-3xl text-center">
         <ScrollReveal>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-[-0.03em] text-white">
+          <p className="overline mb-4">Get Started</p>
+          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl tracking-[-0.02em] leading-tight">
             Ready to switch?
           </h2>
-          <p className="mt-4 text-white/35 max-w-md mx-auto">
+          <p className="mt-6 text-foreground-muted max-w-md mx-auto leading-relaxed">
             Join the voice chat that doesn&apos;t spy on you, doesn&apos;t eat your RAM, and sounds like you&apos;re in the same room.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               onClick={handleDownloadClick}
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-white text-[#09090b] text-sm font-medium rounded-lg hover:bg-white/90 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-accent-foreground text-sm font-medium rounded-sm hover:opacity-90 transition-opacity"
             >
               <Apple size={14} />
               {ctaLabel}
             </button>
             <button
               onClick={handleDownloadClick}
-              className="inline-flex items-center gap-2 px-6 py-2.5 border border-white/12 text-white/60 text-sm rounded-lg hover:text-white hover:border-white/25 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm rounded-sm hover:text-foreground hover:border-foreground/20 transition-colors"
             >
               <MonitorDot size={14} />
               {authState === "active" ? "Download for Windows" : ctaLabel}
             </button>
           </div>
-          <p className="mt-4 text-xs text-white/20">
+          <p className="mt-5 text-xs text-foreground-muted/50">
             Available for macOS and Windows. Linux coming soon.
           </p>
         </ScrollReveal>
@@ -411,8 +459,8 @@ export default function FluxPage() {
   return (
     <PageTransition>
       <FluxHero />
-      <ProductScreenshot />
-      <FeaturePillars />
+      <AppShowcase />
+      <FeatureShowcases />
       <FeatureGrid />
       <FluxBenchmarks />
       <TechSpecs />

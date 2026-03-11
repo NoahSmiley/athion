@@ -1067,6 +1067,27 @@ function FluxMusicReplica() {
   );
 }
 
+// ── Kill Feed Line (for game HUD) ──
+
+function KillFeedLine({ text, delay }: { text: string; delay: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -8 }}
+      animate={{ opacity: [0, 1, 1, 0] }}
+      transition={{
+        duration: 8,
+        repeat: Infinity,
+        delay,
+        times: [0, 0.05, 0.85, 1],
+      }}
+      className="px-2 py-0.5 rounded"
+      style={{ background: "rgba(0,0,0,0.5)", color: "#ccc", whiteSpace: "nowrap" }}
+    >
+      {text}
+    </motion.div>
+  );
+}
+
 // ── Screen Share / Streaming Replica ──
 
 function FluxStreamReplica() {
@@ -1112,40 +1133,63 @@ function FluxStreamReplica() {
         </div>
       </div>
 
-      {/* Stream content — mock code editor being shared */}
-      <div className="relative" style={{ height: "320px", background: "#111" }}>
-        {/* Simulated shared screen — code editor */}
-        <div className="absolute inset-3 rounded-lg overflow-hidden" style={{ background: "#1a1a2e", border: "1px solid #252545" }}>
-          {/* Editor tab bar */}
-          <div className="flex items-center gap-0 px-2 py-1.5" style={{ background: "#12122a", borderBottom: "1px solid #252545" }}>
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-t" style={{ background: "#1a1a2e" }}>
-              <div className="w-2 h-2 rounded-sm" style={{ background: "#6366f1" }} />
-              <span style={{ fontSize: "10px", color: "#ccc" }}>server.rs</span>
-            </div>
-            <div className="flex items-center gap-1.5 px-2.5 py-1">
-              <div className="w-2 h-2 rounded-sm" style={{ background: "#555" }} />
-              <span style={{ fontSize: "10px", color: "#555" }}>routes.rs</span>
+      {/* Stream content — game HUD mock */}
+      <div className="relative" style={{ height: "320px", background: "linear-gradient(135deg, #0a0e1a 0%, #151030 50%, #0d0a1f 100%)" }}>
+        {/* Kill feed — top left */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1" style={{ fontSize: "10px", fontFamily: "'JetBrains Mono', monospace" }}>
+          <KillFeedLine text="noah eliminated Player3" delay={0} />
+          <KillFeedLine text="riley eliminated Player7" delay={2} />
+          <KillFeedLine text="noah eliminated quinn" delay={4} />
+          <KillFeedLine text="trevor eliminated Player2" delay={6} />
+        </div>
+
+        {/* Minimap — top right */}
+        <div className="absolute top-3 right-3 rounded" style={{ width: "80px", height: "80px", background: "rgba(0,0,0,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}>
+          <div className="absolute rounded-full" style={{ width: 4, height: 4, background: "#43b581", top: "30%", left: "40%", boxShadow: "0 0 4px #43b581" }} />
+          <div className="absolute rounded-full" style={{ width: 4, height: 4, background: "#43b581", top: "55%", left: "60%", boxShadow: "0 0 4px #43b581" }} />
+          <div className="absolute rounded-full" style={{ width: 3, height: 3, background: "#ff4444", top: "45%", left: "25%", boxShadow: "0 0 4px #ff4444" }} />
+          <div className="absolute rounded-full" style={{ width: 3, height: 3, background: "#ff4444", top: "70%", left: "50%", boxShadow: "0 0 4px #ff4444" }} />
+          <div className="absolute rounded-full" style={{ width: 3, height: 3, background: "#f59e0b", top: "20%", left: "70%", boxShadow: "0 0 4px #f59e0b" }} />
+        </div>
+
+        {/* Crosshair — center */}
+        <div className="absolute" style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
+          <div style={{ width: "1px", height: "20px", background: "rgba(255,255,255,0.6)", position: "absolute", left: "0px", top: "-10px" }} />
+          <div style={{ width: "20px", height: "1px", background: "rgba(255,255,255,0.6)", position: "absolute", top: "0px", left: "-10px" }} />
+          <div className="absolute rounded-full" style={{ width: "4px", height: "4px", background: "rgba(255,255,255,0.3)", top: "-2px", left: "-2px" }} />
+        </div>
+
+        {/* Health + Shield — bottom left */}
+        <div className="absolute bottom-3 left-3 flex flex-col gap-1.5">
+          {/* Shield bar */}
+          <div className="flex items-center gap-2">
+            <span style={{ fontSize: "10px", color: "#60a5fa", fontFamily: "monospace", width: "20px" }}>50</span>
+            <div style={{ width: "120px", height: "6px", background: "rgba(255,255,255,0.1)", borderRadius: "2px" }}>
+              <div style={{ width: "50%", height: "100%", background: "linear-gradient(90deg, #3b82f6, #60a5fa)", borderRadius: "2px" }} />
             </div>
           </div>
-          {/* Code lines */}
-          <div className="p-3" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "10px", lineHeight: "18px" }}>
-            <div><span style={{ color: "#c678dd" }}>async</span> <span style={{ color: "#c678dd" }}>fn</span> <span style={{ color: "#61afef" }}>handle_connection</span><span style={{ color: "#555" }}>(</span></div>
-            <div>{"    "}<span style={{ color: "#e5c07b" }}>stream</span>: <span style={{ color: "#e5c07b" }}>TcpStream</span>,</div>
-            <div>{"    "}<span style={{ color: "#e5c07b" }}>state</span>: <span style={{ color: "#e5c07b" }}>Arc</span><span style={{ color: "#555" }}>&lt;</span><span style={{ color: "#e5c07b" }}>AppState</span><span style={{ color: "#555" }}>&gt;</span></div>
-            <div><span style={{ color: "#555" }}>)</span> <span style={{ color: "#555" }}>-&gt;</span> <span style={{ color: "#e5c07b" }}>Result</span><span style={{ color: "#555" }}>&lt;()&gt;</span> <span style={{ color: "#555" }}>{"{"}</span></div>
-            <div>{"    "}<span style={{ color: "#c678dd" }}>let</span> ws = <span style={{ color: "#61afef" }}>accept_async</span><span style={{ color: "#555" }}>(</span>stream<span style={{ color: "#555" }}>)</span>.<span style={{ color: "#c678dd" }}>await</span><span style={{ color: "#555" }}>?;</span></div>
-            <div>{"    "}<span style={{ color: "#c678dd" }}>let</span> <span style={{ color: "#555" }}>(</span>tx, rx<span style={{ color: "#555" }}>)</span> = ws.<span style={{ color: "#61afef" }}>split</span><span style={{ color: "#555" }}>();</span></div>
-            <div>{"    "}state.<span style={{ color: "#61afef" }}>broadcast</span><span style={{ color: "#555" }}>(</span><span style={{ color: "#98c379" }}>&quot;user_joined&quot;</span><span style={{ color: "#555" }}>)</span>.<span style={{ color: "#c678dd" }}>await</span><span style={{ color: "#555" }}>;</span></div>
-            <div style={{ color: "#5c6370", fontStyle: "italic" }}>{"    "}// Handle incoming messages...</div>
+          {/* Health bar */}
+          <div className="flex items-center gap-2">
+            <span style={{ fontSize: "10px", color: "#43b581", fontFamily: "monospace", width: "20px" }}>82</span>
+            <div style={{ width: "120px", height: "6px", background: "rgba(255,255,255,0.1)", borderRadius: "2px" }}>
+              <div style={{ width: "82%", height: "100%", background: "linear-gradient(90deg, #22c55e, #43b581)", borderRadius: "2px" }} />
+            </div>
           </div>
         </div>
 
-        {/* Cursor indicator */}
-        <div className="absolute" style={{ top: "52%", left: "38%", width: "14px", height: "14px" }}>
-          <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
-            <path d="M1 1L6 14L8 8L14 6L1 1Z" fill="#6366f1" stroke="#fff" strokeWidth="0.5" />
-          </svg>
-          <span className="absolute left-3.5 top-2.5 px-1 py-0.5 rounded text-white" style={{ fontSize: "8px", background: "#6366f1", whiteSpace: "nowrap" }}>noah</span>
+        {/* Ammo counter — bottom right */}
+        <div className="absolute bottom-3 right-3 flex items-end gap-2">
+          <div className="flex flex-col items-end">
+            <div style={{ fontSize: "9px", color: "#888", fontFamily: "monospace", marginBottom: "2px" }}>RIFLE</div>
+            <div className="flex items-baseline gap-1">
+              <span style={{ fontSize: "24px", fontWeight: 700, color: "#e8e8e8", fontFamily: "monospace", lineHeight: 1 }}>24</span>
+              <span style={{ fontSize: "12px", color: "#555", fontFamily: "monospace" }}>/</span>
+              <span style={{ fontSize: "14px", color: "#888", fontFamily: "monospace" }}>90</span>
+            </div>
+          </div>
+          <div className="rounded" style={{ width: "28px", height: "28px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: "16px", height: "10px", background: "#888", borderRadius: "2px", clipPath: "polygon(0 20%, 85% 0, 100% 30%, 100% 100%, 0 100%)" }} />
+          </div>
         </div>
       </div>
 
@@ -1384,7 +1428,7 @@ function MessagingSection() {
     <section className="py-24 sm:py-32 border-t border-border/50">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
-          number="1.0"
+          number="2.0"
           label="Messaging"
           title={"Conversations that stay yours."}
           description="Every message, file, and reaction is encrypted end-to-end with AES-256-GCM before leaving your device. Rich text, emoji, reactions, and threaded replies — without compromising privacy."
@@ -1396,10 +1440,10 @@ function MessagingSection() {
 
         <SubFeatures
           items={[
-            { number: "1.1", label: "End-to-end encryption" },
-            { number: "1.2", label: "Rich messaging" },
-            { number: "1.3", label: "File sharing" },
-            { number: "1.4", label: "Reactions & threads" },
+            { number: "2.1", label: "End-to-end encryption" },
+            { number: "2.2", label: "Rich messaging" },
+            { number: "2.3", label: "File sharing" },
+            { number: "2.4", label: "Reactions & threads" },
           ]}
         />
       </div>
@@ -1414,9 +1458,9 @@ function VoiceSection() {
     <section className="py-24 sm:py-32 border-t border-border/50">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
-          number="2.0"
+          number="1.0"
           label="Voice"
-          title={"Crystal-clear audio.\nNoise suppression that actually works."}
+          title={"Voice that feels like\nthe same room."}
           description="48kHz stereo Opus audio with Krisp AI noise suppression running locally on your device. Keyboard clatter, fans, and background chatter vanish — your voice stays untouched. Sub-45ms latency over LiveKit's globally distributed SFU."
         />
 
@@ -1433,10 +1477,10 @@ function VoiceSection() {
 
         <SubFeatures
           items={[
-            { number: "2.1", label: "48kHz stereo" },
-            { number: "2.2", label: "Krisp noise filter" },
-            { number: "2.3", label: "320kbps bitrate" },
-            { number: "2.4", label: "<45ms latency" },
+            { number: "1.1", label: "48kHz stereo" },
+            { number: "1.2", label: "Krisp noise filter" },
+            { number: "1.3", label: "320kbps bitrate" },
+            { number: "1.4", label: "<45ms latency" },
           ]}
         />
       </div>
@@ -1507,8 +1551,8 @@ function StreamingSection() {
 function FeatureSections() {
   return (
     <div id="features">
-      <MessagingSection />
       <VoiceSection />
+      <MessagingSection />
       <MusicSection />
       <StreamingSection />
     </div>

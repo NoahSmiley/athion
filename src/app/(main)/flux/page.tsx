@@ -1563,14 +1563,29 @@ function DownloadCTA() {
 
 export default function FluxPage() {
   return (
-    <PageTransition>
-      <FluxHero />
-      <HeroAppSection />
-      <FeatureSections />
-      <FeatureGrid />
-      <FluxBenchmarks />
-      <TechSpecs />
-      <DownloadCTA />
-    </PageTransition>
+    <div
+      className="bg-[var(--bg)]"
+      style={{
+        // Dark space-blue theme override — scoped to Flux page only
+        "--bg": "#060a14",
+        "--bg-elevated": "#0c1221",
+        "--fg": "#e4e8f0",
+        "--fg-muted": "#6b7a94",
+        "--accent": "#8b9fc2",
+        "--accent-hover": "#b0c0de",
+        "--border-color": "#141e30",
+        "--border-light": "#1a2740",
+      } as React.CSSProperties}
+    >
+      <PageTransition>
+        <FluxHero />
+        <HeroAppSection />
+        <FeatureSections />
+        <FeatureGrid />
+        <FluxBenchmarks />
+        <TechSpecs />
+        <DownloadCTA />
+      </PageTransition>
+    </div>
   );
 }

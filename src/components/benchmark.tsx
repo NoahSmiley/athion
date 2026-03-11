@@ -104,8 +104,8 @@ export function BenchmarkSection({
   statCards?: { value: string; label: string; detail: string }[];
 }) {
   return (
-    <section className="py-32 px-6 border-t border-border/50">
-      <div className="mx-auto max-w-5xl">
+    <section className="py-32 border-t border-border/50">
+      <div className="mx-auto max-w-5xl px-6">
         {/* Header — centered */}
         <div className="text-center mb-16">
           <p className="text-[11px] uppercase tracking-[0.08em] text-foreground-muted/50 mb-4">

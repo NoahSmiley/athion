@@ -446,7 +446,7 @@ function FluxAppReplica() {
         border: "1px solid #161616",
       }}
     >
-      <div className="flex" style={{ height: "600px" }}>
+      <div className="flex" style={{ height: "680px" }}>
         {/* Icon rail */}
         <IconRail />
 
@@ -903,7 +903,7 @@ function FluxMusicReplica() {
 
   return (
     <div
-      className="rounded-xl overflow-hidden w-full max-w-[420px] mx-auto"
+      className="rounded-xl overflow-hidden w-full max-w-[520px] mx-auto"
       style={{
         background: "#0a0a0a",
         border: "1px solid #161616",
@@ -942,7 +942,7 @@ function FluxMusicReplica() {
               animation: "vinyl-spin 4s linear infinite",
             }}
           >
-            {/* Center album art — gradient as album cover */}
+            {/* Center album art */}
             <motion.div
               className="absolute rounded-full overflow-hidden"
               style={{
@@ -954,29 +954,37 @@ function FluxMusicReplica() {
               }}
             >
               <motion.div
-                className="w-full h-full"
+                className="w-full h-full relative"
                 animate={{
                   background: `linear-gradient(135deg, ${currentTrack.gradientFrom}, ${currentTrack.gradientTo})`,
                 }}
                 transition={{ duration: 0.6 }}
-              />
-              {/* Album art overlay — subtle design elements */}
-              <div
-                className="absolute inset-0 flex items-center justify-center"
-                style={{
-                  background: "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15) 0%, transparent 60%)",
-                }}
               >
-                <div
-                  className="rounded-full"
-                  style={{
-                    width: "30%",
-                    height: "30%",
-                    background: "rgba(255,255,255,0.1)",
-                    backdropFilter: "blur(4px)",
-                  }}
-                />
-              </div>
+                {/* Album cover design — asymmetric so spin is visible */}
+                <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, rgba(255,255,255,0.2) 0%, transparent 40%)" }} />
+                <div className="absolute" style={{ bottom: "12%", left: "12%", right: "12%" }}>
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={trackIndex}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.4 }}
+                      style={{ animation: "vinyl-counter-spin 4s linear infinite" }}
+                    >
+                      <p style={{ fontSize: "7px", fontWeight: 700, color: "rgba(255,255,255,0.9)", lineHeight: 1.2 }}>
+                        {currentTrack.title}
+                      </p>
+                      <p style={{ fontSize: "5px", color: "rgba(255,255,255,0.6)", marginTop: "1px" }}>
+                        {currentTrack.artist}
+                      </p>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+                {/* Decorative shapes */}
+                <div className="absolute" style={{ top: "10%", right: "15%", width: "30%", height: "30%", borderRadius: "50%", background: "rgba(255,255,255,0.08)" }} />
+                <div className="absolute" style={{ top: "20%", left: "10%", width: "15%", height: "15%", borderRadius: "2px", background: "rgba(255,255,255,0.06)", transform: "rotate(15deg)" }} />
+              </motion.div>
             </motion.div>
             {/* Center hole */}
             <div
@@ -1097,6 +1105,10 @@ function FluxMusicReplica() {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
+        @keyframes vinyl-counter-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(-360deg); }
+        }
       `}</style>
     </div>
   );
@@ -1132,8 +1144,8 @@ function KrispLogo({ size = 20 }: { size?: number }) {
 
 function FluxHero() {
   return (
-    <section className="relative pt-32 sm:pt-40 pb-6 px-6">
-      <div className="relative mx-auto max-w-7xl">
+    <section className="relative pt-32 sm:pt-40 pb-6">
+      <div className="relative mx-auto max-w-7xl px-6">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -1195,8 +1207,8 @@ function FluxHero() {
 
 function HeroAppSection() {
   return (
-    <section className="relative px-6 pt-16 pb-32">
-      <div className="mx-auto max-w-7xl">
+    <section className="relative pt-16 pb-32">
+      <div className="mx-auto max-w-7xl px-6">
         <motion.div
           className="relative"
           initial={{ opacity: 0, y: 30 }}
@@ -1275,8 +1287,8 @@ function SubFeatures({ items }: { items: { number: string; label: string }[] }) 
 
 function MessagingSection() {
   return (
-    <section className="py-24 sm:py-32 px-6 border-t border-border/50">
-      <div className="mx-auto max-w-7xl">
+    <section className="py-24 sm:py-32 border-t border-border/50">
+      <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           number="1.0"
           label="Messaging"
@@ -1305,8 +1317,8 @@ function MessagingSection() {
 
 function VoiceSection() {
   return (
-    <section className="py-24 sm:py-32 px-6 border-t border-border/50">
-      <div className="mx-auto max-w-7xl">
+    <section className="py-24 sm:py-32 border-t border-border/50">
+      <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           number="2.0"
           label="Voice"
@@ -1342,8 +1354,8 @@ function VoiceSection() {
 
 function MusicSection() {
   return (
-    <section className="py-24 sm:py-32 px-6 border-t border-border/50">
-      <div className="mx-auto max-w-7xl">
+    <section className="py-24 sm:py-32 border-t border-border/50">
+      <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           number="3.0"
           label="Music"
@@ -1382,8 +1394,8 @@ function FeatureSections() {
 
 function FeatureGrid() {
   return (
-    <section className="py-32 px-6 border-t border-border/50">
-      <div className="mx-auto max-w-7xl">
+    <section className="py-32 border-t border-border/50">
+      <div className="mx-auto max-w-7xl px-6">
         <ScrollReveal>
           <p className="overline mb-4">Details</p>
           <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-medium tracking-[-0.025em] leading-[1.12] max-w-2xl">
@@ -1448,20 +1460,18 @@ function TechSpecs() {
   ];
 
   return (
-    <section className="py-32 px-6 border-t border-border/50">
-      <div className="mx-auto max-w-7xl">
+    <section className="py-24 sm:py-32 border-t border-border/50">
+      <div className="mx-auto max-w-7xl px-6">
+        <SectionHeader
+          number="5.0"
+          label="Specifications"
+          title={"Under the hood."}
+          description="Flux is built on a Rust backend with LiveKit WebRTC for media routing. The desktop app uses Tauri — no Electron, no bloat."
+        />
+
         <div className="grid lg:grid-cols-2 gap-16">
-          <div>
-            <ScrollReveal>
-              <p className="overline mb-4">Specifications</p>
-              <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-medium tracking-[-0.025em] leading-[1.12]">
-                Under the hood.
-              </h2>
-              <p className="mt-6 text-foreground-muted leading-relaxed">
-                Flux is built on a Rust backend with LiveKit WebRTC for media routing. The desktop app uses Tauri — no Electron, no bloat.
-              </p>
-            </ScrollReveal>
-            <StaggerContainer className="mt-10 grid grid-cols-2 gap-x-8 gap-y-4">
+          <ScrollReveal>
+            <StaggerContainer className="grid grid-cols-2 gap-x-8 gap-y-4">
               {specs.map((spec) => (
                 <StaggerItem key={spec.label}>
                   <div className="border-t border-border/50 pt-4">
@@ -1471,35 +1481,45 @@ function TechSpecs() {
                 </StaggerItem>
               ))}
             </StaggerContainer>
-          </div>
-          <div>
-            <ScrollReveal delay={0.15}>
-              <p className="overline mb-4">Screen Share Presets</p>
-              <div className="border border-border/50 rounded-sm overflow-hidden">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border/50 bg-background-elevated">
-                      <th className="text-left px-5 py-3 text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em] font-normal">Preset</th>
-                      <th className="text-left px-5 py-3 text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em] font-normal">Codec</th>
-                      <th className="text-left px-5 py-3 text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em] font-normal">Bitrate</th>
-                      <th className="text-left px-5 py-3 text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em] font-normal">FPS</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {SCREEN_SHARE_PRESETS.map((row) => (
-                      <tr key={row.preset} className="border-b border-border/30 last:border-b-0 hover:bg-background-elevated/50 transition-colors">
-                        <td className="px-5 py-3 font-mono text-foreground/60 text-xs">{row.preset}</td>
-                        <td className="px-5 py-3 font-mono text-foreground-muted text-xs">{row.codec}</td>
-                        <td className="px-5 py-3 font-mono text-foreground-muted text-xs">{row.bitrate}</td>
-                        <td className="px-5 py-3 font-mono text-foreground-muted text-xs">{row.framerate}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.15}>
+            <div className="border border-border/50 rounded-sm overflow-hidden">
+              <div className="px-5 py-3 border-b border-border/50">
+                <span className="text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em]">Screen Share Presets</span>
               </div>
-            </ScrollReveal>
-          </div>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border/50 bg-background-elevated">
+                    <th className="text-left px-5 py-3 text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em] font-normal">Preset</th>
+                    <th className="text-left px-5 py-3 text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em] font-normal">Codec</th>
+                    <th className="text-left px-5 py-3 text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em] font-normal">Bitrate</th>
+                    <th className="text-left px-5 py-3 text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em] font-normal">FPS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {SCREEN_SHARE_PRESETS.map((row) => (
+                    <tr key={row.preset} className="border-b border-border/30 last:border-b-0 hover:bg-background-elevated/50 transition-colors">
+                      <td className="px-5 py-3 font-mono text-foreground/60 text-xs">{row.preset}</td>
+                      <td className="px-5 py-3 font-mono text-foreground-muted text-xs">{row.codec}</td>
+                      <td className="px-5 py-3 font-mono text-foreground-muted text-xs">{row.bitrate}</td>
+                      <td className="px-5 py-3 font-mono text-foreground-muted text-xs">{row.framerate}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </ScrollReveal>
         </div>
+
+        <SubFeatures
+          items={[
+            { number: "5.1", label: "Tauri (no Electron)" },
+            { number: "5.2", label: "Rust backend" },
+            { number: "5.3", label: "LiveKit WebRTC" },
+            { number: "5.4", label: "SQLite storage" },
+          ]}
+        />
       </div>
     </section>
   );
@@ -1533,8 +1553,8 @@ function DownloadCTA() {
   const ctaLabel = authState === "none" ? "Sign Up to Download" : authState === "no-sub" ? "Subscribe to Download" : "Download for macOS";
 
   return (
-    <section id="download" className="py-32 px-6 border-t border-border/50">
-      <div className="mx-auto max-w-5xl">
+    <section id="download" className="py-32 border-t border-border/50">
+      <div className="mx-auto max-w-7xl px-6">
         <ScrollReveal>
           <h2 className="text-[clamp(2.75rem,5vw,4.5rem)] font-medium tracking-[-0.025em] leading-[1.1]">
             <span className="text-foreground">Ready to switch? </span>

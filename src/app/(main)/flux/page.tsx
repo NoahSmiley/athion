@@ -901,86 +901,72 @@ function FluxMusicReplica() {
 
       {/* Vinyl + track info */}
       <div className="relative flex flex-col items-center pt-8 pb-4 px-6">
-        {/* Spinning vinyl disc — uses CSS animation for true continuous spin */}
-        <div className="relative mb-6">
+        {/* Vinyl disc */}
+        <div className="relative mb-6" style={{ width: "260px", height: "260px" }}>
+          {/* Groove layer — spins. Light reflection overlay makes spin visible */}
           <div
-            className="relative rounded-full"
+            className="absolute inset-0 rounded-full"
             style={{
-              width: "260px",
-              height: "260px",
               background: `
                 repeating-radial-gradient(
                   circle at center,
-                  #111 0px,
-                  #111 2px,
-                  #1a1a1a 2px,
-                  #1a1a1a 4px
+                  #111 0px, #111 2px,
+                  #1a1a1a 2px, #1a1a1a 4px
                 )
               `,
               boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
               animation: "vinyl-spin 4s linear infinite",
             }}
           >
-            {/* Center album art — counter-spins so artwork stays static while grooves spin */}
+            {/* Asymmetric light reflection — this is what makes the spin visible */}
             <div
-              className="absolute rounded-full overflow-hidden"
+              className="absolute inset-0 rounded-full"
               style={{
-                width: "42%",
-                height: "42%",
-                top: "29%",
-                left: "29%",
-                boxShadow: "0 0 0 3px #1a1a1a",
-                background: `linear-gradient(135deg, ${currentTrack.gradientFrom}, ${currentTrack.gradientTo})`,
-                transition: "background 0.6s ease",
-                animation: "vinyl-counter-spin 4s linear infinite",
-              }}
-            >
-              {/* Light glare */}
-              <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, rgba(255,255,255,0.25) 0%, transparent 50%)" }} />
-              {/* Decorative shapes */}
-              <div className="absolute" style={{ top: "10%", right: "12%", width: "35%", height: "35%", borderRadius: "50%", background: "rgba(255,255,255,0.1)" }} />
-              <div className="absolute" style={{ bottom: "15%", left: "10%", width: "20%", height: "20%", borderRadius: "3px", background: "rgba(255,255,255,0.08)", transform: "rotate(15deg)" }} />
-              {/* Track label */}
-              <div
-                className="absolute flex flex-col items-start"
-                style={{
-                  bottom: "14%",
-                  left: "14%",
-                  right: "14%",
-                }}
-              >
-                <span style={{ fontSize: "7px", fontWeight: 700, color: "rgba(255,255,255,0.9)", lineHeight: 1.2 }}>
-                  {currentTrack.title}
-                </span>
-                <span style={{ fontSize: "5.5px", color: "rgba(255,255,255,0.6)", marginTop: "1px" }}>
-                  {currentTrack.artist}
-                </span>
-              </div>
-            </div>
-            {/* Center hole */}
-            <div
-              className="absolute rounded-full"
-              style={{
-                width: "8%",
-                height: "8%",
-                top: "46%",
-                left: "46%",
-                background: "#0a0a0a",
-                boxShadow: "inset 0 1px 2px rgba(0,0,0,0.8), 0 0 0 2px #222",
-              }}
-            />
-            {/* Groove highlight */}
-            <div
-              className="absolute rounded-full pointer-events-none"
-              style={{
-                width: "80%",
-                height: "80%",
-                top: "10%",
-                left: "10%",
-                border: "1px solid rgba(255,255,255,0.03)",
+                background: "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.03) 100%)",
               }}
             />
           </div>
+
+          {/* Center album art — static (does NOT spin) */}
+          <div
+            className="absolute rounded-full overflow-hidden"
+            style={{
+              width: "42%",
+              height: "42%",
+              top: "29%",
+              left: "29%",
+              zIndex: 2,
+              boxShadow: "0 0 0 3px #1a1a1a",
+              background: `linear-gradient(135deg, ${currentTrack.gradientFrom}, ${currentTrack.gradientTo})`,
+              transition: "background 0.6s ease",
+            }}
+          >
+            <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, rgba(255,255,255,0.25) 0%, transparent 50%)" }} />
+            <div className="absolute" style={{ top: "10%", right: "12%", width: "35%", height: "35%", borderRadius: "50%", background: "rgba(255,255,255,0.1)" }} />
+            <div className="absolute" style={{ bottom: "15%", left: "10%", width: "20%", height: "20%", borderRadius: "3px", background: "rgba(255,255,255,0.08)", transform: "rotate(15deg)" }} />
+            <div className="absolute flex flex-col items-start" style={{ bottom: "14%", left: "14%", right: "14%" }}>
+              <span style={{ fontSize: "7px", fontWeight: 700, color: "rgba(255,255,255,0.9)", lineHeight: 1.2 }}>
+                {currentTrack.title}
+              </span>
+              <span style={{ fontSize: "5.5px", color: "rgba(255,255,255,0.6)", marginTop: "1px" }}>
+                {currentTrack.artist}
+              </span>
+            </div>
+          </div>
+
+          {/* Center hole — static */}
+          <div
+            className="absolute rounded-full"
+            style={{
+              width: "8%",
+              height: "8%",
+              top: "46%",
+              left: "46%",
+              zIndex: 3,
+              background: "#0a0a0a",
+              boxShadow: "inset 0 1px 2px rgba(0,0,0,0.8), 0 0 0 2px #222",
+            }}
+          />
         </div>
 
         {/* Track info */}
@@ -1075,10 +1061,6 @@ function FluxMusicReplica() {
         @keyframes vinyl-spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
-        }
-        @keyframes vinyl-counter-spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(-360deg); }
         }
       `}</style>
     </div>
@@ -1563,29 +1545,14 @@ function DownloadCTA() {
 
 export default function FluxPage() {
   return (
-    <div
-      className="bg-[var(--bg)]"
-      style={{
-        // Dark space-blue theme override — scoped to Flux page only
-        "--bg": "#060a14",
-        "--bg-elevated": "#0c1221",
-        "--fg": "#e4e8f0",
-        "--fg-muted": "#6b7a94",
-        "--accent": "#8b9fc2",
-        "--accent-hover": "#b0c0de",
-        "--border-color": "#141e30",
-        "--border-light": "#1a2740",
-      } as React.CSSProperties}
-    >
-      <PageTransition>
-        <FluxHero />
-        <HeroAppSection />
-        <FeatureSections />
-        <FeatureGrid />
-        <FluxBenchmarks />
-        <TechSpecs />
-        <DownloadCTA />
-      </PageTransition>
-    </div>
+    <PageTransition>
+      <FluxHero />
+      <HeroAppSection />
+      <FeatureSections />
+      <FeatureGrid />
+      <FluxBenchmarks />
+      <TechSpecs />
+      <DownloadCTA />
+    </PageTransition>
   );
 }

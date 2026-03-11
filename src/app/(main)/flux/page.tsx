@@ -44,8 +44,8 @@ const SHOWCASE_SECTIONS = [
       { value: "320kbps", label: "Bitrate" },
       { value: "Krisp AI", label: "Noise Filter" },
     ],
-    accent: "from-violet-500/20 to-blue-500/10",
-    iconAccent: "bg-violet-500/20 border-violet-500/20 text-violet-300",
+    accent: "from-white/[0.04] to-white/[0.01]",
+    iconAccent: "bg-white/10 border-white/10 text-white/70",
     Icon: Volume2,
   },
   {
@@ -59,8 +59,8 @@ const SHOWCASE_SECTIONS = [
       { value: "60fps", label: "Frame Rate" },
       { value: "VP9", label: "Lossless Codec" },
     ],
-    accent: "from-blue-500/20 to-cyan-500/10",
-    iconAccent: "bg-blue-500/20 border-blue-500/20 text-blue-300",
+    accent: "from-white/[0.04] to-white/[0.01]",
+    iconAccent: "bg-white/10 border-white/10 text-white/70",
     Icon: Monitor,
   },
   {
@@ -74,8 +74,8 @@ const SHOWCASE_SECTIONS = [
       { value: "ECDH", label: "Key Exchange" },
       { value: "E2EE", label: "Every Message" },
     ],
-    accent: "from-emerald-500/20 to-teal-500/10",
-    iconAccent: "bg-emerald-500/20 border-emerald-500/20 text-emerald-300",
+    accent: "from-white/[0.04] to-white/[0.01]",
+    iconAccent: "bg-white/10 border-white/10 text-white/70",
     Icon: Shield,
   },
 ];
@@ -92,7 +92,7 @@ function TwinklingStars({ density = 40 }: { density?: number }) {
       size: 1 + Math.random() * 3,
       delay: Math.random() * 6,
       duration: 3 + Math.random() * 4,
-      isCross: Math.random() > 0.6,
+      isCross: Math.random() > 0.8,
     }))
   ).current;
 
@@ -102,13 +102,13 @@ function TwinklingStars({ density = 40 }: { density?: number }) {
         star.isCross ? (
           <motion.svg
             key={i}
-            className="absolute text-white/40"
+            className="absolute text-white/15"
             style={{ left: `${star.left}%`, top: `${star.top}%` }}
             width={star.size * 4}
             height={star.size * 4}
             viewBox="0 0 16 16"
             fill="currentColor"
-            animate={{ opacity: [0, 0.8, 0], scale: [0.5, 1.2, 0.5] }}
+            animate={{ opacity: [0, 0.3, 0], scale: [0.5, 1.1, 0.5] }}
             transition={{ duration: star.duration, repeat: Infinity, delay: star.delay, ease: "easeInOut" }}
           >
             <path d="M8 0L9 7L16 8L9 9L8 16L7 9L0 8L7 7Z" />
@@ -116,9 +116,9 @@ function TwinklingStars({ density = 40 }: { density?: number }) {
         ) : (
           <motion.div
             key={i}
-            className="absolute rounded-full bg-white/30"
+            className="absolute rounded-full bg-white/10"
             style={{ left: `${star.left}%`, top: `${star.top}%`, width: star.size, height: star.size }}
-            animate={{ opacity: [0, 0.7, 0], scale: [0.3, 1, 0.3] }}
+            animate={{ opacity: [0, 0.25, 0], scale: [0.3, 1, 0.3] }}
             transition={{ duration: star.duration, repeat: Infinity, delay: star.delay, ease: "easeInOut" }}
           />
         )
@@ -134,7 +134,7 @@ function Marquee() {
   const items = [...words, ...words, ...words];
 
   return (
-    <div className="relative py-8 overflow-hidden bg-[#1a1040]/60 border-y border-white/5">
+    <div className="relative py-8 overflow-hidden bg-white/[0.02] border-y border-white/5">
       <motion.div
         className="flex gap-12 whitespace-nowrap"
         animate={{ x: ["0%", "-33.33%"] }}
@@ -280,14 +280,14 @@ function FluxHero() {
   const smoothY = useSpring(y, { stiffness: 100, damping: 30 });
 
   return (
-    <section ref={ref} className="relative overflow-hidden min-h-screen flex items-center bg-[#2a1a6b]">
+    <section ref={ref} className="relative overflow-hidden min-h-screen flex items-center bg-[#09090b]">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#3a2098] via-[#2d1a7a] to-[#1a1040]" />
-      <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-[#5b3dc8]/30 rounded-full blur-[200px]" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#7c3aed]/20 rounded-full blur-[180px]" />
-      <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-[#a855f7]/15 rounded-full blur-[120px]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0c0c14] via-[#09090b] to-[#09090b]" />
+      <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-[#1a1a2e]/40 rounded-full blur-[200px]" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#15152a]/30 rounded-full blur-[180px]" />
+      <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-[#1a1a30]/20 rounded-full blur-[120px]" />
 
-      <TwinklingStars density={50} />
+      <TwinklingStars density={30} />
 
       <motion.div
         className="relative mx-auto max-w-7xl px-6 pt-32 pb-24 grid md:grid-cols-2 gap-12 md:gap-16 items-center"
@@ -330,7 +330,7 @@ function FluxHero() {
           >
             <a
               href="#download"
-              className="inline-flex items-center gap-2 px-7 py-3.5 bg-white text-[#2a1a6b] text-sm font-semibold rounded-full hover:bg-white/90 transition-all shadow-lg shadow-black/20"
+              className="inline-flex items-center gap-2 px-7 py-3.5 bg-white text-[#09090b] text-sm font-semibold rounded-full hover:bg-white/90 transition-all shadow-lg shadow-black/20"
             >
               <Download size={14} />
               Download for Free
@@ -369,7 +369,7 @@ function FluxHero() {
       </motion.div>
 
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#1a1040] to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#09090b] to-transparent" />
     </section>
   );
 }
@@ -378,8 +378,8 @@ function FluxHero() {
 
 function FeatureShowcase() {
   return (
-    <section id="features" className="relative bg-[#1a1040] overflow-hidden">
-      <TwinklingStars density={25} />
+    <section id="features" className="relative bg-[#09090b] overflow-hidden">
+      <TwinklingStars density={15} />
 
       {SHOWCASE_SECTIONS.map((section, i) => {
         const imageOnRight = i % 2 === 0;
@@ -417,7 +417,7 @@ function FeatureShowcase() {
                   <div className={`relative ${imageOnRight ? "md:order-2" : "md:order-1"}`}>
                     <div className="relative group">
                       {/* Glow behind screenshot */}
-                      <div className="absolute -inset-4 bg-violet-500/10 rounded-3xl blur-2xl group-hover:bg-violet-500/15 transition-all duration-700" />
+                      <div className="absolute -inset-4 bg-white/[0.03] rounded-3xl blur-2xl group-hover:bg-white/[0.05] transition-all duration-700" />
                       <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border border-white/10">
                         <img src={section.image} alt={section.imageAlt} className="w-full h-auto block" />
                         {/* Subtle animated scan line */}
@@ -444,7 +444,7 @@ function FeatureShowcase() {
 
 function MarqueeSection() {
   return (
-    <div className="relative bg-[#1a1040]">
+    <div className="relative bg-[#09090b]">
       <Marquee />
     </div>
   );
@@ -454,8 +454,8 @@ function MarqueeSection() {
 
 function FeatureGrid() {
   return (
-    <section className="relative py-32 px-6 overflow-hidden bg-gradient-to-b from-[#1a1040] to-[#09090b]">
-      <TwinklingStars density={20} />
+    <section className="relative py-32 px-6 overflow-hidden bg-[#09090b]">
+      <TwinklingStars density={12} />
 
       <div className="relative mx-auto max-w-6xl">
         <ScrollReveal>
@@ -473,10 +473,10 @@ function FeatureGrid() {
             return (
               <StaggerItem key={feature.title}>
                 <div className="group relative p-6 rounded-2xl border border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-500 overflow-hidden">
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-violet-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                   <div className="relative">
-                    <div className="w-10 h-10 rounded-xl bg-violet-500/15 flex items-center justify-center border border-violet-500/10">
-                      <Icon size={18} className="text-violet-300" />
+                    <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/10">
+                      <Icon size={18} className="text-white/70" />
                     </div>
                     <h3 className="mt-4 font-semibold text-white/90">{feature.title}</h3>
                     <p className="mt-2 text-sm text-white/40 leading-relaxed">
@@ -534,7 +534,7 @@ function TechSpecs() {
         <div className="grid lg:grid-cols-2 gap-16">
           <div>
             <ScrollReveal>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-400 mb-4">Technical Specifications</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50 mb-4">Technical Specifications</p>
               <h2 className="font-serif text-4xl tracking-[-0.02em]">Under the hood.</h2>
               <p className="mt-4 text-foreground-muted leading-relaxed">
                 Flux is built on a Rust backend with LiveKit WebRTC for media routing. The desktop app uses Tauri — no Electron, no bloat.
@@ -545,7 +545,7 @@ function TechSpecs() {
                 <StaggerItem key={spec.label}>
                   <div className="border-t border-white/5 pt-3">
                     <p className="text-xs text-foreground-muted uppercase tracking-wider">{spec.label}</p>
-                    <p className="mt-1 text-sm font-mono text-violet-200/80">{spec.value}</p>
+                    <p className="mt-1 text-sm font-mono text-white/70">{spec.value}</p>
                   </div>
                 </StaggerItem>
               ))}
@@ -553,7 +553,7 @@ function TechSpecs() {
           </div>
           <div>
             <ScrollReveal delay={0.15}>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-400 mb-4">Screen Share Presets</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50 mb-4">Screen Share Presets</p>
               <div className="border border-white/5 rounded-xl overflow-hidden">
                 <table className="w-full text-sm">
                   <thead>
@@ -567,7 +567,7 @@ function TechSpecs() {
                   <tbody>
                     {SCREEN_SHARE_PRESETS.map((row) => (
                       <tr key={row.preset} className="border-b border-white/5 last:border-b-0 hover:bg-white/[0.02] transition-colors">
-                        <td className="px-4 py-3 font-mono text-violet-400">{row.preset}</td>
+                        <td className="px-4 py-3 font-mono text-white/50">{row.preset}</td>
                         <td className="px-4 py-3 font-mono text-foreground-muted">{row.codec}</td>
                         <td className="px-4 py-3 font-mono text-foreground-muted">{row.bitrate}</td>
                         <td className="px-4 py-3 font-mono text-foreground-muted">{row.framerate}</td>
@@ -612,10 +612,10 @@ function DownloadCTA() {
   const ctaLabel = authState === "none" ? "Sign Up to Download" : authState === "no-sub" ? "Subscribe to Download" : "Download for macOS";
 
   return (
-    <section id="download" className="relative py-40 px-6 overflow-hidden bg-gradient-to-b from-[#09090b] via-[#1a1040] to-[#2a1a6b]">
-      <TwinklingStars density={50} />
+    <section id="download" className="relative py-40 px-6 overflow-hidden bg-gradient-to-b from-[#09090b] via-[#0a0a10] to-[#0c0c14]">
+      <TwinklingStars density={25} />
 
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-violet-600/15 rounded-full blur-[200px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-white/[0.03] rounded-full blur-[200px] pointer-events-none" />
 
       <div className="relative mx-auto max-w-6xl text-center">
         <ScrollReveal>
@@ -633,7 +633,7 @@ function DownloadCTA() {
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={handleDownloadClick}
-              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#2a1a6b] text-sm font-semibold rounded-full hover:bg-white/90 transition-all shadow-lg shadow-black/20"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#09090b] text-sm font-semibold rounded-full hover:bg-white/90 transition-all shadow-lg shadow-black/20"
             >
               <Apple size={16} />
               {ctaLabel}

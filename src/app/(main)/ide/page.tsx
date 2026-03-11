@@ -61,7 +61,7 @@ const iconMap = { Sparkles, Terminal, Minus, Gauge } as const;
 function IDEHero() {
   return (
     <section className="relative min-h-[80vh] flex items-center">
-      <div className="mx-auto max-w-6xl px-6 pt-32 pb-20">
+      <div className="mx-auto max-w-7xl px-6 pt-32 pb-20">
         <ScrollReveal>
           <span className="font-mono text-4xl text-accent">&gt;_</span>
         </ScrollReveal>
@@ -89,7 +89,7 @@ function IDEHero() {
 function IDEFeatures() {
   return (
     <section className="py-32 px-6 border-t border-border">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <ScrollReveal>
           <p className="overline mb-4">Preview</p>
           <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em]">

@@ -29,7 +29,7 @@ const PROJECT_TYPES = [
 function ConsultingHero() {
   return (
     <section className="relative min-h-[60vh] flex items-center">
-      <div className="mx-auto max-w-6xl px-6 pt-32 pb-12">
+      <div className="mx-auto max-w-7xl px-6 pt-32 pb-12">
         <ScrollReveal>
           <Code2 size={48} className="text-accent mb-8" />
         </ScrollReveal>
@@ -58,7 +58,7 @@ function TrackRecord() {
 
   return (
     <section className="py-32 px-6 border-t border-border">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <div className="grid md:grid-cols-2 gap-16 items-start">
           <div>
             <ScrollReveal>
@@ -107,7 +107,7 @@ function TrackRecord() {
 function ConsultingServices() {
   return (
     <section className="py-32 px-6 border-t border-border">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <ScrollReveal>
           <p className="overline mb-4">Services</p>
         </ScrollReveal>
@@ -141,7 +141,7 @@ function ConsultingServices() {
 function ConsultingPricing() {
   return (
     <section className="py-32 px-6 border-t border-border">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <ScrollReveal>
           <p className="overline mb-4">Pricing</p>
         </ScrollReveal>

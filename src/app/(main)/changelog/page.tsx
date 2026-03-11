@@ -68,7 +68,7 @@ export default function ChangelogPage() {
   return (
     <PageTransition>
       <section className="relative min-h-[50vh] flex items-center">
-        <div className="mx-auto max-w-6xl px-6 pt-32 pb-12">
+        <div className="mx-auto max-w-7xl px-6 pt-32 pb-12">
           <ScrollReveal>
             <p className="overline mb-4">Changelog</p>
           </ScrollReveal>

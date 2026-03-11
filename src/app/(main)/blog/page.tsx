@@ -17,7 +17,7 @@ export default function BlogPage() {
   return (
     <BlogList>
       <section className="relative min-h-[50vh] flex items-center">
-        <div className="mx-auto max-w-6xl px-6 pt-32 pb-12">
+        <div className="mx-auto max-w-7xl px-6 pt-32 pb-12">
           <p className="overline mb-4">Blog</p>
           <h1 className="font-serif text-5xl sm:text-6xl tracking-[-0.02em] leading-tight max-w-3xl">
             Thinking out loud.
@@ -29,7 +29,7 @@ export default function BlogPage() {
       </section>
 
       <section className="pb-32 px-6">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-7xl">
           <div className="flex flex-col gap-0 border-t border-border">
             {posts.map((post) => (
               <Link key={post.slug} href={`/blog/${post.slug}`}>

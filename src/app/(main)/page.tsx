@@ -139,7 +139,7 @@ function Products() {
 
   return (
     <section className="py-32 px-6 border-t border-border">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <div className="max-w-2xl">
           <ScrollReveal>
             <p className="overline mb-4">What we do</p>
@@ -204,7 +204,7 @@ function Performance() {
 function Philosophy() {
   return (
     <section className="py-40 px-6 border-t border-border">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <div className="grid md:grid-cols-2 gap-16">
           <div>
             <ScrollReveal>

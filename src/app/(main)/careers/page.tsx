@@ -31,7 +31,7 @@ export default function CareersPage() {
   return (
     <PageTransition>
       <section className="relative min-h-[70vh] flex items-center">
-        <div className="mx-auto max-w-6xl px-6 pt-32 pb-20">
+        <div className="mx-auto max-w-7xl px-6 pt-32 pb-20">
           <ScrollReveal>
             <p className="overline mb-4">Careers</p>
           </ScrollReveal>
@@ -53,7 +53,7 @@ export default function CareersPage() {
       </section>
 
       <section className="py-32 px-6 border-t border-border">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-7xl">
           <ScrollReveal>
             <p className="overline mb-4">Culture</p>
             <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em]">
@@ -77,7 +77,7 @@ export default function CareersPage() {
       </section>
 
       <section className="py-32 px-6 border-t border-border">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-7xl">
           <ScrollReveal>
             <p className="overline mb-4">Open Roles</p>
             <h2 className="font-serif text-4xl tracking-[-0.02em]">

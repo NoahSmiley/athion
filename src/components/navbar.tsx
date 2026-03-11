@@ -106,7 +106,7 @@ export function Navbar() {
         style={{ opacity: smoothBgOpacity }}
       />
 
-      <nav className="relative mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
+      <nav className="relative mx-auto max-w-7xl px-6 h-16 flex items-center justify-between">
         <Link
           href="/"
           className="flex items-center text-foreground hover:text-accent transition-colors relative h-9"

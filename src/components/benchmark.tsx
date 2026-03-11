@@ -105,7 +105,7 @@ export function BenchmarkSection({
 }) {
   return (
     <section className="py-32 px-6 border-t border-border/50">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-5xl">
         {/* Header — centered */}
         <div className="text-center mb-16">
           <p className="text-[11px] uppercase tracking-[0.08em] text-foreground-muted/50 mb-4">

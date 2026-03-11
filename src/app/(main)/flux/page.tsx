@@ -59,10 +59,11 @@ const SIDEBAR_CHANNELS = [
 ];
 
 const USERS = {
-  noah: { id: "N", avatar: "N", color: "#6366f1" },
-  sarah: { id: "S", avatar: "S", color: "#8b5cf6" },
-  james: { id: "J", avatar: "J", color: "#f59e0b" },
-  alex: { id: "A", avatar: "A", color: "#0ea5e9" },
+  noah: { id: "N", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=noah&backgroundColor=6366f1", color: "#6366f1" },
+  sarah: { id: "S", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=sarah&backgroundColor=8b5cf6", color: "#8b5cf6" },
+  james: { id: "J", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=james&backgroundColor=f59e0b", color: "#f59e0b" },
+  alex: { id: "A", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=alex&backgroundColor=0ea5e9", color: "#0ea5e9" },
+  emma: { id: "E", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=emma&backgroundColor=10b981", color: "#10b981" },
 };
 
 // ── Hero Replica Messages (matching real app conversation) ──
@@ -110,13 +111,13 @@ const SECTION_EXTRA_MESSAGES = [
 // ── Voice Replica Data ──
 
 const VOICE_PARTICIPANTS = [
-  { id: "N", name: "noah", color: "#6366f1", muted: false, deafened: false },
-  { id: "A", name: "alex", color: "#0ea5e9", muted: false, deafened: false },
-  { id: "S", name: "sarah", color: "#8b5cf6", muted: true, deafened: false },
-  { id: "J", name: "james", color: "#f59e0b", muted: false, deafened: true },
+  { id: "N", name: "noah", color: "#6366f1", avatar: USERS.noah.avatar, muted: false, deafened: false },
+  { id: "A", name: "alex", color: "#0ea5e9", avatar: USERS.alex.avatar, muted: false, deafened: false },
+  { id: "S", name: "sarah", color: "#8b5cf6", avatar: USERS.sarah.avatar, muted: true, deafened: false },
+  { id: "J", name: "james", color: "#f59e0b", avatar: USERS.james.avatar, muted: false, deafened: true },
 ];
 
-const EMMA_USER = { id: "E", name: "emma", color: "#10b981", muted: false, deafened: false };
+const EMMA_USER = { id: "E", name: "emma", color: "#10b981", avatar: USERS.emma.avatar, muted: false, deafened: false };
 
 const VOICE_TABS = [
   { label: "Voice", active: true },
@@ -177,7 +178,7 @@ function FluxSidebar({
   compact,
 }: {
   showRoom?: boolean;
-  roomParticipants?: { id: string; name: string; color: string }[];
+  roomParticipants?: { id: string; name: string; color: string; avatar?: string }[];
   compact?: boolean;
 }) {
   return (
@@ -266,15 +267,16 @@ function FluxSidebar({
               {roomParticipants.map((p) => (
                 <div key={p.id} className="flex items-center gap-2">
                   <div
-                    className="w-5 h-5 rounded-full flex items-center justify-center"
-                    style={{
-                      background: p.color + "33",
-                      fontSize: "9px",
-                      fontWeight: 600,
-                      color: p.color,
-                    }}
+                    className="w-5 h-5 rounded-full overflow-hidden flex-shrink-0"
+                    style={{ background: p.color + "33" }}
                   >
-                    {p.id}
+                    {p.avatar ? (
+                      <img src={p.avatar} alt={p.name} className="w-full h-full" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center" style={{ fontSize: "9px", fontWeight: 600, color: p.color }}>
+                        {p.id}
+                      </div>
+                    )}
                   </div>
                   <span style={{ fontSize: "12px", color: "#ccc" }}>{p.name}</span>
                 </div>
@@ -336,15 +338,10 @@ function IconRail() {
       {[USERS.noah, USERS.sarah].map((u) => (
         <div
           key={u.id}
-          className="w-8 h-8 rounded-full flex items-center justify-center"
-          style={{
-            background: u.color + "33",
-            fontSize: "11px",
-            fontWeight: 600,
-            color: u.color,
-          }}
+          className="w-8 h-8 rounded-full overflow-hidden"
+          style={{ background: u.color + "33" }}
         >
-          {u.id}
+          <img src={u.avatar} alt="" className="w-full h-full" />
         </div>
       ))}
     </div>
@@ -367,16 +364,13 @@ function MessageRow({
   return (
     <div className="flex gap-3 py-1.5 px-2">
       <div
-        className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+        className="w-8 h-8 rounded-full flex-shrink-0 mt-0.5 overflow-hidden"
         style={{
-          background: u.color + "22",
           border: `2px solid ${u.color}`,
-          fontSize: "11px",
-          fontWeight: 600,
-          color: u.color,
+          background: u.color + "22",
         }}
       >
-        {u.avatar}
+        <img src={u.avatar} alt={user} className="w-full h-full" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline gap-2">
@@ -450,17 +444,9 @@ function FluxAppReplica() {
       style={{
         background: "#0a0a0a",
         border: "1px solid #161616",
-        maxWidth: "1100px",
       }}
     >
-      {/* macOS traffic lights */}
-      <div className="flex items-center gap-2 px-4 pt-3 pb-0">
-        <div className="w-3 h-3 rounded-full" style={{ background: "#ff5f57" }} />
-        <div className="w-3 h-3 rounded-full" style={{ background: "#febc2e" }} />
-        <div className="w-3 h-3 rounded-full" style={{ background: "#28c840" }} />
-      </div>
-
-      <div className="flex" style={{ height: "520px" }}>
+      <div className="flex" style={{ height: "600px" }}>
         {/* Icon rail */}
         <IconRail />
 
@@ -468,9 +454,9 @@ function FluxAppReplica() {
         <FluxSidebar
           showRoom
           roomParticipants={[
-            { id: "N", name: "noah", color: "#6366f1" },
-            { id: "A", name: "alex", color: "#0ea5e9" },
-            { id: "S", name: "sarah", color: "#8b5cf6" },
+            { id: "N", name: "noah", color: "#6366f1", avatar: USERS.noah.avatar },
+            { id: "A", name: "alex", color: "#0ea5e9", avatar: USERS.alex.avatar },
+            { id: "S", name: "sarah", color: "#8b5cf6", avatar: USERS.sarah.avatar },
           ]}
         />
 
@@ -825,18 +811,15 @@ function FluxVoiceReplica() {
               >
                 {isSpeaking && <SpeakingGlow />}
                 <motion.div
-                  className="relative w-[72px] h-[72px] rounded-full flex items-center justify-center mb-2"
+                  className="relative w-[72px] h-[72px] rounded-full overflow-hidden mb-2"
                   style={{
                     background: p.color + "22",
                     border: isSpeaking ? `3px solid ${p.color}` : `3px solid ${p.color}44`,
-                    fontSize: "28px",
-                    fontWeight: 600,
-                    color: p.color,
                   }}
                   animate={isSpeaking ? { scale: [1, 1.04, 1] } : { scale: 1 }}
                   transition={isSpeaking ? { duration: 2, repeat: Infinity, ease: "easeInOut" } : {}}
                 >
-                  {p.id}
+                  <img src={p.avatar} alt={p.name} className="w-full h-full" />
                 </motion.div>
                 <div className="flex items-center gap-1.5" style={{ position: "relative", zIndex: 1 }}>
                   <span style={{ fontSize: "13px", fontWeight: 500, color: "#e8e8e8" }}>
@@ -1150,7 +1133,7 @@ function KrispLogo({ size = 20 }: { size?: number }) {
 function FluxHero() {
   return (
     <section className="relative pt-32 sm:pt-40 pb-6 px-6">
-      <div className="relative mx-auto max-w-5xl">
+      <div className="relative mx-auto max-w-7xl">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -1213,7 +1196,7 @@ function FluxHero() {
 function HeroAppSection() {
   return (
     <section className="relative px-6 pt-16 pb-32">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <motion.div
           className="relative"
           initial={{ opacity: 0, y: 30 }}
@@ -1222,12 +1205,12 @@ function HeroAppSection() {
         >
           <div className="relative overflow-hidden rounded-xl">
             <FluxAppReplica />
-            {/* Bottom gradient mask — fade into background */}
-            <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none" />
-            {/* Left gradient mask */}
-            <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent pointer-events-none" />
-            {/* Right gradient mask */}
-            <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent pointer-events-none" />
+            {/* Bottom gradient mask — subtle fade into background */}
+            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background via-background/30 to-transparent pointer-events-none" />
+            {/* Left gradient mask — subtle */}
+            <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background/40 to-transparent pointer-events-none" />
+            {/* Right gradient mask — subtle */}
+            <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background/40 to-transparent pointer-events-none" />
           </div>
         </motion.div>
       </div>
@@ -1293,7 +1276,7 @@ function SubFeatures({ items }: { items: { number: string; label: string }[] }) 
 function MessagingSection() {
   return (
     <section className="py-24 sm:py-32 px-6 border-t border-border/50">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <SectionHeader
           number="1.0"
           label="Messaging"
@@ -1323,7 +1306,7 @@ function MessagingSection() {
 function VoiceSection() {
   return (
     <section className="py-24 sm:py-32 px-6 border-t border-border/50">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <SectionHeader
           number="2.0"
           label="Voice"
@@ -1360,7 +1343,7 @@ function VoiceSection() {
 function MusicSection() {
   return (
     <section className="py-24 sm:py-32 px-6 border-t border-border/50">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <SectionHeader
           number="3.0"
           label="Music"
@@ -1400,7 +1383,7 @@ function FeatureSections() {
 function FeatureGrid() {
   return (
     <section className="py-32 px-6 border-t border-border/50">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <ScrollReveal>
           <p className="overline mb-4">Details</p>
           <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-medium tracking-[-0.025em] leading-[1.12] max-w-2xl">
@@ -1466,7 +1449,7 @@ function TechSpecs() {
 
   return (
     <section className="py-32 px-6 border-t border-border/50">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <div className="grid lg:grid-cols-2 gap-16">
           <div>
             <ScrollReveal>

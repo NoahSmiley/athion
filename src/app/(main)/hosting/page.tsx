@@ -23,7 +23,7 @@ const featureIcons = { Power, Globe, HardDrive, Terminal, Network, Activity } as
 function HostingHero() {
   return (
     <section className="relative min-h-[60vh] flex items-center">
-      <div className="mx-auto max-w-6xl px-6 pt-32 pb-12">
+      <div className="mx-auto max-w-7xl px-6 pt-32 pb-12">
         <ScrollReveal>
           <Server size={48} className="text-accent mb-8" />
         </ScrollReveal>
@@ -63,7 +63,7 @@ function HostingHero() {
 function HostingTiers() {
   return (
     <section id="tiers" className="py-32 px-6 border-t border-border">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <ScrollReveal>
           <p className="overline mb-4">What we host</p>
         </ScrollReveal>
@@ -102,7 +102,7 @@ function HostingTiers() {
 function HostingFeatures() {
   return (
     <section className="py-32 px-6 border-t border-border">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <ScrollReveal>
           <p className="overline mb-4">Infrastructure</p>
         </ScrollReveal>

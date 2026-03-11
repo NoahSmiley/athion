@@ -30,7 +30,8 @@ const FEATURE_SHOWCASES = [
     title: "Conversations that flow.",
     description: "Rich text messaging with inline emoji, reactions, threaded replies, and file sharing — all encrypted end-to-end before leaving your device.",
     image: "/flux/chat.png",
-    imageAlt: "Flux chat interface with active conversation",
+    imageAlt: "Flux chat messages with multi-user conversation",
+    gradient: "from-blue-500/20 via-indigo-500/10 to-transparent",
     stats: [
       { value: "AES-256", label: "Encryption" },
       { value: "E2EE", label: "Every Message" },
@@ -42,6 +43,7 @@ const FEATURE_SHOWCASES = [
     description: "48kHz stereo Opus audio with Krisp AI noise suppression. Keyboard clatter, fans, and background chatter vanish — your voice stays untouched.",
     image: "/flux/voice.png",
     imageAlt: "Flux voice channel with connected users",
+    gradient: "from-emerald-500/20 via-teal-500/10 to-transparent",
     stats: [
       { value: "48kHz", label: "Sample Rate" },
       { value: "320kbps", label: "Bitrate" },
@@ -51,8 +53,9 @@ const FEATURE_SHOWCASES = [
     overline: "Screen Share",
     title: "Every pixel, exactly as you see it.",
     description: "VP9 screen sharing up to 4K at 20 Mbps with six quality presets. Your IDE, your game, your design — lossless when you need it.",
-    image: "/flux/screenshare.png",
-    imageAlt: "Flux screen sharing interface",
+    image: "/flux/sidebar.png",
+    imageAlt: "Flux channel sidebar with text and voice channels",
+    gradient: "from-violet-500/20 via-purple-500/10 to-transparent",
     stats: [
       { value: "4K", label: "Max Resolution" },
       { value: "60fps", label: "Frame Rate" },
@@ -165,7 +168,7 @@ function AppShowcase() {
           <div className="absolute -inset-16 bg-accent/[0.03] rounded-[3rem] blur-3xl pointer-events-none" />
           <div className="absolute -inset-8 bg-accent/[0.02] rounded-[2rem] blur-2xl pointer-events-none" />
 
-          <div className="relative rounded-sm overflow-hidden border border-border shadow-2xl shadow-black/20">
+          <div className="relative rounded-xl overflow-hidden border border-border shadow-2xl shadow-black/20">
             <img
               src="/flux/hero.png"
               alt="Flux — Desktop chat application with voice, messaging, and screen sharing"
@@ -186,6 +189,7 @@ function FeatureShowcase({
   description,
   image,
   imageAlt,
+  gradient,
   stats,
   reversed,
 }: {
@@ -194,23 +198,30 @@ function FeatureShowcase({
   description: string;
   image: string;
   imageAlt: string;
+  gradient: string;
   stats: { value: string; label: string }[];
   reversed?: boolean;
 }) {
   return (
-    <section className="py-32 px-6 border-t border-border">
+    <section className="py-32 px-6">
       <div className="mx-auto max-w-6xl">
-        <div className={`grid lg:grid-cols-2 gap-16 items-center ${reversed ? "direction-rtl" : ""}`}>
-          {/* Image */}
-          <ScrollReveal direction={reversed ? "right" : "left"} className={reversed ? "lg:order-2" : ""}>
+        <div className={`grid lg:grid-cols-2 gap-12 lg:gap-20 items-center`}>
+          {/* Screenshot in gradient container */}
+          <ScrollReveal
+            direction={reversed ? "right" : "left"}
+            className={reversed ? "lg:order-2" : ""}
+          >
             <div className="relative">
-              <div className="absolute -inset-8 bg-accent/[0.02] rounded-2xl blur-2xl pointer-events-none" />
-              <div className="relative rounded-sm overflow-hidden border border-border">
-                <img
-                  src={image}
-                  alt={imageAlt}
-                  className="w-full h-auto block"
-                />
+              {/* Gradient background container */}
+              <div className={`absolute -inset-4 rounded-2xl bg-gradient-to-br ${gradient} blur-sm`} />
+              <div className={`relative rounded-2xl bg-gradient-to-br ${gradient} p-6 sm:p-8`}>
+                <div className="rounded-lg overflow-hidden shadow-2xl shadow-black/30 border border-white/[0.08]">
+                  <img
+                    src={image}
+                    alt={imageAlt}
+                    className="w-full h-auto block"
+                  />
+                </div>
               </div>
             </div>
           </ScrollReveal>
@@ -246,7 +257,7 @@ function FeatureShowcase({
 
 function FeatureShowcases() {
   return (
-    <>
+    <div id="features">
       {FEATURE_SHOWCASES.map((feature, i) => (
         <FeatureShowcase
           key={feature.overline}
@@ -254,7 +265,7 @@ function FeatureShowcases() {
           reversed={i % 2 === 1}
         />
       ))}
-    </>
+    </div>
   );
 }
 
@@ -262,7 +273,7 @@ function FeatureShowcases() {
 
 function FeatureGrid() {
   return (
-    <section id="features" className="py-32 px-6 border-t border-border">
+    <section className="py-32 px-6 border-t border-border">
       <div className="mx-auto max-w-6xl">
         <ScrollReveal>
           <p className="overline mb-4">Details</p>

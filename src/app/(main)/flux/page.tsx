@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   AudioWaveform, Lock, Monitor, MicOff, MessageSquare, Zap,
@@ -8,9 +8,10 @@ import {
   Headphones, HeadphoneOff, MonitorUp, PhoneOff, Pause, SkipForward,
   Hash, Search, Paperclip, Smile, Send, ChevronDown, ChevronRight,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { PageTransition } from "@/components/page-transition";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "@/components/scroll-reveal";
+import { FluxLogo } from "@/components/flux-logo";
 
 import { BenchmarkSection, type BenchmarkGroup } from "@/components/benchmark";
 import { FLUX_FEATURES, SCREEN_SHARE_PRESETS } from "@/lib/constants";
@@ -48,7 +49,7 @@ const CHAT_CHANNELS = [
   { name: "off-topic", active: false },
 ];
 
-const CHAT_MESSAGES = [
+const INITIAL_MESSAGES = [
   {
     id: 1,
     user: "noah",
@@ -83,14 +84,25 @@ const CHAT_MESSAGES = [
   },
 ];
 
+const EXTRA_MESSAGES = [
+  { user: "alex", avatar: "A", color: "#0ea5e9", text: "anyone want to test the new update?" },
+  { user: "noah", avatar: "N", color: "#6366f1", text: "the latency improvement is wild" },
+  { user: "sarah", avatar: "S", color: "#8b5cf6", text: "just ran a voice test — zero crackling" },
+  { user: "james", avatar: "J", color: "#f59e0b", text: "the new codec sounds way better on bluetooth" },
+  { user: "alex", avatar: "A", color: "#0ea5e9", text: "screen share is buttery smooth now" },
+  { user: "noah", avatar: "N", color: "#6366f1", text: "pushed a fix for the reconnect issue" },
+];
+
 // ── Voice Replica Data ──
 
 const VOICE_PARTICIPANTS = [
-  { id: "N", name: "noah", color: "#6366f1", speaking: true, muted: false, deafened: false },
-  { id: "A", name: "alex", color: "#0ea5e9", speaking: true, muted: false, deafened: false },
-  { id: "S", name: "sarah", color: "#8b5cf6", speaking: false, muted: true, deafened: false },
-  { id: "J", name: "james", color: "#f59e0b", speaking: false, muted: false, deafened: true },
+  { id: "N", name: "noah", color: "#6366f1", muted: false, deafened: false },
+  { id: "A", name: "alex", color: "#0ea5e9", muted: false, deafened: false },
+  { id: "S", name: "sarah", color: "#8b5cf6", muted: true, deafened: false },
+  { id: "J", name: "james", color: "#f59e0b", muted: false, deafened: true },
 ];
+
+const EMMA_USER = { id: "E", name: "emma", color: "#10b981", muted: false, deafened: false };
 
 const VOICE_TABS = [
   { label: "Voice", active: true },
@@ -101,15 +113,104 @@ const VOICE_TABS = [
 
 // ── Music Replica Data ──
 
-const MUSIC_QUEUE = [
-  { title: "Midnight City", artist: "M83", duration: "4:03", gradientFrom: "#6366f1", gradientTo: "#8b5cf6" },
-  { title: "Do I Wanna Know?", artist: "Arctic Monkeys", duration: "4:32", gradientFrom: "#0ea5e9", gradientTo: "#6366f1" },
-  { title: "Electric Feel", artist: "MGMT", duration: "3:50", gradientFrom: "#f59e0b", gradientTo: "#f97316" },
+const ALL_TRACKS = [
+  { title: "Midnight City", artist: "M83", duration: "4:03", totalSeconds: 243, gradientFrom: "#6366f1", gradientTo: "#8b5cf6" },
+  { title: "Do I Wanna Know?", artist: "Arctic Monkeys", duration: "4:32", totalSeconds: 272, gradientFrom: "#0ea5e9", gradientTo: "#6366f1" },
+  { title: "Electric Feel", artist: "MGMT", duration: "3:50", totalSeconds: 230, gradientFrom: "#f59e0b", gradientTo: "#f97316" },
+  { title: "Blinding Lights", artist: "The Weeknd", duration: "3:20", totalSeconds: 200, gradientFrom: "#ef4444", gradientTo: "#f97316" },
+  { title: "Take On Me", artist: "a-ha", duration: "3:48", totalSeconds: 228, gradientFrom: "#8b5cf6", gradientTo: "#ec4899" },
 ];
+
+// ── Typing Indicator ──
+
+function TypingIndicator({ user }: { user: string }) {
+  return (
+    <motion.div
+      className="flex items-center gap-2 px-2 py-1"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 8 }}
+      transition={{ duration: 0.2 }}
+    >
+      <span style={{ fontSize: "12px", color: "#888" }}>
+        {user} is typing
+      </span>
+      <div className="flex gap-0.5">
+        {[0, 1, 2].map((i) => (
+          <motion.div
+            key={i}
+            className="rounded-full"
+            style={{ width: 4, height: 4, background: "#888" }}
+            animate={{ y: [0, -4, 0] }}
+            transition={{
+              duration: 0.6,
+              repeat: Infinity,
+              delay: i * 0.15,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+    </motion.div>
+  );
+}
 
 // ── FluxChatReplica ──
 
 function FluxChatReplica() {
+  const [messages, setMessages] = useState(INITIAL_MESSAGES);
+  const [visibleCount, setVisibleCount] = useState(0);
+  const [typingUser, setTypingUser] = useState<string | null>(null);
+  const nextMsgIdx = useRef(0);
+  const nextId = useRef(5);
+
+  // Staggered entrance on mount
+  useEffect(() => {
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    INITIAL_MESSAGES.forEach((_, i) => {
+      timers.push(setTimeout(() => setVisibleCount((c) => c + 1), 300 * (i + 1)));
+    });
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  // New messages arriving every ~5s
+  useEffect(() => {
+    const initialDelay = setTimeout(() => {
+      const interval = setInterval(() => {
+        const extra = EXTRA_MESSAGES[nextMsgIdx.current % EXTRA_MESSAGES.length];
+
+        // Show typing indicator
+        setTypingUser(extra.user);
+
+        setTimeout(() => {
+          setTypingUser(null);
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+          const newMsg = {
+            id: nextId.current++,
+            user: extra.user,
+            avatar: extra.avatar,
+            color: extra.color,
+            time: timeStr,
+            text: extra.text,
+          };
+          setMessages((prev) => {
+            const next = [...prev, newMsg];
+            // Keep max 6 messages visible
+            if (next.length > 6) return next.slice(next.length - 6);
+            return next;
+          });
+          setVisibleCount((c) => Math.min(c + 1, 6));
+          nextMsgIdx.current++;
+        }, 2000);
+      }, 5000);
+
+      return () => clearInterval(interval);
+    }, INITIAL_MESSAGES.length * 300 + 2000);
+
+    return () => clearTimeout(initialDelay);
+  }, []);
+
   return (
     <div
       className="rounded-xl overflow-hidden w-full max-w-[800px] mx-auto h-[380px] md:h-[480px]"
@@ -248,53 +349,56 @@ function FluxChatReplica() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-hidden px-4 py-3 flex flex-col gap-1">
-            {CHAT_MESSAGES.map((msg) => (
-              <div
-                key={msg.id}
-                className="flex gap-3 py-2 px-2 rounded"
-                style={{
-                  transition: "background 0.1s",
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.015)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.background = "transparent";
-                }}
-              >
-                {/* Avatar */}
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{
-                    background: msg.color + "22",
-                    border: `2px solid ${msg.color}`,
-                    fontSize: "14px",
-                    fontWeight: 600,
-                    color: msg.color,
-                  }}
+          <div className="flex-1 overflow-hidden px-4 py-3 flex flex-col gap-1 justify-end">
+            <AnimatePresence mode="popLayout">
+              {messages.slice(0, visibleCount).map((msg) => (
+                <motion.div
+                  key={msg.id}
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3, ease: EASE }}
+                  className="flex gap-3 py-2 px-2 rounded"
                 >
-                  {msg.avatar}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-2">
-                    <span style={{ fontSize: "14px", fontWeight: 700, color: "#e8e8e8" }}>
-                      {msg.user}
-                    </span>
-                    <span style={{ fontSize: "11px", color: "#555" }}>
-                      {msg.time}
-                    </span>
+                  {/* Avatar */}
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{
+                      background: msg.color + "22",
+                      border: `2px solid ${msg.color}`,
+                      fontSize: "14px",
+                      fontWeight: 600,
+                      color: msg.color,
+                    }}
+                  >
+                    {msg.avatar}
                   </div>
-                  <p style={{ fontSize: "14px", color: "#e8e8e8", lineHeight: 1.45, marginTop: "2px" }}>
-                    {msg.text}
-                  </p>
-                </div>
-              </div>
-            ))}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-2">
+                      <span style={{ fontSize: "14px", fontWeight: 700, color: "#e8e8e8" }}>
+                        {msg.user}
+                      </span>
+                      <span style={{ fontSize: "11px", color: "#555" }}>
+                        {msg.time}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: "14px", color: "#e8e8e8", lineHeight: 1.45, marginTop: "2px" }}>
+                      {msg.text}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
 
-          {/* Message input */}
+          {/* Message input / typing indicator */}
           <div className="px-4 pb-4 flex-shrink-0">
+            <div className="h-5 mb-1">
+              <AnimatePresence>
+                {typingUser && <TypingIndicator user={typingUser} />}
+              </AnimatePresence>
+            </div>
             <div
               className="flex items-center gap-2 px-3 py-2.5 rounded-lg"
               style={{
@@ -319,6 +423,31 @@ function FluxChatReplica() {
   );
 }
 
+// ── Waveform Bars (mini equalizer) ──
+
+function WaveformBars() {
+  return (
+    <div className="flex items-end gap-[2px]" style={{ height: 12 }}>
+      {[0, 1, 2, 3].map((i) => (
+        <motion.div
+          key={i}
+          className="rounded-sm"
+          style={{ width: 2, background: "#43b581" }}
+          animate={{
+            height: [3, 8 + Math.random() * 4, 4, 10 + Math.random() * 2, 3],
+          }}
+          transition={{
+            duration: 0.8 + i * 0.15,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: i * 0.1,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 // ── FluxVoiceReplica ──
 
 function SpeakingGlow() {
@@ -329,13 +458,55 @@ function SpeakingGlow() {
         boxShadow: `0 0 0 2px #43b581, 0 0 12px rgba(67,181,129,0.4)`,
         background: "rgba(67,181,129,0.06)",
       }}
-      animate={{ opacity: [1, 0.6, 1] }}
+      animate={{
+        opacity: [1, 0.5, 1],
+        boxShadow: [
+          "0 0 0 2px #43b581, 0 0 12px rgba(67,181,129,0.4)",
+          "0 0 0 2px #43b581, 0 0 20px rgba(67,181,129,0.6)",
+          "0 0 0 2px #43b581, 0 0 12px rgba(67,181,129,0.4)",
+        ],
+      }}
       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
     />
   );
 }
 
 function FluxVoiceReplica() {
+  const [speakingSet, setSpeakingSet] = useState<Set<string>>(new Set(["N", "A"]));
+  const [emmaPresent, setEmmaPresent] = useState(false);
+
+  // Toggle speaking states every ~3s
+  useEffect(() => {
+    const allIds = ["N", "A", "S", "J"];
+    const interval = setInterval(() => {
+      // Randomly pick 1-2 speakers
+      const shuffled = [...allIds].sort(() => Math.random() - 0.5);
+      const count = Math.random() > 0.5 ? 2 : 1;
+      setSpeakingSet(new Set(shuffled.slice(0, count)));
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Emma join/leave cycle
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout>;
+    const cycle = () => {
+      // Emma joins
+      setEmmaPresent(true);
+      timeout = setTimeout(() => {
+        // Emma leaves after 4s
+        setEmmaPresent(false);
+        timeout = setTimeout(cycle, 6000);
+      }, 4000);
+    };
+    timeout = setTimeout(cycle, 6000);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  const participants = emmaPresent
+    ? [...VOICE_PARTICIPANTS, EMMA_USER]
+    : VOICE_PARTICIPANTS;
+
   return (
     <div
       className="rounded-xl overflow-hidden w-full max-w-[620px] mx-auto"
@@ -372,6 +543,16 @@ function FluxVoiceReplica() {
             )}
           </div>
         ))}
+        {/* Participant count */}
+        <div className="ml-auto flex items-center gap-1.5 pr-1">
+          <div
+            className="rounded-full"
+            style={{ width: 6, height: 6, background: "#43b581" }}
+          />
+          <span style={{ fontSize: "12px", color: "#888", fontFamily: "monospace" }}>
+            {participants.length}
+          </span>
+        </div>
       </div>
 
       {/* Participant grid */}
@@ -379,57 +560,70 @@ function FluxVoiceReplica() {
         className="flex flex-wrap justify-center gap-5 p-6"
         style={{ minHeight: "200px" }}
       >
-        {VOICE_PARTICIPANTS.map((p) => (
-          <div
-            key={p.id}
-            className="relative flex flex-col items-center rounded-xl"
-            style={{
-              width: "140px",
-              background: "#0e0e0e",
-              padding: "16px 12px 12px",
-            }}
-          >
-            {/* Speaking glow on tile */}
-            {p.speaking && <SpeakingGlow />}
+        <AnimatePresence mode="popLayout">
+          {participants.map((p) => {
+            const isSpeaking = speakingSet.has(p.id);
+            return (
+              <motion.div
+                key={p.id}
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3, ease: EASE }}
+                className="relative flex flex-col items-center rounded-xl"
+                style={{
+                  width: "140px",
+                  background: "#0e0e0e",
+                  padding: "16px 12px 12px",
+                }}
+              >
+                {/* Speaking glow on tile */}
+                {isSpeaking && <SpeakingGlow />}
 
-            {/* Avatar */}
-            <div
-              className="relative w-[72px] h-[72px] rounded-full flex items-center justify-center mb-2"
-              style={{
-                background: p.color + "22",
-                border: p.speaking ? `3px solid ${p.color}` : `3px solid ${p.color}44`,
-                fontSize: "28px",
-                fontWeight: 600,
-                color: p.color,
-              }}
-            >
-              {p.id}
-            </div>
+                {/* Avatar */}
+                <motion.div
+                  className="relative w-[72px] h-[72px] rounded-full flex items-center justify-center mb-2"
+                  style={{
+                    background: p.color + "22",
+                    border: isSpeaking ? `3px solid ${p.color}` : `3px solid ${p.color}44`,
+                    fontSize: "28px",
+                    fontWeight: 600,
+                    color: p.color,
+                  }}
+                  animate={isSpeaking ? { scale: [1, 1.04, 1] } : { scale: 1 }}
+                  transition={isSpeaking ? { duration: 2, repeat: Infinity, ease: "easeInOut" } : {}}
+                >
+                  {p.id}
+                </motion.div>
 
-            {/* Username */}
-            <span
-              style={{
-                fontSize: "13px",
-                fontWeight: 500,
-                color: "#e8e8e8",
-                position: "relative",
-                zIndex: 1,
-              }}
-            >
-              {p.name}
-            </span>
+                {/* Username + waveform */}
+                <div className="flex items-center gap-1.5" style={{ position: "relative", zIndex: 1 }}>
+                  <span
+                    style={{
+                      fontSize: "13px",
+                      fontWeight: 500,
+                      color: "#e8e8e8",
+                    }}
+                  >
+                    {p.name}
+                  </span>
+                  {isSpeaking && <WaveformBars />}
+                </div>
 
-            {/* Status icons */}
-            <div className="flex items-center gap-1.5 mt-1.5" style={{ position: "relative", zIndex: 1 }}>
-              {p.muted && (
-                <MicOffIcon size={14} style={{ color: "#555" }} />
-              )}
-              {p.deafened && (
-                <HeadphoneOff size={14} style={{ color: "#555" }} />
-              )}
-            </div>
-          </div>
-        ))}
+                {/* Status icons */}
+                <div className="flex items-center gap-1.5 mt-1.5" style={{ position: "relative", zIndex: 1 }}>
+                  {p.muted && (
+                    <MicOffIcon size={14} style={{ color: "#555" }} />
+                  )}
+                  {p.deafened && (
+                    <HeadphoneOff size={14} style={{ color: "#555" }} />
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </div>
 
       {/* Controls bar */}
@@ -437,47 +631,27 @@ function FluxVoiceReplica() {
         className="flex items-center justify-center gap-1 px-4 py-2.5"
         style={{ borderTop: "1px solid #161616" }}
       >
-        {/* Mic */}
         <div
           className="flex items-center justify-center rounded-full"
-          style={{
-            width: "36px",
-            height: "36px",
-            background: "#1a1a1a",
-          }}
+          style={{ width: "36px", height: "36px", background: "#1a1a1a" }}
         >
           <Mic size={20} style={{ color: "#e8e8e8" }} />
         </div>
-        {/* Headphones */}
         <div
           className="flex items-center justify-center rounded-full"
-          style={{
-            width: "36px",
-            height: "36px",
-            background: "#1a1a1a",
-          }}
+          style={{ width: "36px", height: "36px", background: "#1a1a1a" }}
         >
           <Headphones size={20} style={{ color: "#e8e8e8" }} />
         </div>
-        {/* Screen share */}
         <div
           className="flex items-center justify-center rounded-full"
-          style={{
-            width: "36px",
-            height: "36px",
-            background: "#1a1a1a",
-          }}
+          style={{ width: "36px", height: "36px", background: "#1a1a1a" }}
         >
           <MonitorUp size={20} style={{ color: "#e8e8e8" }} />
         </div>
-        {/* Disconnect */}
         <div
           className="flex items-center justify-center rounded-full"
-          style={{
-            width: "36px",
-            height: "36px",
-            background: "#ff4444",
-          }}
+          style={{ width: "36px", height: "36px", background: "#ff4444" }}
         >
           <PhoneOff size={20} style={{ color: "#ffffff" }} />
         </div>
@@ -488,8 +662,50 @@ function FluxVoiceReplica() {
 
 // ── FluxMusicReplica ──
 
+function formatTime(seconds: number) {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
 function FluxMusicReplica() {
-  const currentTrack = MUSIC_QUEUE[0];
+  const [trackIndex, setTrackIndex] = useState(0);
+  const [progress, setProgress] = useState(0.62); // start at 62%
+  const [transitioning, setTransitioning] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const currentTrack = ALL_TRACKS[trackIndex % ALL_TRACKS.length];
+  const queueTracks = [
+    ALL_TRACKS[(trackIndex + 1) % ALL_TRACKS.length],
+    ALL_TRACKS[(trackIndex + 2) % ALL_TRACKS.length],
+  ];
+
+  const currentSeconds = Math.floor(progress * currentTrack.totalSeconds);
+
+  // Progress bar crawling
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setProgress((prev) => {
+        const increment = 1 / (currentTrack.totalSeconds * 3.33); // ~30s from 62% to 100%
+        const next = prev + increment;
+        if (next >= 1) {
+          // Track ended — advance
+          setTransitioning(true);
+          setTimeout(() => {
+            setTrackIndex((i) => i + 1);
+            setProgress(0);
+            setTransitioning(false);
+          }, 600);
+          return 1;
+        }
+        return next;
+      });
+    }, 100);
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [trackIndex, currentTrack.totalSeconds]);
 
   return (
     <div
@@ -501,12 +717,13 @@ function FluxMusicReplica() {
       }}
     >
       {/* Blurred backdrop gradient */}
-      <div
+      <motion.div
         className="absolute inset-0 pointer-events-none"
-        style={{
+        animate={{
           background: `radial-gradient(ellipse at 50% 30%, ${currentTrack.gradientFrom}18, transparent 70%)`,
-          filter: "blur(40px)",
         }}
+        transition={{ duration: 0.6 }}
+        style={{ filter: "blur(40px)" }}
       />
 
       {/* Vinyl + track info */}
@@ -533,16 +750,19 @@ function FluxMusicReplica() {
             transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
           >
             {/* Center album art */}
-            <div
+            <motion.div
               className="absolute rounded-full"
               style={{
                 width: "42%",
                 height: "42%",
                 top: "29%",
                 left: "29%",
+              }}
+              animate={{
                 background: `linear-gradient(135deg, ${currentTrack.gradientFrom}, ${currentTrack.gradientTo})`,
                 boxShadow: `0 0 20px ${currentTrack.gradientFrom}44`,
               }}
+              transition={{ duration: 0.6 }}
             />
             {/* Center hole */}
             <div
@@ -559,26 +779,36 @@ function FluxMusicReplica() {
         </div>
 
         {/* Track info */}
-        <div className="text-center mb-4">
-          <p
-            style={{
-              fontSize: "16px",
-              fontWeight: 700,
-              color: "#ffffff",
-              textShadow: "0 2px 8px rgba(0,0,0,0.5)",
-            }}
-          >
-            {currentTrack.title}
-          </p>
-          <p
-            style={{
-              fontSize: "13px",
-              color: "rgba(255,255,255,0.7)",
-              marginTop: "4px",
-            }}
-          >
-            {currentTrack.artist}
-          </p>
+        <div className="text-center mb-4 h-[52px]">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={trackIndex}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3 }}
+            >
+              <p
+                style={{
+                  fontSize: "16px",
+                  fontWeight: 700,
+                  color: "#ffffff",
+                  textShadow: "0 2px 8px rgba(0,0,0,0.5)",
+                }}
+              >
+                {currentTrack.title}
+              </p>
+              <p
+                style={{
+                  fontSize: "13px",
+                  color: "rgba(255,255,255,0.7)",
+                  marginTop: "4px",
+                }}
+              >
+                {currentTrack.artist}
+              </p>
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         {/* Progress bar */}
@@ -590,20 +820,19 @@ function FluxMusicReplica() {
               background: "rgba(255,255,255,0.12)",
             }}
           >
-            <div
+            <motion.div
               className="h-full rounded-full"
-              style={{
-                width: "62%",
-                background: "#ffffff",
-              }}
+              style={{ background: "#ffffff" }}
+              animate={{ width: `${progress * 100}%` }}
+              transition={{ duration: 0.1, ease: "linear" }}
             />
           </div>
           <div className="flex justify-between mt-1.5">
             <span style={{ fontSize: "11px", fontFamily: "monospace", color: "#888" }}>
-              2:30
+              {formatTime(currentSeconds)}
             </span>
             <span style={{ fontSize: "11px", fontFamily: "monospace", color: "#888" }}>
-              4:03
+              {currentTrack.duration}
             </span>
           </div>
         </div>
@@ -651,36 +880,72 @@ function FluxMusicReplica() {
             Queue
           </span>
         </div>
-        {MUSIC_QUEUE.slice(1).map((track, i) => (
-          <div
-            key={i}
-            className="flex items-center gap-3 px-4 py-2"
-            style={{ borderTop: "1px solid #16161666" }}
-          >
-            <div
-              className="rounded flex-shrink-0"
-              style={{
-                width: "32px",
-                height: "32px",
-                background: `linear-gradient(135deg, ${track.gradientFrom}, ${track.gradientTo})`,
-                borderRadius: "4px",
-              }}
-            />
-            <div className="flex-1 min-w-0">
-              <p style={{ fontSize: "12px", fontWeight: 500, color: "#e8e8e8" }}>
-                {track.title}
-              </p>
-              <p style={{ fontSize: "11px", color: "#888" }}>
-                {track.artist}
-              </p>
-            </div>
-            <span style={{ fontSize: "11px", color: "#555", flexShrink: 0 }}>
-              {track.duration}
-            </span>
-          </div>
-        ))}
+        <AnimatePresence mode="popLayout">
+          {queueTracks.map((track, i) => (
+            <motion.div
+              key={`${track.title}-${trackIndex}-${i}`}
+              layout
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.3, delay: i * 0.05 }}
+              className="flex items-center gap-3 px-4 py-2"
+              style={{ borderTop: "1px solid #16161666" }}
+            >
+              <motion.div
+                className="rounded flex-shrink-0"
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "4px",
+                }}
+                animate={{
+                  background: `linear-gradient(135deg, ${track.gradientFrom}, ${track.gradientTo})`,
+                }}
+                transition={{ duration: 0.4 }}
+              />
+              <div className="flex-1 min-w-0">
+                <p style={{ fontSize: "12px", fontWeight: 500, color: "#e8e8e8" }}>
+                  {track.title}
+                </p>
+                <p style={{ fontSize: "11px", color: "#888" }}>
+                  {track.artist}
+                </p>
+              </div>
+              <span style={{ fontSize: "11px", color: "#555", flexShrink: 0 }}>
+                {track.duration}
+              </span>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
+  );
+}
+
+// ── Krisp Logo ──
+
+function KrispLogo({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path
+        d="M2 12c1.5-3 3-5 4.5-5s2.5 2 4 2 2.5-4 4-4 2.5 3 4 3 2-2 3.5-2"
+        stroke="#43b581"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <path
+        d="M2 16c1.5-2 3-3.5 4.5-3.5s2.5 1.5 4 1.5 2.5-3 4-3 2.5 2 4 2 2-1.5 3.5-1.5"
+        stroke="#43b581"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+        opacity="0.5"
+      />
+    </svg>
   );
 }
 
@@ -690,6 +955,16 @@ function FluxHero() {
   return (
     <section className="relative pt-32 sm:pt-40 pb-6 px-6">
       <div className="relative mx-auto max-w-5xl">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          custom={0}
+          variants={fadeUp}
+          className="mb-4"
+        >
+          <FluxLogo size={48} />
+        </motion.div>
+
         <motion.h1
           className="text-[clamp(2.75rem,7vw,5.5rem)] font-medium tracking-[-0.025em] leading-[1.08]"
           initial="hidden"
@@ -863,6 +1138,14 @@ function VoiceSection() {
           title={"Crystal-clear audio.\nNoise suppression that actually works."}
           description="48kHz stereo Opus audio with Krisp AI noise suppression running locally on your device. Keyboard clatter, fans, and background chatter vanish — your voice stays untouched. Sub-45ms latency over LiveKit's globally distributed SFU."
         />
+
+        {/* Powered by Krisp badge */}
+        <ScrollReveal>
+          <div className="flex items-center gap-2 mb-8">
+            <KrispLogo size={20} />
+            <span className="text-xs text-foreground-muted">Powered by Krisp</span>
+          </div>
+        </ScrollReveal>
 
         <ScrollReveal>
           <FluxVoiceReplica />

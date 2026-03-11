@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   AudioWaveform,
@@ -12,16 +12,21 @@ import {
   Download,
   Apple,
   MonitorDot,
+  ArrowRight,
 } from "lucide-react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { PageTransition } from "@/components/page-transition";
 import {
   ScrollReveal,
   StaggerContainer,
   StaggerItem,
 } from "@/components/scroll-reveal";
+import { ScrollZoom } from "@/components/parallax";
 import { FluxLogo } from "@/components/flux-logo";
 import { BenchmarkSection, type BenchmarkGroup } from "@/components/benchmark";
 import { FLUX_FEATURES, SCREEN_SHARE_PRESETS } from "@/lib/constants";
+
+// ── Data ──
 
 const fluxBenchmarks: BenchmarkGroup[] = [
   {
@@ -68,6 +73,33 @@ const fluxBenchmarks: BenchmarkGroup[] = [
   },
 ];
 
+const SHOWCASE_SECTIONS = [
+  {
+    overline: "Voice",
+    title: "Talk with crystal clarity.",
+    description:
+      "48kHz stereo audio with Opus CBR encoding and Krisp AI noise suppression. Hear every detail without the background noise.",
+    image: "/flux/voice.png",
+    imageAlt: "Flux voice channel with participants in a call",
+  },
+  {
+    overline: "Screen Share",
+    title: "Share your screen, losslessly.",
+    description:
+      "Up to 4K VP9 at 20 Mbps with six quality presets. No compression artifacts, no framerate drops — your screen, pixel-perfect.",
+    image: "/flux/screenshare.png",
+    imageAlt: "Flux lossless screen sharing view",
+  },
+  {
+    overline: "Chat",
+    title: "Messaging that keeps up.",
+    description:
+      "Rich text, emoji reactions, file sharing, and threaded replies — all encrypted end-to-end with AES-256-GCM.",
+    image: "/flux/chat.png",
+    imageAlt: "Flux text chat with messages and reactions",
+  },
+];
+
 const iconMap = {
   AudioWaveform,
   Lock,
@@ -77,49 +109,131 @@ const iconMap = {
   Zap,
 } as const;
 
+// ── Hero ──
+
 function FluxHero() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 0.5], [0, -60]);
+  const smoothOpacity = useSpring(opacity, { stiffness: 100, damping: 30 });
+  const smoothY = useSpring(y, { stiffness: 100, damping: 30 });
+
   return (
-    <section className="relative min-h-[80vh] flex items-center">
-      <div className="mx-auto max-w-6xl px-6 pt-32 pb-20">
+    <section ref={ref} className="relative overflow-hidden">
+      {/* Text content */}
+      <motion.div
+        className="mx-auto max-w-6xl px-6 pt-40 pb-16 text-center"
+        style={{ opacity: smoothOpacity, y: smoothY }}
+      >
         <ScrollReveal>
-          <FluxLogo size={56} className="text-accent" />
+          <FluxLogo size={48} className="mx-auto text-accent" />
         </ScrollReveal>
         <ScrollReveal delay={0.1}>
-          <h1 className="mt-8 font-serif text-5xl sm:text-6xl md:text-7xl tracking-[-0.02em] leading-none">
-            Flux
+          <h1 className="mt-6 font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[-0.03em] leading-[0.9]">
+            Your group,
+            <br />
+            <span className="text-foreground-muted">your&nbsp;way.</span>
           </h1>
         </ScrollReveal>
         <ScrollReveal delay={0.2}>
-          <p className="mt-6 text-lg sm:text-xl text-foreground-muted max-w-lg leading-relaxed">
-            Real-time voice and text, built for people who care about audio quality.
-            Crystal-clear, encrypted, no compromises.
+          <p className="mt-6 text-lg sm:text-xl text-foreground-muted max-w-xl mx-auto leading-relaxed">
+            Crystal-clear voice, lossless screen sharing, and encrypted messaging
+            — in a desktop app lighter than a browser tab.
           </p>
         </ScrollReveal>
         <ScrollReveal delay={0.3}>
-          <div className="mt-8 flex items-center gap-4">
+          <div className="mt-8 flex items-center justify-center gap-4">
             <a
               href="#download"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
+              className="inline-flex items-center gap-2 px-7 py-3.5 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
             >
               <Download size={14} />
-              Download
+              Download for Free
             </a>
             <a
               href="#features"
-              className="text-sm text-foreground-muted hover:text-foreground transition-colors"
+              className="inline-flex items-center gap-2 px-7 py-3.5 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light transition-colors"
             >
-              View features &darr;
+              See Features
+              <ArrowRight size={14} />
             </a>
           </div>
         </ScrollReveal>
-      </div>
+      </motion.div>
+
+      {/* Hero screenshot — large, centered, with glow */}
+      <ScrollZoom className="mx-auto max-w-6xl px-6 pb-8">
+        <div className="relative">
+          <div className="absolute -inset-8 bg-accent/5 blur-3xl rounded-3xl pointer-events-none" />
+          <div className="relative border border-border rounded-lg overflow-hidden shadow-2xl shadow-black/40">
+            <img
+              src="/flux/hero.png"
+              alt="Flux desktop app showing voice chat and messaging"
+              className="w-full h-auto"
+            />
+          </div>
+        </div>
+      </ScrollZoom>
     </section>
   );
 }
 
+// ── Alternating Feature Showcase (Discord-style) ──
+
+function FeatureShowcase() {
+  return (
+    <section id="features" className="py-24 border-t border-border">
+      {SHOWCASE_SECTIONS.map((section, i) => {
+        const imageOnRight = i % 2 === 0;
+        return (
+          <div
+            key={section.overline}
+            className="mx-auto max-w-6xl px-6 py-20 grid md:grid-cols-2 gap-12 md:gap-16 items-center"
+          >
+            {/* Text */}
+            <div className={imageOnRight ? "md:order-1" : "md:order-2"}>
+              <ScrollReveal direction={imageOnRight ? "left" : "right"}>
+                <p className="overline mb-4">{section.overline}</p>
+                <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] leading-tight">
+                  {section.title}
+                </h2>
+                <p className="mt-4 text-foreground-muted leading-relaxed text-base sm:text-lg">
+                  {section.description}
+                </p>
+              </ScrollReveal>
+            </div>
+            {/* Screenshot */}
+            <div className={imageOnRight ? "md:order-2" : "md:order-1"}>
+              <ScrollReveal direction={imageOnRight ? "right" : "left"} delay={0.15}>
+                <div className="relative">
+                  <div className="absolute -inset-4 bg-accent/5 blur-2xl rounded-2xl pointer-events-none" />
+                  <div className="relative border border-border rounded-lg overflow-hidden shadow-xl shadow-black/30">
+                    <img
+                      src={section.image}
+                      alt={section.imageAlt}
+                      className="w-full h-auto"
+                    />
+                  </div>
+                </div>
+              </ScrollReveal>
+            </div>
+          </div>
+        );
+      })}
+    </section>
+  );
+}
+
+// ── Feature Grid ──
+
 function FeatureGrid() {
   return (
-    <section id="features" className="py-32 px-6 border-t border-border">
+    <section className="py-32 px-6 border-t border-border">
       <div className="mx-auto max-w-6xl">
         <ScrollReveal>
           <p className="overline mb-4">Features</p>
@@ -148,6 +262,27 @@ function FeatureGrid() {
     </section>
   );
 }
+
+// ── Benchmarks ──
+
+function FluxBenchmarks() {
+  return (
+    <BenchmarkSection
+      subtitle="Performance"
+      title="Voice chat that respects your machine."
+      description="Flux uses less memory at idle than Discord uses to show its loading screen. Smaller install, lower latency, higher audio quality — without draining your battery or hogging your CPU."
+      benchmarks={fluxBenchmarks}
+      statCards={[
+        { value: "6.7×", label: "Less memory", detail: "48 MB vs 320 MB idle" },
+        { value: "25×", label: "Smaller install", detail: "12 MB vs 300 MB" },
+        { value: "2.7×", label: "Lower latency", detail: "45ms vs 120ms voice P95" },
+        { value: "3.3×", label: "Higher bitrate", detail: "320 kbps vs 96 kbps audio" },
+      ]}
+    />
+  );
+}
+
+// ── Tech Specs ──
 
 function TechSpecs() {
   const specs = [
@@ -245,22 +380,7 @@ function TechSpecs() {
   );
 }
 
-function FluxBenchmarks() {
-  return (
-    <BenchmarkSection
-      subtitle="Performance"
-      title="Voice chat that respects your machine."
-      description="Flux uses less memory at idle than Discord uses to show its loading screen. Smaller install, lower latency, higher audio quality — without draining your battery or hogging your CPU."
-      benchmarks={fluxBenchmarks}
-      statCards={[
-        { value: "6.7×", label: "Less memory", detail: "48 MB vs 320 MB idle" },
-        { value: "25×", label: "Smaller install", detail: "12 MB vs 300 MB" },
-        { value: "2.7×", label: "Lower latency", detail: "45ms vs 120ms voice P95" },
-        { value: "3.3×", label: "Higher bitrate", detail: "320 kbps vs 96 kbps audio" },
-      ]}
-    />
-  );
-}
+// ── Download CTA ──
 
 function DownloadCTA() {
   const [authState, setAuthState] = useState<"loading" | "none" | "no-sub" | "active">("loading");
@@ -294,19 +414,31 @@ function DownloadCTA() {
     }
   };
 
+  const ctaLabel =
+    authState === "none"
+      ? "Sign Up to Download"
+      : authState === "no-sub"
+        ? "Subscribe to Download"
+        : "Download for macOS";
+
   return (
     <section
       id="download"
-      className="py-32 px-6 border-t border-border"
+      className="relative py-40 px-6 border-t border-border overflow-hidden"
     >
-      <div className="mx-auto max-w-6xl text-center">
+      {/* Subtle radial glow */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-[600px] h-[400px] bg-accent/5 blur-[120px] rounded-full" />
+      </div>
+
+      <div className="relative mx-auto max-w-6xl text-center">
         <ScrollReveal>
-          <p className="overline mb-4">Download</p>
-          <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em]">
+          <FluxLogo size={40} className="mx-auto text-accent mb-6" />
+          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl tracking-[-0.02em]">
             Ready when you are.
           </h2>
-          <p className="mt-4 text-foreground-muted max-w-md mx-auto">
-            Native desktop app — no browser required.
+          <p className="mt-4 text-foreground-muted max-w-md mx-auto text-lg">
+            Native desktop app — no browser required, no Electron overhead.
           </p>
         </ScrollReveal>
 
@@ -317,30 +449,32 @@ function DownloadCTA() {
               className="inline-flex items-center gap-2 px-8 py-4 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
             >
               <Apple size={16} />
-              {authState === "none"
-                ? "Sign Up to Download"
-                : authState === "no-sub"
-                  ? "Subscribe to Download"
-                  : "Download for macOS"}
+              {ctaLabel}
             </button>
             <button
-              disabled
-              className="inline-flex items-center gap-2 px-8 py-4 border border-border text-foreground-muted/50 text-sm cursor-not-allowed"
+              onClick={handleDownloadClick}
+              className="inline-flex items-center gap-2 px-8 py-4 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light transition-colors"
             >
               <MonitorDot size={16} />
-              Windows &amp; Linux — Soon
+              {authState === "active" ? "Download for Windows" : ctaLabel}
             </button>
           </div>
+          <p className="mt-4 text-xs text-foreground-muted/60">
+            Available for macOS and Windows. Linux coming soon.
+          </p>
         </ScrollReveal>
       </div>
     </section>
   );
 }
 
+// ── Page ──
+
 export default function FluxPage() {
   return (
     <PageTransition>
       <FluxHero />
+      <FeatureShowcase />
       <FeatureGrid />
       <FluxBenchmarks />
       <TechSpecs />

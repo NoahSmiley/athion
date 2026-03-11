@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   AudioWaveform, Lock, Monitor, MicOff, MessageSquare, Zap,
-  Download, Apple, MonitorDot, ArrowRight, Shield, Volume2,
+  Download, Apple, MonitorDot, ArrowRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { PageTransition } from "@/components/page-transition";
@@ -28,10 +28,9 @@ const FEATURE_SHOWCASES = [
   {
     overline: "Messaging",
     title: "Conversations that flow.",
-    description: "Rich text messaging with inline emoji, reactions, threaded replies, and file sharing — all encrypted end-to-end before leaving your device.",
+    description: "Rich text messaging with emoji, reactions, threaded replies, and file sharing — all encrypted end-to-end before it leaves your device.",
     image: "/flux/chat.png",
     imageAlt: "Flux chat messages with multi-user conversation",
-    gradient: "from-blue-500/20 via-indigo-500/10 to-transparent",
     stats: [
       { value: "AES-256", label: "Encryption" },
       { value: "E2EE", label: "Every Message" },
@@ -40,24 +39,22 @@ const FEATURE_SHOWCASES = [
   {
     overline: "Voice",
     title: "Audio that disappears.",
-    description: "48kHz stereo Opus audio with Krisp AI noise suppression. Keyboard clatter, fans, and background chatter vanish — your voice stays untouched.",
+    description: "48kHz stereo Opus with Krisp AI noise suppression. Keyboard clatter, fans, and background chatter vanish — your voice stays untouched.",
     image: "/flux/voice.png",
     imageAlt: "Flux voice channel with connected users",
-    gradient: "from-emerald-500/20 via-teal-500/10 to-transparent",
     stats: [
       { value: "48kHz", label: "Sample Rate" },
       { value: "320kbps", label: "Bitrate" },
     ],
   },
   {
-    overline: "Screen Share",
-    title: "Every pixel, exactly as you see it.",
-    description: "VP9 screen sharing up to 4K at 20 Mbps with six quality presets. Your IDE, your game, your design — lossless when you need it.",
+    overline: "Channels",
+    title: "Your space, organized.",
+    description: "Text channels, voice rooms, and categories — all in a clean sidebar. Jump between conversations instantly. No loading screens, no lag.",
     image: "/flux/sidebar.png",
     imageAlt: "Flux channel sidebar with text and voice channels",
-    gradient: "from-violet-500/20 via-purple-500/10 to-transparent",
     stats: [
-      { value: "4K", label: "Max Resolution" },
+      { value: "4K", label: "Screen Share" },
       { value: "60fps", label: "Frame Rate" },
     ],
   },
@@ -164,7 +161,6 @@ function AppShowcase() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          {/* Glow effect */}
           <div className="absolute -inset-16 bg-accent/[0.03] rounded-[3rem] blur-3xl pointer-events-none" />
           <div className="absolute -inset-8 bg-accent/[0.02] rounded-[2rem] blur-2xl pointer-events-none" />
 
@@ -182,6 +178,8 @@ function AppShowcase() {
 }
 
 // ── Feature Showcase Sections ──
+// Discord-inspired: image dominates, text is secondary. Each section is a full-width
+// moment with the screenshot taking up most of the visual space.
 
 function FeatureShowcase({
   overline,
@@ -189,7 +187,6 @@ function FeatureShowcase({
   description,
   image,
   imageAlt,
-  gradient,
   stats,
   reversed,
 }: {
@@ -198,57 +195,50 @@ function FeatureShowcase({
   description: string;
   image: string;
   imageAlt: string;
-  gradient: string;
   stats: { value: string; label: string }[];
   reversed?: boolean;
 }) {
   return (
-    <section className="py-32 px-6">
+    <section className="py-24 sm:py-32 px-6 overflow-hidden">
       <div className="mx-auto max-w-6xl">
-        <div className={`grid lg:grid-cols-2 gap-12 lg:gap-20 items-center`}>
-          {/* Screenshot in gradient container */}
-          <ScrollReveal
-            direction={reversed ? "right" : "left"}
-            className={reversed ? "lg:order-2" : ""}
-          >
-            <div className="relative">
-              {/* Gradient background container */}
-              <div className={`absolute -inset-4 rounded-2xl bg-gradient-to-br ${gradient} blur-sm`} />
-              <div className={`relative rounded-2xl bg-gradient-to-br ${gradient} p-6 sm:p-8`}>
-                <div className="rounded-lg overflow-hidden shadow-2xl shadow-black/30 border border-white/[0.08]">
-                  <img
-                    src={image}
-                    alt={imageAlt}
-                    className="w-full h-auto block"
-                  />
-                </div>
-              </div>
-            </div>
-          </ScrollReveal>
-
-          {/* Content */}
-          <div className={reversed ? "lg:order-1" : ""}>
-            <ScrollReveal delay={0.1}>
+        {/* Text — compact, above the image on mobile, beside it on desktop */}
+        <div className={`grid lg:grid-cols-[1fr_1.8fr] gap-10 lg:gap-16 items-center ${reversed ? "lg:grid-cols-[1.8fr_1fr]" : ""}`}>
+          <div className={reversed ? "lg:order-2" : ""}>
+            <ScrollReveal>
               <p className="overline mb-4">{overline}</p>
-              <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] leading-tight">
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl tracking-[-0.02em] leading-tight">
                 {title}
               </h2>
-              <p className="mt-6 text-foreground-muted leading-relaxed max-w-lg">
+              <p className="mt-4 text-foreground-muted leading-relaxed">
                 {description}
               </p>
-            </ScrollReveal>
-
-            <ScrollReveal delay={0.2}>
-              <div className="mt-10 flex gap-10">
+              <div className="mt-8 flex gap-8">
                 {stats.map((stat) => (
                   <div key={stat.label}>
-                    <div className="text-2xl font-mono font-medium text-accent">{stat.value}</div>
-                    <div className="text-xs text-foreground-muted mt-1">{stat.label}</div>
+                    <div className="text-xl font-mono font-medium text-accent">{stat.value}</div>
+                    <div className="text-[10px] uppercase tracking-[0.15em] text-foreground-muted/50 mt-1">{stat.label}</div>
                   </div>
                 ))}
               </div>
             </ScrollReveal>
           </div>
+
+          {/* Image — large, dominant */}
+          <ScrollReveal
+            direction={reversed ? "left" : "right"}
+            className={reversed ? "lg:order-1" : ""}
+          >
+            <div className="relative">
+              <div className="absolute -inset-6 bg-accent/[0.02] rounded-3xl blur-2xl pointer-events-none" />
+              <div className="relative rounded-xl overflow-hidden border border-border shadow-2xl shadow-black/20">
+                <img
+                  src={image}
+                  alt={imageAlt}
+                  className="w-full h-auto block"
+                />
+              </div>
+            </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>

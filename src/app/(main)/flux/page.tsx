@@ -24,38 +24,47 @@ const fluxBenchmarks: BenchmarkGroup[] = [
   { metric: "Audio Quality (Bitrate)", ours: { label: "Flux", value: 320 }, theirs: { label: "Discord", value: 96 }, unit: " kbps", lowerIsBetter: false },
 ];
 
-const FEATURE_SHOWCASES = [
+const FEATURE_SECTIONS = [
   {
-    overline: "Messaging",
-    title: "Conversations that flow.",
-    description: "Rich text messaging with emoji, reactions, threaded replies, and file sharing — all encrypted end-to-end before it leaves your device.",
+    number: "1.0",
+    label: "Messaging",
+    title: "Encrypted by default.\nConversations that stay yours.",
+    description: "Every message, file, and reaction is encrypted end-to-end with AES-256-GCM before leaving your device. Rich text, emoji, reactions, and threaded replies — without compromising privacy.",
     image: "/flux/chat.png",
-    imageAlt: "Flux chat messages with multi-user conversation",
-    stats: [
-      { value: "AES-256", label: "Encryption" },
-      { value: "E2EE", label: "Every Message" },
+    imageAlt: "Flux chat interface showing channel sidebar and encrypted conversation",
+    subFeatures: [
+      { number: "1.1", label: "End-to-end encryption" },
+      { number: "1.2", label: "Rich messaging" },
+      { number: "1.3", label: "File sharing" },
+      { number: "1.4", label: "Reactions & threads" },
     ],
   },
   {
-    overline: "Voice",
-    title: "Audio that disappears.",
-    description: "48kHz stereo Opus with Krisp AI noise suppression. Keyboard clatter, fans, and background chatter vanish — your voice stays untouched.",
+    number: "2.0",
+    label: "Voice",
+    title: "Crystal-clear audio.\nNoise suppression that actually works.",
+    description: "48kHz stereo Opus audio with Krisp AI noise suppression running locally on your device. Keyboard clatter, fans, and background chatter vanish — your voice stays untouched. Sub-45ms latency over LiveKit's globally distributed SFU.",
     image: "/flux/voice.png",
-    imageAlt: "Flux voice channel with connected users",
-    stats: [
-      { value: "48kHz", label: "Sample Rate" },
-      { value: "320kbps", label: "Bitrate" },
+    imageAlt: "Flux voice room with connected participants",
+    subFeatures: [
+      { number: "2.1", label: "48kHz stereo" },
+      { number: "2.2", label: "Krisp noise filter" },
+      { number: "2.3", label: "320kbps bitrate" },
+      { number: "2.4", label: "<45ms latency" },
     ],
   },
   {
-    overline: "Channels",
-    title: "Your space, organized.",
-    description: "Text channels, voice rooms, and categories — all in a clean sidebar. Jump between conversations instantly. No loading screens, no lag.",
-    image: "/flux/sidebar.png",
-    imageAlt: "Flux channel sidebar with text and voice channels",
-    stats: [
-      { value: "4K", label: "Screen Share" },
-      { value: "60fps", label: "Frame Rate" },
+    number: "3.0",
+    label: "Screen Share",
+    title: "Lossless streaming.\nEvery pixel, exactly as you see it.",
+    description: "VP9 screen sharing up to 4K at 20 Mbps with six quality presets. Share your IDE, your game, or your design — from 480p30 all the way to lossless. No Nitro required.",
+    image: "/flux/channels.png",
+    imageAlt: "Flux application showing channel organization and screen sharing",
+    subFeatures: [
+      { number: "3.1", label: "4K resolution" },
+      { number: "3.2", label: "60fps streaming" },
+      { number: "3.3", label: "VP9 codec" },
+      { number: "3.4", label: "6 quality presets" },
     ],
   },
 ];
@@ -72,104 +81,80 @@ const fadeUp = {
 };
 
 // ── Hero ──
+// Linear-style: large thin headline, subtitle in muted color, screenshot below
 
 function FluxHero() {
   return (
-    <section className="relative pt-40 sm:pt-48 pb-20 px-6">
-      <div className="relative mx-auto max-w-4xl text-center">
-        <motion.div initial="hidden" animate="visible" custom={0} variants={fadeUp}>
-          <FluxLogo size={36} className="text-foreground-muted/50 mx-auto" />
-        </motion.div>
+    <section className="relative pt-32 sm:pt-40 pb-6 px-6">
+      <div className="relative mx-auto max-w-5xl">
+        <motion.p
+          className="text-sm text-foreground-muted mb-6"
+          initial="hidden"
+          animate="visible"
+          custom={0}
+          variants={fadeUp}
+        >
+          Purpose-built for teams who value privacy. Designed for performance.
+        </motion.p>
 
         <motion.h1
-          className="mt-10 font-serif text-5xl sm:text-6xl md:text-7xl tracking-[-0.02em] leading-[1.05]"
+          className="text-[clamp(2.5rem,6vw,4.5rem)] font-light tracking-[-0.03em] leading-[1.1]"
           initial="hidden"
           animate="visible"
           custom={0.1}
           variants={fadeUp}
         >
-          Voice chat that&apos;s
-          <br />
-          all signal.
+          <span className="text-foreground">The voice chat platform </span>
+          <span className="text-foreground-muted">that doesn&apos;t spy on you, doesn&apos;t eat your RAM, and sounds like you&apos;re in the same room.</span>
         </motion.h1>
 
-        <motion.p
-          className="mt-6 text-lg sm:text-xl text-foreground-muted max-w-xl mx-auto leading-relaxed"
+        <motion.div
+          className="mt-10 flex flex-wrap items-center gap-4"
           initial="hidden"
           animate="visible"
           custom={0.2}
           variants={fadeUp}
         >
-          Crystal-clear audio, lossless screen sharing, and encrypted messaging — in a desktop app lighter than a browser tab.
-        </motion.p>
-
-        <motion.div
-          className="mt-10 flex flex-wrap items-center justify-center gap-3"
-          initial="hidden"
-          animate="visible"
-          custom={0.3}
-          variants={fadeUp}
-        >
           <a
             href="#download"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-accent-foreground text-sm font-medium rounded-sm hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:opacity-90 transition-opacity"
           >
             <Download size={14} />
             Download for Free
           </a>
           <a
             href="#features"
-            className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm rounded-sm hover:text-foreground hover:border-foreground/20 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-foreground transition-colors"
           >
-            See Features
+            See what&apos;s inside
             <ArrowRight size={14} />
           </a>
-        </motion.div>
-
-        <motion.div
-          className="mt-16 flex items-center justify-center gap-16"
-          initial="hidden"
-          animate="visible"
-          custom={0.4}
-          variants={fadeUp}
-        >
-          {[
-            { value: "48MB", label: "Memory" },
-            { value: "<45ms", label: "Latency" },
-            { value: "320kbps", label: "Audio" },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="text-xl font-mono font-medium text-foreground tracking-tight">{stat.value}</div>
-              <div className="text-[10px] uppercase tracking-[0.15em] text-foreground-muted/50 mt-1">{stat.label}</div>
-            </div>
-          ))}
         </motion.div>
       </div>
     </section>
   );
 }
 
-// ── App Showcase (Hero Screenshot) ──
+// ── Hero Screenshot ──
 
-function AppShowcase() {
+function HeroScreenshot() {
   return (
-    <section className="relative px-6 pb-32">
+    <section className="relative px-6 pt-16 pb-32">
       <div className="mx-auto max-w-6xl">
         <motion.div
           className="relative"
-          initial={{ opacity: 0, y: 40, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          <div className="absolute -inset-16 bg-accent/[0.03] rounded-[3rem] blur-3xl pointer-events-none" />
-          <div className="absolute -inset-8 bg-accent/[0.02] rounded-[2rem] blur-2xl pointer-events-none" />
-
-          <div className="relative rounded-xl overflow-hidden border border-border shadow-2xl shadow-black/20">
+          <div className="relative rounded-lg overflow-hidden border border-border/50">
             <img
               src="/flux/hero.png"
               alt="Flux — Desktop chat application with voice, messaging, and screen sharing"
               className="w-full h-auto block"
             />
+            {/* Bottom fade to blend into background */}
+            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none" />
           </div>
         </motion.div>
       </div>
@@ -177,83 +162,85 @@ function AppShowcase() {
   );
 }
 
-// ── Feature Showcase Sections ──
-// Discord-inspired: image dominates, text is secondary. Each section is a full-width
-// moment with the screenshot taking up most of the visual space.
+// ── Feature Section ──
+// Linear-style: section number + label, headline + description side-by-side at top,
+// full-width screenshot below, sub-feature links at bottom
 
-function FeatureShowcase({
-  overline,
+function FeatureSection({
+  number,
+  label,
   title,
   description,
   image,
   imageAlt,
-  stats,
-  reversed,
+  subFeatures,
 }: {
-  overline: string;
+  number: string;
+  label: string;
   title: string;
   description: string;
   image: string;
   imageAlt: string;
-  stats: { value: string; label: string }[];
-  reversed?: boolean;
+  subFeatures: { number: string; label: string }[];
 }) {
   return (
-    <section className="py-24 sm:py-32 px-6 overflow-hidden">
+    <section className="py-24 sm:py-32 px-6 border-t border-border/50">
       <div className="mx-auto max-w-6xl">
-        {/* Text — compact, above the image on mobile, beside it on desktop */}
-        <div className={`grid lg:grid-cols-[1fr_1.8fr] gap-10 lg:gap-16 items-center ${reversed ? "lg:grid-cols-[1.8fr_1fr]" : ""}`}>
-          <div className={reversed ? "lg:order-2" : ""}>
-            <ScrollReveal>
-              <p className="overline mb-4">{overline}</p>
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl tracking-[-0.02em] leading-tight">
-                {title}
-              </h2>
-              <p className="mt-4 text-foreground-muted leading-relaxed">
-                {description}
-              </p>
-              <div className="mt-8 flex gap-8">
-                {stats.map((stat) => (
-                  <div key={stat.label}>
-                    <div className="text-xl font-mono font-medium text-accent">{stat.value}</div>
-                    <div className="text-[10px] uppercase tracking-[0.15em] text-foreground-muted/50 mt-1">{stat.label}</div>
-                  </div>
-                ))}
-              </div>
-            </ScrollReveal>
+        {/* Section number + arrow */}
+        <ScrollReveal>
+          <div className="flex items-center gap-2 mb-16">
+            <span className="text-sm font-mono text-foreground-muted">{number}</span>
+            <span className="text-sm text-foreground-muted">{label}</span>
+            <ArrowRight size={14} className="text-foreground-muted" />
           </div>
+        </ScrollReveal>
 
-          {/* Image — large, dominant */}
-          <ScrollReveal
-            direction={reversed ? "left" : "right"}
-            className={reversed ? "lg:order-1" : ""}
-          >
-            <div className="relative">
-              <div className="absolute -inset-6 bg-accent/[0.02] rounded-3xl blur-2xl pointer-events-none" />
-              <div className="relative rounded-xl overflow-hidden border border-border shadow-2xl shadow-black/20">
-                <img
-                  src={image}
-                  alt={imageAlt}
-                  className="w-full h-auto block"
-                />
-              </div>
-            </div>
+        {/* Headline left, description right — Linear style */}
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-16">
+          <ScrollReveal>
+            <h2 className="text-[clamp(2rem,4vw,3rem)] font-light tracking-[-0.02em] leading-[1.15] text-foreground whitespace-pre-line">
+              {title}
+            </h2>
+          </ScrollReveal>
+          <ScrollReveal delay={0.1}>
+            <p className="text-foreground-muted leading-relaxed lg:pt-2">
+              {description}
+            </p>
           </ScrollReveal>
         </div>
+
+        {/* Full-width screenshot */}
+        <ScrollReveal>
+          <div className="relative rounded-lg overflow-hidden border border-border/50">
+            <img
+              src={image}
+              alt={imageAlt}
+              className="w-full h-auto block"
+            />
+          </div>
+        </ScrollReveal>
+
+        {/* Sub-feature links */}
+        <ScrollReveal delay={0.1}>
+          <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {subFeatures.map((sf) => (
+              <div key={sf.number} className="flex items-baseline gap-2">
+                <span className="text-sm font-mono text-foreground-muted/50">{sf.number}</span>
+                <span className="text-sm text-foreground-muted">{sf.label}</span>
+              </div>
+            ))}
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
 }
 
-function FeatureShowcases() {
+function FeatureSections() {
   return (
     <div id="features">
-      {FEATURE_SHOWCASES.map((feature, i) => (
-        <FeatureShowcase
-          key={feature.overline}
-          {...feature}
-          reversed={i % 2 === 1}
-        />
+      {FEATURE_SECTIONS.map((section) => (
+        <FeatureSection key={section.number} {...section} />
       ))}
     </div>
   );
@@ -263,25 +250,23 @@ function FeatureShowcases() {
 
 function FeatureGrid() {
   return (
-    <section className="py-32 px-6 border-t border-border">
+    <section className="py-32 px-6 border-t border-border/50">
       <div className="mx-auto max-w-6xl">
         <ScrollReveal>
           <p className="overline mb-4">Details</p>
-          <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] leading-tight max-w-2xl">
+          <h2 className="text-[clamp(2rem,4vw,3rem)] font-light tracking-[-0.02em] leading-[1.15] max-w-2xl">
             Every detail, considered.
           </h2>
         </ScrollReveal>
 
-        <StaggerContainer className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <StaggerContainer className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border/50">
           {FLUX_FEATURES.map((feature) => {
             const Icon = iconMap[feature.icon];
             return (
               <StaggerItem key={feature.title}>
-                <div className="group p-6 rounded-sm border border-border bg-background-elevated hover:bg-background-elevated/80 transition-colors duration-300 h-full">
-                  <div className="w-10 h-10 rounded-sm bg-accent/10 flex items-center justify-center">
-                    <Icon size={16} className="text-accent" />
-                  </div>
-                  <h3 className="mt-4 text-sm font-medium text-foreground">{feature.title}</h3>
+                <div className="bg-background p-8 h-full">
+                  <Icon size={16} className="text-foreground-muted mb-4" />
+                  <h3 className="text-sm font-medium text-foreground">{feature.title}</h3>
                   <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
                     {feature.description}
                   </p>
@@ -331,13 +316,13 @@ function TechSpecs() {
   ];
 
   return (
-    <section className="py-32 px-6 border-t border-border">
+    <section className="py-32 px-6 border-t border-border/50">
       <div className="mx-auto max-w-6xl">
         <div className="grid lg:grid-cols-2 gap-16">
           <div>
             <ScrollReveal>
               <p className="overline mb-4">Specifications</p>
-              <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] leading-tight">
+              <h2 className="text-[clamp(2rem,4vw,3rem)] font-light tracking-[-0.02em] leading-[1.15]">
                 Under the hood.
               </h2>
               <p className="mt-6 text-foreground-muted leading-relaxed">
@@ -347,7 +332,7 @@ function TechSpecs() {
             <StaggerContainer className="mt-10 grid grid-cols-2 gap-x-8 gap-y-4">
               {specs.map((spec) => (
                 <StaggerItem key={spec.label}>
-                  <div className="border-t border-border pt-4">
+                  <div className="border-t border-border/50 pt-4">
                     <p className="text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em]">{spec.label}</p>
                     <p className="mt-1 text-sm font-mono text-foreground/70">{spec.value}</p>
                   </div>
@@ -358,10 +343,10 @@ function TechSpecs() {
           <div>
             <ScrollReveal delay={0.15}>
               <p className="overline mb-4">Screen Share Presets</p>
-              <div className="border border-border rounded-sm overflow-hidden">
+              <div className="border border-border/50 rounded-sm overflow-hidden">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-border bg-background-elevated">
+                    <tr className="border-b border-border/50 bg-background-elevated">
                       <th className="text-left px-5 py-3 text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em] font-normal">Preset</th>
                       <th className="text-left px-5 py-3 text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em] font-normal">Codec</th>
                       <th className="text-left px-5 py-3 text-[10px] text-foreground-muted/50 uppercase tracking-[0.15em] font-normal">Bitrate</th>
@@ -370,7 +355,7 @@ function TechSpecs() {
                   </thead>
                   <tbody>
                     {SCREEN_SHARE_PRESETS.map((row) => (
-                      <tr key={row.preset} className="border-b border-border/50 last:border-b-0 hover:bg-background-elevated/50 transition-colors">
+                      <tr key={row.preset} className="border-b border-border/30 last:border-b-0 hover:bg-background-elevated/50 transition-colors">
                         <td className="px-5 py-3 font-mono text-foreground/60 text-xs">{row.preset}</td>
                         <td className="px-5 py-3 font-mono text-foreground-muted text-xs">{row.codec}</td>
                         <td className="px-5 py-3 font-mono text-foreground-muted text-xs">{row.bitrate}</td>
@@ -416,36 +401,33 @@ function DownloadCTA() {
   const ctaLabel = authState === "none" ? "Sign Up to Download" : authState === "no-sub" ? "Subscribe to Download" : "Download for macOS";
 
   return (
-    <section id="download" className="py-32 px-6 border-t border-border">
-      <div className="mx-auto max-w-3xl text-center">
+    <section id="download" className="py-32 px-6 border-t border-border/50">
+      <div className="mx-auto max-w-5xl">
         <ScrollReveal>
-          <p className="overline mb-4">Get Started</p>
-          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl tracking-[-0.02em] leading-tight">
-            Ready to switch?
+          <h2 className="text-[clamp(2.5rem,5vw,4rem)] font-light tracking-[-0.03em] leading-[1.1]">
+            <span className="text-foreground">Ready to switch? </span>
+            <span className="text-foreground-muted">Join the voice chat that respects your privacy and your machine.</span>
           </h2>
-          <p className="mt-6 text-foreground-muted max-w-md mx-auto leading-relaxed">
-            Join the voice chat that doesn&apos;t spy on you, doesn&apos;t eat your RAM, and sounds like you&apos;re in the same room.
-          </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="mt-10 flex flex-wrap items-center gap-4">
             <button
               onClick={handleDownloadClick}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-accent-foreground text-sm font-medium rounded-sm hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:opacity-90 transition-opacity"
             >
               <Apple size={14} />
               {ctaLabel}
             </button>
             <button
               onClick={handleDownloadClick}
-              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm rounded-sm hover:text-foreground hover:border-foreground/20 transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground-muted text-sm rounded-full hover:text-foreground hover:border-foreground/20 transition-colors"
             >
               <MonitorDot size={14} />
               {authState === "active" ? "Download for Windows" : ctaLabel}
             </button>
           </div>
-          <p className="mt-5 text-xs text-foreground-muted/50">
+          <p className="mt-6 text-xs text-foreground-muted/50">
             Available for macOS and Windows. Linux coming soon.
           </p>
         </ScrollReveal>
@@ -460,8 +442,8 @@ export default function FluxPage() {
   return (
     <PageTransition>
       <FluxHero />
-      <AppShowcase />
-      <FeatureShowcases />
+      <HeroScreenshot />
+      <FeatureSections />
       <FeatureGrid />
       <FluxBenchmarks />
       <TechSpecs />

@@ -59,52 +59,52 @@ const SIDEBAR_CHANNELS = [
 ];
 
 const USERS = {
-  noah: { id: "N", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=noah&backgroundColor=6366f1", color: "#6366f1" },
-  sarah: { id: "S", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=sarah&backgroundColor=8b5cf6", color: "#8b5cf6" },
-  james: { id: "J", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=james&backgroundColor=f59e0b", color: "#f59e0b" },
-  alex: { id: "A", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=alex&backgroundColor=0ea5e9", color: "#0ea5e9" },
-  emma: { id: "E", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=emma&backgroundColor=10b981", color: "#10b981" },
+  noah: { id: "N", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Noah&top=shortCurly&facialHair=blank&clothes=hoodie&clothesColor=6366f1&skinColor=light", color: "#6366f1" },
+  trevor: { id: "T", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Trevor&top=shortFlat&facialHair=beardLight&clothes=blazerAndShirt&skinColor=light", color: "#8b5cf6" },
+  riley: { id: "R", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Riley&top=shortWaved&facialHair=blank&clothes=graphicShirt&clothesColor=0ea5e9&skinColor=light", color: "#0ea5e9" },
+  quinn: { id: "Q", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Quinn&top=dreads01&facialHair=beardMedium&clothes=hoodie&clothesColor=f59e0b&skinColor=brown", color: "#f59e0b" },
+  elijah: { id: "E", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Elijah&top=shortRound&facialHair=blank&clothes=collarAndSweater&clothesColor=10b981&skinColor=light", color: "#10b981" },
 };
 
 // ── Hero Replica Messages (matching real app conversation) ──
 
 const HERO_INITIAL_MESSAGES = [
   { id: 1, user: "noah", time: "1m ago", text: "Opus at 48kHz stereo, constant bitrate. The quality difference is insane compared to what we had before" },
-  { id: 2, user: "sarah", time: "1m ago", text: "Just tested it — the noise suppression is so clean. I had my mechanical keyboard going and nobody could hear it" },
-  { id: 3, user: "james", time: "1m ago", text: "That's the Krisp integration right?" },
-  { id: 4, user: "sarah", time: "1m ago", text: "Yeah, it runs locally too. No audio gets sent to any third party" },
-  { id: 5, user: "alex", time: "1m ago", text: "What about screen share? I noticed the preset selector got updated" },
+  { id: 2, user: "trevor", time: "1m ago", text: "Just tested it — the noise suppression is so clean. I had my mechanical keyboard going and nobody could hear it" },
+  { id: 3, user: "quinn", time: "1m ago", text: "That's the Krisp integration right?" },
+  { id: 4, user: "trevor", time: "1m ago", text: "Yeah, it runs locally too. No audio gets sent to any third party" },
+  { id: 5, user: "riley", time: "1m ago", text: "What about screen share? I noticed the preset selector got updated" },
   { id: 6, user: "noah", time: "1m ago", text: "We now have 6 presets from 480p30 all the way up to lossless VP9 at 4K. The lossless mode does 20 Mbps" },
-  { id: 7, user: "james", time: "1m ago", text: "20 Mbps?? That's wild. Discord caps at like 720p on Nitro" },
-  { id: 8, user: "alex", time: "1m ago", text: "How's the latency looking?" },
+  { id: 7, user: "quinn", time: "1m ago", text: "20 Mbps?? That's wild. Discord caps at like 720p on Nitro" },
+  { id: 8, user: "riley", time: "1m ago", text: "How's the latency looking?" },
 ];
 
 const HERO_EXTRA_MESSAGES = [
   { user: "noah", text: "P95 is under 45ms. LiveKit's SFU architecture is really paying off" },
-  { user: "sarah", text: "The memory usage is what gets me. 48MB idle vs Discord eating 300+ MB just sitting there" },
-  { user: "james", text: "My laptop thanks you" },
-  { user: "alex", text: "Are we still on track for the encryption rollout?" },
+  { user: "trevor", text: "The memory usage is what gets me. 48MB idle vs Discord eating 300+ MB just sitting there" },
+  { user: "quinn", text: "My laptop thanks you" },
+  { user: "riley", text: "Are we still on track for the encryption rollout?" },
   { user: "noah", text: "E2EE is already live — AES-256-GCM with ECDH key exchange. Every message, every file, every reaction" },
-  { user: "sarah", text: "Love that it's on by default and not some premium upsell" },
-  { user: "james", text: "This is genuinely the best voice app I've used. The whole thing feels so fast" },
-  { user: "alex", text: "Agreed. Switching to this full time, no question" },
+  { user: "trevor", text: "Love that it's on by default and not some premium upsell" },
+  { user: "quinn", text: "This is genuinely the best voice app I've used. The whole thing feels so fast" },
+  { user: "riley", text: "Agreed. Switching to this full time, no question" },
 ];
 
 // ── Section Chat Replica Messages ──
 
 const SECTION_INITIAL_MESSAGES = [
   { id: 1, user: "noah", time: "2:14 PM", text: "just pushed the new voice engine. latency is down to 38ms" },
-  { id: 2, user: "alex", time: "2:15 PM", text: "no way, that's insane. testing now" },
-  { id: 3, user: "sarah", time: "2:16 PM", text: "the noise suppression update is live too. keyboard sounds are completely gone" },
-  { id: 4, user: "james", time: "2:18 PM", text: "screen share looks crisp at 4K. huge improvement over last week" },
+  { id: 2, user: "riley", time: "2:15 PM", text: "no way, that's insane. testing now" },
+  { id: 3, user: "trevor", time: "2:16 PM", text: "the noise suppression update is live too. keyboard sounds are completely gone" },
+  { id: 4, user: "quinn", time: "2:18 PM", text: "screen share looks crisp at 4K. huge improvement over last week" },
 ];
 
 const SECTION_EXTRA_MESSAGES = [
-  { user: "alex", text: "anyone want to test the new update?" },
+  { user: "riley", text: "anyone want to test the new update?" },
   { user: "noah", text: "the latency improvement is wild" },
-  { user: "sarah", text: "just ran a voice test — zero crackling" },
-  { user: "james", text: "the new codec sounds way better on bluetooth" },
-  { user: "alex", text: "screen share is buttery smooth now" },
+  { user: "trevor", text: "just ran a voice test — zero crackling" },
+  { user: "quinn", text: "the new codec sounds way better on bluetooth" },
+  { user: "riley", text: "screen share is buttery smooth now" },
   { user: "noah", text: "pushed a fix for the reconnect issue" },
 ];
 
@@ -112,12 +112,12 @@ const SECTION_EXTRA_MESSAGES = [
 
 const VOICE_PARTICIPANTS = [
   { id: "N", name: "noah", color: "#6366f1", avatar: USERS.noah.avatar, muted: false, deafened: false },
-  { id: "A", name: "alex", color: "#0ea5e9", avatar: USERS.alex.avatar, muted: false, deafened: false },
-  { id: "S", name: "sarah", color: "#8b5cf6", avatar: USERS.sarah.avatar, muted: true, deafened: false },
-  { id: "J", name: "james", color: "#f59e0b", avatar: USERS.james.avatar, muted: false, deafened: true },
+  { id: "R", name: "riley", color: "#0ea5e9", avatar: USERS.riley.avatar, muted: false, deafened: false },
+  { id: "T", name: "trevor", color: "#8b5cf6", avatar: USERS.trevor.avatar, muted: true, deafened: false },
+  { id: "Q", name: "quinn", color: "#f59e0b", avatar: USERS.quinn.avatar, muted: false, deafened: true },
 ];
 
-const EMMA_USER = { id: "E", name: "emma", color: "#10b981", avatar: USERS.emma.avatar, muted: false, deafened: false };
+const ELIJAH_USER = { id: "E", name: "elijah", color: "#10b981", avatar: USERS.elijah.avatar, muted: false, deafened: false };
 
 const VOICE_TABS = [
   { label: "Voice", active: true },
@@ -335,7 +335,7 @@ function IconRail() {
       <FluxLogo size={24} className="text-foreground-muted/60" />
       <div className="w-6 h-px bg-white/10 my-1" />
       {/* Server avatars */}
-      {[USERS.noah, USERS.sarah].map((u) => (
+      {[USERS.noah, USERS.trevor].map((u) => (
         <div
           key={u.id}
           className="w-8 h-8 rounded-full overflow-hidden"
@@ -393,49 +393,34 @@ function MessageRow({
 
 function FluxAppReplica() {
   const [messages, setMessages] = useState(HERO_INITIAL_MESSAGES);
-  const [visibleCount, setVisibleCount] = useState(0);
   const [typingUser, setTypingUser] = useState<string | null>(null);
   const nextMsgIdx = useRef(0);
   const nextId = useRef(HERO_INITIAL_MESSAGES.length + 1);
 
-  // Staggered entrance
-  useEffect(() => {
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    HERO_INITIAL_MESSAGES.forEach((_, i) => {
-      timers.push(setTimeout(() => setVisibleCount((c) => c + 1), 200 * (i + 1)));
-    });
-    return () => timers.forEach(clearTimeout);
-  }, []);
-
   // New messages every ~5s
   useEffect(() => {
-    const initialDelay = setTimeout(() => {
-      const interval = setInterval(() => {
-        const extra = HERO_EXTRA_MESSAGES[nextMsgIdx.current % HERO_EXTRA_MESSAGES.length];
-        setTypingUser(extra.user);
+    const interval = setInterval(() => {
+      const extra = HERO_EXTRA_MESSAGES[nextMsgIdx.current % HERO_EXTRA_MESSAGES.length];
+      setTypingUser(extra.user);
 
-        setTimeout(() => {
-          setTypingUser(null);
-          const newMsg = {
-            id: nextId.current++,
-            user: extra.user,
-            time: "just now",
-            text: extra.text,
-          };
-          setMessages((prev) => {
-            const next = [...prev, newMsg];
-            if (next.length > 10) return next.slice(next.length - 10);
-            return next;
-          });
-          setVisibleCount((c) => Math.min(c + 1, 10));
-          nextMsgIdx.current++;
-        }, 2000);
-      }, 5000);
+      setTimeout(() => {
+        setTypingUser(null);
+        const newMsg = {
+          id: nextId.current++,
+          user: extra.user,
+          time: "just now",
+          text: extra.text,
+        };
+        setMessages((prev) => {
+          const next = [...prev, newMsg];
+          if (next.length > 10) return next.slice(next.length - 10);
+          return next;
+        });
+        nextMsgIdx.current++;
+      }, 2000);
+    }, 5000);
 
-      return () => clearInterval(interval);
-    }, HERO_INITIAL_MESSAGES.length * 200 + 2000);
-
-    return () => clearTimeout(initialDelay);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -455,8 +440,8 @@ function FluxAppReplica() {
           showRoom
           roomParticipants={[
             { id: "N", name: "noah", color: "#6366f1", avatar: USERS.noah.avatar },
-            { id: "A", name: "alex", color: "#0ea5e9", avatar: USERS.alex.avatar },
-            { id: "S", name: "sarah", color: "#8b5cf6", avatar: USERS.sarah.avatar },
+            { id: "R", name: "riley", color: "#0ea5e9", avatar: USERS.riley.avatar },
+            { id: "T", name: "trevor", color: "#8b5cf6", avatar: USERS.trevor.avatar },
           ]}
         />
 
@@ -480,8 +465,8 @@ function FluxAppReplica() {
 
           {/* Messages */}
           <div className="flex-1 overflow-hidden px-3 py-2 flex flex-col gap-0 justify-end">
-            <AnimatePresence mode="popLayout">
-              {messages.slice(0, visibleCount).map((msg) => (
+            <AnimatePresence initial={false} mode="popLayout">
+              {messages.map((msg) => (
                 <motion.div
                   key={msg.id}
                   layout
@@ -552,52 +537,36 @@ function FluxChatReplica() {
   const [messages, setMessages] = useState(
     SECTION_INITIAL_MESSAGES.map((m) => ({ ...m, avatar: USERS[m.user as keyof typeof USERS]?.avatar || "?", color: USERS[m.user as keyof typeof USERS]?.color || "#888" }))
   );
-  const [visibleCount, setVisibleCount] = useState(0);
   const [typingUser, setTypingUser] = useState<string | null>(null);
   const nextMsgIdx = useRef(0);
-  const nextId = useRef(5);
 
   useEffect(() => {
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    SECTION_INITIAL_MESSAGES.forEach((_, i) => {
-      timers.push(setTimeout(() => setVisibleCount((c) => c + 1), 300 * (i + 1)));
-    });
-    return () => timers.forEach(clearTimeout);
-  }, []);
+    const interval = setInterval(() => {
+      const extra = SECTION_EXTRA_MESSAGES[nextMsgIdx.current % SECTION_EXTRA_MESSAGES.length];
+      setTypingUser(extra.user);
 
-  useEffect(() => {
-    const initialDelay = setTimeout(() => {
-      const interval = setInterval(() => {
-        const extra = SECTION_EXTRA_MESSAGES[nextMsgIdx.current % SECTION_EXTRA_MESSAGES.length];
-        setTypingUser(extra.user);
+      setTimeout(() => {
+        setTypingUser(null);
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+        const newMsg = {
+          id: nextMsgIdx.current + 100,
+          user: extra.user,
+          avatar: USERS[extra.user as keyof typeof USERS]?.avatar || "?",
+          color: USERS[extra.user as keyof typeof USERS]?.color || "#888",
+          time: timeStr,
+          text: extra.text,
+        };
+        setMessages((prev) => {
+          const next = [...prev, newMsg];
+          if (next.length > 6) return next.slice(next.length - 6);
+          return next;
+        });
+        nextMsgIdx.current++;
+      }, 2000);
+    }, 5000);
 
-        setTimeout(() => {
-          setTypingUser(null);
-          const u = USERS[extra.user as keyof typeof USERS];
-          const now = new Date();
-          const timeStr = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-          const newMsg = {
-            id: nextMsgIdx.current + 100,
-            user: extra.user,
-            avatar: u?.avatar || "?",
-            color: u?.color || "#888",
-            time: timeStr,
-            text: extra.text,
-          };
-          setMessages((prev) => {
-            const next = [...prev, newMsg];
-            if (next.length > 6) return next.slice(next.length - 6);
-            return next;
-          });
-          setVisibleCount((c) => Math.min(c + 1, 6));
-          nextMsgIdx.current++;
-        }, 2000);
-      }, 5000);
-
-      return () => clearInterval(interval);
-    }, SECTION_INITIAL_MESSAGES.length * 300 + 2000);
-
-    return () => clearTimeout(initialDelay);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -630,8 +599,8 @@ function FluxChatReplica() {
 
           {/* Messages */}
           <div className="flex-1 overflow-hidden px-3 py-2 flex flex-col gap-0 justify-end">
-            <AnimatePresence mode="popLayout">
-              {messages.slice(0, visibleCount).map((msg) => (
+            <AnimatePresence initial={false} mode="popLayout">
+              {messages.map((msg) => (
                 <motion.div
                   key={msg.id}
                   layout
@@ -750,7 +719,7 @@ function FluxVoiceReplica() {
   }, []);
 
   const participants = emmaPresent
-    ? [...VOICE_PARTICIPANTS, EMMA_USER]
+    ? [...VOICE_PARTICIPANTS, ELIJAH_USER]
     : VOICE_PARTICIPANTS;
 
   return (
@@ -943,49 +912,41 @@ function FluxMusicReplica() {
             }}
           >
             {/* Center album art */}
-            <motion.div
+            <div
               className="absolute rounded-full overflow-hidden"
               style={{
                 width: "42%",
                 height: "42%",
                 top: "29%",
                 left: "29%",
-                boxShadow: `0 0 0 3px #1a1a1a`,
+                boxShadow: "0 0 0 3px #1a1a1a",
+                background: `linear-gradient(135deg, ${currentTrack.gradientFrom}, ${currentTrack.gradientTo})`,
+                transition: "background 0.6s ease",
               }}
             >
-              <motion.div
-                className="w-full h-full relative"
-                animate={{
-                  background: `linear-gradient(135deg, ${currentTrack.gradientFrom}, ${currentTrack.gradientTo})`,
+              {/* Light glare — asymmetric so spin is visible */}
+              <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, rgba(255,255,255,0.25) 0%, transparent 50%)" }} />
+              {/* Decorative shapes */}
+              <div className="absolute" style={{ top: "10%", right: "12%", width: "35%", height: "35%", borderRadius: "50%", background: "rgba(255,255,255,0.1)" }} />
+              <div className="absolute" style={{ bottom: "15%", left: "10%", width: "20%", height: "20%", borderRadius: "3px", background: "rgba(255,255,255,0.08)", transform: "rotate(15deg)" }} />
+              {/* Small label — counter-rotates to stay readable */}
+              <div
+                className="absolute flex flex-col items-start"
+                style={{
+                  bottom: "14%",
+                  left: "14%",
+                  right: "14%",
+                  animation: "vinyl-counter-spin 4s linear infinite",
                 }}
-                transition={{ duration: 0.6 }}
               >
-                {/* Album cover design — asymmetric so spin is visible */}
-                <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, rgba(255,255,255,0.2) 0%, transparent 40%)" }} />
-                <div className="absolute" style={{ bottom: "12%", left: "12%", right: "12%" }}>
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={trackIndex}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.4 }}
-                      style={{ animation: "vinyl-counter-spin 4s linear infinite" }}
-                    >
-                      <p style={{ fontSize: "7px", fontWeight: 700, color: "rgba(255,255,255,0.9)", lineHeight: 1.2 }}>
-                        {currentTrack.title}
-                      </p>
-                      <p style={{ fontSize: "5px", color: "rgba(255,255,255,0.6)", marginTop: "1px" }}>
-                        {currentTrack.artist}
-                      </p>
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-                {/* Decorative shapes */}
-                <div className="absolute" style={{ top: "10%", right: "15%", width: "30%", height: "30%", borderRadius: "50%", background: "rgba(255,255,255,0.08)" }} />
-                <div className="absolute" style={{ top: "20%", left: "10%", width: "15%", height: "15%", borderRadius: "2px", background: "rgba(255,255,255,0.06)", transform: "rotate(15deg)" }} />
-              </motion.div>
-            </motion.div>
+                <span style={{ fontSize: "7px", fontWeight: 700, color: "rgba(255,255,255,0.9)", lineHeight: 1.2 }}>
+                  {currentTrack.title}
+                </span>
+                <span style={{ fontSize: "5.5px", color: "rgba(255,255,255,0.6)", marginTop: "1px" }}>
+                  {currentTrack.artist}
+                </span>
+              </div>
+            </div>
             {/* Center hole */}
             <div
               className="absolute rounded-full"
@@ -1006,7 +967,7 @@ function FluxMusicReplica() {
                 height: "80%",
                 top: "10%",
                 left: "10%",
-                border: "1px solid rgba(255,255,255,0.02)",
+                border: "1px solid rgba(255,255,255,0.03)",
               }}
             />
           </div>

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   AudioWaveform, Lock, Monitor, MicOff, MessageSquare, Zap,
-  Download, Apple, MonitorDot, ArrowRight,
+  Download, Apple, MonitorDot, ArrowRight, Shield, Gauge,
+  Volume2, Sparkles, ChevronLeft, ChevronRight,
 } from "lucide-react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
 import { PageTransition } from "@/components/page-transition";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "@/components/scroll-reveal";
 import { FluxLogo } from "@/components/flux-logo";
@@ -24,34 +25,68 @@ const fluxBenchmarks: BenchmarkGroup[] = [
   { metric: "Audio Quality (Bitrate)", ours: { label: "Flux", value: 320 }, theirs: { label: "Discord", value: 96 }, unit: " kbps", lowerIsBetter: false },
 ];
 
+const HERO_SLIDES = [
+  { image: "/flux/hero.png", label: "Music & YouTube", caption: "Search and play music directly in voice channels" },
+  { image: "/flux/voice.png", label: "Voice Chat", caption: "Crystal-clear 48kHz stereo with Krisp noise suppression" },
+  { image: "/flux/screenshare.png", label: "Screen Share", caption: "Lossless VP9 up to 4K at 60fps" },
+  { image: "/flux/chat.png", label: "Messaging", caption: "Encrypted text with reactions, mentions, and file sharing" },
+];
+
 const SHOWCASE_SECTIONS = [
   {
-    title: "CRYSTAL-CLEAR VOICE, ZERO NOISE.",
-    description: "48kHz stereo Opus audio with Krisp AI noise suppression. Background noise disappears — your voice stays.",
+    title: "CRYSTAL-CLEAR VOICE.",
+    subtitle: "Zero noise.",
+    description: "48kHz stereo Opus audio with Krisp AI noise suppression. Keyboard clatter, fans, and background chatter vanish — your voice stays untouched.",
     image: "/flux/voice.png",
     imageAlt: "Flux voice channel with participants in a call",
+    stats: [
+      { value: "48kHz", label: "Sample Rate" },
+      { value: "320kbps", label: "Bitrate" },
+      { value: "Krisp AI", label: "Noise Filter" },
+    ],
+    accent: "from-violet-500/20 to-blue-500/10",
+    iconAccent: "bg-violet-500/20 border-violet-500/20 text-violet-300",
+    Icon: Volume2,
   },
   {
-    title: "YOUR SCREEN, PIXEL-PERFECT.",
-    description: "Lossless VP9 screen sharing up to 4K at 20 Mbps. Six quality presets from 480p to lossless — no compression artifacts.",
+    title: "PIXEL-PERFECT STREAMING.",
+    subtitle: "No compression.",
+    description: "Lossless VP9 screen sharing up to 4K at 20 Mbps with six quality presets. Your IDE, your game, your design — every pixel, exactly as you see it.",
     image: "/flux/screenshare.png",
-    imageAlt: "Flux lossless screen sharing view",
+    imageAlt: "Flux lossless screen sharing at 1080p 60fps",
+    stats: [
+      { value: "4K", label: "Max Resolution" },
+      { value: "60fps", label: "Frame Rate" },
+      { value: "VP9", label: "Lossless Codec" },
+    ],
+    accent: "from-blue-500/20 to-cyan-500/10",
+    iconAccent: "bg-blue-500/20 border-blue-500/20 text-blue-300",
+    Icon: Monitor,
   },
   {
-    title: "ENCRYPTED MESSAGING, BUILT IN.",
-    description: "Rich text, emoji reactions, file sharing, and threaded replies — all encrypted end-to-end with AES-256-GCM.",
+    title: "ENCRYPTED BY DEFAULT.",
+    subtitle: "Not optional.",
+    description: "Every message, every file, every reaction — encrypted end-to-end with AES-256-GCM before it leaves your device. We can't read your messages. Nobody can.",
     image: "/flux/chat.png",
-    imageAlt: "Flux text chat with messages and reactions",
+    imageAlt: "Flux encrypted text chat with messages and reactions",
+    stats: [
+      { value: "AES-256", label: "Encryption" },
+      { value: "ECDH", label: "Key Exchange" },
+      { value: "E2EE", label: "Every Message" },
+    ],
+    accent: "from-emerald-500/20 to-teal-500/10",
+    iconAccent: "bg-emerald-500/20 border-emerald-500/20 text-emerald-300",
+    Icon: Shield,
   },
 ];
 
 const iconMap = { AudioWaveform, Lock, Monitor, MicOff, MessageSquare, Zap } as const;
 
-// ── Twinkling Stars (like Discord) ──
+// ── Twinkling Stars ──
 
-function TwinklingStars() {
+function TwinklingStars({ density = 40 }: { density?: number }) {
   const stars = useRef(
-    Array.from({ length: 40 }, () => ({
+    Array.from({ length: density }, () => ({
       left: Math.random() * 100,
       top: Math.random() * 100,
       size: 1 + Math.random() * 3,
@@ -82,12 +117,7 @@ function TwinklingStars() {
           <motion.div
             key={i}
             className="absolute rounded-full bg-white/30"
-            style={{
-              left: `${star.left}%`,
-              top: `${star.top}%`,
-              width: star.size,
-              height: star.size,
-            }}
+            style={{ left: `${star.left}%`, top: `${star.top}%`, width: star.size, height: star.size }}
             animate={{ opacity: [0, 0.7, 0], scale: [0.3, 1, 0.3] }}
             transition={{ duration: star.duration, repeat: Infinity, delay: star.delay, ease: "easeInOut" }}
           />
@@ -101,7 +131,7 @@ function TwinklingStars() {
 
 function Marquee() {
   const words = ["TALK", "LISTEN", "SHARE", "STREAM", "PLAY", "CONNECT"];
-  const items = [...words, ...words, ...words]; // triple for seamless loop
+  const items = [...words, ...words, ...words];
 
   return (
     <div className="relative py-8 overflow-hidden bg-[#1a1040]/60 border-y border-white/5">
@@ -123,27 +153,118 @@ function Marquee() {
   );
 }
 
-// ── Desktop Frame ──
+// ── Desktop Frame with Animated Screenshot Carousel ──
 
-function DesktopFrame({ src, alt, className }: { src: string; alt: string; className?: string }) {
+function DesktopFrame({ className }: { className?: string }) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval>>(null);
+
+  const resetInterval = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 4000);
+  }, []);
+
+  useEffect(() => {
+    resetInterval();
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, [resetInterval]);
+
+  const goTo = (index: number) => {
+    setActiveIndex(index);
+    resetInterval();
+  };
+
   return (
     <div className={`relative ${className ?? ""}`}>
       <div className="relative">
+        {/* Monitor bezel */}
         <div className="bg-[#0c0c10] rounded-2xl border border-white/10 p-2.5 shadow-2xl shadow-black/60">
           <div className="flex items-center gap-1.5 px-2.5 pb-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]/70" />
             <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]/70" />
             <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]/70" />
           </div>
-          <div className="rounded-xl overflow-hidden">
-            <img src={src} alt={alt} className="w-full h-auto block" />
+          {/* Screenshot carousel */}
+          <div className="rounded-xl overflow-hidden relative aspect-[16/10] bg-[#0c0c10]">
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={activeIndex}
+                src={HERO_SLIDES[activeIndex].image}
+                alt={HERO_SLIDES[activeIndex].label}
+                className="absolute inset-0 w-full h-full object-cover object-top"
+                initial={{ opacity: 0, scale: 1.02 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+              />
+            </AnimatePresence>
+
+            {/* Nav arrows */}
+            <button
+              onClick={() => goTo((activeIndex - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center text-white/60 hover:text-white hover:bg-black/60 transition-all z-10"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <button
+              onClick={() => goTo((activeIndex + 1) % HERO_SLIDES.length)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center text-white/60 hover:text-white hover:bg-black/60 transition-all z-10"
+            >
+              <ChevronRight size={16} />
+            </button>
           </div>
         </div>
+
+        {/* Monitor stand */}
         <div className="flex flex-col items-center">
           <div className="w-16 h-5 bg-gradient-to-b from-[#0c0c10] to-[#080810] border-x border-white/5" />
           <div className="w-24 h-1.5 bg-[#0c0c10] rounded-b-lg border border-t-0 border-white/5" />
         </div>
       </div>
+
+      {/* Slide indicator dots + caption */}
+      <div className="mt-5 flex flex-col items-center gap-3">
+        <div className="flex items-center gap-2">
+          {HERO_SLIDES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              className={`transition-all duration-300 rounded-full ${
+                i === activeIndex
+                  ? "w-8 h-2 bg-white/80"
+                  : "w-2 h-2 bg-white/30 hover:bg-white/50"
+              }`}
+            />
+          ))}
+        </div>
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={activeIndex}
+            className="text-sm text-white/50 text-center"
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            transition={{ duration: 0.3 }}
+          >
+            <span className="text-white/70 font-medium">{HERO_SLIDES[activeIndex].label}</span>
+            {" — "}
+            {HERO_SLIDES[activeIndex].caption}
+          </motion.p>
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+// ── Animated Stat ──
+
+function AnimatedStat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="text-center">
+      <div className="text-2xl sm:text-3xl font-bold font-mono text-white tracking-tight">{value}</div>
+      <div className="text-[11px] uppercase tracking-widest text-white/40 mt-1">{label}</div>
     </div>
   );
 }
@@ -160,13 +281,13 @@ function FluxHero() {
 
   return (
     <section ref={ref} className="relative overflow-hidden min-h-screen flex items-center bg-[#2a1a6b]">
-      {/* Vibrant gradient background — saturated indigo like Discord */}
+      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#3a2098] via-[#2d1a7a] to-[#1a1040]" />
       <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-[#5b3dc8]/30 rounded-full blur-[200px]" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#7c3aed]/20 rounded-full blur-[180px]" />
       <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-[#a855f7]/15 rounded-full blur-[120px]" />
 
-      <TwinklingStars />
+      <TwinklingStars density={50} />
 
       <motion.div
         className="relative mx-auto max-w-7xl px-6 pt-32 pb-24 grid md:grid-cols-2 gap-12 md:gap-16 items-center"
@@ -222,18 +343,28 @@ function FluxHero() {
               <ArrowRight size={14} />
             </a>
           </motion.div>
+
+          {/* Quick stats row */}
+          <motion.div
+            className="mt-12 flex gap-8 sm:gap-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+          >
+            <AnimatedStat value="48MB" label="Memory" />
+            <AnimatedStat value="<45ms" label="Latency" />
+            <AnimatedStat value="320kbps" label="Audio" />
+          </motion.div>
         </div>
 
-        {/* Right — Desktop mockup */}
+        {/* Right — Desktop mockup with carousel */}
         <motion.div
+          className="group"
           initial={{ opacity: 0, x: 60, scale: 0.95 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
           transition={{ duration: 1.2, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          <DesktopFrame
-            src="/flux/hero.png"
-            alt="Flux desktop app showing music playback and YouTube search"
-          />
+          <DesktopFrame />
         </motion.div>
       </motion.div>
 
@@ -243,36 +374,61 @@ function FluxHero() {
   );
 }
 
-// ── Feature Showcase (in frosted cards on blue bg) ──
+// ── Feature Showcase (rich sections with stats + animated screenshots) ──
 
 function FeatureShowcase() {
   return (
     <section id="features" className="relative bg-[#1a1040] overflow-hidden">
-      <TwinklingStars />
+      <TwinklingStars density={25} />
 
       {SHOWCASE_SECTIONS.map((section, i) => {
         const imageOnRight = i % 2 === 0;
         return (
-          <div key={section.title} className="relative mx-auto max-w-6xl px-6 py-16">
+          <div key={section.title} className="relative mx-auto max-w-6xl px-6 py-12 md:py-20">
             <ScrollReveal>
-              <div className="rounded-3xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm p-8 sm:p-12 grid md:grid-cols-2 gap-10 md:gap-16 items-center overflow-hidden">
-                {/* Subtle inner glow */}
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+              <div className={`rounded-3xl bg-gradient-to-br ${section.accent} border border-white/[0.08] backdrop-blur-sm overflow-hidden`}>
+                <div className="p-8 sm:p-12 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+                  {/* Text side */}
+                  <div className={`relative ${imageOnRight ? "md:order-1" : "md:order-2"}`}>
+                    <div className={`w-12 h-12 rounded-2xl ${section.iconAccent} border flex items-center justify-center mb-6`}>
+                      <section.Icon size={22} />
+                    </div>
+                    <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl tracking-[-0.01em] leading-[0.95] uppercase font-bold italic text-white">
+                      {section.title}
+                      <br />
+                      <span className="text-white/40">{section.subtitle}</span>
+                    </h2>
+                    <p className="mt-5 text-white/50 leading-relaxed text-sm sm:text-base">
+                      {section.description}
+                    </p>
 
-                {/* Text */}
-                <div className={`relative ${imageOnRight ? "md:order-1" : "md:order-2"}`}>
-                  <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl tracking-[-0.01em] leading-tight uppercase font-bold italic text-white">
-                    {section.title}
-                  </h2>
-                  <p className="mt-4 text-white/50 leading-relaxed text-sm sm:text-base">
-                    {section.description}
-                  </p>
-                </div>
+                    {/* Stats row */}
+                    <div className="mt-8 flex gap-6 sm:gap-8">
+                      {section.stats.map((stat) => (
+                        <div key={stat.label}>
+                          <div className="text-lg sm:text-xl font-bold font-mono text-white">{stat.value}</div>
+                          <div className="text-[10px] uppercase tracking-widest text-white/35 mt-0.5">{stat.label}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
-                {/* Screenshot */}
-                <div className={`relative ${imageOnRight ? "md:order-2" : "md:order-1"}`}>
-                  <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-white/5">
-                    <img src={section.image} alt={section.imageAlt} className="w-full h-auto block" />
+                  {/* Screenshot side with floating glow */}
+                  <div className={`relative ${imageOnRight ? "md:order-2" : "md:order-1"}`}>
+                    <div className="relative group">
+                      {/* Glow behind screenshot */}
+                      <div className="absolute -inset-4 bg-violet-500/10 rounded-3xl blur-2xl group-hover:bg-violet-500/15 transition-all duration-700" />
+                      <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border border-white/10">
+                        <img src={section.image} alt={section.imageAlt} className="w-full h-auto block" />
+                        {/* Subtle animated scan line */}
+                        <motion.div
+                          className="absolute inset-x-0 bg-gradient-to-b from-transparent via-white/[0.03] to-transparent"
+                          animate={{ y: ["-100%", "200%"] }}
+                          transition={{ duration: 4, repeat: Infinity, ease: "linear", delay: i * 1.5 }}
+                          style={{ height: "30%" }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -284,7 +440,42 @@ function FeatureShowcase() {
   );
 }
 
-// ── Scrolling Marquee Strip ──
+// ── "Discord vs Flux" comparison strip ──
+
+function WhyFlux() {
+  const comparisons = [
+    { them: "320 MB install", us: "12 MB install", icon: Gauge },
+    { them: "96 kbps audio", us: "320 kbps audio", icon: Volume2 },
+    { them: "No E2EE", us: "E2EE everything", icon: Lock },
+    { them: "Electron bloat", us: "Native Rust (Tauri)", icon: Sparkles },
+  ];
+
+  return (
+    <section className="relative py-20 px-6 overflow-hidden bg-[#1a1040]">
+      <div className="relative mx-auto max-w-5xl">
+        <ScrollReveal>
+          <h2 className="font-serif text-3xl sm:text-4xl tracking-[-0.02em] text-center uppercase font-bold italic text-white mb-12">
+            Discord vs Flux
+          </h2>
+        </ScrollReveal>
+
+        <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {comparisons.map((item) => (
+            <StaggerItem key={item.us}>
+              <div className="relative rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5 text-center group hover:border-violet-500/20 transition-all duration-500">
+                <item.icon size={20} className="mx-auto text-violet-400 mb-3" />
+                <div className="text-xs text-white/30 line-through mb-1">{item.them}</div>
+                <div className="text-sm font-semibold text-white">{item.us}</div>
+              </div>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
+      </div>
+    </section>
+  );
+}
+
+// ── Marquee Section ──
 
 function MarqueeSection() {
   return (
@@ -299,7 +490,7 @@ function MarqueeSection() {
 function FeatureGrid() {
   return (
     <section className="relative py-32 px-6 overflow-hidden bg-gradient-to-b from-[#1a1040] to-[#09090b]">
-      <TwinklingStars />
+      <TwinklingStars density={20} />
 
       <div className="relative mx-auto max-w-6xl">
         <ScrollReveal>
@@ -457,7 +648,7 @@ function DownloadCTA() {
 
   return (
     <section id="download" className="relative py-40 px-6 overflow-hidden bg-gradient-to-b from-[#09090b] via-[#1a1040] to-[#2a1a6b]">
-      <TwinklingStars />
+      <TwinklingStars density={50} />
 
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-violet-600/15 rounded-full blur-[200px] pointer-events-none" />
 
@@ -471,6 +662,9 @@ function DownloadCTA() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.15}>
+          <p className="mt-6 text-white/40 max-w-md mx-auto">
+            Join the voice chat that doesn&apos;t spy on you, doesn&apos;t eat your RAM, and sounds like you&apos;re in the same room.
+          </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={handleDownloadClick}
@@ -503,6 +697,7 @@ export default function FluxPage() {
     <PageTransition>
       <FluxHero />
       <FeatureShowcase />
+      <WhyFlux />
       <MarqueeSection />
       <FeatureGrid />
       <FluxBenchmarks />

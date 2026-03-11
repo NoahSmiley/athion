@@ -24,50 +24,7 @@ const fluxBenchmarks: BenchmarkGroup[] = [
   { metric: "Audio Quality (Bitrate)", ours: { label: "Flux", value: 320 }, theirs: { label: "Discord", value: 96 }, unit: " kbps", lowerIsBetter: false },
 ];
 
-const FEATURE_SECTIONS = [
-  {
-    number: "1.0",
-    label: "Messaging",
-    title: "Encrypted by default.\nConversations that stay yours.",
-    description: "Every message, file, and reaction is encrypted end-to-end with AES-256-GCM before leaving your device. Rich text, emoji, reactions, and threaded replies — without compromising privacy.",
-    image: "/flux/chat.png",
-    imageAlt: "Flux chat interface showing channel sidebar and encrypted conversation",
-    subFeatures: [
-      { number: "1.1", label: "End-to-end encryption" },
-      { number: "1.2", label: "Rich messaging" },
-      { number: "1.3", label: "File sharing" },
-      { number: "1.4", label: "Reactions & threads" },
-    ],
-  },
-  {
-    number: "2.0",
-    label: "Voice",
-    title: "Crystal-clear audio.\nNoise suppression that actually works.",
-    description: "48kHz stereo Opus audio with Krisp AI noise suppression running locally on your device. Keyboard clatter, fans, and background chatter vanish — your voice stays untouched. Sub-45ms latency over LiveKit's globally distributed SFU.",
-    image: "/flux/voice.png",
-    imageAlt: "Flux voice room with connected participants",
-    subFeatures: [
-      { number: "2.1", label: "48kHz stereo" },
-      { number: "2.2", label: "Krisp noise filter" },
-      { number: "2.3", label: "320kbps bitrate" },
-      { number: "2.4", label: "<45ms latency" },
-    ],
-  },
-  {
-    number: "3.0",
-    label: "Customization",
-    title: "Make it yours.\nThemes, layouts, and fine-tuned audio.",
-    description: "Dark and light themes, custom backgrounds, adjustable sidebar positioning, noise suppression levels, and per-user volume controls. Every setting you need, nothing you don't.",
-    image: "/flux/settings.png",
-    imageAlt: "Flux settings panel showing appearance customization options",
-    subFeatures: [
-      { number: "3.1", label: "Theme system" },
-      { number: "3.2", label: "Audio tuning" },
-      { number: "3.3", label: "Custom keybinds" },
-      { number: "3.4", label: "Gallery backgrounds" },
-    ],
-  },
-];
+// Feature section data — images are composed per-section in the render
 
 const iconMap = { AudioWaveform, Lock, Monitor, MicOff, MessageSquare, Zap } as const;
 
@@ -164,75 +121,185 @@ function HeroScreenshot() {
   );
 }
 
-// ── Feature Section ──
-// Linear-style: section number + label, headline + description side-by-side at top,
-// full-width screenshot below, sub-feature links at bottom
+// ── Section Header ── (reusable)
 
-function FeatureSection({
+function SectionHeader({
   number,
   label,
   title,
   description,
-  image,
-  imageAlt,
-  subFeatures,
 }: {
   number: string;
   label: string;
   title: string;
   description: string;
-  image: string;
-  imageAlt: string;
-  subFeatures: { number: string; label: string }[];
 }) {
+  return (
+    <>
+      <ScrollReveal>
+        <div className="flex items-center gap-2 mb-16">
+          <span className="text-sm font-mono text-foreground-muted">{number}</span>
+          <span className="text-sm text-foreground-muted">{label}</span>
+          <ArrowRight size={14} className="text-foreground-muted" />
+        </div>
+      </ScrollReveal>
+      <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-16">
+        <ScrollReveal>
+          <h2 className="text-[clamp(2rem,4vw,3rem)] font-light tracking-[-0.02em] leading-[1.15] text-foreground whitespace-pre-line">
+            {title}
+          </h2>
+        </ScrollReveal>
+        <ScrollReveal delay={0.1}>
+          <p className="text-foreground-muted leading-relaxed lg:pt-2">
+            {description}
+          </p>
+        </ScrollReveal>
+      </div>
+    </>
+  );
+}
+
+function SubFeatures({ items }: { items: { number: string; label: string }[] }) {
+  return (
+    <ScrollReveal delay={0.1}>
+      <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {items.map((sf) => (
+          <div key={sf.number} className="flex items-baseline gap-2">
+            <span className="text-sm font-mono text-foreground-muted/50">{sf.number}</span>
+            <span className="text-sm text-foreground-muted">{sf.label}</span>
+          </div>
+        ))}
+      </div>
+    </ScrollReveal>
+  );
+}
+
+// ── 1.0 Messaging ──
+// Composited: channel sidebar floating over the message stream
+
+function MessagingSection() {
   return (
     <section className="py-24 sm:py-32 px-6 border-t border-border/50">
       <div className="mx-auto max-w-6xl">
-        {/* Section number + arrow */}
+        <SectionHeader
+          number="1.0"
+          label="Messaging"
+          title={"Encrypted by default.\nConversations that stay yours."}
+          description="Every message, file, and reaction is encrypted end-to-end with AES-256-GCM before leaving your device. Rich text, emoji, reactions, and threaded replies — without compromising privacy."
+        />
+
+        {/* Composited image: sidebar floating over message area */}
         <ScrollReveal>
-          <div className="flex items-center gap-2 mb-16">
-            <span className="text-sm font-mono text-foreground-muted">{number}</span>
-            <span className="text-sm text-foreground-muted">{label}</span>
-            <ArrowRight size={14} className="text-foreground-muted" />
+          <div className="relative">
+            {/* Message area — the main piece */}
+            <div className="rounded-xl overflow-hidden border border-border/50 shadow-2xl">
+              <img
+                src="/flux/chat.png"
+                alt="Flux encrypted conversation in #general"
+                className="w-full h-auto block"
+              />
+            </div>
+
+            {/* Channel sidebar — floating offset card */}
+            <div className="absolute -left-4 sm:-left-8 top-8 sm:top-12 w-[140px] sm:w-[180px] rounded-xl overflow-hidden border border-border/50 shadow-2xl bg-background">
+              <img
+                src="/flux/sidebar.png"
+                alt="Flux channel sidebar"
+                className="w-full h-auto block"
+                style={{ maxHeight: "400px", objectFit: "cover", objectPosition: "top" }}
+              />
+            </div>
           </div>
         </ScrollReveal>
 
-        {/* Headline left, description right — Linear style */}
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-16">
-          <ScrollReveal>
-            <h2 className="text-[clamp(2rem,4vw,3rem)] font-light tracking-[-0.02em] leading-[1.15] text-foreground whitespace-pre-line">
-              {title}
-            </h2>
-          </ScrollReveal>
-          <ScrollReveal delay={0.1}>
-            <p className="text-foreground-muted leading-relaxed lg:pt-2">
-              {description}
-            </p>
-          </ScrollReveal>
-        </div>
+        <SubFeatures
+          items={[
+            { number: "1.1", label: "End-to-end encryption" },
+            { number: "1.2", label: "Rich messaging" },
+            { number: "1.3", label: "File sharing" },
+            { number: "1.4", label: "Reactions & threads" },
+          ]}
+        />
+      </div>
+    </section>
+  );
+}
 
-        {/* Full-width screenshot */}
+// ── 2.0 Voice ──
+// Shows the Voice & Audio settings panel — a completely different UI from the chat
+
+function VoiceSection() {
+  return (
+    <section className="py-24 sm:py-32 px-6 border-t border-border/50">
+      <div className="mx-auto max-w-6xl">
+        <SectionHeader
+          number="2.0"
+          label="Voice"
+          title={"Crystal-clear audio.\nNoise suppression that actually works."}
+          description="48kHz stereo Opus audio with Krisp AI noise suppression running locally on your device. Keyboard clatter, fans, and background chatter vanish — your voice stays untouched. Sub-45ms latency over LiveKit's globally distributed SFU."
+        />
+
+        {/* Voice & Audio settings — shows the audio engine controls */}
         <ScrollReveal>
-          <div className="relative rounded-lg overflow-hidden border border-border/50">
+          <div className="flex justify-center">
+            <div className="relative max-w-lg w-full">
+              <div className="rounded-xl overflow-hidden border border-border/50 shadow-2xl">
+                <img
+                  src="/flux/settings.png"
+                  alt="Flux Voice & Audio settings with noise suppression, echo cancellation, and adaptive bitrate controls"
+                  className="w-full h-auto block"
+                />
+              </div>
+            </div>
+          </div>
+        </ScrollReveal>
+
+        <SubFeatures
+          items={[
+            { number: "2.1", label: "48kHz stereo" },
+            { number: "2.2", label: "Krisp noise filter" },
+            { number: "2.3", label: "320kbps bitrate" },
+            { number: "2.4", label: "<45ms latency" },
+          ]}
+        />
+      </div>
+    </section>
+  );
+}
+
+// ── 3.0 Screen Share ──
+// Shows the #dev channel messages about screen sharing — technical discussion
+
+function ScreenShareSection() {
+  return (
+    <section className="py-24 sm:py-32 px-6 border-t border-border/50">
+      <div className="mx-auto max-w-6xl">
+        <SectionHeader
+          number="3.0"
+          label="Screen Share"
+          title={"Lossless streaming.\nEvery pixel, exactly as you see it."}
+          description="VP9 screen sharing up to 4K at 20 Mbps with six quality presets. Share your IDE, your game, or your design — from 480p30 all the way to lossless. No Nitro required."
+        />
+
+        {/* #dev conversation about screen sharing — cropped message fragment */}
+        <ScrollReveal>
+          <div className="rounded-xl overflow-hidden border border-border/50 shadow-2xl">
             <img
-              src={image}
-              alt={imageAlt}
+              src="/flux/voice.png"
+              alt="Flux dev channel discussing screen share quality presets and VP9 encoding"
               className="w-full h-auto block"
             />
           </div>
         </ScrollReveal>
 
-        {/* Sub-feature links */}
-        <ScrollReveal delay={0.1}>
-          <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {subFeatures.map((sf) => (
-              <div key={sf.number} className="flex items-baseline gap-2">
-                <span className="text-sm font-mono text-foreground-muted/50">{sf.number}</span>
-                <span className="text-sm text-foreground-muted">{sf.label}</span>
-              </div>
-            ))}
-          </div>
-        </ScrollReveal>
+        <SubFeatures
+          items={[
+            { number: "3.1", label: "4K resolution" },
+            { number: "3.2", label: "60fps streaming" },
+            { number: "3.3", label: "VP9 codec" },
+            { number: "3.4", label: "6 quality presets" },
+          ]}
+        />
       </div>
     </section>
   );
@@ -241,9 +308,9 @@ function FeatureSection({
 function FeatureSections() {
   return (
     <div id="features">
-      {FEATURE_SECTIONS.map((section) => (
-        <FeatureSection key={section.number} {...section} />
-      ))}
+      <MessagingSection />
+      <VoiceSection />
+      <ScreenShareSection />
     </div>
   );
 }

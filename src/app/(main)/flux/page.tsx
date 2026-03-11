@@ -59,11 +59,11 @@ const SIDEBAR_CHANNELS = [
 ];
 
 const USERS = {
-  noah: { id: "N", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Noah&top=shortCurly&facialHair=blank&clothes=hoodie&clothesColor=6366f1&skinColor=light", color: "#6366f1" },
-  trevor: { id: "T", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Trevor&top=shortFlat&facialHair=beardLight&clothes=blazerAndShirt&skinColor=light", color: "#8b5cf6" },
-  riley: { id: "R", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Riley&top=shortWaved&facialHair=blank&clothes=graphicShirt&clothesColor=0ea5e9&skinColor=light", color: "#0ea5e9" },
-  quinn: { id: "Q", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Quinn&top=dreads01&facialHair=beardMedium&clothes=hoodie&clothesColor=f59e0b&skinColor=brown", color: "#f59e0b" },
-  elijah: { id: "E", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Elijah&top=shortRound&facialHair=blank&clothes=collarAndSweater&clothesColor=10b981&skinColor=light", color: "#10b981" },
+  noah: { id: "N", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Noah&top=shortCurly&clothing=hoodie&clothesColor=6366f1&skinColor=f8d25c", color: "#6366f1" },
+  trevor: { id: "T", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Trevor&top=shortFlat&facialHair=beardLight&clothing=blazerAndShirt&skinColor=edb98a", color: "#8b5cf6" },
+  riley: { id: "R", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Riley&top=shortWaved&clothing=graphicShirt&clothesColor=0ea5e9&skinColor=f8d25c", color: "#0ea5e9" },
+  quinn: { id: "Q", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Quinn&top=dreads01&facialHair=beardMedium&clothing=hoodie&clothesColor=f59e0b&skinColor=ae5d29", color: "#f59e0b" },
+  elijah: { id: "E", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Elijah&top=shortRound&clothing=collarAndSweater&clothesColor=10b981&skinColor=edb98a", color: "#10b981" },
 };
 
 // ── Hero Replica Messages (matching real app conversation) ──
@@ -396,6 +396,11 @@ function FluxAppReplica() {
   const [typingUser, setTypingUser] = useState<string | null>(null);
   const nextMsgIdx = useRef(0);
   const nextId = useRef(HERO_INITIAL_MESSAGES.length + 1);
+  const hasMounted = useRef(false);
+
+  useEffect(() => {
+    hasMounted.current = true;
+  }, []);
 
   // New messages every ~5s
   useEffect(() => {
@@ -470,7 +475,7 @@ function FluxAppReplica() {
                 <motion.div
                   key={msg.id}
                   layout
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={hasMounted.current ? { opacity: 0, y: 16 } : false}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.25, ease: EASE }}
@@ -539,6 +544,11 @@ function FluxChatReplica() {
   );
   const [typingUser, setTypingUser] = useState<string | null>(null);
   const nextMsgIdx = useRef(0);
+  const hasMounted = useRef(false);
+
+  useEffect(() => {
+    hasMounted.current = true;
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -604,7 +614,7 @@ function FluxChatReplica() {
                 <motion.div
                   key={msg.id}
                   layout
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={hasMounted.current ? { opacity: 0, y: 20 } : false}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.3, ease: EASE }}
@@ -911,7 +921,7 @@ function FluxMusicReplica() {
               animation: "vinyl-spin 4s linear infinite",
             }}
           >
-            {/* Center album art */}
+            {/* Center album art — counter-spins so artwork stays static while grooves spin */}
             <div
               className="absolute rounded-full overflow-hidden"
               style={{
@@ -922,21 +932,21 @@ function FluxMusicReplica() {
                 boxShadow: "0 0 0 3px #1a1a1a",
                 background: `linear-gradient(135deg, ${currentTrack.gradientFrom}, ${currentTrack.gradientTo})`,
                 transition: "background 0.6s ease",
+                animation: "vinyl-counter-spin 4s linear infinite",
               }}
             >
-              {/* Light glare — asymmetric so spin is visible */}
+              {/* Light glare */}
               <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, rgba(255,255,255,0.25) 0%, transparent 50%)" }} />
               {/* Decorative shapes */}
               <div className="absolute" style={{ top: "10%", right: "12%", width: "35%", height: "35%", borderRadius: "50%", background: "rgba(255,255,255,0.1)" }} />
               <div className="absolute" style={{ bottom: "15%", left: "10%", width: "20%", height: "20%", borderRadius: "3px", background: "rgba(255,255,255,0.08)", transform: "rotate(15deg)" }} />
-              {/* Small label — counter-rotates to stay readable */}
+              {/* Track label */}
               <div
                 className="absolute flex flex-col items-start"
                 style={{
                   bottom: "14%",
                   left: "14%",
                   right: "14%",
-                  animation: "vinyl-counter-spin 4s linear infinite",
                 }}
               >
                 <span style={{ fontSize: "7px", fontWeight: 700, color: "rgba(255,255,255,0.9)", lineHeight: 1.2 }}>

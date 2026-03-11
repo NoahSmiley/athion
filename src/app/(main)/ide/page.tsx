@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { Sparkles, Terminal, Minus, Gauge, ArrowRight, Code2, Layers, Cpu, Zap, Braces, GitBranch } from "lucide-react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { Sparkles, Terminal, Minus, Gauge, ArrowRight, Code2, Layers, Cpu, Zap, Braces, GitBranch, Check } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { PageTransition } from "@/components/page-transition";
 import {
   ScrollReveal,
@@ -137,9 +137,39 @@ function IDEHero() {
   );
 }
 
-// ── Editor Replica ──
+// ── Editor Replica (animated — types out code line by line) ──
+
+const CODE_LINES = [
+  { parts: [{ t: "use", c: "#c678dd" }, { t: " liminal", c: "#e5c07b" }, { t: "::", c: "#555" }, { t: "Editor", c: "#e5c07b" }, { t: ";", c: "#555" }] },
+  { parts: [{ t: "use", c: "#c678dd" }, { t: " liminal", c: "#e5c07b" }, { t: "::", c: "#555" }, { t: "AI", c: "#e5c07b" }, { t: ";", c: "#555" }] },
+  { parts: [] },
+  { parts: [{ t: "// Zero-config, instant startup", c: "#5c6370" }] },
+  { parts: [{ t: "fn", c: "#c678dd" }, { t: " main", c: "#61afef" }, { t: "()", c: "#555" }, { t: " {", c: "#555" }] },
+  { parts: [{ t: "    ", c: "" }, { t: "let", c: "#c678dd" }, { t: " editor ", c: "#e8e8e8" }, { t: "=", c: "#555" }, { t: " Editor", c: "#e5c07b" }, { t: "::", c: "#555" }, { t: "new", c: "#61afef" }, { t: "()", c: "#555" }] },
+  { parts: [{ t: "        .", c: "#555" }, { t: "theme", c: "#61afef" }, { t: "(", c: "#555" }, { t: '"midnight"', c: "#98c379" }, { t: ")", c: "#555" }] },
+  { parts: [{ t: "        .", c: "#555" }, { t: "ai", c: "#61afef" }, { t: "(", c: "#555" }, { t: "AI", c: "#e5c07b" }, { t: "::", c: "#555" }, { t: "local", c: "#61afef" }, { t: "())", c: "#555" }] },
+  { parts: [{ t: "        .", c: "#555" }, { t: "terminal", c: "#61afef" }, { t: "(", c: "#555" }, { t: "true", c: "#c678dd" }, { t: ")", c: "#555" }] },
+  { parts: [{ t: "        .", c: "#555" }, { t: "build", c: "#61afef" }, { t: "();", c: "#555" }] },
+  { parts: [] },
+  { parts: [{ t: "    editor.", c: "#e8e8e8" }, { t: "run", c: "#61afef" }, { t: "();", c: "#555" }] },
+  { parts: [{ t: "}", c: "#555" }] },
+];
 
 function EditorReplica() {
+  const [visibleLines, setVisibleLines] = useState(0);
+  const hasMounted = useRef(false);
+
+  useEffect(() => {
+    hasMounted.current = true;
+    // Type out lines one by one
+    if (visibleLines < CODE_LINES.length) {
+      const timeout = setTimeout(() => {
+        setVisibleLines((v) => v + 1);
+      }, visibleLines === 0 ? 300 : 120 + Math.random() * 80);
+      return () => clearTimeout(timeout);
+    }
+  }, [visibleLines]);
+
   return (
     <ScrollReveal>
       <div
@@ -165,31 +195,36 @@ function EditorReplica() {
         <div className="flex">
           {/* Line numbers */}
           <div className="flex-shrink-0 pt-4 pb-4 pr-2 select-none" style={{ width: "48px", background: "#0a0a0a", borderRight: "1px solid #111" }}>
-            {Array.from({ length: 14 }, (_, i) => (
-              <div key={i} className="text-right pr-2" style={{ fontSize: "12px", lineHeight: "22px", color: "#333", fontFamily: "monospace" }}>
+            {Array.from({ length: Math.max(14, visibleLines) }, (_, i) => (
+              <div key={i} className="text-right pr-2" style={{ fontSize: "12px", lineHeight: "22px", color: i < visibleLines ? "#444" : "#222", fontFamily: "monospace", transition: "color 0.3s" }}>
                 {i + 1}
               </div>
             ))}
           </div>
 
           {/* Code area */}
-          <div className="flex-1 pt-4 pb-4 pl-4 overflow-x-auto">
-            <pre style={{ fontSize: "13px", lineHeight: "22px", fontFamily: "'JetBrains Mono', monospace", margin: 0 }}>
-              <Line><Kw>use</Kw> <Tp>liminal</Tp>::<Tp>Editor</Tp>;</Line>
-              <Line><Kw>use</Kw> <Tp>liminal</Tp>::<Tp>AI</Tp>;</Line>
-              <Line />
-              <Line><Cm>{"// Zero-config, instant startup"}</Cm></Line>
-              <Line><Kw>fn</Kw> <Fn>main</Fn><Pn>{"()"}</Pn> <Pn>{"{"}</Pn></Line>
-              <Line>{"    "}<Kw>let</Kw> editor <Pn>=</Pn> <Tp>Editor</Tp>::<Fn>new</Fn><Pn>()</Pn></Line>
-              <Line>{"        "}.<Fn>theme</Fn><Pn>(</Pn><St>&quot;midnight&quot;</St><Pn>)</Pn></Line>
-              <Line>{"        "}.<Fn>ai</Fn><Pn>(</Pn><Tp>AI</Tp>::<Fn>local</Fn><Pn>())</Pn></Line>
-              <Line>{"        "}.<Fn>terminal</Fn><Pn>(</Pn><Kw>true</Kw><Pn>)</Pn></Line>
-              <Line>{"        "}.<Fn>build</Fn><Pn>();</Pn></Line>
-              <Line />
-              <Line>{"    "}editor.<Fn>run</Fn><Pn>();</Pn></Line>
-              <Line><Pn>{"}"}</Pn></Line>
-              <Line />
-            </pre>
+          <div className="flex-1 pt-4 pb-4 pl-4 overflow-x-auto" style={{ minHeight: `${14 * 22 + 32}px` }}>
+            <div style={{ fontSize: "13px", lineHeight: "22px", fontFamily: "'JetBrains Mono', monospace" }}>
+              {CODE_LINES.slice(0, visibleLines).map((line, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.15 }}
+                  style={{ minHeight: "22px" }}
+                >
+                  {line.parts.map((part, j) => (
+                    <span key={j} style={{ color: part.c || "#e8e8e8" }}>{part.t}</span>
+                  ))}
+                </motion.div>
+              ))}
+              {/* Cursor */}
+              {visibleLines < CODE_LINES.length && (
+                <div style={{ minHeight: "22px" }}>
+                  <span style={{ display: "inline-block", width: "7px", height: "16px", background: "#e8e8e8", animation: "cursor-blink 1s step-end infinite" }} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -201,36 +236,182 @@ function EditorReplica() {
             <span style={{ fontSize: "11px", color: "#555" }}>UTF-8</span>
           </div>
           <div className="flex items-center gap-3">
-            <span style={{ fontSize: "11px", color: "#555" }}>Ln 5, Col 12</span>
+            <span style={{ fontSize: "11px", color: "#555" }}>Ln {Math.max(1, visibleLines)}, Col {visibleLines >= CODE_LINES.length ? 2 : 1}</span>
             <span style={{ fontSize: "11px", color: "#555" }}>80ms startup</span>
           </div>
         </div>
+
+        <style>{`
+          @keyframes cursor-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+          }
+        `}</style>
       </div>
     </ScrollReveal>
   );
 }
 
-// Syntax highlight helpers
-function Kw({ children }: { children: React.ReactNode }) {
-  return <span style={{ color: "#c678dd" }}>{children}</span>;
+// ── Terminal Replica (animated — commands run sequentially) ──
+
+const TERMINAL_LINES = [
+  { type: "cmd" as const, text: "cargo build --release" },
+  { type: "out" as const, text: "   Compiling liminal-core v0.1.0", color: "#888" },
+  { type: "out" as const, text: "   Compiling liminal-editor v0.1.0", color: "#888" },
+  { type: "ok" as const, text: "    Finished release [optimized] target(s) in 2.4s" },
+  { type: "gap" as const, text: "" },
+  { type: "cmd" as const, text: "cargo test" },
+  { type: "out" as const, text: "running 47 tests", color: "#888" },
+  { type: "ok" as const, text: "test result: ok. 47 passed; 0 failed; 0 ignored" },
+];
+
+function TerminalReplica() {
+  const [visibleLines, setVisibleLines] = useState(0);
+
+  useEffect(() => {
+    if (visibleLines < TERMINAL_LINES.length) {
+      const line = TERMINAL_LINES[visibleLines];
+      const delay = line.type === "cmd" ? 600 : line.type === "gap" ? 400 : 200 + Math.random() * 150;
+      const timeout = setTimeout(() => setVisibleLines((v) => v + 1), delay);
+      return () => clearTimeout(timeout);
+    }
+  }, [visibleLines]);
+
+  return (
+    <div
+      className="rounded-xl overflow-hidden w-full max-w-[800px] mx-auto"
+      style={{ background: "#0a0a0a", border: "1px solid #161616" }}
+    >
+      <div className="flex items-center gap-2 px-4 py-2.5" style={{ borderBottom: "1px solid #161616", background: "#0e0e0e" }}>
+        <Terminal size={12} style={{ color: "#43b581" }} />
+        <span style={{ fontSize: "12px", color: "#888" }}>zsh — project/liminal</span>
+      </div>
+      <div className="p-4" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "12px", lineHeight: "20px", minHeight: "200px" }}>
+        {TERMINAL_LINES.slice(0, visibleLines).map((line, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.1 }}
+            style={{ marginTop: line.type === "gap" ? "8px" : undefined }}
+          >
+            {line.type === "cmd" ? (
+              <><span style={{ color: "#43b581" }}>❯</span> <span style={{ color: "#e8e8e8" }}>{line.text}</span></>
+            ) : (
+              <span style={{ color: line.type === "ok" ? "#43b581" : line.color || "#888" }}>{line.text}</span>
+            )}
+          </motion.div>
+        ))}
+        {visibleLines >= TERMINAL_LINES.length && (
+          <div style={{ marginTop: "8px" }}>
+            <span style={{ color: "#43b581" }}>❯</span> <span style={{ display: "inline-block", width: "7px", height: "14px", background: "#43b581", animation: "cursor-blink 1s step-end infinite" }} />
+          </div>
+        )}
+      </div>
+
+      <style>{`
+        @keyframes cursor-blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+      `}</style>
+    </div>
+  );
 }
-function Tp({ children }: { children: React.ReactNode }) {
-  return <span style={{ color: "#e5c07b" }}>{children}</span>;
-}
-function Fn({ children }: { children: React.ReactNode }) {
-  return <span style={{ color: "#61afef" }}>{children}</span>;
-}
-function St({ children }: { children: React.ReactNode }) {
-  return <span style={{ color: "#98c379" }}>{children}</span>;
-}
-function Pn({ children }: { children: React.ReactNode }) {
-  return <span style={{ color: "#555" }}>{children}</span>;
-}
-function Cm({ children }: { children: React.ReactNode }) {
-  return <span style={{ color: "#5c6370", fontStyle: "italic" }}>{children}</span>;
-}
-function Line({ children }: { children?: React.ReactNode }) {
-  return <div style={{ minHeight: "22px" }}>{children}</div>;
+
+// ── AI Assist Replica (animated — shows refactoring progress) ──
+
+function AIAssistReplica() {
+  const [stage, setStage] = useState(0);
+
+  useEffect(() => {
+    const stages = [800, 1200, 800, 600]; // delays between stages
+    if (stage < 4) {
+      const timeout = setTimeout(() => setStage((s) => s + 1), stages[stage]);
+      return () => clearTimeout(timeout);
+    }
+  }, [stage]);
+
+  return (
+    <div
+      className="rounded-xl overflow-hidden w-full max-w-[800px] mx-auto p-8"
+      style={{ background: "#0a0a0a", border: "1px solid #161616" }}
+    >
+      <div className="flex items-start gap-4 mb-6">
+        <div className="flex items-center justify-center rounded-lg flex-shrink-0" style={{ width: 40, height: 40, background: "#6366f120" }}>
+          <Sparkles size={18} style={{ color: "#6366f1" }} />
+        </div>
+        <div className="flex-1">
+          <p style={{ fontSize: "13px", color: "#e8e8e8", fontWeight: 600 }}>AI Assist</p>
+          <AnimatePresence mode="wait">
+            {stage < 2 ? (
+              <motion.p
+                key="analyzing"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                style={{ fontSize: "12px", color: "#888", marginTop: "4px", lineHeight: 1.5 }}
+              >
+                Analyzing <span style={{ color: "#6366f1", fontFamily: "monospace" }}>auth_middleware.rs</span>
+                <span style={{ display: "inline-flex", gap: "2px", marginLeft: "4px" }}>
+                  {[0, 1, 2].map((i) => (
+                    <motion.span
+                      key={i}
+                      animate={{ opacity: [0.3, 1, 0.3] }}
+                      transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+                      style={{ color: "#6366f1" }}
+                    >.</motion.span>
+                  ))}
+                </span>
+              </motion.p>
+            ) : (
+              <motion.p
+                key="done"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                style={{ fontSize: "12px", color: "#888", marginTop: "4px", lineHeight: 1.5 }}
+              >
+                Refactoring <span style={{ color: "#6366f1", fontFamily: "monospace" }}>auth_middleware.rs</span> — extracted 3 helper functions, simplified error handling, added typed responses.
+              </motion.p>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      <div className="flex gap-2">
+        {stage >= 2 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="px-3 py-1.5 rounded-md text-xs"
+            style={{ background: "#43b58120", color: "#43b581", fontFamily: "monospace" }}
+          >
+            +42 lines
+          </motion.div>
+        )}
+        {stage >= 3 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="px-3 py-1.5 rounded-md text-xs"
+            style={{ background: "#ff444420", color: "#ff4444", fontFamily: "monospace" }}
+          >
+            -67 lines
+          </motion.div>
+        )}
+        {stage >= 4 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="px-3 py-1.5 rounded-md text-xs flex items-center gap-1"
+            style={{ background: "#6366f120", color: "#6366f1" }}
+          >
+            <Check size={10} /> 3 files changed
+          </motion.div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 // ── 1.0 AI-Native Intelligence ──
@@ -247,27 +428,7 @@ function AISection() {
         />
 
         <ScrollReveal>
-          <div
-            className="rounded-xl overflow-hidden w-full max-w-[800px] mx-auto p-8"
-            style={{ background: "#0a0a0a", border: "1px solid #161616" }}
-          >
-            <div className="flex items-start gap-4 mb-6">
-              <div className="flex items-center justify-center rounded-lg flex-shrink-0" style={{ width: 40, height: 40, background: "#6366f120" }}>
-                <Sparkles size={18} style={{ color: "#6366f1" }} />
-              </div>
-              <div>
-                <p style={{ fontSize: "13px", color: "#e8e8e8", fontWeight: 600 }}>AI Assist</p>
-                <p style={{ fontSize: "12px", color: "#888", marginTop: "4px", lineHeight: 1.5 }}>
-                  Refactoring <span style={{ color: "#6366f1", fontFamily: "monospace" }}>auth_middleware.rs</span> — extracted 3 helper functions, simplified error handling, added typed responses.
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <div className="px-3 py-1.5 rounded-md text-xs" style={{ background: "#43b58120", color: "#43b581", fontFamily: "monospace" }}>+42 lines</div>
-              <div className="px-3 py-1.5 rounded-md text-xs" style={{ background: "#ff444420", color: "#ff4444", fontFamily: "monospace" }}>-67 lines</div>
-              <div className="px-3 py-1.5 rounded-md text-xs" style={{ background: "#6366f120", color: "#6366f1" }}>3 files changed</div>
-            </div>
-          </div>
+          <AIAssistReplica />
         </ScrollReveal>
 
         <SubFeatures
@@ -297,25 +458,7 @@ function TerminalSection() {
         />
 
         <ScrollReveal>
-          <div
-            className="rounded-xl overflow-hidden w-full max-w-[800px] mx-auto"
-            style={{ background: "#0a0a0a", border: "1px solid #161616" }}
-          >
-            <div className="flex items-center gap-2 px-4 py-2.5" style={{ borderBottom: "1px solid #161616", background: "#0e0e0e" }}>
-              <Terminal size={12} style={{ color: "#43b581" }} />
-              <span style={{ fontSize: "12px", color: "#888" }}>zsh — project/liminal</span>
-            </div>
-            <div className="p-4" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "12px", lineHeight: "20px" }}>
-              <div><span style={{ color: "#43b581" }}>❯</span> <span style={{ color: "#e8e8e8" }}>cargo build --release</span></div>
-              <div style={{ color: "#888" }}>   Compiling liminal-core v0.1.0</div>
-              <div style={{ color: "#888" }}>   Compiling liminal-editor v0.1.0</div>
-              <div style={{ color: "#43b581" }}>    Finished release [optimized] target(s) in 2.4s</div>
-              <div style={{ marginTop: "8px" }}><span style={{ color: "#43b581" }}>❯</span> <span style={{ color: "#e8e8e8" }}>cargo test</span></div>
-              <div style={{ color: "#888" }}>running 47 tests</div>
-              <div style={{ color: "#43b581" }}>test result: ok. 47 passed; 0 failed; 0 ignored</div>
-              <div style={{ marginTop: "8px" }}><span style={{ color: "#43b581" }}>❯</span> <span style={{ color: "#555" }}>▋</span></div>
-            </div>
-          </div>
+          <TerminalReplica />
         </ScrollReveal>
 
         <SubFeatures

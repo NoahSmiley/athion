@@ -1067,6 +1067,147 @@ function FluxMusicReplica() {
   );
 }
 
+// ── Screen Share / Streaming Replica ──
+
+function FluxStreamReplica() {
+  const [activePreset, setActivePreset] = useState(0);
+  const [viewerCount] = useState(3);
+
+  // Cycle through presets to show variety
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActivePreset((prev) => (prev + 1) % SCREEN_SHARE_PRESETS.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const preset = SCREEN_SHARE_PRESETS[activePreset];
+
+  return (
+    <div
+      className="rounded-xl overflow-hidden w-full max-w-[900px] mx-auto"
+      style={{ background: "#0a0a0a", border: "1px solid #161616" }}
+    >
+      {/* Stream header */}
+      <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid #161616", background: "#0e0e0e" }}>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <MonitorUp size={14} style={{ color: "#43b581" }} />
+            <span style={{ fontSize: "13px", fontWeight: 600, color: "#e8e8e8" }}>noah&apos;s screen</span>
+          </div>
+          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full" style={{ background: "#ff444420" }}>
+            <div className="w-1.5 h-1.5 rounded-full bg-red-500" style={{ animation: "pulse-dot 2s ease-in-out infinite" }} />
+            <span style={{ fontSize: "10px", color: "#ff4444", fontWeight: 500 }}>LIVE</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <span style={{ fontSize: "11px", color: "#888" }}>{viewerCount} watching</span>
+          <div className="flex -space-x-1.5">
+            {[USERS.trevor, USERS.riley, USERS.quinn].map((u) => (
+              <div key={u.id} className="w-5 h-5 rounded-full overflow-hidden border-2" style={{ borderColor: "#0e0e0e", background: u.color + "33" }}>
+                <img src={u.avatar} alt="" className="w-full h-full" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Stream content — mock code editor being shared */}
+      <div className="relative" style={{ height: "320px", background: "#111" }}>
+        {/* Simulated shared screen — code editor */}
+        <div className="absolute inset-3 rounded-lg overflow-hidden" style={{ background: "#1a1a2e", border: "1px solid #252545" }}>
+          {/* Editor tab bar */}
+          <div className="flex items-center gap-0 px-2 py-1.5" style={{ background: "#12122a", borderBottom: "1px solid #252545" }}>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-t" style={{ background: "#1a1a2e" }}>
+              <div className="w-2 h-2 rounded-sm" style={{ background: "#6366f1" }} />
+              <span style={{ fontSize: "10px", color: "#ccc" }}>server.rs</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-1">
+              <div className="w-2 h-2 rounded-sm" style={{ background: "#555" }} />
+              <span style={{ fontSize: "10px", color: "#555" }}>routes.rs</span>
+            </div>
+          </div>
+          {/* Code lines */}
+          <div className="p-3" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "10px", lineHeight: "18px" }}>
+            <div><span style={{ color: "#c678dd" }}>async</span> <span style={{ color: "#c678dd" }}>fn</span> <span style={{ color: "#61afef" }}>handle_connection</span><span style={{ color: "#555" }}>(</span></div>
+            <div>{"    "}<span style={{ color: "#e5c07b" }}>stream</span>: <span style={{ color: "#e5c07b" }}>TcpStream</span>,</div>
+            <div>{"    "}<span style={{ color: "#e5c07b" }}>state</span>: <span style={{ color: "#e5c07b" }}>Arc</span><span style={{ color: "#555" }}>&lt;</span><span style={{ color: "#e5c07b" }}>AppState</span><span style={{ color: "#555" }}>&gt;</span></div>
+            <div><span style={{ color: "#555" }}>)</span> <span style={{ color: "#555" }}>-&gt;</span> <span style={{ color: "#e5c07b" }}>Result</span><span style={{ color: "#555" }}>&lt;()&gt;</span> <span style={{ color: "#555" }}>{"{"}</span></div>
+            <div>{"    "}<span style={{ color: "#c678dd" }}>let</span> ws = <span style={{ color: "#61afef" }}>accept_async</span><span style={{ color: "#555" }}>(</span>stream<span style={{ color: "#555" }}>)</span>.<span style={{ color: "#c678dd" }}>await</span><span style={{ color: "#555" }}>?;</span></div>
+            <div>{"    "}<span style={{ color: "#c678dd" }}>let</span> <span style={{ color: "#555" }}>(</span>tx, rx<span style={{ color: "#555" }}>)</span> = ws.<span style={{ color: "#61afef" }}>split</span><span style={{ color: "#555" }}>();</span></div>
+            <div>{"    "}state.<span style={{ color: "#61afef" }}>broadcast</span><span style={{ color: "#555" }}>(</span><span style={{ color: "#98c379" }}>&quot;user_joined&quot;</span><span style={{ color: "#555" }}>)</span>.<span style={{ color: "#c678dd" }}>await</span><span style={{ color: "#555" }}>;</span></div>
+            <div style={{ color: "#5c6370", fontStyle: "italic" }}>{"    "}// Handle incoming messages...</div>
+          </div>
+        </div>
+
+        {/* Cursor indicator */}
+        <div className="absolute" style={{ top: "52%", left: "38%", width: "14px", height: "14px" }}>
+          <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+            <path d="M1 1L6 14L8 8L14 6L1 1Z" fill="#6366f1" stroke="#fff" strokeWidth="0.5" />
+          </svg>
+          <span className="absolute left-3.5 top-2.5 px-1 py-0.5 rounded text-white" style={{ fontSize: "8px", background: "#6366f1", whiteSpace: "nowrap" }}>noah</span>
+        </div>
+      </div>
+
+      {/* Preset selector bar */}
+      <div className="px-4 py-3 flex items-center justify-between" style={{ borderTop: "1px solid #161616", background: "#0e0e0e" }}>
+        <div className="flex items-center gap-2">
+          <Monitor size={14} style={{ color: "#888" }} />
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={activePreset}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2 }}
+              style={{ fontSize: "12px", color: "#e8e8e8", fontFamily: "monospace" }}
+            >
+              {preset.preset}
+            </motion.span>
+          </AnimatePresence>
+          <span style={{ fontSize: "10px", color: "#555" }}>·</span>
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={activePreset}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              style={{ fontSize: "11px", color: "#888" }}
+            >
+              {preset.codec} · {preset.bitrate} · {preset.framerate}
+            </motion.span>
+          </AnimatePresence>
+        </div>
+        <div className="flex items-center gap-2">
+          {SCREEN_SHARE_PRESETS.map((p, i) => (
+            <button
+              key={p.preset}
+              onClick={() => setActivePreset(i)}
+              className="px-2 py-0.5 rounded text-xs transition-colors"
+              style={{
+                fontSize: "10px",
+                fontFamily: "monospace",
+                background: i === activePreset ? "#ffffff10" : "transparent",
+                color: i === activePreset ? "#e8e8e8" : "#555",
+              }}
+            >
+              {p.preset}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 // ── Krisp Logo ──
 
 function KrispLogo({ size = 20 }: { size?: number }) {
@@ -1333,12 +1474,43 @@ function MusicSection() {
   );
 }
 
+// ── 4.0 Streaming ──
+
+function StreamingSection() {
+  return (
+    <section className="py-24 sm:py-32 border-t border-border/50">
+      <div className="mx-auto max-w-7xl px-6">
+        <SectionHeader
+          number="4.0"
+          label="Streaming"
+          title={"Lossless screen share.\n6 presets up to 4K."}
+          description="Share your screen at full fidelity — from 480p for low bandwidth to lossless VP9 at 4K 60fps pushing 20 Mbps. No Nitro paywall, no resolution caps. Every pixel, every frame."
+        />
+
+        <ScrollReveal>
+          <FluxStreamReplica />
+        </ScrollReveal>
+
+        <SubFeatures
+          items={[
+            { number: "4.1", label: "Lossless VP9 4K" },
+            { number: "4.2", label: "6 quality presets" },
+            { number: "4.3", label: "Up to 20 Mbps" },
+            { number: "4.4", label: "60fps streaming" },
+          ]}
+        />
+      </div>
+    </section>
+  );
+}
+
 function FeatureSections() {
   return (
     <div id="features">
       <MessagingSection />
       <VoiceSection />
       <MusicSection />
+      <StreamingSection />
     </div>
   );
 }
@@ -1416,7 +1588,7 @@ function TechSpecs() {
     <section className="py-24 sm:py-32 border-t border-border/50">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
-          number="5.0"
+          number="6.0"
           label="Specifications"
           title={"Under the hood."}
           description="Flux is built on a Rust backend with LiveKit WebRTC for media routing. The desktop app uses Tauri — no Electron, no bloat."
@@ -1467,10 +1639,10 @@ function TechSpecs() {
 
         <SubFeatures
           items={[
-            { number: "5.1", label: "Tauri (no Electron)" },
-            { number: "5.2", label: "Rust backend" },
-            { number: "5.3", label: "LiveKit WebRTC" },
-            { number: "5.4", label: "SQLite storage" },
+            { number: "6.1", label: "Tauri (no Electron)" },
+            { number: "6.2", label: "Rust backend" },
+            { number: "6.3", label: "LiveKit WebRTC" },
+            { number: "6.4", label: "SQLite storage" },
           ]}
         />
       </div>

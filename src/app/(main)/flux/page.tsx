@@ -3,24 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
-  AudioWaveform,
-  Lock,
-  Monitor,
-  MicOff,
-  MessageSquare,
-  Zap,
-  Download,
-  Apple,
-  MonitorDot,
-  ArrowRight,
+  AudioWaveform, Lock, Monitor, MicOff, MessageSquare, Zap,
+  Download, Apple, MonitorDot, ArrowRight,
 } from "lucide-react";
-import { motion, useScroll, useTransform, useSpring, useMotionValue, useAnimationFrame } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { PageTransition } from "@/components/page-transition";
-import {
-  ScrollReveal,
-  StaggerContainer,
-  StaggerItem,
-} from "@/components/scroll-reveal";
+import { ScrollReveal, StaggerContainer, StaggerItem } from "@/components/scroll-reveal";
 import { FluxLogo } from "@/components/flux-logo";
 import { BenchmarkSection, type BenchmarkGroup } from "@/components/benchmark";
 import { FLUX_FEATURES, SCREEN_SHARE_PRESETS } from "@/lib/constants";
@@ -38,111 +26,122 @@ const fluxBenchmarks: BenchmarkGroup[] = [
 
 const SHOWCASE_SECTIONS = [
   {
-    overline: "Voice",
-    title: "Talk with crystal clarity.",
-    description: "48kHz stereo audio with Opus CBR encoding and Krisp AI noise suppression. Hear every detail without the background noise.",
+    title: "CRYSTAL-CLEAR VOICE, ZERO NOISE.",
+    description: "48kHz stereo Opus audio with Krisp AI noise suppression. Background noise disappears — your voice stays.",
     image: "/flux/voice.png",
     imageAlt: "Flux voice channel with participants in a call",
-    gradient: "from-violet-600/20 via-fuchsia-500/10 to-transparent",
   },
   {
-    overline: "Screen Share",
-    title: "Share your screen, losslessly.",
-    description: "Up to 4K VP9 at 20 Mbps with six quality presets. No compression artifacts, no framerate drops — your screen, pixel-perfect.",
+    title: "YOUR SCREEN, PIXEL-PERFECT.",
+    description: "Lossless VP9 screen sharing up to 4K at 20 Mbps. Six quality presets from 480p to lossless — no compression artifacts.",
     image: "/flux/screenshare.png",
     imageAlt: "Flux lossless screen sharing view",
-    gradient: "from-cyan-600/20 via-blue-500/10 to-transparent",
   },
   {
-    overline: "Chat",
-    title: "Messaging that keeps up.",
+    title: "ENCRYPTED MESSAGING, BUILT IN.",
     description: "Rich text, emoji reactions, file sharing, and threaded replies — all encrypted end-to-end with AES-256-GCM.",
     image: "/flux/chat.png",
     imageAlt: "Flux text chat with messages and reactions",
-    gradient: "from-emerald-600/20 via-teal-500/10 to-transparent",
   },
 ];
 
 const iconMap = { AudioWaveform, Lock, Monitor, MicOff, MessageSquare, Zap } as const;
 
-// ── Floating Particles ──
+// ── Twinkling Stars (like Discord) ──
 
-function FloatingParticles() {
+function TwinklingStars() {
+  const stars = useRef(
+    Array.from({ length: 40 }, () => ({
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      size: 1 + Math.random() * 3,
+      delay: Math.random() * 6,
+      duration: 3 + Math.random() * 4,
+      isCross: Math.random() > 0.6,
+    }))
+  ).current;
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {Array.from({ length: 30 }).map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1 h-1 rounded-full bg-white/20"
-          style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-          }}
-          animate={{
-            y: [0, -30 - Math.random() * 40, 0],
-            x: [0, (Math.random() - 0.5) * 20, 0],
-            opacity: [0, 0.6, 0],
-            scale: [0.5, 1 + Math.random(), 0.5],
-          }}
-          transition={{
-            duration: 4 + Math.random() * 6,
-            repeat: Infinity,
-            delay: Math.random() * 5,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-      {/* Larger glowing orbs */}
-      {Array.from({ length: 6 }).map((_, i) => (
-        <motion.div
-          key={`orb-${i}`}
-          className="absolute rounded-full"
-          style={{
-            width: 4 + Math.random() * 4,
-            height: 4 + Math.random() * 4,
-            left: `${10 + Math.random() * 80}%`,
-            top: `${10 + Math.random() * 80}%`,
-            background: `radial-gradient(circle, ${["rgba(139,92,246,0.5)", "rgba(236,72,153,0.4)", "rgba(59,130,246,0.4)", "rgba(168,85,247,0.5)", "rgba(99,102,241,0.4)", "rgba(217,70,239,0.4)"][i]}, transparent)`,
-            filter: "blur(1px)",
-          }}
-          animate={{
-            y: [0, -50 - Math.random() * 30, 0],
-            x: [0, (Math.random() - 0.5) * 40, 0],
-            opacity: [0.2, 0.8, 0.2],
-          }}
-          transition={{
-            duration: 6 + Math.random() * 4,
-            repeat: Infinity,
-            delay: Math.random() * 3,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
+      {stars.map((star, i) =>
+        star.isCross ? (
+          <motion.svg
+            key={i}
+            className="absolute text-white/40"
+            style={{ left: `${star.left}%`, top: `${star.top}%` }}
+            width={star.size * 4}
+            height={star.size * 4}
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            animate={{ opacity: [0, 0.8, 0], scale: [0.5, 1.2, 0.5] }}
+            transition={{ duration: star.duration, repeat: Infinity, delay: star.delay, ease: "easeInOut" }}
+          >
+            <path d="M8 0L9 7L16 8L9 9L8 16L7 9L0 8L7 7Z" />
+          </motion.svg>
+        ) : (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-white/30"
+            style={{
+              left: `${star.left}%`,
+              top: `${star.top}%`,
+              width: star.size,
+              height: star.size,
+            }}
+            animate={{ opacity: [0, 0.7, 0], scale: [0.3, 1, 0.3] }}
+            transition={{ duration: star.duration, repeat: Infinity, delay: star.delay, ease: "easeInOut" }}
+          />
+        )
+      )}
+    </div>
+  );
+}
+
+// ── Scrolling Marquee ──
+
+function Marquee() {
+  const words = ["TALK", "LISTEN", "SHARE", "STREAM", "PLAY", "CONNECT"];
+  const items = [...words, ...words, ...words]; // triple for seamless loop
+
+  return (
+    <div className="relative py-8 overflow-hidden bg-[#1a1040]/60 border-y border-white/5">
+      <motion.div
+        className="flex gap-12 whitespace-nowrap"
+        animate={{ x: ["0%", "-33.33%"] }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+      >
+        {items.map((word, i) => (
+          <span key={i} className="flex items-center gap-12">
+            <span className="text-4xl sm:text-5xl font-bold uppercase italic font-serif text-white/90 tracking-wide">
+              {word}
+            </span>
+            <FluxLogo size={28} className="text-white/30 flex-shrink-0" />
+          </span>
+        ))}
+      </motion.div>
     </div>
   );
 }
 
 // ── Desktop Frame ──
 
-function DesktopFrame({ src, alt, className, glow }: { src: string; alt: string; className?: string; glow?: string }) {
+function DesktopFrame({ src, alt, className }: { src: string; alt: string; className?: string }) {
   return (
     <div className={`relative ${className ?? ""}`}>
-      {/* Colored glow behind the monitor */}
-      <div className={`absolute -inset-12 blur-3xl rounded-3xl pointer-events-none opacity-60 ${glow ?? "bg-violet-500/15"}`} />
       <div className="relative">
-        <div className="bg-[#111114] rounded-xl border border-white/10 p-2 shadow-2xl shadow-black/80">
+        <div className="bg-[#0c0c10] rounded-2xl border border-white/10 p-2.5 shadow-2xl shadow-black/60">
           <div className="flex items-center gap-1.5 px-2.5 pb-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]/80" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]/80" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]/80" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]/70" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]/70" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]/70" />
           </div>
-          <div className="rounded-lg overflow-hidden">
+          <div className="rounded-xl overflow-hidden">
             <img src={src} alt={alt} className="w-full h-auto block" />
           </div>
         </div>
         <div className="flex flex-col items-center">
-          <div className="w-16 h-6 bg-gradient-to-b from-[#111114] to-[#0a0a0c] border-x border-white/5" />
-          <div className="w-28 h-2 bg-[#111114] rounded-b-lg border border-t-0 border-white/5" />
+          <div className="w-16 h-5 bg-gradient-to-b from-[#0c0c10] to-[#080810] border-x border-white/5" />
+          <div className="w-24 h-1.5 bg-[#0c0c10] rounded-b-lg border border-t-0 border-white/5" />
         </div>
       </div>
     </div>
@@ -160,28 +159,17 @@ function FluxHero() {
   const smoothY = useSpring(y, { stiffness: 100, damping: 30 });
 
   return (
-    <section ref={ref} className="relative overflow-hidden min-h-screen flex items-center">
-      {/* Gradient background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-950/80 via-[#09090b] to-fuchsia-950/40" />
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-violet-600/15 rounded-full blur-[128px]" />
-        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-fuchsia-600/10 rounded-full blur-[128px]" />
-        <div className="absolute top-1/3 right-1/3 w-[300px] h-[300px] bg-indigo-500/10 rounded-full blur-[100px]" />
-      </div>
+    <section ref={ref} className="relative overflow-hidden min-h-screen flex items-center bg-[#2a1a6b]">
+      {/* Vibrant gradient background — saturated indigo like Discord */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#3a2098] via-[#2d1a7a] to-[#1a1040]" />
+      <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-[#5b3dc8]/30 rounded-full blur-[200px]" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#7c3aed]/20 rounded-full blur-[180px]" />
+      <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-[#a855f7]/15 rounded-full blur-[120px]" />
 
-      {/* Animated grid overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      />
-
-      <FloatingParticles />
+      <TwinklingStars />
 
       <motion.div
-        className="relative mx-auto max-w-7xl px-6 pt-32 pb-20 grid md:grid-cols-2 gap-12 md:gap-16 items-center"
+        className="relative mx-auto max-w-7xl px-6 pt-32 pb-24 grid md:grid-cols-2 gap-12 md:gap-16 items-center"
         style={{ opacity: smoothOpacity, y: smoothY }}
       >
         {/* Left — Text */}
@@ -191,28 +179,22 @@ function FluxHero() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
           >
-            <FluxLogo size={40} className="text-violet-400" />
+            <FluxLogo size={44} className="text-white/80" />
           </motion.div>
           <motion.h1
-            className="mt-6 font-serif text-5xl sm:text-6xl md:text-5xl lg:text-7xl tracking-[-0.03em] leading-[0.9] uppercase font-bold italic"
+            className="mt-6 font-serif text-5xl sm:text-6xl lg:text-7xl tracking-[-0.02em] leading-[0.9] uppercase font-bold italic text-white"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
           >
-            <span className="bg-gradient-to-r from-white via-white to-violet-200 bg-clip-text text-transparent">
-              Voice chat
-            </span>
+            Voice chat
             <br />
-            <span className="bg-gradient-to-r from-white to-violet-300/80 bg-clip-text text-transparent">
-              that&apos;s all
-            </span>
+            that&apos;s all
             <br />
-            <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-              signal.
-            </span>
+            signal.
           </motion.h1>
           <motion.p
-            className="mt-6 text-base sm:text-lg text-violet-200/60 max-w-md leading-relaxed"
+            className="mt-6 text-base sm:text-lg text-white/60 max-w-md leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
@@ -227,14 +209,14 @@ function FluxHero() {
           >
             <a
               href="#download"
-              className="group inline-flex items-center gap-2 px-7 py-3.5 bg-white text-black text-sm font-semibold rounded-lg hover:bg-violet-100 transition-all duration-200 shadow-lg shadow-white/10"
+              className="inline-flex items-center gap-2 px-7 py-3.5 bg-white text-[#2a1a6b] text-sm font-semibold rounded-full hover:bg-white/90 transition-all shadow-lg shadow-black/20"
             >
               <Download size={14} />
               Download for Free
             </a>
             <a
               href="#features"
-              className="inline-flex items-center gap-2 px-7 py-3.5 border border-white/15 text-white/70 text-sm rounded-lg hover:text-white hover:border-white/30 hover:bg-white/5 transition-all duration-200 backdrop-blur-sm"
+              className="inline-flex items-center gap-2 px-7 py-3.5 border border-white/20 text-white/80 text-sm rounded-full hover:text-white hover:border-white/40 hover:bg-white/5 transition-all backdrop-blur-sm"
             >
               See Features
               <ArrowRight size={14} />
@@ -244,61 +226,57 @@ function FluxHero() {
 
         {/* Right — Desktop mockup */}
         <motion.div
-          initial={{ opacity: 0, x: 60, rotateY: -8 }}
-          animate={{ opacity: 1, x: 0, rotateY: 0 }}
+          initial={{ opacity: 0, x: 60, scale: 0.95 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
           transition={{ duration: 1.2, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-          style={{ perspective: 1200 }}
         >
           <DesktopFrame
             src="/flux/hero.png"
             alt="Flux desktop app showing music playback and YouTube search"
-            glow="bg-violet-500/20"
           />
         </motion.div>
       </motion.div>
 
-      {/* Bottom fade to page bg */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#09090b] to-transparent" />
+      {/* Bottom fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#1a1040] to-transparent" />
     </section>
   );
 }
 
-// ── Alternating Feature Showcase ──
+// ── Feature Showcase (in frosted cards on blue bg) ──
 
 function FeatureShowcase() {
   return (
-    <section id="features" className="relative">
+    <section id="features" className="relative bg-[#1a1040] overflow-hidden">
+      <TwinklingStars />
+
       {SHOWCASE_SECTIONS.map((section, i) => {
         const imageOnRight = i % 2 === 0;
         return (
-          <div key={section.overline} className="relative overflow-hidden">
-            {/* Section-specific gradient bg */}
-            <div className={`absolute inset-0 bg-gradient-to-b ${section.gradient} pointer-events-none`} />
+          <div key={section.title} className="relative mx-auto max-w-6xl px-6 py-16">
+            <ScrollReveal>
+              <div className="rounded-3xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm p-8 sm:p-12 grid md:grid-cols-2 gap-10 md:gap-16 items-center overflow-hidden">
+                {/* Subtle inner glow */}
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
 
-            <div className="relative mx-auto max-w-6xl px-6 py-28 grid md:grid-cols-2 gap-12 md:gap-16 items-center">
-              {/* Text */}
-              <div className={imageOnRight ? "md:order-1" : "md:order-2"}>
-                <ScrollReveal direction={imageOnRight ? "left" : "right"}>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-400 mb-4">{section.overline}</p>
-                  <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] leading-tight">
+                {/* Text */}
+                <div className={`relative ${imageOnRight ? "md:order-1" : "md:order-2"}`}>
+                  <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl tracking-[-0.01em] leading-tight uppercase font-bold italic text-white">
                     {section.title}
                   </h2>
-                  <p className="mt-4 text-foreground-muted leading-relaxed text-base sm:text-lg">
+                  <p className="mt-4 text-white/50 leading-relaxed text-sm sm:text-base">
                     {section.description}
                   </p>
-                </ScrollReveal>
+                </div>
+
+                {/* Screenshot */}
+                <div className={`relative ${imageOnRight ? "md:order-2" : "md:order-1"}`}>
+                  <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-white/5">
+                    <img src={section.image} alt={section.imageAlt} className="w-full h-auto block" />
+                  </div>
+                </div>
               </div>
-              {/* Screenshot */}
-              <div className={imageOnRight ? "md:order-2" : "md:order-1"}>
-                <ScrollReveal direction={imageOnRight ? "right" : "left"} delay={0.15}>
-                  <DesktopFrame
-                    src={section.image}
-                    alt={section.imageAlt}
-                    glow={i === 0 ? "bg-violet-500/15" : i === 1 ? "bg-cyan-500/15" : "bg-emerald-500/15"}
-                  />
-                </ScrollReveal>
-              </div>
-            </div>
+            </ScrollReveal>
           </div>
         );
       })}
@@ -306,36 +284,46 @@ function FeatureShowcase() {
   );
 }
 
+// ── Scrolling Marquee Strip ──
+
+function MarqueeSection() {
+  return (
+    <div className="relative bg-[#1a1040]">
+      <Marquee />
+    </div>
+  );
+}
+
 // ── Feature Grid ──
 
 function FeatureGrid() {
   return (
-    <section className="relative py-32 px-6 overflow-hidden">
-      {/* Subtle gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-violet-950/20 to-transparent pointer-events-none" />
+    <section className="relative py-32 px-6 overflow-hidden bg-gradient-to-b from-[#1a1040] to-[#09090b]">
+      <TwinklingStars />
 
       <div className="relative mx-auto max-w-6xl">
         <ScrollReveal>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-400 mb-4">Features</p>
-          <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em]">
+          <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] text-center uppercase font-bold italic text-white">
             Every detail, considered.
           </h2>
+          <p className="mt-4 text-white/40 text-center max-w-lg mx-auto">
+            Six pillars that make Flux different.
+          </p>
         </ScrollReveal>
 
-        <StaggerContainer className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <StaggerContainer className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {FLUX_FEATURES.map((feature) => {
             const Icon = iconMap[feature.icon];
             return (
               <StaggerItem key={feature.title}>
-                <div className="group relative p-6 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-violet-500/20 transition-all duration-500 overflow-hidden">
-                  {/* Hover glow */}
-                  <div className="absolute -inset-px rounded-xl bg-gradient-to-b from-violet-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <div className="group relative p-6 rounded-2xl border border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-500 overflow-hidden">
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-violet-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                   <div className="relative">
-                    <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
-                      <Icon size={18} className="text-violet-400" />
+                    <div className="w-10 h-10 rounded-xl bg-violet-500/15 flex items-center justify-center border border-violet-500/10">
+                      <Icon size={18} className="text-violet-300" />
                     </div>
-                    <h3 className="mt-4 font-serif text-lg">{feature.title}</h3>
-                    <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
+                    <h3 className="mt-4 font-semibold text-white/90">{feature.title}</h3>
+                    <p className="mt-2 text-sm text-white/40 leading-relaxed">
                       {feature.description}
                     </p>
                   </div>
@@ -396,7 +384,6 @@ function TechSpecs() {
                 Flux is built on a Rust backend with LiveKit WebRTC for media routing. The desktop app uses Tauri — no Electron, no bloat.
               </p>
             </ScrollReveal>
-
             <StaggerContainer className="mt-10 grid grid-cols-2 gap-x-8 gap-y-4">
               {specs.map((spec) => (
                 <StaggerItem key={spec.label}>
@@ -408,7 +395,6 @@ function TechSpecs() {
               ))}
             </StaggerContainer>
           </div>
-
           <div>
             <ScrollReveal delay={0.15}>
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-400 mb-4">Screen Share Presets</p>
@@ -442,7 +428,7 @@ function TechSpecs() {
   );
 }
 
-// ── Download CTA ──
+// ── Bottom CTA ──
 
 function DownloadCTA() {
   const [authState, setAuthState] = useState<"loading" | "none" | "no-sub" | "active">("loading");
@@ -470,36 +456,32 @@ function DownloadCTA() {
   const ctaLabel = authState === "none" ? "Sign Up to Download" : authState === "no-sub" ? "Subscribe to Download" : "Download for macOS";
 
   return (
-    <section id="download" className="relative py-40 px-6 overflow-hidden">
-      {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-violet-950/30 to-violet-950/50" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-violet-600/10 rounded-full blur-[160px] pointer-events-none" />
+    <section id="download" className="relative py-40 px-6 overflow-hidden bg-gradient-to-b from-[#09090b] via-[#1a1040] to-[#2a1a6b]">
+      <TwinklingStars />
 
-      <FloatingParticles />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-violet-600/15 rounded-full blur-[200px] pointer-events-none" />
 
       <div className="relative mx-auto max-w-6xl text-center">
         <ScrollReveal>
-          <FluxLogo size={48} className="mx-auto text-violet-400 mb-6" />
-          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl tracking-[-0.02em]">
-            Ready when you are.
+          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-[-0.02em] uppercase font-bold italic text-white">
+            Ready to switch?
+            <br />
+            <span className="text-white/50">Better go chat.</span>
           </h2>
-          <p className="mt-4 text-violet-200/50 max-w-md mx-auto text-lg">
-            Native desktop app — no browser required, no Electron overhead.
-          </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.15}>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={handleDownloadClick}
-              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black text-sm font-semibold rounded-lg hover:bg-violet-100 transition-all shadow-lg shadow-white/10"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#2a1a6b] text-sm font-semibold rounded-full hover:bg-white/90 transition-all shadow-lg shadow-black/20"
             >
               <Apple size={16} />
               {ctaLabel}
             </button>
             <button
               onClick={handleDownloadClick}
-              className="inline-flex items-center gap-2 px-8 py-4 border border-white/15 text-white/70 text-sm rounded-lg hover:text-white hover:border-white/30 hover:bg-white/5 transition-all backdrop-blur-sm"
+              className="inline-flex items-center gap-2 px-8 py-4 border border-white/20 text-white/80 text-sm rounded-full hover:text-white hover:border-white/40 hover:bg-white/5 transition-all backdrop-blur-sm"
             >
               <MonitorDot size={16} />
               {authState === "active" ? "Download for Windows" : ctaLabel}
@@ -521,6 +503,7 @@ export default function FluxPage() {
     <PageTransition>
       <FluxHero />
       <FeatureShowcase />
+      <MarqueeSection />
       <FeatureGrid />
       <FluxBenchmarks />
       <TechSpecs />

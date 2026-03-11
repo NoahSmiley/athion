@@ -109,6 +109,42 @@ const iconMap = {
   Zap,
 } as const;
 
+// ── Desktop Frame Component ──
+
+function DesktopFrame({ src, alt, className }: { src: string; alt: string; className?: string }) {
+  return (
+    <div className={`relative ${className ?? ""}`}>
+      {/* Glow behind the monitor */}
+      <div className="absolute -inset-8 bg-accent/8 blur-3xl rounded-3xl pointer-events-none" />
+      {/* Monitor frame */}
+      <div className="relative">
+        {/* Screen bezel */}
+        <div className="bg-[#1a1a1e] rounded-xl border border-[#2a2a2e] p-2 shadow-2xl shadow-black/60">
+          {/* Title bar dots */}
+          <div className="flex items-center gap-1.5 px-2 pb-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+          </div>
+          {/* Screen content */}
+          <div className="rounded-md overflow-hidden">
+            <img
+              src={src}
+              alt={alt}
+              className="w-full h-auto block"
+            />
+          </div>
+        </div>
+        {/* Monitor stand */}
+        <div className="flex flex-col items-center">
+          <div className="w-16 h-6 bg-gradient-to-b from-[#1a1a1e] to-[#141416] border-x border-[#2a2a2e]" />
+          <div className="w-28 h-2 bg-[#1a1a1e] rounded-b-lg border border-t-0 border-[#2a2a2e]" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Hero ──
 
 function FluxHero() {
@@ -124,61 +160,58 @@ function FluxHero() {
   const smoothY = useSpring(y, { stiffness: 100, damping: 30 });
 
   return (
-    <section ref={ref} className="relative overflow-hidden">
-      {/* Text content */}
+    <section ref={ref} className="relative overflow-hidden min-h-[90vh] flex items-center">
       <motion.div
-        className="mx-auto max-w-6xl px-6 pt-40 pb-16 text-center"
+        className="mx-auto max-w-7xl px-6 pt-32 pb-20 grid md:grid-cols-2 gap-12 md:gap-16 items-center"
         style={{ opacity: smoothOpacity, y: smoothY }}
       >
-        <ScrollReveal>
-          <FluxLogo size={48} className="mx-auto text-accent" />
-        </ScrollReveal>
-        <ScrollReveal delay={0.1}>
-          <h1 className="mt-6 font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-[-0.03em] leading-[0.9]">
-            Your group,
-            <br />
-            <span className="text-foreground-muted">your&nbsp;way.</span>
-          </h1>
-        </ScrollReveal>
-        <ScrollReveal delay={0.2}>
-          <p className="mt-6 text-lg sm:text-xl text-foreground-muted max-w-xl mx-auto leading-relaxed">
-            Crystal-clear voice, lossless screen sharing, and encrypted messaging
-            — in a desktop app lighter than a browser tab.
-          </p>
-        </ScrollReveal>
-        <ScrollReveal delay={0.3}>
-          <div className="mt-8 flex items-center justify-center gap-4">
-            <a
-              href="#download"
-              className="inline-flex items-center gap-2 px-7 py-3.5 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
-            >
-              <Download size={14} />
-              Download for Free
-            </a>
-            <a
-              href="#features"
-              className="inline-flex items-center gap-2 px-7 py-3.5 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light transition-colors"
-            >
-              See Features
-              <ArrowRight size={14} />
-            </a>
-          </div>
+        {/* Left — Text */}
+        <div>
+          <ScrollReveal>
+            <FluxLogo size={40} className="text-accent" />
+          </ScrollReveal>
+          <ScrollReveal delay={0.1}>
+            <h1 className="mt-6 font-serif text-5xl sm:text-6xl md:text-5xl lg:text-7xl tracking-[-0.03em] leading-[0.9] uppercase font-bold italic">
+              Voice chat
+              <br />
+              that&apos;s all
+              <br />
+              <span className="text-foreground-muted">signal.</span>
+            </h1>
+          </ScrollReveal>
+          <ScrollReveal delay={0.2}>
+            <p className="mt-6 text-base sm:text-lg text-foreground-muted max-w-md leading-relaxed">
+              Crystal-clear audio, lossless screen sharing, and encrypted messaging — in a desktop app lighter than a browser tab.
+            </p>
+          </ScrollReveal>
+          <ScrollReveal delay={0.3}>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <a
+                href="#download"
+                className="inline-flex items-center gap-2 px-7 py-3.5 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
+              >
+                <Download size={14} />
+                Download for Free
+              </a>
+              <a
+                href="#features"
+                className="inline-flex items-center gap-2 px-7 py-3.5 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light transition-colors"
+              >
+                See Features
+                <ArrowRight size={14} />
+              </a>
+            </div>
+          </ScrollReveal>
+        </div>
+
+        {/* Right — Desktop mockup */}
+        <ScrollReveal delay={0.2} direction="right">
+          <DesktopFrame
+            src="/flux/hero.png"
+            alt="Flux desktop app showing music playback and YouTube search"
+          />
         </ScrollReveal>
       </motion.div>
-
-      {/* Hero screenshot — large, centered, with glow */}
-      <ScrollZoom className="mx-auto max-w-6xl px-6 pb-8">
-        <div className="relative">
-          <div className="absolute -inset-8 bg-accent/5 blur-3xl rounded-3xl pointer-events-none" />
-          <div className="relative border border-border rounded-lg overflow-hidden shadow-2xl shadow-black/40">
-            <img
-              src="/flux/hero.png"
-              alt="Flux desktop app showing voice chat and messaging"
-              className="w-full h-auto"
-            />
-          </div>
-        </div>
-      </ScrollZoom>
     </section>
   );
 }
@@ -207,19 +240,13 @@ function FeatureShowcase() {
                 </p>
               </ScrollReveal>
             </div>
-            {/* Screenshot */}
+            {/* Screenshot in desktop frame */}
             <div className={imageOnRight ? "md:order-2" : "md:order-1"}>
               <ScrollReveal direction={imageOnRight ? "right" : "left"} delay={0.15}>
-                <div className="relative">
-                  <div className="absolute -inset-4 bg-accent/5 blur-2xl rounded-2xl pointer-events-none" />
-                  <div className="relative border border-border rounded-lg overflow-hidden shadow-xl shadow-black/30">
-                    <img
-                      src={section.image}
-                      alt={section.imageAlt}
-                      className="w-full h-auto"
-                    />
-                  </div>
-                </div>
+                <DesktopFrame
+                  src={section.image}
+                  alt={section.imageAlt}
+                />
               </ScrollReveal>
             </div>
           </div>

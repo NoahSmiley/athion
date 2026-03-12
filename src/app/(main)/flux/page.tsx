@@ -1295,7 +1295,7 @@ function FluxHero() {
         </motion.div>
 
         <motion.h1
-          className="text-[clamp(2.75rem,7vw,5.5rem)] font-medium tracking-[-0.025em] leading-[1.08]"
+          className="text-[clamp(2.75rem,7vw,5.5rem)] font-[590] tracking-[-0.022em] leading-[1.08]"
           initial="hidden"
           animate="visible"
           custom={0}
@@ -1392,7 +1392,7 @@ function SectionHeader({
       </ScrollReveal>
       <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-16">
         <ScrollReveal>
-          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-medium tracking-[-0.025em] leading-[1.12] text-foreground whitespace-pre-line">
+          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[590] tracking-[-0.022em] leading-[1.12] text-foreground whitespace-pre-line">
             {title}
           </h2>
         </ScrollReveal>
@@ -1567,7 +1567,7 @@ function FeatureGrid() {
       <div className="mx-auto max-w-7xl px-6">
         <ScrollReveal>
           <p className="overline mb-4">Details</p>
-          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-medium tracking-[-0.025em] leading-[1.12] max-w-2xl">
+          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[590] tracking-[-0.022em] leading-[1.12] max-w-2xl">
             Every detail, considered.
           </h2>
         </ScrollReveal>
@@ -1725,7 +1725,7 @@ function DownloadCTA() {
     <section id="download" className="py-32 border-t border-border/50">
       <div className="mx-auto max-w-7xl px-6">
         <ScrollReveal>
-          <h2 className="text-[clamp(2.75rem,5vw,4.5rem)] font-medium tracking-[-0.025em] leading-[1.1]">
+          <h2 className="text-[clamp(2.75rem,5vw,4.5rem)] font-[590] tracking-[-0.022em] leading-[1.1]">
             <span className="text-foreground">Ready to switch? </span>
             <span className="text-foreground-muted">Join the voice chat that respects your privacy and your machine.</span>
           </h2>

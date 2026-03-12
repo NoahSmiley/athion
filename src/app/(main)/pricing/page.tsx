@@ -33,14 +33,14 @@ function PlanCard({
   onCheckout: (product: string) => void;
 }) {
   return (
-    <div className="p-8 border border-border rounded-sm flex flex-col h-full">
-      <h3 className="font-serif text-2xl">{plan.name}</h3>
+    <div className="p-8 border border-border rounded-lg flex flex-col h-full">
+      <h3 className="font-[590] text-2xl tracking-[-0.012em]">{plan.name}</h3>
       <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
         {plan.description}
       </p>
 
       <div className="mt-6 flex items-baseline gap-1">
-        <span className="font-serif text-4xl">
+        <span className="font-[590] text-4xl tracking-[-0.022em]">
           ${annual ? plan.yearlyPrice : plan.monthlyPrice}
         </span>
         <span className="text-sm text-foreground-muted">
@@ -66,7 +66,7 @@ function PlanCard({
       <button
         onClick={() => onCheckout(plan.product)}
         disabled={loading === plan.product}
-        className="mt-8 w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors disabled:opacity-50"
+        className="mt-8 w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors disabled:opacity-50"
       >
         {loading === plan.product ? "Loading..." : "Subscribe"}
         {loading !== plan.product && <ArrowRight size={14} />}
@@ -96,8 +96,8 @@ function SoftwareTab({
         />
       ))}
 
-      <div className="p-8 border border-border rounded-sm flex flex-col justify-center">
-        <h3 className="font-serif text-2xl">Liminal IDE</h3>
+      <div className="p-8 border border-border rounded-lg flex flex-col justify-center">
+        <h3 className="font-[590] text-2xl tracking-[-0.012em]">Liminal IDE</h3>
         <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
           Free with every account. No subscription required.
         </p>
@@ -140,7 +140,7 @@ function ConsultingTab() {
   return (
     <div className="flex flex-col gap-10">
       {/* Credibility banner */}
-      <div className="p-8 border border-border rounded-sm">
+      <div className="p-8 border border-border rounded-lg">
         <div className="flex flex-col sm:flex-row sm:items-center gap-8 sm:gap-12">
           <div className="flex-1">
             <p className="text-foreground leading-relaxed">
@@ -160,19 +160,19 @@ function ConsultingTab() {
 
       {/* Pricing cards */}
       <div className="grid md:grid-cols-2 gap-8">
-        <div className="p-8 border border-border rounded-sm flex flex-col">
-          <h3 className="font-serif text-2xl">Hourly Rate</h3>
+        <div className="p-8 border border-border rounded-lg flex flex-col">
+          <h3 className="font-[590] text-2xl tracking-[-0.012em]">Hourly Rate</h3>
           <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
             For advisory, code reviews, and shorter engagements. Billed in 1-hour increments.
           </p>
           <div className="mt-6 flex items-baseline gap-1">
-            <span className="font-serif text-4xl">$150</span>
+            <span className="font-[590] text-4xl tracking-[-0.022em]">$150</span>
             <span className="text-sm text-foreground-muted">/hour</span>
           </div>
           <div className="mt-auto pt-8">
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
             >
               Book a Call
               <ArrowRight size={14} />
@@ -180,13 +180,13 @@ function ConsultingTab() {
           </div>
         </div>
 
-        <div className="p-8 border border-border rounded-sm flex flex-col">
-          <h3 className="font-serif text-2xl">Project-Based</h3>
+        <div className="p-8 border border-border rounded-lg flex flex-col">
+          <h3 className="font-[590] text-2xl tracking-[-0.012em]">Project-Based</h3>
           <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
             Fixed-scope projects with clear deliverables, timeline, and pricing agreed upfront.
           </p>
           <div className="mt-6">
-            <span className="font-serif text-2xl text-foreground-muted">Custom quote</span>
+            <span className="font-[590] text-2xl tracking-[-0.012em] text-foreground-muted">Custom quote</span>
           </div>
           <div className="mt-auto pt-8">
             <Link
@@ -250,7 +250,7 @@ export default function PricingPage() {
             <p className="overline mb-4">Pricing</p>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <h1 className="font-serif text-5xl sm:text-6xl tracking-[-0.02em]">
+            <h1 className="font-[590] text-5xl sm:text-6xl tracking-[-0.022em]">
               Simple, transparent pricing.
             </h1>
           </ScrollReveal>
@@ -262,7 +262,7 @@ export default function PricingPage() {
 
           {/* Tabs */}
           <ScrollReveal delay={0.3}>
-            <div className="mt-10 inline-flex items-center gap-1 p-1 border border-border">
+            <div className="mt-10 inline-flex items-center gap-1 p-1 border border-border rounded-[6px]">
               {TABS.map((t) => (
                 <button
                   key={t}
@@ -283,7 +283,7 @@ export default function PricingPage() {
           {/* Monthly/Yearly toggle — only for Software & Hosting */}
           {showToggle && (
             <ScrollReveal delay={0.35}>
-              <div className="mt-6 inline-flex items-center gap-3 p-1 border border-border">
+              <div className="mt-6 inline-flex items-center gap-3 p-1 border border-border rounded-[6px]">
                 <button
                   onClick={() => setAnnual(false)}
                   className={cn(

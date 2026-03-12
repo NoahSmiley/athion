@@ -11,10 +11,10 @@ interface ScrollRevealProps {
 }
 
 const offsets = {
-  up: { y: 24 },
-  down: { y: -24 },
-  left: { x: 24 },
-  right: { x: -24 },
+  up: { y: 16 },
+  down: { y: -16 },
+  left: { x: 20 },
+  right: { x: -20 },
 };
 
 export function ScrollReveal({
@@ -28,7 +28,7 @@ export function ScrollReveal({
       initial={{ opacity: 0, ...offsets[direction] }}
       whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.8, delay, ease: [0.25, 0.1, 0.25, 1] }}
+      transition={{ duration: 0.8, delay, ease: [0.19, 1, 0.22, 1] }}
       className={className}
     >
       {children}
@@ -68,11 +68,11 @@ export function StaggerItem({
   return (
     <motion.div
       variants={{
-        hidden: { opacity: 0, y: 24 },
+        hidden: { opacity: 0, y: 16 },
         visible: {
           opacity: 1,
           y: 0,
-          transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1] },
+          transition: { duration: 0.8, ease: [0.19, 1, 0.22, 1] },
         },
       }}
       className={className}

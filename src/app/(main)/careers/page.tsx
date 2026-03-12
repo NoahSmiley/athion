@@ -36,7 +36,7 @@ export default function CareersPage() {
             <p className="overline mb-4">Careers</p>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl tracking-[-0.02em] leading-tight max-w-3xl">
+            <h1 className="font-[590] text-5xl sm:text-6xl md:text-7xl tracking-[-0.022em] leading-tight max-w-3xl">
               Build software that
               <br />
               <span className="text-accent">respects people.</span>
@@ -56,7 +56,7 @@ export default function CareersPage() {
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
             <p className="overline mb-4">Culture</p>
-            <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em]">
+            <h2 className="font-[590] text-4xl sm:text-5xl tracking-[-0.022em]">
               How we work.
             </h2>
           </ScrollReveal>
@@ -65,7 +65,7 @@ export default function CareersPage() {
             {values.map((value) => (
               <StaggerItem key={value.title}>
                 <div className="border-l-2 border-accent/30 pl-6">
-                  <h3 className="font-serif text-2xl">{value.title}</h3>
+                  <h3 className="font-[590] text-2xl tracking-[-0.012em]">{value.title}</h3>
                   <p className="mt-3 text-foreground-muted leading-relaxed">
                     {value.description}
                   </p>
@@ -80,14 +80,14 @@ export default function CareersPage() {
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
             <p className="overline mb-4">Open Roles</p>
-            <h2 className="font-serif text-4xl tracking-[-0.02em]">
+            <h2 className="font-[590] text-4xl tracking-[-0.022em]">
               Current openings.
             </h2>
           </ScrollReveal>
 
           <ScrollReveal delay={0.15}>
-            <div className="mt-16 p-10 border border-border rounded-sm text-center">
-              <p className="font-serif text-xl">
+            <div className="mt-16 p-10 border border-border rounded-lg text-center">
+              <p className="font-[590] text-xl tracking-[-0.012em]">
                 No open roles right now.
               </p>
               <p className="mt-3 text-foreground-muted leading-relaxed max-w-md mx-auto">
@@ -97,7 +97,7 @@ export default function CareersPage() {
               </p>
               <a
                 href="mailto:careers@athion.com"
-                className="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
+                className="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
               >
                 careers@athion.com
                 <ArrowRight size={14} />

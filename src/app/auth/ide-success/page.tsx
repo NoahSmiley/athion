@@ -9,11 +9,11 @@ export default function IdeSuccessPage() {
         className="mb-10 flex items-center gap-2 text-foreground hover:text-accent transition-colors"
       >
         <BrainLogo size={28} />
-        <span className="font-serif text-xl tracking-tight">Athion</span>
+        <span className="font-[590] text-lg tracking-[-0.022em]">Athion</span>
       </Link>
       <div className="w-full max-w-sm text-center">
         <div className="text-4xl mb-4">&#x2713;</div>
-        <h1 className="font-serif text-3xl tracking-[-0.02em]">
+        <h1 className="font-[590] text-3xl tracking-[-0.022em]">
           You&apos;re signed in
         </h1>
         <p className="mt-3 text-sm text-foreground-muted">

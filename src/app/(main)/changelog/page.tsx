@@ -73,7 +73,7 @@ export default function ChangelogPage() {
             <p className="overline mb-4">Changelog</p>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <h1 className="font-serif text-5xl sm:text-6xl tracking-[-0.02em] leading-tight">
+            <h1 className="font-[590] text-5xl sm:text-6xl tracking-[-0.022em] leading-tight">
               What&apos;s new.
             </h1>
           </ScrollReveal>

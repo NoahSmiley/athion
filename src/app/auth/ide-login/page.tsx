@@ -53,7 +53,7 @@ function IdeLoginContent() {
 
   return (
     <>
-      <h1 className="font-serif text-3xl tracking-[-0.02em] text-center">
+      <h1 className="font-[590] text-3xl tracking-[-0.022em] text-center">
         Sign in to Liminal
       </h1>
       <p className="mt-2 text-sm text-foreground-muted text-center">
@@ -77,7 +77,7 @@ function IdeLoginContent() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
-            className="w-full px-4 py-3 bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
+            className="w-full px-4 py-3 bg-background-elevated border border-border rounded-[6px] text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
           />
         </div>
         <div>
@@ -90,13 +90,13 @@ function IdeLoginContent() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Your password"
-            className="w-full px-4 py-3 bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
+            className="w-full px-4 py-3 bg-background-elevated border border-border rounded-[6px] text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
           />
         </div>
         <button
           type="submit"
           disabled={loading}
-          className="mt-2 w-full px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors disabled:opacity-50"
+          className="mt-2 w-full px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors disabled:opacity-50"
         >
           {loading ? "Signing in..." : "Sign in with Athion"}
         </button>
@@ -124,7 +124,7 @@ export default function IdeLoginPage() {
         className="mb-10 flex items-center gap-2 text-foreground hover:text-accent transition-colors"
       >
         <BrainLogo size={28} />
-        <span className="font-serif text-xl tracking-tight">Athion</span>
+        <span className="font-[590] text-lg tracking-[-0.022em]">Athion</span>
       </Link>
       <div className="w-full max-w-sm">
         <Suspense>

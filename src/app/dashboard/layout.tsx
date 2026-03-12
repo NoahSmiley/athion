@@ -35,7 +35,7 @@ export default async function DashboardLayout({
             className="flex items-center gap-2 text-foreground hover:text-accent transition-colors"
           >
             <BrainLogo size={20} />
-            <span className="font-serif text-lg tracking-tight">Athion</span>
+            <span className="font-[590] text-base tracking-[-0.022em]">Athion</span>
           </Link>
         </div>
 
@@ -44,7 +44,7 @@ export default async function DashboardLayout({
             <Link
               key={link.href}
               href={link.href}
-              className="px-3 py-2 text-sm text-foreground-muted hover:text-foreground hover:bg-background-elevated transition-colors rounded-sm"
+              className="px-3 py-2 text-sm text-foreground-muted hover:text-foreground hover:bg-background-elevated transition-colors rounded-[6px]"
             >
               {link.label}
             </Link>

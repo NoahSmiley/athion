@@ -30,7 +30,7 @@ function HostingHero() {
         <ScrollText
           text="Infrastructure, without the overhead."
           tag="h1"
-          className="font-serif text-5xl sm:text-6xl tracking-[-0.02em] leading-tight max-w-3xl"
+          className="font-[590] text-5xl sm:text-6xl tracking-[-0.022em] leading-tight max-w-3xl"
         />
         <ScrollReveal delay={0.2}>
           <p className="mt-6 text-lg text-foreground-muted max-w-xl leading-relaxed">
@@ -42,14 +42,14 @@ function HostingHero() {
           <div className="mt-10 flex items-center gap-4">
             <Link
               href="/pricing"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
             >
               View Plans
               <ArrowRight size={14} />
             </Link>
             <a
               href="#tiers"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm rounded-[6px] hover:text-foreground hover:border-border-light transition-colors"
             >
               Learn more
             </a>
@@ -70,7 +70,7 @@ function HostingTiers() {
         <ScrollText
           text="Pick your tier."
           tag="h2"
-          className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] leading-tight"
+          className="font-[590] text-4xl sm:text-5xl tracking-[-0.022em] leading-tight"
         />
         <ScrollReveal delay={0.1}>
           <p className="mt-6 text-foreground-muted max-w-lg leading-relaxed">
@@ -83,9 +83,9 @@ function HostingTiers() {
             const Icon = tierIcons[tier.icon as keyof typeof tierIcons];
             return (
               <StaggerItem key={tier.title}>
-                <div className="p-8 border border-border rounded-sm h-full flex flex-col">
+                <div className="p-8 border border-border rounded-lg h-full flex flex-col">
                   <Icon size={28} className="text-accent" />
-                  <h3 className="mt-4 font-serif text-xl">{tier.title}</h3>
+                  <h3 className="mt-4 font-[590] text-xl tracking-[-0.012em]">{tier.title}</h3>
                   <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
                     {tier.description}
                   </p>
@@ -109,7 +109,7 @@ function HostingFeatures() {
         <ScrollText
           text="Built-in, not bolted on."
           tag="h2"
-          className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] leading-tight"
+          className="font-[590] text-4xl sm:text-5xl tracking-[-0.022em] leading-tight"
         />
         <ScrollReveal delay={0.1}>
           <p className="mt-6 text-foreground-muted max-w-lg leading-relaxed">
@@ -124,7 +124,7 @@ function HostingFeatures() {
               <StaggerItem key={feature.title}>
                 <div className="border-t border-border pt-6">
                   <Icon size={20} className="text-accent mb-3" />
-                  <h3 className="font-serif text-lg">{feature.title}</h3>
+                  <h3 className="font-[590] text-lg tracking-[-0.012em]">{feature.title}</h3>
                   <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
                     {feature.description}
                   </p>
@@ -143,7 +143,7 @@ function HostingCTA() {
     <section className="py-32 px-6 border-t border-border">
       <div className="mx-auto max-w-3xl text-center">
         <ScrollReveal>
-          <h2 className="font-serif text-3xl sm:text-4xl tracking-[-0.02em]">
+          <h2 className="font-[590] text-3xl sm:text-4xl tracking-[-0.022em]">
             Ready to get started?
           </h2>
         </ScrollReveal>
@@ -157,14 +157,14 @@ function HostingCTA() {
           <div className="mt-8 flex items-center justify-center gap-4">
             <Link
               href="/pricing"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
             >
               View Pricing
               <ArrowRight size={14} />
             </Link>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm rounded-[6px] hover:text-foreground hover:border-border-light transition-colors"
             >
               Contact Us
             </Link>

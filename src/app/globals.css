@@ -2,7 +2,6 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
-  --font-serif: "EB Garamond", Georgia, serif;
   --font-sans: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
@@ -14,6 +13,13 @@
   --color-accent-hover: var(--accent-hover);
   --color-border: var(--border-color);
   --color-border-light: var(--border-light);
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 9999px;
+
+  --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
 
   --animate-float: float 8s ease-in-out infinite;
 
@@ -31,14 +37,14 @@
 
 /* Dark mode (default) */
 :root {
-  --bg: #09090b;
-  --bg-elevated: #131316;
-  --fg: #ededef;
-  --fg-muted: #7e7e86;
+  --bg: #08090a;
+  --bg-elevated: #0f1011;
+  --fg: #f7f8f8;
+  --fg-muted: #8a8f98;
   --accent: #b0b0b8;
   --accent-hover: #d0d0d6;
-  --border-color: #1c1c20;
-  --border-light: #27272b;
+  --border-color: #23252a;
+  --border-light: #34343a;
   color-scheme: dark;
 }
 
@@ -63,8 +69,14 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 ::selection {
@@ -79,7 +91,8 @@ body {
 
 /* Overline utility */
 .overline {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 510;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--fg-muted);

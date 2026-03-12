@@ -19,7 +19,7 @@ export default function BlogPage() {
       <section className="relative min-h-[50vh] flex items-center">
         <div className="mx-auto max-w-7xl px-6 pt-32 pb-12">
           <p className="overline mb-4">Blog</p>
-          <h1 className="font-serif text-5xl sm:text-6xl tracking-[-0.02em] leading-tight max-w-3xl">
+          <h1 className="font-[590] text-5xl sm:text-6xl tracking-[-0.022em] leading-tight max-w-3xl">
             Thinking out loud.
           </h1>
           <p className="mt-6 text-lg text-foreground-muted max-w-lg leading-relaxed">
@@ -44,7 +44,7 @@ export default function BlogPage() {
                           {formatDate(post.date)}
                         </span>
                       </div>
-                      <h2 className="font-serif text-2xl sm:text-3xl tracking-[-0.01em] group-hover:text-accent transition-colors">
+                      <h2 className="font-[590] text-2xl sm:text-3xl tracking-[-0.012em] group-hover:text-accent transition-colors">
                         {post.title}
                       </h2>
                       <p className="mt-3 text-foreground-muted leading-relaxed max-w-2xl">

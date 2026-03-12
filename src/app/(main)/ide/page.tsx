@@ -42,7 +42,7 @@ function SectionHeader({ number, label, title, description }: { number: string; 
       </ScrollReveal>
       <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-16">
         <ScrollReveal>
-          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-medium tracking-[-0.025em] leading-[1.12] text-foreground whitespace-pre-line">{title}</h2>
+          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[590] tracking-[-0.022em] leading-[1.12] text-foreground whitespace-pre-line">{title}</h2>
         </ScrollReveal>
         <ScrollReveal delay={0.1}>
           <p className="text-foreground-muted leading-relaxed lg:pt-2">{description}</p>
@@ -717,7 +717,7 @@ function IDEHero() {
         <motion.div initial="hidden" animate="visible" custom={0} variants={fadeUp} className="mb-4">
           <span className="font-mono text-4xl text-accent">&gt;_</span>
         </motion.div>
-        <motion.h1 className="text-[clamp(2.75rem,7vw,5.5rem)] font-medium tracking-[-0.025em] leading-[1.08]" initial="hidden" animate="visible" custom={0} variants={fadeUp}>
+        <motion.h1 className="text-[clamp(2.75rem,7vw,5.5rem)] font-[590] tracking-[-0.022em] leading-[1.08]" initial="hidden" animate="visible" custom={0} variants={fadeUp}>
           <span className="text-foreground">Liminal IDE</span>
         </motion.h1>
         <motion.p className="mt-4 text-lg text-foreground-muted max-w-lg leading-relaxed" initial="hidden" animate="visible" custom={0.1} variants={fadeUp}>
@@ -824,7 +824,7 @@ function FeatureGrid() {
       <div className="mx-auto max-w-7xl px-6">
         <ScrollReveal>
           <p className="text-[11px] uppercase tracking-[0.08em] text-foreground-muted/50 mb-4">Details</p>
-          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-medium tracking-[-0.025em] leading-[1.12] max-w-2xl">Every detail, considered.</h2>
+          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[590] tracking-[-0.022em] leading-[1.12] max-w-2xl">Every detail, considered.</h2>
         </ScrollReveal>
         <StaggerContainer className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border/50">
           {GRID_FEATURES.map((feature) => {
@@ -933,7 +933,7 @@ function Waitlist() {
     <section className="py-32 border-t border-border/50">
       <div className="mx-auto max-w-7xl px-6">
         <ScrollReveal>
-          <h2 className="text-[clamp(2.75rem,5vw,4.5rem)] font-medium tracking-[-0.025em] leading-[1.1]">
+          <h2 className="text-[clamp(2.75rem,5vw,4.5rem)] font-[590] tracking-[-0.022em] leading-[1.1]">
             <span className="text-foreground">Join the waitlist. </span>
             <span className="text-foreground-muted">Be the first to know when Liminal IDE is ready.</span>
           </h2>

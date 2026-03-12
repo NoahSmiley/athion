@@ -60,11 +60,11 @@ export default async function BlogPostPage({ params }: Props) {
         </span>
       </div>
 
-      <h1 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] leading-tight">
+      <h1 className="font-[590] text-4xl sm:text-5xl tracking-[-0.022em] leading-tight">
         {post.title}
       </h1>
 
-      <div className="mt-12 prose prose-invert prose-sm max-w-none prose-headings:font-serif prose-headings:tracking-[-0.02em] prose-a:text-accent prose-a:no-underline hover:prose-a:text-foreground prose-strong:text-foreground prose-code:text-accent prose-code:bg-background-elevated prose-code:px-1 prose-code:py-0.5 prose-code:rounded-sm prose-code:text-xs prose-pre:bg-background-elevated prose-pre:border prose-pre:border-border prose-table:text-sm prose-th:text-foreground-muted prose-th:font-normal prose-th:text-xs prose-th:uppercase prose-th:tracking-wider">
+      <div className="mt-12 prose prose-invert prose-sm max-w-none prose-headings:font-[590] prose-headings:tracking-[-0.02em] prose-a:text-accent prose-a:no-underline hover:prose-a:text-foreground prose-strong:text-foreground prose-code:text-accent prose-code:bg-background-elevated prose-code:px-1 prose-code:py-0.5 prose-code:rounded-sm prose-code:text-xs prose-pre:bg-background-elevated prose-pre:border prose-pre:border-border prose-table:text-sm prose-th:text-foreground-muted prose-th:font-normal prose-th:text-xs prose-th:uppercase prose-th:tracking-wider">
         <MDXRemote source={post.content} />
       </div>
     </article>

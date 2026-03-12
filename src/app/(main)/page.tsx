@@ -67,7 +67,7 @@ function Hero() {
           <BrainLogo size={64} className="mx-auto mb-8 opacity-60" />
         </ScrollReveal>
         <ScrollReveal delay={0.15}>
-          <h1 className="font-serif text-6xl sm:text-7xl md:text-8xl tracking-[-0.03em] leading-[0.9]">
+          <h1 className="font-[590] text-6xl sm:text-7xl md:text-8xl tracking-[-0.022em] leading-[0.9]">
             {BRAND.tagline}
           </h1>
         </ScrollReveal>
@@ -80,14 +80,14 @@ function Hero() {
           <div className="mt-10 flex items-center justify-center gap-4">
             <Link
               href="/pricing"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-none hover:bg-accent-hover transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
             >
               Get Started
               <ArrowRight size={14} />
             </Link>
             <Link
               href="/about"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light rounded-[6px] transition-colors"
             >
               Learn More
             </Link>
@@ -134,7 +134,7 @@ function Philosophy() {
             <ScrollText
               text="The best software is the kind you don't notice."
               tag="h2"
-              className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] leading-tight"
+              className="font-[590] text-4xl sm:text-5xl tracking-[-0.022em] leading-tight"
             />
           </div>
 
@@ -159,7 +159,7 @@ function Philosophy() {
           {VALUES.map((value, i) => (
             <ScrollSlide key={value.title} from={i % 2 === 0 ? "left" : "right"} distance={40}>
               <div className="border-t border-border pt-6">
-                <h3 className="font-serif text-lg">{value.title}</h3>
+                <h3 className="font-[590] text-lg tracking-[-0.012em]">{value.title}</h3>
                 <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
                   {value.description}
                 </p>

@@ -13,7 +13,7 @@ export default function AuthLayout({
         className="mb-10 flex items-center gap-2 text-foreground hover:text-accent transition-colors"
       >
         <BrainLogo size={28} />
-        <span className="font-serif text-xl tracking-tight">Athion</span>
+        <span className="font-[590] text-lg tracking-[-0.022em]">Athion</span>
       </Link>
       <div className="w-full max-w-sm">{children}</div>
     </div>

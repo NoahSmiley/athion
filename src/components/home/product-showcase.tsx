@@ -294,7 +294,7 @@ function ShowcaseBlock({ info, replica, reverse }: ShowcaseProps) {
     <ScrollReveal>
       <div className="grid md:grid-cols-2 gap-12 items-center">
         <div className={reverse ? "md:order-2" : ""}>{info}</div>
-        <div className={`border border-border rounded-sm overflow-hidden min-h-[360px] ${reverse ? "md:order-1" : ""}`}>
+        <div className={`border border-border rounded-lg overflow-hidden min-h-[360px] ${reverse ? "md:order-1" : ""}`}>
           {replica}
         </div>
       </div>
@@ -328,12 +328,12 @@ function ProductInfo({
       <div className="flex items-center gap-3 mb-4">
         <div className="text-accent">{icon}</div>
         {badge && (
-          <span className="text-[10px] uppercase tracking-widest text-foreground-muted border border-border px-2 py-0.5">
+          <span className="text-[10px] uppercase tracking-widest text-foreground-muted border border-border px-2 py-0.5 rounded-full">
             {badge}
           </span>
         )}
       </div>
-      <h3 className="font-serif text-3xl sm:text-4xl tracking-[-0.02em]">{name}</h3>
+      <h3 className="font-[590] text-3xl sm:text-4xl tracking-[-0.022em]">{name}</h3>
       <p className="mt-3 text-foreground-muted leading-relaxed">{description}</p>
       <ul className="mt-5 space-y-2">
         {features.map((f) => (
@@ -363,7 +363,7 @@ export function ProductShowcase() {
           <p className="overline mb-4">What we build</p>
         </ScrollReveal>
         <ScrollReveal delay={0.1}>
-          <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] leading-tight max-w-2xl">
+          <h2 className="font-[590] text-4xl sm:text-5xl tracking-[-0.022em] leading-tight max-w-2xl">
             Software, hosting, and consulting — under one roof.
           </h2>
         </ScrollReveal>

@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
-import { EB_Garamond, Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
-
-const garamond = EB_Garamond({
-  subsets: ["latin"],
-  variable: "--font-serif",
-  display: "swap",
-});
 
 const inter = Inter({
   subsets: ["latin"],
@@ -43,7 +37,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${garamond.variable} ${inter.variable} ${jetbrains.variable}`}
+      className={`${inter.variable} ${jetbrains.variable}`}
       suppressHydrationWarning
     >
       <body className="min-h-screen bg-background text-foreground antialiased">

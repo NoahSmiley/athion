@@ -44,7 +44,7 @@ export default function ContactPage() {
         <div className="mx-auto max-w-2xl px-6 pt-32 pb-20 w-full">
           <ScrollReveal>
             <p className="overline mb-4">Contact</p>
-            <h1 className="font-serif text-5xl sm:text-6xl tracking-[-0.02em]">
+            <h1 className="font-[590] text-5xl sm:text-6xl tracking-[-0.022em]">
               Get in touch.
             </h1>
             <p className="mt-4 text-foreground-muted">
@@ -55,7 +55,7 @@ export default function ContactPage() {
           <ScrollReveal delay={0.15}>
             {submitted ? (
               <div className="mt-12 p-8 border border-accent/30 text-center">
-                <p className="text-accent font-serif text-xl">
+                <p className="text-accent font-[590] text-xl tracking-[-0.012em]">
                   Message received.
                 </p>
                 <p className="mt-2 text-sm text-foreground-muted">
@@ -80,7 +80,7 @@ export default function ContactPage() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Your name"
-                      className="w-full px-4 py-3 bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
+                      className="w-full px-4 py-3 bg-background-elevated border border-border rounded-[6px] text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
                     />
                   </div>
                   <div>
@@ -93,7 +93,7 @@ export default function ContactPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@example.com"
-                      className="w-full px-4 py-3 bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
+                      className="w-full px-4 py-3 bg-background-elevated border border-border rounded-[6px] text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
                     />
                   </div>
                 </div>
@@ -107,14 +107,14 @@ export default function ContactPage() {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="What's on your mind?"
-                    className="w-full px-4 py-3 bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors resize-none"
+                    className="w-full px-4 py-3 bg-background-elevated border border-border rounded-[6px] text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors resize-none"
                   />
                 </div>
                 <div>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors disabled:opacity-50"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors disabled:opacity-50"
                   >
                     <Send size={14} />
                     {loading ? "Sending..." : "Send Message"}

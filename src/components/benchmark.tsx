@@ -111,7 +111,7 @@ export function BenchmarkSection({
           <p className="text-[11px] uppercase tracking-[0.08em] text-foreground-muted/50 mb-4">
             {subtitle}
           </p>
-          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-medium tracking-[-0.02em] leading-[1.12]">
+          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[590] tracking-[-0.022em] leading-[1.12]">
             {title}
           </h2>
           <p className="mt-4 text-foreground-muted leading-relaxed max-w-2xl mx-auto text-sm">

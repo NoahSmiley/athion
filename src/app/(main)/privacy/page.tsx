@@ -64,7 +64,7 @@ export default function PrivacyPage() {
         <div className="mx-auto max-w-3xl">
           <ScrollReveal>
             <p className="overline mb-4">Legal</p>
-            <h1 className="font-serif text-5xl tracking-[-0.02em]">
+            <h1 className="font-[590] text-5xl tracking-[-0.022em]">
               Privacy Policy
             </h1>
             <p className="mt-4 text-sm text-foreground-muted">
@@ -87,7 +87,7 @@ export default function PrivacyPage() {
           {sections.map((section, i) => (
             <ScrollReveal key={section.title} delay={i * 0.05}>
               <div className="border-t border-border pt-8">
-                <h2 className="font-serif text-2xl">{section.title}</h2>
+                <h2 className="font-[590] text-2xl tracking-[-0.012em]">{section.title}</h2>
                 <ul className="mt-4 flex flex-col gap-3">
                   {section.content.map((item, j) => (
                     <li

@@ -28,7 +28,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-4xl">
-      <h1 className="font-serif text-3xl tracking-[-0.02em]">
+      <h1 className="font-[590] text-3xl tracking-[-0.022em]">
         Welcome back, {displayName}.
       </h1>
       <p className="mt-2 text-foreground-muted">
@@ -37,7 +37,7 @@ export default async function DashboardPage() {
 
       <div className="mt-10 grid sm:grid-cols-2 gap-6">
         {/* Subscription status cards */}
-        <div className="p-6 border border-border rounded-sm">
+        <div className="p-6 border border-border rounded-lg">
           <p className="text-xs text-foreground-muted uppercase tracking-wider mb-3">
             Flux
           </p>
@@ -56,7 +56,7 @@ export default async function DashboardPage() {
           )}
         </div>
 
-        <div className="p-6 border border-border rounded-sm">
+        <div className="p-6 border border-border rounded-lg">
           <p className="text-xs text-foreground-muted uppercase tracking-wider mb-3">
             Game Servers
           </p>
@@ -75,7 +75,7 @@ export default async function DashboardPage() {
           )}
         </div>
 
-        <div className="p-6 border border-border rounded-sm">
+        <div className="p-6 border border-border rounded-lg">
           <p className="text-xs text-foreground-muted uppercase tracking-wider mb-3">
             Liminal IDE
           </p>
@@ -86,19 +86,19 @@ export default async function DashboardPage() {
       <div className="mt-10 grid sm:grid-cols-3 gap-4">
         <Link
           href="/dashboard/billing"
-          className="p-4 border border-border rounded-sm text-sm text-foreground-muted hover:text-foreground hover:border-border-light transition-colors"
+          className="p-4 border border-border rounded-lg text-sm text-foreground-muted hover:text-foreground hover:border-border-light transition-colors"
         >
           Manage billing
         </Link>
         <Link
           href="/dashboard/downloads"
-          className="p-4 border border-border rounded-sm text-sm text-foreground-muted hover:text-foreground hover:border-border-light transition-colors"
+          className="p-4 border border-border rounded-lg text-sm text-foreground-muted hover:text-foreground hover:border-border-light transition-colors"
         >
           Downloads
         </Link>
         <Link
           href="/dashboard/settings"
-          className="p-4 border border-border rounded-sm text-sm text-foreground-muted hover:text-foreground hover:border-border-light transition-colors"
+          className="p-4 border border-border rounded-lg text-sm text-foreground-muted hover:text-foreground hover:border-border-light transition-colors"
         >
           Account settings
         </Link>

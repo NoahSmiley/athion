@@ -36,7 +36,7 @@ function ConsultingHero() {
         <ScrollText
           text="Consulting."
           tag="h1"
-          className="font-serif text-5xl sm:text-6xl tracking-[-0.02em] leading-tight max-w-3xl"
+          className="font-[590] text-5xl sm:text-6xl tracking-[-0.022em] leading-tight max-w-3xl"
         />
         <ScrollReveal delay={0.2}>
           <p className="mt-6 text-lg text-foreground-muted max-w-xl leading-relaxed">
@@ -67,7 +67,7 @@ function TrackRecord() {
             <ScrollText
               text="Proven at scale."
               tag="h2"
-              className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] leading-tight"
+              className="font-[590] text-4xl sm:text-5xl tracking-[-0.022em] leading-tight"
             />
             <ScrollReveal delay={0.15}>
               <p className="mt-6 text-foreground-muted leading-relaxed">
@@ -90,7 +90,7 @@ function TrackRecord() {
             {stats.map((stat) => (
               <StaggerItem key={stat.label}>
                 <div className="border-t border-border pt-6">
-                  <p className="font-serif text-3xl">{stat.value}</p>
+                  <p className="font-[590] text-3xl tracking-[-0.022em]">{stat.value}</p>
                   <p className="mt-1 text-sm text-foreground-muted">
                     <span className="text-foreground">{stat.label}</span> — {stat.detail}
                   </p>
@@ -114,7 +114,7 @@ function ConsultingServices() {
         <ScrollText
           text="What we build."
           tag="h2"
-          className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] leading-tight"
+          className="font-[590] text-4xl sm:text-5xl tracking-[-0.022em] leading-tight"
         />
 
         <StaggerContainer className="mt-16 grid sm:grid-cols-2 gap-8">
@@ -122,9 +122,9 @@ function ConsultingServices() {
             const Icon = serviceIcons[service.icon as keyof typeof serviceIcons];
             return (
               <StaggerItem key={service.title}>
-                <div className="p-8 border border-border rounded-sm h-full flex flex-col">
+                <div className="p-8 border border-border rounded-lg h-full flex flex-col">
                   <Icon size={28} className="text-accent" />
-                  <h3 className="mt-4 font-serif text-xl">{service.title}</h3>
+                  <h3 className="mt-4 font-[590] text-xl tracking-[-0.012em]">{service.title}</h3>
                   <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
                     {service.description}
                   </p>
@@ -148,7 +148,7 @@ function ConsultingPricing() {
         <ScrollText
           text="Flexible engagement."
           tag="h2"
-          className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] leading-tight"
+          className="font-[590] text-4xl sm:text-5xl tracking-[-0.022em] leading-tight"
         />
         <ScrollReveal delay={0.1}>
           <p className="mt-6 text-foreground-muted max-w-lg leading-relaxed">
@@ -158,19 +158,19 @@ function ConsultingPricing() {
 
         <StaggerContainer className="mt-16 grid md:grid-cols-2 gap-8">
           <StaggerItem>
-            <div className="p-8 border border-border rounded-sm h-full flex flex-col">
-              <h3 className="font-serif text-2xl">Hourly Rate</h3>
+            <div className="p-8 border border-border rounded-lg h-full flex flex-col">
+              <h3 className="font-[590] text-2xl tracking-[-0.012em]">Hourly Rate</h3>
               <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
                 For advisory, code reviews, and shorter engagements. Billed in 1-hour increments.
               </p>
               <div className="mt-6 flex items-baseline gap-1">
-                <span className="font-serif text-4xl">$150</span>
+                <span className="font-[590] text-4xl tracking-[-0.022em]">$150</span>
                 <span className="text-sm text-foreground-muted">/hour</span>
               </div>
               <div className="mt-auto pt-8">
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
                 >
                   <Phone size={14} />
                   Book a Call
@@ -179,13 +179,13 @@ function ConsultingPricing() {
             </div>
           </StaggerItem>
           <StaggerItem>
-            <div className="p-8 border border-border rounded-sm h-full flex flex-col">
-              <h3 className="font-serif text-2xl">Project-Based</h3>
+            <div className="p-8 border border-border rounded-lg h-full flex flex-col">
+              <h3 className="font-[590] text-2xl tracking-[-0.012em]">Project-Based</h3>
               <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
                 Fixed-scope projects with clear deliverables, timeline, and pricing agreed upfront.
               </p>
               <div className="mt-6">
-                <span className="font-serif text-2xl text-foreground-muted">Custom quote</span>
+                <span className="font-[590] text-2xl tracking-[-0.012em] text-foreground-muted">Custom quote</span>
               </div>
               <div className="mt-auto pt-8">
                 <a
@@ -247,7 +247,7 @@ function QuoteForm() {
       <div className="mx-auto max-w-2xl">
         <ScrollReveal>
           <p className="overline mb-4">Get a Quote</p>
-          <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em]">
+          <h2 className="font-[590] text-4xl sm:text-5xl tracking-[-0.022em]">
             Tell us about your project.
           </h2>
           <p className="mt-4 text-foreground-muted">
@@ -258,7 +258,7 @@ function QuoteForm() {
         <ScrollReveal delay={0.15}>
           {submitted ? (
             <div className="mt-12 p-8 border border-accent/30 text-center">
-              <p className="text-accent font-serif text-xl">Request received.</p>
+              <p className="text-accent font-[590] text-xl tracking-[-0.012em]">Request received.</p>
               <p className="mt-2 text-sm text-foreground-muted">
                 We&apos;ll review your project details and respond within 2 business days.
               </p>
@@ -281,7 +281,7 @@ function QuoteForm() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Your name"
-                    className="w-full px-4 py-3 bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
+                    className="w-full px-4 py-3 bg-background-elevated border border-border rounded-[6px] text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
                   />
                 </div>
                 <div>
@@ -294,7 +294,7 @@ function QuoteForm() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full px-4 py-3 bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
+                    className="w-full px-4 py-3 bg-background-elevated border border-border rounded-[6px] text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
                   />
                 </div>
               </div>
@@ -305,7 +305,7 @@ function QuoteForm() {
                 <select
                   value={projectType}
                   onChange={(e) => setProjectType(e.target.value)}
-                  className="w-full px-4 py-3 bg-background-elevated border border-border text-sm text-foreground focus:outline-none focus:border-accent/50 transition-colors"
+                  className="w-full px-4 py-3 bg-background-elevated border border-border rounded-[6px] text-sm text-foreground focus:outline-none focus:border-accent/50 transition-colors"
                 >
                   {PROJECT_TYPES.map((type) => (
                     <option key={type} value={type}>
@@ -324,14 +324,14 @@ function QuoteForm() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Describe your project, goals, and timeline..."
-                  className="w-full px-4 py-3 bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors resize-none"
+                  className="w-full px-4 py-3 bg-background-elevated border border-border rounded-[6px] text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors resize-none"
                 />
               </div>
               <div>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors disabled:opacity-50"
                 >
                   <Send size={14} />
                   {loading ? "Sending..." : "Request Quote"}

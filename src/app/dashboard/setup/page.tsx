@@ -2,50 +2,67 @@
 
 import { useState } from "react";
 
-export default function SetupPage() {
+function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
-
   const handleCopy = () => {
-    navigator.clipboard.writeText("npm install -g @anthropic-ai/claude-code");
+    navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+  return (
+    <button
+      onClick={handleCopy}
+      className="px-3 py-2.5 border border-border text-xs text-foreground-muted hover:text-foreground hover:bg-background-elevated transition-colors shrink-0"
+    >
+      {copied ? "copied" : "copy"}
+    </button>
+  );
+}
 
+export default function SetupPage() {
   return (
     <div className="max-w-lg">
-      <h1 className="font-serif text-3xl tracking-[-0.02em]">Setup</h1>
+      <h1 className="font-[590] text-3xl tracking-[-0.022em]">Setup</h1>
       <p className="mt-2 text-foreground-muted">
-        Get Liminal IDE up and running in two steps.
+        Get Liminal IDE up and running in three steps.
       </p>
 
-      {/* Step 1 */}
-      <div className="mt-10 border border-border p-6">
+      {/* Step 1: Athion */}
+      <div className="mt-10 border border-border p-5 opacity-60">
+        <div className="flex items-center gap-3">
+          <span className="w-6 h-6 flex items-center justify-center border border-accent/30 text-xs text-accent">
+            &#10003;
+          </span>
+          <h2 className="text-sm text-foreground">Create an Athion account</h2>
+        </div>
+        <p className="mt-2 ml-9 text-sm text-foreground-muted">
+          You&apos;re signed in. This step is complete.
+        </p>
+      </div>
+
+      {/* Step 2: Install CLI */}
+      <div className="mt-3 border border-border p-5">
         <div className="flex items-center gap-3 mb-4">
           <span className="w-6 h-6 flex items-center justify-center border border-border text-xs text-foreground-muted">
-            1
+            2
           </span>
           <h2 className="text-sm text-foreground">Install the Claude CLI</h2>
         </div>
 
-        <p className="text-sm text-foreground-muted leading-relaxed mb-4">
-          Liminal IDE uses the Claude CLI to communicate with Anthropic. Install
-          it globally with npm:
+        <p className="text-sm text-foreground-muted leading-relaxed mb-4 ml-9">
+          Liminal IDE uses the Claude CLI to communicate with Anthropic.
+          Install it globally with npm:
         </p>
 
-        <div className="flex items-center gap-2">
-          <code className="flex-1 px-4 py-3 bg-background-elevated border border-border text-sm font-mono text-foreground select-all">
+        <div className="flex items-center gap-2 ml-9">
+          <code className="flex-1 px-3 py-2.5 bg-background-elevated border border-border text-sm font-mono text-foreground select-all">
             npm install -g @anthropic-ai/claude-code
           </code>
-          <button
-            onClick={handleCopy}
-            className="px-4 py-3 border border-border text-sm text-foreground-muted hover:text-foreground hover:bg-background-elevated transition-colors shrink-0"
-          >
-            {copied ? "copied" : "copy"}
-          </button>
+          <CopyButton text="npm install -g @anthropic-ai/claude-code" />
         </div>
 
-        <p className="mt-3 text-xs text-foreground-muted">
-          Requires{" "}
+        <p className="mt-3 ml-9 text-xs text-foreground-muted">
+          Works on macOS, Windows, and Linux. Requires{" "}
           <a
             href="https://nodejs.org"
             target="_blank"
@@ -57,62 +74,54 @@ export default function SetupPage() {
         </p>
       </div>
 
-      {/* Step 2 */}
-      <div className="mt-4 border border-border p-6">
+      {/* Step 3: Sign in */}
+      <div className="mt-3 border border-border p-5">
         <div className="flex items-center gap-3 mb-4">
           <span className="w-6 h-6 flex items-center justify-center border border-border text-xs text-foreground-muted">
-            2
+            3
           </span>
           <h2 className="text-sm text-foreground">
             Sign in with your Claude account
           </h2>
         </div>
 
-        <p className="text-sm text-foreground-muted leading-relaxed mb-4">
-          Authenticate with your Anthropic account. This opens a browser window
-          to sign in. Run this in your terminal:
+        <p className="text-sm text-foreground-muted leading-relaxed mb-4 ml-9">
+          Authenticate with your Anthropic account. Run this in your terminal:
         </p>
 
-        <code className="block px-4 py-3 bg-background-elevated border border-border text-sm font-mono text-foreground select-all">
-          claude auth login
-        </code>
+        <div className="flex items-center gap-2 ml-9">
+          <code className="flex-1 px-3 py-2.5 bg-background-elevated border border-border text-sm font-mono text-foreground select-all">
+            claude auth login
+          </code>
+          <CopyButton text="claude auth login" />
+        </div>
 
-        <p className="mt-4 text-sm text-foreground-muted leading-relaxed">
-          Or sign in directly from the Liminal IDE — it will prompt you on first
+        <p className="mt-3 ml-9 text-sm text-foreground-muted leading-relaxed">
+          This opens a browser window to sign in with your Claude account.
+          You can also do this step directly from within Liminal IDE on first
           launch.
+        </p>
+
+        <p className="mt-3 ml-9 text-xs text-foreground-muted">
+          Don&apos;t have a Claude account?{" "}
+          <a
+            href="https://claude.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-accent hover:text-accent-hover transition-colors underline underline-offset-2"
+          >
+            Sign up at claude.ai
+          </a>
         </p>
       </div>
 
       {/* Done */}
       <div className="mt-6 p-4 border border-border/50">
-        <p className="text-sm text-foreground-muted">
-          Once both steps are complete, open Liminal IDE and sign in with your
+        <p className="text-sm text-foreground-muted leading-relaxed">
+          Once all steps are complete, open Liminal IDE and sign in with your
           Athion account. The IDE will automatically detect your Claude
           authentication.
         </p>
-      </div>
-
-      {/* Requirements */}
-      <div className="mt-8 border-t border-border pt-6">
-        <p className="text-xs text-foreground-muted uppercase tracking-wider mb-3">
-          Requirements
-        </p>
-        <ul className="text-sm text-foreground-muted space-y-1.5">
-          <li>Node.js 18 or later</li>
-          <li>
-            A Claude account (
-            <a
-              href="https://claude.ai"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-accent hover:text-accent-hover transition-colors underline underline-offset-2"
-            >
-              sign up at claude.ai
-            </a>
-            )
-          </li>
-          <li>An Athion account (you have one)</li>
-        </ul>
       </div>
     </div>
   );

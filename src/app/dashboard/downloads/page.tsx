@@ -24,17 +24,17 @@ export default async function DownloadsPage() {
 
   return (
     <div className="max-w-4xl">
-      <h1 className="font-serif text-3xl tracking-[-0.02em]">Downloads</h1>
+      <h1 className="font-[590] text-3xl tracking-[-0.022em]">Downloads</h1>
       <p className="mt-2 text-foreground-muted">
         Download Athion apps for your platform.
       </p>
 
       <div className="mt-10 flex flex-col gap-6">
         {/* Flux */}
-        <div className="p-6 border border-border rounded-sm">
+        <div className="p-6 border border-border rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-serif text-xl">Flux</h3>
+              <h3 className="font-[590] text-xl tracking-[-0.012em]">Flux</h3>
               <p className="mt-1 text-sm text-foreground-muted">
                 Voice & text chat desktop app
               </p>
@@ -50,7 +50,7 @@ export default async function DownloadsPage() {
             <div className="mt-6 flex flex-wrap gap-3">
               <a
                 href="#"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
               >
                 <Apple size={16} />
                 macOS (Apple Silicon)
@@ -78,10 +78,10 @@ export default async function DownloadsPage() {
         </div>
 
         {/* IDE — always free */}
-        <div className="p-6 border border-border rounded-sm">
+        <div className="p-6 border border-border rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-serif text-xl">Liminal IDE</h3>
+              <h3 className="font-[590] text-xl tracking-[-0.012em]">Liminal IDE</h3>
               <p className="mt-1 text-sm text-foreground-muted">
                 AI-native code editor
               </p>

@@ -106,14 +106,14 @@ export function Navbar() {
         style={{ opacity: smoothBgOpacity }}
       />
 
-      <nav className="relative mx-auto max-w-7xl px-6 h-16 flex items-center justify-between">
+      <nav className="relative mx-auto max-w-7xl px-6 h-[72px] flex items-center justify-between">
         <Link
           href="/"
           className="flex items-center text-foreground hover:text-accent transition-colors relative h-9"
         >
           {/* Text wordmark — slides right and fades out on scroll */}
           <motion.span
-            className="font-serif text-xl tracking-tight"
+            className="font-[590] text-lg tracking-[-0.022em]"
             style={{ opacity: smoothTextOpacity, x: smoothTextX }}
           >
             Athion
@@ -153,7 +153,7 @@ export function Navbar() {
                   />
                 </button>
                 {openDropdown === item.label && (
-                  <div className="absolute top-full left-0 mt-2 py-2 min-w-[160px] bg-background border border-border shadow-lg">
+                  <div className="absolute top-full left-0 mt-2 py-2 min-w-[160px] bg-background border border-border shadow-lg rounded-lg">
                     {item.children.map((child) => (
                       <Link
                         key={child.href}
@@ -210,7 +210,7 @@ export function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="px-4 py-1.5 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
+              className="px-4 py-1.5 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
             >
               Sign In
             </Link>

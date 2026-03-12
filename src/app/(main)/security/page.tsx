@@ -65,7 +65,7 @@ export default function SecurityPage() {
             <Shield size={40} className="text-accent" />
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <h1 className="mt-8 font-serif text-5xl sm:text-6xl md:text-7xl tracking-[-0.02em] leading-tight max-w-3xl">
+            <h1 className="mt-8 font-[590] text-5xl sm:text-6xl md:text-7xl tracking-[-0.022em] leading-tight max-w-3xl">
               Security isn&apos;t a feature.
               <br />
               <span className="text-accent">It&apos;s a promise.</span>
@@ -85,7 +85,7 @@ export default function SecurityPage() {
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
             <p className="overline mb-4">Principles</p>
-            <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em]">
+            <h2 className="font-[590] text-4xl sm:text-5xl tracking-[-0.022em]">
               How we protect you.
             </h2>
           </ScrollReveal>
@@ -95,9 +95,9 @@ export default function SecurityPage() {
               const Icon = item.icon;
               return (
                 <StaggerItem key={item.title}>
-                  <div className="p-6 border border-border rounded-sm h-full">
+                  <div className="p-6 border border-border rounded-lg h-full">
                     <Icon size={20} className="text-accent" />
-                    <h3 className="mt-4 font-serif text-lg">{item.title}</h3>
+                    <h3 className="mt-4 font-[590] text-lg tracking-[-0.012em]">{item.title}</h3>
                     <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
                       {item.description}
                     </p>
@@ -115,7 +115,7 @@ export default function SecurityPage() {
             <div>
               <ScrollReveal>
                 <p className="overline mb-4">Cryptography</p>
-                <h2 className="font-serif text-4xl tracking-[-0.02em]">
+                <h2 className="font-[590] text-4xl tracking-[-0.022em]">
                   The specifics.
                 </h2>
                 <p className="mt-4 text-foreground-muted leading-relaxed">
@@ -145,7 +145,7 @@ export default function SecurityPage() {
       <section className="py-32 px-6 border-t border-border">
         <div className="mx-auto max-w-xl text-center">
           <ScrollReveal>
-            <h2 className="font-serif text-4xl tracking-[-0.02em]">
+            <h2 className="font-[590] text-4xl tracking-[-0.022em]">
               Found a vulnerability?
             </h2>
             <p className="mt-4 text-foreground-muted leading-relaxed">
@@ -155,7 +155,7 @@ export default function SecurityPage() {
             </p>
             <a
               href="mailto:security@athion.com"
-              className="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
+              className="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
             >
               security@athion.com
             </a>

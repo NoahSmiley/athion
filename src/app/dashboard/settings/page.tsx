@@ -71,7 +71,7 @@ export default function SettingsPage() {
 
   return (
     <div className="max-w-lg">
-      <h1 className="font-serif text-3xl tracking-[-0.02em]">Settings</h1>
+      <h1 className="font-[590] text-3xl tracking-[-0.022em]">Settings</h1>
       <p className="mt-2 text-foreground-muted">
         Update your profile and account preferences.
       </p>
@@ -95,7 +95,7 @@ export default function SettingsPage() {
             type="text"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            className="w-full px-4 py-3 bg-background-elevated border border-border text-sm text-foreground focus:outline-none focus:border-accent/50 transition-colors"
+            className="w-full px-4 py-3 bg-background-elevated border border-border rounded-[6px] text-sm text-foreground focus:outline-none focus:border-accent/50 transition-colors"
           />
         </div>
         <div>
@@ -106,13 +106,13 @@ export default function SettingsPage() {
             type="email"
             value={email}
             disabled
-            className="w-full px-4 py-3 bg-background-elevated border border-border text-sm text-foreground-muted cursor-not-allowed"
+            className="w-full px-4 py-3 bg-background-elevated border border-border rounded-[6px] text-sm text-foreground-muted cursor-not-allowed"
           />
         </div>
         <button
           type="submit"
           disabled={loading}
-          className="self-start px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors disabled:opacity-50"
+          className="self-start px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors disabled:opacity-50"
         >
           Save Changes
         </button>
@@ -133,13 +133,13 @@ export default function SettingsPage() {
             onChange={(e) => setNewPassword(e.target.value)}
             minLength={8}
             placeholder="At least 8 characters"
-            className="w-full px-4 py-3 bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
+            className="w-full px-4 py-3 bg-background-elevated border border-border rounded-[6px] text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
           />
         </div>
         <button
           type="submit"
           disabled={loading || !newPassword}
-          className="self-start px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors disabled:opacity-50"
+          className="self-start px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors disabled:opacity-50"
         >
           Update Password
         </button>
@@ -152,7 +152,7 @@ export default function SettingsPage() {
           Danger Zone
         </p>
         {deleteConfirm ? (
-          <div className="p-4 border border-red-500/30 rounded-sm">
+          <div className="p-4 border border-red-500/30 rounded-lg">
             <p className="text-sm text-foreground-muted">
               Are you sure? This action cannot be undone.
             </p>

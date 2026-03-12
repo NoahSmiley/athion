@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { ArrowRight, Server, Code2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { PageTransition } from "@/components/page-transition";
-import { ScrollReveal, StaggerContainer, StaggerItem } from "@/components/scroll-reveal";
+import { ScrollReveal } from "@/components/scroll-reveal";
 import { ScrollSlide, ScrollText } from "@/components/parallax";
 import { BenchmarkSection, type BenchmarkGroup } from "@/components/benchmark";
 import { BrainLogo } from "@/components/brain-logo";
-import { FluxLogo } from "@/components/flux-logo";
+import { ProductShowcase } from "@/components/home/product-showcase";
 import { BRAND, VALUES } from "@/lib/constants";
 
 const homeBenchmarks: BenchmarkGroup[] = [
@@ -105,85 +105,6 @@ function Hero() {
   );
 }
 
-function Products() {
-  const items = [
-    {
-      icon: <span className="font-mono text-base">&gt;_</span>,
-      name: "Liminal IDE",
-      description: "AI-native code editor built in Rust. Free with every Athion account.",
-      tag: "Free",
-      href: "/ide",
-    },
-    {
-      icon: <FluxLogo size={24} />,
-      name: "Flux",
-      description: "Voice & text chat app with crystal audio, E2EE, and lossless screen share.",
-      tag: "Paid",
-      href: "/flux",
-    },
-    {
-      icon: <Server size={24} />,
-      name: "Hosting",
-      description: "Game servers, web & app hosting, and VPS — all on dedicated hardware.",
-      tag: "Paid",
-      href: "/hosting",
-    },
-    {
-      icon: <Code2 size={24} />,
-      name: "Consulting",
-      description: "Custom software development, architecture reviews, and technical advisory.",
-      tag: "Hourly / Project",
-      href: "/consulting",
-    },
-  ];
-
-  return (
-    <section className="py-32 px-6 border-t border-border">
-      <div className="mx-auto max-w-7xl">
-        <div className="max-w-2xl">
-          <ScrollReveal>
-            <p className="overline mb-4">What we do</p>
-          </ScrollReveal>
-          <ScrollReveal delay={0.1}>
-            <h2 className="font-serif text-4xl sm:text-5xl tracking-[-0.02em] leading-tight">
-              Software, hosting, and consulting — under one roof.
-            </h2>
-          </ScrollReveal>
-          <ScrollReveal delay={0.2}>
-            <p className="mt-6 text-foreground-muted leading-relaxed">
-              One account gives you access to everything. Pick what you need.
-            </p>
-          </ScrollReveal>
-        </div>
-
-        <StaggerContainer className="mt-16 grid sm:grid-cols-2 gap-6">
-          {items.map((item) => (
-            <StaggerItem key={item.name}>
-              <Link href={item.href} className="group block h-full">
-                <div className="p-6 border border-border rounded-sm flex flex-col h-full transition-colors group-hover:border-border-light">
-                  <div className="flex items-start justify-between">
-                    <div className="text-accent">{item.icon}</div>
-                    <span className="text-[10px] uppercase tracking-widest text-foreground-muted border border-border px-2 py-0.5">
-                      {item.tag}
-                    </span>
-                  </div>
-                  <h3 className="mt-4 font-serif text-xl">{item.name}</h3>
-                  <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
-                    {item.description}
-                  </p>
-                  <span className="mt-4 text-xs text-accent group-hover:text-foreground transition-colors inline-flex items-center gap-1">
-                    Learn more <ArrowRight size={10} />
-                  </span>
-                </div>
-              </Link>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
-      </div>
-    </section>
-  );
-}
-
 function Performance() {
   return (
     <BenchmarkSection
@@ -255,7 +176,7 @@ export default function HomePage() {
   return (
     <PageTransition>
       <Hero />
-      <Products />
+      <ProductShowcase />
       <Performance />
       <Philosophy />
     </PageTransition>

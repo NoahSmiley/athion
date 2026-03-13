@@ -151,9 +151,82 @@ export default function PricingPage() {
             </div>
           </ScrollReveal>
 
-          {/* Consulting callout */}
+          {/* Pricing transparency */}
           <ScrollReveal delay={0.1}>
-            <div className="mt-8 p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] transition-all duration-200">
+            <div className="mt-16 border-t border-white/[0.08] pt-16">
+              <p className="overline mb-4">Where your money goes</p>
+              <h2 className="font-[590] text-2xl tracking-[-0.012em]">
+                No cloud markup. No mystery fees.
+              </h2>
+              <p className="mt-3 text-sm text-foreground-muted leading-relaxed max-w-lg">
+                We believe you should know exactly what you&apos;re paying for. Here&apos;s the real cost
+                breakdown behind an Athion subscription.
+              </p>
+
+              <div className="mt-10 flex flex-col gap-0">
+                {[
+                  {
+                    label: "LiveKit + Krisp",
+                    cost: "$50/mo",
+                    detail:
+                      "Voice infrastructure and AI noise suppression for Flux. This is our largest fixed cost — real-time audio at scale isn't cheap.",
+                    percent: 62,
+                  },
+                  {
+                    label: "Domains & SSL",
+                    cost: "~$1/mo",
+                    detail:
+                      "Annual domain registrations amortized monthly. SSL is free via Let's Encrypt — we don't charge for HTTPS.",
+                    percent: 2,
+                  },
+                  {
+                    label: "Server hardware",
+                    cost: "$0",
+                    detail:
+                      "All hosting, game servers, and infrastructure run on hardware we own. No AWS. No cloud markup. No margin on compute.",
+                    percent: 0,
+                  },
+                  {
+                    label: "Development",
+                    cost: "The rest",
+                    detail:
+                      "Everything left goes back into building the product. New features, performance work, and keeping the lights on.",
+                    percent: 36,
+                  },
+                ].map((item, i) => (
+                  <div
+                    key={item.label}
+                    className="py-5 border-b border-white/[0.06] first:border-t first:border-white/[0.06]"
+                  >
+                    <div className="flex items-baseline justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-baseline gap-3">
+                          <span className="font-[510] text-sm">{item.label}</span>
+                          <span className="text-xs text-foreground-muted font-mono">{item.cost}</span>
+                        </div>
+                        <p className="mt-1.5 text-xs text-foreground-muted/70 leading-relaxed max-w-md">
+                          {item.detail}
+                        </p>
+                      </div>
+                      {item.percent > 0 && (
+                        <span className="text-xs text-foreground-muted/50 font-mono tabular-nums shrink-0">
+                          ~{item.percent}%
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <p className="mt-6 text-xs text-foreground-muted/50 leading-relaxed">
+                Based on estimated cost per subscriber at current scale. Percentages are approximate and will shift as we grow.
+              </p>
+            </div>
+          </ScrollReveal>
+
+          {/* Consulting callout */}
+          <ScrollReveal delay={0.15}>
+            <div className="mt-16 p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] transition-all duration-200">
               <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-12">
                 <div className="flex-1">
                   <h3 className="font-[590] text-lg tracking-[-0.012em]">

@@ -4,9 +4,8 @@ import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { ArrowRight, Server, Code2 } from "lucide-react";
+import { ArrowRight, Server } from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { FluxLogo } from "@/components/flux-logo";
 
 /* ─── Flux Mini Replica ─── */
 
@@ -281,31 +280,25 @@ function ConsultingMiniReplica() {
   );
 }
 
-/* ─── Showcase Blocks ─── */
+/* ─── Showcase Block — Linear-style layout ─── */
 
 interface ShowcaseProps {
-  number: string;
-  label: string;
+  version: string;
   name: string;
+  headline: string;
   description: string;
-  features: { text: string }[];
   href: string;
-  cta?: string;
-  badge?: string;
-  icon: ReactNode;
+  comingSoon?: boolean;
   replica: ReactNode;
 }
 
 function ShowcaseBlock({
-  number,
-  label,
+  version,
   name,
+  headline,
   description,
-  features,
   href,
-  cta = "Learn more",
-  badge,
-  icon,
+  comingSoon,
   replica,
 }: ShowcaseProps) {
   return (
@@ -313,36 +306,25 @@ function ShowcaseBlock({
       {/* Two-column header — Linear style */}
       <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-16">
         <ScrollReveal>
-          <div className="flex items-center gap-3 mb-6">
-            <div className="text-foreground-muted">{icon}</div>
-            {badge && (
-              <span className="text-[10px] uppercase tracking-widest text-foreground-muted border border-white/[0.06] px-2 py-0.5 rounded-full">
-                {badge}
-              </span>
-            )}
-          </div>
           <h2 className="font-[590] text-[clamp(2.5rem,5vw,4.5rem)] tracking-[-0.028em] leading-[1.05]">
-            {name}
+            {headline}
           </h2>
         </ScrollReveal>
         <ScrollReveal delay={0.1}>
           <div className="lg:pt-4">
-            <p className="text-foreground-muted leading-relaxed text-lg">{description}</p>
-            <ul className="mt-6 space-y-2.5">
-              {features.map((f) => (
-                <li key={f.text} className="flex items-center gap-2.5 text-sm text-foreground-muted">
-                  <span className="w-1 h-1 rounded-full bg-foreground-muted/50 shrink-0" />
-                  {f.text}
-                </li>
-              ))}
-            </ul>
+            <p className="text-foreground-muted leading-relaxed text-lg max-w-lg">
+              {description}
+            </p>
             <Link
               href={href}
-              className="group mt-6 inline-flex items-center gap-2 text-sm text-foreground-muted/60 hover:text-foreground transition-colors"
+              className="group mt-6 inline-flex items-center gap-2 text-sm font-mono tracking-tight"
             >
-              <span className="font-mono text-foreground-muted/30">{number}</span>
-              {cta}
-              <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform duration-200" />
+              <span className="text-foreground-muted/60">{version}</span>
+              <span className="text-foreground/90">{name}</span>
+              {comingSoon && (
+                <span className="text-foreground-muted/40 text-xs">(Coming soon)</span>
+              )}
+              <ArrowRight size={12} className="text-foreground-muted/60 group-hover:translate-x-0.5 transition-transform duration-200" />
             </Link>
           </div>
         </ScrollReveal>
@@ -367,71 +349,41 @@ export function ProductShowcase() {
         <div className="flex flex-col gap-40">
           {/* Flux */}
           <ShowcaseBlock
-            number="1.0"
-            label="Communication"
-            icon={<FluxLogo size={28} />}
+            version="1.0"
             name="Flux"
+            headline="Communicate without compromise"
             description="Voice and text chat built for teams that care about privacy. Crystal-clear 48kHz Opus audio, end-to-end encryption on everything, and lossless screen share at 60fps."
-            features={[
-              { text: "48kHz Opus voice — studio quality" },
-              { text: "End-to-end encrypted by default" },
-              { text: "Lossless screen share at 60fps" },
-              { text: "AI noise suppression" },
-            ]}
             href="/flux"
             replica={<FluxMiniReplica />}
           />
 
           {/* IDE */}
           <ShowcaseBlock
-            number="2.0"
-            label="Development"
-            icon={<span className="font-mono text-lg">&gt;_</span>}
+            version="2.0"
             name="Liminal IDE"
+            headline="Code at the speed of thought"
             description="A code editor that stays out of your way. AI-native intelligence meets terminal-first workflow — built entirely in Rust, opens in 80ms."
-            badge="Free"
-            features={[
-              { text: "Inline AI editing and generation" },
-              { text: "Terminal-first workflow" },
-              { text: "Minimal, distraction-free UI" },
-              { text: "Native Rust performance" },
-            ]}
             href="/ide"
             replica={<IDEMiniReplica />}
           />
 
           {/* Hosting */}
           <ShowcaseBlock
-            number="3.0"
-            label="Infrastructure"
-            icon={<Server size={28} />}
+            version="3.0"
             name="Hosting"
+            headline="Infrastructure that disappears"
             description="Game servers, web hosting, and VPS — all running on dedicated hardware. No shared tenancy, no noisy neighbors, no surprises."
-            features={[
-              { text: "Always-on with 99.9% uptime" },
-              { text: "Automatic daily backups" },
-              { text: "Full SSH and root access" },
-              { text: "Custom domains and SSL" },
-            ]}
             href="/hosting"
             replica={<HostingMiniReplica />}
           />
 
           {/* Consulting */}
           <ShowcaseBlock
-            number="4.0"
-            label="Services"
-            icon={<Code2 size={28} />}
+            version="4.0"
             name="Consulting"
+            headline="Engineering expertise, on demand"
             description="Custom software development, architecture reviews, and technical advisory. Five years of enterprise consulting for Fortune 100 and 500 companies — now available to teams of any size."
-            features={[
-              { text: "Full-stack web applications" },
-              { text: "Mobile apps — iOS and Android" },
-              { text: "Infrastructure and DevOps" },
-              { text: "Technical advisory and audits" },
-            ]}
             href="/consulting"
-            cta="Get a quote"
             replica={<ConsultingMiniReplica />}
           />
         </div>

@@ -156,70 +156,109 @@ export default function PricingPage() {
             <div className="mt-16 border-t border-white/[0.08] pt-16">
               <p className="overline mb-4">Where your money goes</p>
               <h2 className="font-[590] text-2xl tracking-[-0.012em]">
-                No cloud markup. No mystery fees.
+                Full transparency. Real costs.
               </h2>
               <p className="mt-3 text-sm text-foreground-muted leading-relaxed max-w-lg">
-                We believe you should know exactly what you&apos;re paying for. Here&apos;s the real cost
-                breakdown behind an Athion subscription.
+                Most companies hide their margins. We&apos;d rather show you exactly what it costs
+                to run Athion — and let the value speak for itself.
               </p>
 
               <div className="mt-10 flex flex-col gap-0">
                 {[
                   {
-                    label: "LiveKit + Krisp",
+                    label: "Voice infrastructure",
+                    service: "LiveKit + Krisp",
                     cost: "$50/mo",
                     detail:
-                      "Voice infrastructure and AI noise suppression for Flux. This is our largest fixed cost — real-time audio at scale isn't cheap.",
-                    percent: 62,
+                      "Real-time voice relay servers, AI noise suppression, and WebRTC infrastructure that powers Flux. This is our single largest vendor cost — quality real-time audio doesn't come cheap.",
                   },
                   {
-                    label: "Domains & SSL",
-                    cost: "~$1/mo",
+                    label: "Server hardware & depreciation",
+                    service: "Self-hosted",
+                    cost: "~$25/mo",
                     detail:
-                      "Annual domain registrations amortized monthly. SSL is free via Let's Encrypt — we don't charge for HTTPS.",
-                    percent: 2,
+                      "Dedicated server hardware that runs all hosting, game servers, and Athion infrastructure. Amortized cost of the machines themselves — CPUs, RAM, SSDs, and replacement parts over their lifespan.",
                   },
                   {
-                    label: "Server hardware",
-                    cost: "$0",
+                    label: "Power & cooling",
+                    service: "24/7 uptime",
+                    cost: "~$20/mo",
                     detail:
-                      "All hosting, game servers, and infrastructure run on hardware we own. No AWS. No cloud markup. No margin on compute.",
-                    percent: 0,
+                      "Electricity to keep servers running around the clock. No sleep timers, no cold starts. Your game servers and deployments are always on.",
                   },
                   {
-                    label: "Development",
-                    cost: "The rest",
+                    label: "Network & connectivity",
+                    service: "Dedicated line",
+                    cost: "~$15/mo",
                     detail:
-                      "Everything left goes back into building the product. New features, performance work, and keeping the lights on.",
-                    percent: 36,
+                      "High-bandwidth internet dedicated to server traffic. This is what keeps latency low for game servers and ensures fast deploys for hosted apps.",
                   },
-                ].map((item, i) => (
+                  {
+                    label: "Domains, DNS & SSL",
+                    service: "Cloudflare + Let's Encrypt",
+                    cost: "~$2/mo",
+                    detail:
+                      "Domain registrations, DNS management, and automatic SSL provisioning. We use Let's Encrypt for certificates — HTTPS is not a premium feature.",
+                  },
+                  {
+                    label: "Product development",
+                    service: "Everything else",
+                    cost: "remainder",
+                    detail:
+                      "What's left goes directly into building and improving the product. New features, performance optimizations, bug fixes, and support.",
+                  },
+                ].map((item) => (
                   <div
                     key={item.label}
                     className="py-5 border-b border-white/[0.06] first:border-t first:border-white/[0.06]"
                   >
-                    <div className="flex items-baseline justify-between gap-4">
+                    <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-baseline gap-3">
                           <span className="font-[510] text-sm">{item.label}</span>
-                          <span className="text-xs text-foreground-muted font-mono">{item.cost}</span>
+                          <span className="text-[11px] text-foreground-muted/40">{item.service}</span>
                         </div>
                         <p className="mt-1.5 text-xs text-foreground-muted/70 leading-relaxed max-w-md">
                           {item.detail}
                         </p>
                       </div>
-                      {item.percent > 0 && (
-                        <span className="text-xs text-foreground-muted/50 font-mono tabular-nums shrink-0">
-                          ~{item.percent}%
-                        </span>
-                      )}
+                      <span className="text-sm text-foreground-muted font-mono tabular-nums shrink-0 pt-0.5">
+                        {item.cost}
+                      </span>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <p className="mt-6 text-xs text-foreground-muted/50 leading-relaxed">
-                Based on estimated cost per subscriber at current scale. Percentages are approximate and will shift as we grow.
+              {/* Value comparison */}
+              <div className="mt-10 p-6 bg-white/[0.02] border border-white/[0.06] rounded-lg">
+                <p className="font-[510] text-sm mb-3">What this would cost you separately</p>
+                <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+                  {[
+                    ["Discord Nitro", "$10/mo"],
+                    ["VS Code + Copilot", "$10/mo"],
+                    ["Game server (Apex/Shockbyte)", "$8–15/mo"],
+                    ["VPS (DigitalOcean/Hetzner)", "$12–24/mo"],
+                    ["Web hosting (Vercel Pro)", "$20/mo"],
+                  ].map(([name, price]) => (
+                    <div key={name} className="flex items-baseline justify-between py-1">
+                      <span className="text-xs text-foreground-muted/60">{name}</span>
+                      <span className="text-xs text-foreground-muted/40 font-mono">{price}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 pt-4 border-t border-white/[0.06] flex items-baseline justify-between">
+                  <span className="text-xs text-foreground-muted">Separately, that&apos;s</span>
+                  <span className="font-[510] text-sm text-foreground-muted line-through decoration-foreground-muted/30">$60–79/mo</span>
+                </div>
+                <div className="flex items-baseline justify-between mt-1">
+                  <span className="text-xs text-foreground">With Athion, it&apos;s</span>
+                  <span className="font-[590] text-lg">$20/mo</span>
+                </div>
+              </div>
+
+              <p className="mt-6 text-xs text-foreground-muted/40 leading-relaxed">
+                Costs are approximate and based on current infrastructure. As we scale, per-subscriber costs decrease — and we plan to pass those savings on.
               </p>
             </div>
           </ScrollReveal>

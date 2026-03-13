@@ -1323,17 +1323,17 @@ function FluxHero() {
         >
           <a
             href="#download"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:opacity-90 shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
           >
             <Download size={14} />
             Download for Free
           </a>
           <a
             href="#features"
-            className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-foreground transition-colors"
+            className="group inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-foreground transition-colors"
           >
             See what&apos;s inside
-            <ArrowRight size={14} />
+            <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-200" />
           </a>
         </motion.div>
       </div>
@@ -1735,14 +1735,14 @@ function DownloadCTA() {
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <button
               onClick={handleDownloadClick}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:opacity-90 shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
             >
               <Apple size={14} />
               {ctaLabel}
             </button>
             <button
               onClick={handleDownloadClick}
-              className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground-muted text-sm rounded-full hover:text-foreground hover:border-foreground/20 transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground-muted text-sm rounded-full hover:text-foreground hover:border-foreground/20 hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
             >
               <MonitorDot size={14} />
               {authState === "active" ? "Download for Windows" : ctaLabel}

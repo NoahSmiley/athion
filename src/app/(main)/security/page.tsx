@@ -95,7 +95,7 @@ export default function SecurityPage() {
               const Icon = item.icon;
               return (
                 <StaggerItem key={item.title}>
-                  <div className="p-6 border border-border rounded-lg h-full">
+                  <div className="p-6 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200 h-full">
                     <Icon size={20} className="text-accent" />
                     <h3 className="mt-4 font-[590] text-lg tracking-[-0.012em]">{item.title}</h3>
                     <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
@@ -155,7 +155,7 @@ export default function SecurityPage() {
             </p>
             <a
               href="mailto:security@athion.com"
-              className="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
+              className="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
             >
               security@athion.com
             </a>

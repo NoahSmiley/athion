@@ -105,6 +105,11 @@ export function Navbar() {
         className="absolute inset-0 bg-background/80 backdrop-blur-xl"
         style={{ opacity: smoothBgOpacity }}
       />
+      {/* Bottom border on scroll */}
+      <motion.div
+        className="absolute bottom-0 left-0 right-0 h-px bg-border"
+        style={{ opacity: smoothBgOpacity }}
+      />
 
       <nav className="relative mx-auto max-w-7xl px-6 h-[72px] flex items-center justify-between">
         <Link
@@ -137,7 +142,7 @@ export function Navbar() {
                     setOpenDropdown(openDropdown === item.label ? null : item.label)
                   }
                   className={cn(
-                    "text-sm transition-colors inline-flex items-center gap-1",
+                    "text-sm transition-all duration-200 inline-flex items-center gap-1",
                     isDropdownActive(item)
                       ? "text-accent"
                       : "text-foreground-muted hover:text-foreground"
@@ -153,7 +158,7 @@ export function Navbar() {
                   />
                 </button>
                 {openDropdown === item.label && (
-                  <div className="absolute top-full left-0 mt-2 py-2 min-w-[160px] bg-background border border-border shadow-lg rounded-lg">
+                  <div className="absolute top-full left-0 mt-2 py-2 min-w-[160px] bg-background/90 backdrop-blur-xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.4)] rounded-lg">
                     {item.children.map((child) => (
                       <Link
                         key={child.href}
@@ -210,7 +215,7 @@ export function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="px-4 py-1.5 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
+              className="px-4 py-1.5 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
             >
               Sign In
             </Link>

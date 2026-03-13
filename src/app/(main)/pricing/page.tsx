@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Check, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { PageTransition } from "@/components/page-transition";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { PRICING_PLANS, HOSTING_PLANS } from "@/lib/constants";
@@ -33,7 +34,7 @@ function PlanCard({
   onCheckout: (product: string) => void;
 }) {
   return (
-    <div className="p-8 border border-border rounded-lg flex flex-col h-full">
+    <div className="p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200 flex flex-col h-full">
       <h3 className="font-[590] text-2xl tracking-[-0.012em]">{plan.name}</h3>
       <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
         {plan.description}
@@ -66,7 +67,7 @@ function PlanCard({
       <button
         onClick={() => onCheckout(plan.product)}
         disabled={loading === plan.product}
-        className="mt-8 w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors disabled:opacity-50"
+        className="mt-8 w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150 disabled:opacity-50"
       >
         {loading === plan.product ? "Loading..." : "Subscribe"}
         {loading !== plan.product && <ArrowRight size={14} />}
@@ -96,16 +97,16 @@ function SoftwareTab({
         />
       ))}
 
-      <div className="p-8 border border-border rounded-lg flex flex-col justify-center">
+      <div className="p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-center">
         <h3 className="font-[590] text-2xl tracking-[-0.012em]">Liminal IDE</h3>
         <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
           Free with every account. No subscription required.
         </p>
         <Link
           href="/ide"
-          className="mt-6 text-xs text-accent hover:text-foreground transition-colors inline-flex items-center gap-1"
+          className="group mt-6 text-xs text-accent hover:text-foreground transition-colors inline-flex items-center gap-1"
         >
-          Learn more <ArrowRight size={10} />
+          Learn more <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform duration-200" />
         </Link>
       </div>
     </div>
@@ -140,7 +141,7 @@ function ConsultingTab() {
   return (
     <div className="flex flex-col gap-10">
       {/* Credibility banner */}
-      <div className="p-8 border border-border rounded-lg">
+      <div className="p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200">
         <div className="flex flex-col sm:flex-row sm:items-center gap-8 sm:gap-12">
           <div className="flex-1">
             <p className="text-foreground leading-relaxed">
@@ -151,16 +152,16 @@ function ConsultingTab() {
           </div>
           <Link
             href="/consulting"
-            className="text-xs text-accent hover:text-foreground transition-colors inline-flex items-center gap-1 shrink-0"
+            className="group text-xs text-accent hover:text-foreground transition-colors inline-flex items-center gap-1 shrink-0"
           >
-            Our track record <ArrowRight size={10} />
+            Our track record <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform duration-200" />
           </Link>
         </div>
       </div>
 
       {/* Pricing cards */}
       <div className="grid md:grid-cols-2 gap-8">
-        <div className="p-8 border border-border rounded-lg flex flex-col">
+        <div className="p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200 flex flex-col">
           <h3 className="font-[590] text-2xl tracking-[-0.012em]">Hourly Rate</h3>
           <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
             For advisory, code reviews, and shorter engagements. Billed in 1-hour increments.
@@ -172,7 +173,7 @@ function ConsultingTab() {
           <div className="mt-auto pt-8">
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
             >
               Book a Call
               <ArrowRight size={14} />
@@ -180,7 +181,7 @@ function ConsultingTab() {
           </div>
         </div>
 
-        <div className="p-8 border border-border rounded-lg flex flex-col">
+        <div className="p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200 flex flex-col">
           <h3 className="font-[590] text-2xl tracking-[-0.012em]">Project-Based</h3>
           <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
             Fixed-scope projects with clear deliverables, timeline, and pricing agreed upfront.
@@ -191,7 +192,7 @@ function ConsultingTab() {
           <div className="mt-auto pt-8">
             <Link
               href="/consulting#quote"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
             >
               Request a Quote
               <ArrowRight size={14} />
@@ -262,19 +263,21 @@ export default function PricingPage() {
 
           {/* Tabs */}
           <ScrollReveal delay={0.3}>
-            <div className="mt-10 inline-flex items-center gap-1 p-1 border border-border rounded-[6px]">
+            <div className="mt-10 inline-flex items-center gap-1 p-1 border border-white/[0.06] rounded-[6px]">
               {TABS.map((t) => (
                 <button
                   key={t}
                   onClick={() => setTab(t)}
-                  className={cn(
-                    "px-5 py-2 text-sm transition-colors",
-                    tab === t
-                      ? "bg-accent text-background"
-                      : "text-foreground-muted hover:text-foreground"
-                  )}
+                  className="relative px-5 py-2 text-sm transition-colors"
                 >
-                  {t}
+                  {tab === t && (
+                    <motion.div
+                      layoutId="pricing-tab"
+                      className="absolute inset-0 bg-accent rounded-[4px]"
+                      transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                    />
+                  )}
+                  <span className={cn("relative z-10", tab === t ? "text-background" : "text-foreground-muted hover:text-foreground")}>{t}</span>
                 </button>
               ))}
             </div>
@@ -283,30 +286,36 @@ export default function PricingPage() {
           {/* Monthly/Yearly toggle — only for Software & Hosting */}
           {showToggle && (
             <ScrollReveal delay={0.35}>
-              <div className="mt-6 inline-flex items-center gap-3 p-1 border border-border rounded-[6px]">
+              <div className="mt-6 inline-flex items-center gap-3 p-1 border border-white/[0.06] rounded-[6px]">
                 <button
                   onClick={() => setAnnual(false)}
-                  className={cn(
-                    "px-4 py-2 text-sm transition-colors",
-                    !annual
-                      ? "bg-accent text-background"
-                      : "text-foreground-muted hover:text-foreground"
-                  )}
+                  className="relative px-4 py-2 text-sm transition-colors"
                 >
-                  Monthly
+                  {!annual && (
+                    <motion.div
+                      layoutId="pricing-toggle"
+                      className="absolute inset-0 bg-accent rounded-[4px]"
+                      transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                    />
+                  )}
+                  <span className={cn("relative z-10", !annual ? "text-background" : "text-foreground-muted hover:text-foreground")}>Monthly</span>
                 </button>
                 <button
                   onClick={() => setAnnual(true)}
-                  className={cn(
-                    "px-4 py-2 text-sm transition-colors",
-                    annual
-                      ? "bg-accent text-background"
-                      : "text-foreground-muted hover:text-foreground"
-                  )}
+                  className="relative px-4 py-2 text-sm transition-colors"
                 >
-                  Yearly
-                  <span className="ml-1.5 text-[10px] uppercase tracking-wider opacity-70">
-                    Save 20%
+                  {annual && (
+                    <motion.div
+                      layoutId="pricing-toggle"
+                      className="absolute inset-0 bg-accent rounded-[4px]"
+                      transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                    />
+                  )}
+                  <span className={cn("relative z-10", annual ? "text-background" : "text-foreground-muted hover:text-foreground")}>
+                    Yearly
+                    <span className="ml-1.5 text-[10px] uppercase tracking-wider opacity-70">
+                      Save 20%
+                    </span>
                   </span>
                 </button>
               </div>

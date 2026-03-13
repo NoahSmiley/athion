@@ -44,7 +44,7 @@ function FluxMiniReplica() {
   }, [inView]);
 
   return (
-    <div ref={ref} className="flex h-[420px] bg-[#0a0a0f] text-white text-xs select-none">
+    <div ref={ref} className="flex h-[520px] bg-[#0a0a0f] text-white text-xs select-none">
       {/* Icon rail */}
       <div className="w-[36px] shrink-0 bg-[#07070b] flex flex-col items-center gap-3 pt-3 border-r border-[#1a1a22]">
         <div className="w-5 h-5 rounded-full bg-[#a78bfa]/20" />
@@ -118,7 +118,7 @@ function IDEMiniReplica() {
   }, []);
 
   return (
-    <div className="flex h-[420px] bg-[#050507] text-xs select-none">
+    <div className="flex h-[520px] bg-[#050507] text-xs select-none">
       {/* Activity bar */}
       <div className="w-[36px] shrink-0 bg-[#08080a] flex flex-col items-center gap-4 pt-3 border-r border-[#1a1a1f]">
         <span className="text-[13px] text-[#888]">&#10022;</span>
@@ -170,7 +170,7 @@ const servers = [
 
 function HostingMiniReplica() {
   return (
-    <div className="flex flex-col h-[420px] bg-[#0a0a0d] text-xs select-none">
+    <div className="flex flex-col h-[520px] bg-[#0a0a0d] text-xs select-none">
       {/* Top bar */}
       <div className="h-9 border-b border-[#1a1a1f] flex items-center justify-between px-4">
         <span className="text-[11px] text-[#ccc] font-medium">Athion Hosting</span>
@@ -235,7 +235,7 @@ function ConsultingMiniReplica() {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <div ref={ref} className="flex flex-col h-[420px] bg-[#0a0a0d] text-xs select-none">
+    <div ref={ref} className="flex flex-col h-[520px] bg-[#0a0a0d] text-xs select-none">
       {/* Top bar */}
       <div className="h-9 border-b border-[#1a1a1f] flex items-center justify-between px-4">
         <span className="text-[11px] text-[#ccc] font-medium">Active Projects</span>
@@ -284,71 +284,76 @@ function ConsultingMiniReplica() {
 /* ─── Showcase Blocks ─── */
 
 interface ShowcaseProps {
-  info: ReactNode;
+  number: string;
+  label: string;
+  name: string;
+  description: string;
+  features: { text: string }[];
+  href: string;
+  cta?: string;
+  badge?: string;
+  icon: ReactNode;
   replica: ReactNode;
-  reverse?: boolean;
 }
 
-function ShowcaseBlock({ info, replica, reverse }: ShowcaseProps) {
-  return (
-    <ScrollReveal>
-      <div className="grid md:grid-cols-2 gap-12 items-center">
-        <div className={reverse ? "md:order-2" : ""}>{info}</div>
-        <div className={`border border-border rounded-lg overflow-hidden min-h-[360px] ${reverse ? "md:order-1" : ""}`}>
-          {replica}
-        </div>
-      </div>
-    </ScrollReveal>
-  );
-}
-
-interface FeatureItem {
-  text: string;
-}
-
-function ProductInfo({
-  icon,
+function ShowcaseBlock({
+  number,
+  label,
   name,
   description,
   features,
   href,
   cta = "Learn more",
   badge,
-}: {
-  icon: ReactNode;
-  name: string;
-  description: string;
-  features: FeatureItem[];
-  href: string;
-  cta?: string;
-  badge?: string;
-}) {
+  icon,
+  replica,
+}: ShowcaseProps) {
   return (
     <div>
-      <div className="flex items-center gap-3 mb-4">
-        <div className="text-accent">{icon}</div>
-        {badge && (
-          <span className="text-[10px] uppercase tracking-widest text-foreground-muted border border-border px-2 py-0.5 rounded-full">
-            {badge}
-          </span>
-        )}
+      {/* Two-column header — Linear style */}
+      <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-16">
+        <ScrollReveal>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="text-foreground-muted">{icon}</div>
+            {badge && (
+              <span className="text-[10px] uppercase tracking-widest text-foreground-muted border border-white/[0.06] px-2 py-0.5 rounded-full">
+                {badge}
+              </span>
+            )}
+          </div>
+          <h2 className="font-[590] text-[clamp(2.5rem,5vw,4.5rem)] tracking-[-0.028em] leading-[1.05]">
+            {name}
+          </h2>
+        </ScrollReveal>
+        <ScrollReveal delay={0.1}>
+          <div className="lg:pt-4">
+            <p className="text-foreground-muted leading-relaxed text-lg">{description}</p>
+            <ul className="mt-6 space-y-2.5">
+              {features.map((f) => (
+                <li key={f.text} className="flex items-center gap-2.5 text-sm text-foreground-muted">
+                  <span className="w-1 h-1 rounded-full bg-foreground-muted/50 shrink-0" />
+                  {f.text}
+                </li>
+              ))}
+            </ul>
+            <Link
+              href={href}
+              className="group mt-6 inline-flex items-center gap-2 text-sm text-foreground-muted/60 hover:text-foreground transition-colors"
+            >
+              <span className="font-mono text-foreground-muted/30">{number}</span>
+              {cta}
+              <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform duration-200" />
+            </Link>
+          </div>
+        </ScrollReveal>
       </div>
-      <h3 className="font-[590] text-3xl sm:text-4xl tracking-[-0.022em]">{name}</h3>
-      <p className="mt-3 text-foreground-muted leading-relaxed">{description}</p>
-      <ul className="mt-5 space-y-2">
-        {features.map((f) => (
-          <li key={f.text} className="flex items-center gap-2 text-sm text-foreground-muted">
-            <span className="w-1 h-1 rounded-full bg-accent shrink-0" />
-            {f.text}
-          </li>
-        ))}
-      </ul>
-      <Link
-        href={href}
-        className="mt-6 inline-flex items-center gap-1.5 text-sm text-accent hover:text-foreground transition-colors"
-      >
-        {cta} <ArrowRight size={12} />
-      </Link>
+
+      {/* Full-width demo replica */}
+      <ScrollReveal delay={0.15}>
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl hover:border-white/[0.1] hover:shadow-[0_0_60px_rgba(255,255,255,0.02)] transition-all duration-500 overflow-hidden">
+          {replica}
+        </div>
+      </ScrollReveal>
     </div>
   );
 }
@@ -357,95 +362,76 @@ function ProductInfo({
 
 export function ProductShowcase() {
   return (
-    <section className="py-32 px-6 border-t border-border">
+    <section className="py-40 px-6">
       <div className="mx-auto max-w-7xl">
-        <ScrollReveal>
-          <p className="overline mb-4">What we build</p>
-        </ScrollReveal>
-        <ScrollReveal delay={0.1}>
-          <h2 className="font-[590] text-4xl sm:text-5xl tracking-[-0.022em] leading-tight max-w-2xl">
-            Software, hosting, and consulting — under one roof.
-          </h2>
-        </ScrollReveal>
-
-        <div className="mt-24 flex flex-col gap-32">
-          {/* Flux — info left, demo right */}
+        <div className="flex flex-col gap-40">
+          {/* Flux */}
           <ShowcaseBlock
-            info={
-              <ProductInfo
-                icon={<FluxLogo size={24} />}
-                name="Flux"
-                description="Voice & text chat with crystal audio, E2EE, and lossless screen share."
-                features={[
-                  { text: "48kHz Opus voice — studio quality" },
-                  { text: "End-to-end encrypted by default" },
-                  { text: "Lossless screen share at 60fps" },
-                  { text: "AI noise suppression" },
-                ]}
-                href="/flux"
-              />
-            }
+            number="1.0"
+            label="Communication"
+            icon={<FluxLogo size={28} />}
+            name="Flux"
+            description="Voice and text chat built for teams that care about privacy. Crystal-clear 48kHz Opus audio, end-to-end encryption on everything, and lossless screen share at 60fps."
+            features={[
+              { text: "48kHz Opus voice — studio quality" },
+              { text: "End-to-end encrypted by default" },
+              { text: "Lossless screen share at 60fps" },
+              { text: "AI noise suppression" },
+            ]}
+            href="/flux"
             replica={<FluxMiniReplica />}
           />
 
-          {/* IDE — demo left, info right */}
+          {/* IDE */}
           <ShowcaseBlock
-            reverse
-            info={
-              <ProductInfo
-                icon={<span className="font-mono text-base">&gt;_</span>}
-                name="Liminal IDE"
-                description="AI-native code editor built in Rust. Opens in 80ms."
-                badge="Free"
-                features={[
-                  { text: "Inline AI editing and generation" },
-                  { text: "Terminal-first workflow" },
-                  { text: "Minimal, distraction-free UI" },
-                  { text: "Native Rust performance" },
-                ]}
-                href="/ide"
-              />
-            }
+            number="2.0"
+            label="Development"
+            icon={<span className="font-mono text-lg">&gt;_</span>}
+            name="Liminal IDE"
+            description="A code editor that stays out of your way. AI-native intelligence meets terminal-first workflow — built entirely in Rust, opens in 80ms."
+            badge="Free"
+            features={[
+              { text: "Inline AI editing and generation" },
+              { text: "Terminal-first workflow" },
+              { text: "Minimal, distraction-free UI" },
+              { text: "Native Rust performance" },
+            ]}
+            href="/ide"
             replica={<IDEMiniReplica />}
           />
 
-          {/* Hosting — info left, demo right */}
+          {/* Hosting */}
           <ShowcaseBlock
-            info={
-              <ProductInfo
-                icon={<Server size={24} />}
-                name="Hosting"
-                description="Game servers, web & app hosting, and VPS — all on dedicated hardware."
-                features={[
-                  { text: "Always-on with 99.9% uptime" },
-                  { text: "Automatic daily backups" },
-                  { text: "Full SSH and root access" },
-                  { text: "Custom domains and SSL" },
-                ]}
-                href="/hosting"
-              />
-            }
+            number="3.0"
+            label="Infrastructure"
+            icon={<Server size={28} />}
+            name="Hosting"
+            description="Game servers, web hosting, and VPS — all running on dedicated hardware. No shared tenancy, no noisy neighbors, no surprises."
+            features={[
+              { text: "Always-on with 99.9% uptime" },
+              { text: "Automatic daily backups" },
+              { text: "Full SSH and root access" },
+              { text: "Custom domains and SSL" },
+            ]}
+            href="/hosting"
             replica={<HostingMiniReplica />}
           />
 
-          {/* Consulting — demo left, info right */}
+          {/* Consulting */}
           <ShowcaseBlock
-            reverse
-            info={
-              <ProductInfo
-                icon={<Code2 size={24} />}
-                name="Consulting"
-                description="Custom software development, architecture reviews, and technical advisory."
-                features={[
-                  { text: "Full-stack web applications" },
-                  { text: "Mobile apps — iOS and Android" },
-                  { text: "Infrastructure and DevOps" },
-                  { text: "Technical advisory and audits" },
-                ]}
-                href="/consulting"
-                cta="Get a quote"
-              />
-            }
+            number="4.0"
+            label="Services"
+            icon={<Code2 size={28} />}
+            name="Consulting"
+            description="Custom software development, architecture reviews, and technical advisory. Five years of enterprise consulting for Fortune 100 and 500 companies — now available to teams of any size."
+            features={[
+              { text: "Full-stack web applications" },
+              { text: "Mobile apps — iOS and Android" },
+              { text: "Infrastructure and DevOps" },
+              { text: "Technical advisory and audits" },
+            ]}
+            href="/consulting"
+            cta="Get a quote"
             replica={<ConsultingMiniReplica />}
           />
         </div>

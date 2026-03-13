@@ -81,7 +81,7 @@ function Team() {
         <StaggerContainer className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {people.map((person) => (
             <StaggerItem key={person.name}>
-              <div className="p-6 border border-border rounded-lg">
+              <div className="p-6 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200">
                 <div className="w-14 h-14 rounded-full bg-background-elevated border border-border flex items-center justify-center">
                   <span className="text-sm font-mono text-accent">
                     {person.initials}

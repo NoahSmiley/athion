@@ -42,14 +42,14 @@ function HostingHero() {
           <div className="mt-10 flex items-center gap-4">
             <Link
               href="/pricing"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
             >
               View Plans
               <ArrowRight size={14} />
             </Link>
             <a
               href="#tiers"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm rounded-[6px] hover:text-foreground hover:border-border-light transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm rounded-[6px] hover:text-foreground hover:border-border-light hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
             >
               Learn more
             </a>
@@ -83,7 +83,7 @@ function HostingTiers() {
             const Icon = tierIcons[tier.icon as keyof typeof tierIcons];
             return (
               <StaggerItem key={tier.title}>
-                <div className="p-8 border border-border rounded-lg h-full flex flex-col">
+                <div className="p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200 h-full flex flex-col">
                   <Icon size={28} className="text-accent" />
                   <h3 className="mt-4 font-[590] text-xl tracking-[-0.012em]">{tier.title}</h3>
                   <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
@@ -157,14 +157,14 @@ function HostingCTA() {
           <div className="mt-8 flex items-center justify-center gap-4">
             <Link
               href="/pricing"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
             >
               View Pricing
               <ArrowRight size={14} />
             </Link>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm rounded-[6px] hover:text-foreground hover:border-border-light transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm rounded-[6px] hover:text-foreground hover:border-border-light hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
             >
               Contact Us
             </Link>

@@ -27,7 +27,7 @@ export default async function BillingPage() {
           {subs.map((sub) => (
             <div
               key={sub.id}
-              className="p-6 border border-border rounded-lg flex items-center justify-between"
+              className="p-6 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-between"
             >
               <div>
                 <p className="text-sm font-medium capitalize">
@@ -48,7 +48,7 @@ export default async function BillingPage() {
           ))}
         </div>
       ) : (
-        <div className="mt-10 p-8 border border-border rounded-lg text-center">
+        <div className="mt-10 p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] transition-all duration-200 text-center">
           <p className="text-foreground-muted">No active subscriptions.</p>
         </div>
       )}

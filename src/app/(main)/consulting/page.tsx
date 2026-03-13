@@ -122,7 +122,7 @@ function ConsultingServices() {
             const Icon = serviceIcons[service.icon as keyof typeof serviceIcons];
             return (
               <StaggerItem key={service.title}>
-                <div className="p-8 border border-border rounded-lg h-full flex flex-col">
+                <div className="p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200 h-full flex flex-col">
                   <Icon size={28} className="text-accent" />
                   <h3 className="mt-4 font-[590] text-xl tracking-[-0.012em]">{service.title}</h3>
                   <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
@@ -158,7 +158,7 @@ function ConsultingPricing() {
 
         <StaggerContainer className="mt-16 grid md:grid-cols-2 gap-8">
           <StaggerItem>
-            <div className="p-8 border border-border rounded-lg h-full flex flex-col">
+            <div className="p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200 h-full flex flex-col">
               <h3 className="font-[590] text-2xl tracking-[-0.012em]">Hourly Rate</h3>
               <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
                 For advisory, code reviews, and shorter engagements. Billed in 1-hour increments.
@@ -170,7 +170,7 @@ function ConsultingPricing() {
               <div className="mt-auto pt-8">
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
                 >
                   <Phone size={14} />
                   Book a Call
@@ -179,7 +179,7 @@ function ConsultingPricing() {
             </div>
           </StaggerItem>
           <StaggerItem>
-            <div className="p-8 border border-border rounded-lg h-full flex flex-col">
+            <div className="p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200 h-full flex flex-col">
               <h3 className="font-[590] text-2xl tracking-[-0.012em]">Project-Based</h3>
               <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
                 Fixed-scope projects with clear deliverables, timeline, and pricing agreed upfront.
@@ -190,7 +190,7 @@ function ConsultingPricing() {
               <div className="mt-auto pt-8">
                 <a
                   href="#quote"
-                  className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
                 >
                   Request a Quote
                   <ArrowRight size={14} />
@@ -331,7 +331,7 @@ function QuoteForm() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150 disabled:opacity-50"
                 >
                   <Send size={14} />
                   {loading ? "Sending..." : "Request Quote"}

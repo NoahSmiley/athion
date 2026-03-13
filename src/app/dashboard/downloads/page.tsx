@@ -31,7 +31,7 @@ export default async function DownloadsPage() {
 
       <div className="mt-10 flex flex-col gap-6">
         {/* Flux */}
-        <div className="p-6 border border-border rounded-lg">
+        <div className="p-6 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-[590] text-xl tracking-[-0.012em]">Flux</h3>
@@ -50,14 +50,14 @@ export default async function DownloadsPage() {
             <div className="mt-6 flex flex-wrap gap-3">
               <a
                 href="#"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
               >
                 <Apple size={16} />
                 macOS (Apple Silicon)
               </a>
               <a
                 href="#"
-                className="inline-flex items-center gap-2 px-6 py-3 border border-border text-sm text-foreground-muted hover:text-foreground hover:border-border-light transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 border border-border text-sm text-foreground-muted hover:text-foreground hover:border-border-light hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
               >
                 <Apple size={16} />
                 macOS (Intel)
@@ -78,7 +78,7 @@ export default async function DownloadsPage() {
         </div>
 
         {/* IDE — always free */}
-        <div className="p-6 border border-border rounded-lg">
+        <div className="p-6 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-[590] text-xl tracking-[-0.012em]">Liminal IDE</h3>

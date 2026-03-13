@@ -86,7 +86,7 @@ export default function CareersPage() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.15}>
-            <div className="mt-16 p-10 border border-border rounded-lg text-center">
+            <div className="mt-16 p-10 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] transition-all duration-200 text-center">
               <p className="font-[590] text-xl tracking-[-0.012em]">
                 No open roles right now.
               </p>
@@ -97,7 +97,7 @@ export default function CareersPage() {
               </p>
               <a
                 href="mailto:careers@athion.com"
-                className="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
+                className="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
               >
                 careers@athion.com
                 <ArrowRight size={14} />

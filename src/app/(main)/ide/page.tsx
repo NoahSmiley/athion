@@ -946,7 +946,7 @@ function Waitlist() {
               {error && <div className="mt-8 p-3 border border-red-500/30 text-red-400 text-sm max-w-md">{error}</div>}
               <form onSubmit={handleSubmit} className="mt-10 flex gap-3 max-w-md">
                 <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="flex-1 px-4 py-3 bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors rounded-full" />
-                <button type="submit" disabled={loading} className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50 rounded-full">
+                <button type="submit" disabled={loading} className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background text-sm font-medium hover:opacity-90 shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150 disabled:opacity-50 rounded-full">
                   {loading ? "Joining..." : "Notify Me"}
                   {!loading && <ArrowRight size={14} />}
                 </button>

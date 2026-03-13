@@ -28,7 +28,7 @@ export default function SetupPage() {
       </p>
 
       {/* Step 1: Athion */}
-      <div className="mt-10 border border-border p-5 opacity-60">
+      <div className="mt-10 bg-white/[0.02] border border-white/[0.06] p-5 opacity-60">
         <div className="flex items-center gap-3">
           <span className="w-6 h-6 flex items-center justify-center border border-accent/30 text-xs text-accent">
             &#10003;
@@ -41,7 +41,7 @@ export default function SetupPage() {
       </div>
 
       {/* Step 2: Install CLI */}
-      <div className="mt-3 border border-border p-5">
+      <div className="mt-3 bg-white/[0.02] border border-white/[0.06] p-5">
         <div className="flex items-center gap-3 mb-4">
           <span className="w-6 h-6 flex items-center justify-center border border-border text-xs text-foreground-muted">
             2
@@ -75,7 +75,7 @@ export default function SetupPage() {
       </div>
 
       {/* Step 3: Sign in */}
-      <div className="mt-3 border border-border p-5">
+      <div className="mt-3 bg-white/[0.02] border border-white/[0.06] p-5">
         <div className="flex items-center gap-3 mb-4">
           <span className="w-6 h-6 flex items-center justify-center border border-border text-xs text-foreground-muted">
             3
@@ -116,7 +116,7 @@ export default function SetupPage() {
       </div>
 
       {/* Done */}
-      <div className="mt-6 p-4 border border-border/50">
+      <div className="mt-6 p-4 bg-white/[0.02] border border-white/[0.06]">
         <p className="text-sm text-foreground-muted leading-relaxed">
           Once all steps are complete, open Liminal IDE and sign in with your
           Athion account. The IDE will automatically detect your Claude

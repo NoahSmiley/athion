@@ -37,7 +37,7 @@ export default async function DashboardPage() {
 
       <div className="mt-10 grid sm:grid-cols-2 gap-6">
         {/* Subscription status cards */}
-        <div className="p-6 border border-border rounded-lg">
+        <div className="p-6 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200">
           <p className="text-xs text-foreground-muted uppercase tracking-wider mb-3">
             Flux
           </p>
@@ -48,15 +48,15 @@ export default async function DashboardPage() {
               <p className="text-sm text-foreground-muted">No subscription</p>
               <Link
                 href="/pricing"
-                className="mt-3 inline-flex items-center gap-1 text-xs text-accent hover:text-foreground transition-colors"
+                className="group mt-3 inline-flex items-center gap-1 text-xs text-accent hover:text-foreground transition-colors"
               >
-                Subscribe <ArrowRight size={10} />
+                Subscribe <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform duration-200" />
               </Link>
             </>
           )}
         </div>
 
-        <div className="p-6 border border-border rounded-lg">
+        <div className="p-6 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200">
           <p className="text-xs text-foreground-muted uppercase tracking-wider mb-3">
             Game Servers
           </p>
@@ -67,15 +67,15 @@ export default async function DashboardPage() {
               <p className="text-sm text-foreground-muted">No subscription</p>
               <Link
                 href="/pricing"
-                className="mt-3 inline-flex items-center gap-1 text-xs text-accent hover:text-foreground transition-colors"
+                className="group mt-3 inline-flex items-center gap-1 text-xs text-accent hover:text-foreground transition-colors"
               >
-                Subscribe <ArrowRight size={10} />
+                Subscribe <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform duration-200" />
               </Link>
             </>
           )}
         </div>
 
-        <div className="p-6 border border-border rounded-lg">
+        <div className="p-6 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200">
           <p className="text-xs text-foreground-muted uppercase tracking-wider mb-3">
             Liminal IDE
           </p>
@@ -86,19 +86,19 @@ export default async function DashboardPage() {
       <div className="mt-10 grid sm:grid-cols-3 gap-4">
         <Link
           href="/dashboard/billing"
-          className="p-4 border border-border rounded-lg text-sm text-foreground-muted hover:text-foreground hover:border-border-light transition-colors"
+          className="p-4 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm text-foreground-muted hover:text-foreground hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200"
         >
           Manage billing
         </Link>
         <Link
           href="/dashboard/downloads"
-          className="p-4 border border-border rounded-lg text-sm text-foreground-muted hover:text-foreground hover:border-border-light transition-colors"
+          className="p-4 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm text-foreground-muted hover:text-foreground hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200"
         >
           Downloads
         </Link>
         <Link
           href="/dashboard/settings"
-          className="p-4 border border-border rounded-lg text-sm text-foreground-muted hover:text-foreground hover:border-border-light transition-colors"
+          className="p-4 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm text-foreground-muted hover:text-foreground hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200"
         >
           Account settings
         </Link>

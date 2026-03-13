@@ -112,7 +112,7 @@ export default function SettingsPage() {
         <button
           type="submit"
           disabled={loading}
-          className="self-start px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors disabled:opacity-50"
+          className="self-start px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150 disabled:opacity-50"
         >
           Save Changes
         </button>
@@ -139,7 +139,7 @@ export default function SettingsPage() {
         <button
           type="submit"
           disabled={loading || !newPassword}
-          className="self-start px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors disabled:opacity-50"
+          className="self-start px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150 disabled:opacity-50"
         >
           Update Password
         </button>
@@ -152,7 +152,7 @@ export default function SettingsPage() {
           Danger Zone
         </p>
         {deleteConfirm ? (
-          <div className="p-4 border border-red-500/30 rounded-lg">
+          <div className="p-4 bg-white/[0.02] border border-red-500/30 rounded-lg">
             <p className="text-sm text-foreground-muted">
               Are you sure? This action cannot be undone.
             </p>

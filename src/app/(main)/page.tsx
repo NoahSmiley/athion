@@ -8,7 +8,6 @@ import { PageTransition } from "@/components/page-transition";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { ScrollSlide, ScrollText } from "@/components/parallax";
 import { BenchmarkSection, type BenchmarkGroup } from "@/components/benchmark";
-import { BrainLogo } from "@/components/brain-logo";
 import { ProductShowcase } from "@/components/home/product-showcase";
 import { BRAND, VALUES } from "@/lib/constants";
 
@@ -51,53 +50,59 @@ function Hero() {
   });
 
   const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.6], [1, 0.92]);
   const y = useTransform(scrollYProgress, [0, 0.6], [0, -80]);
   const smoothOpacity = useSpring(opacity, { stiffness: 100, damping: 30 });
-  const smoothScale = useSpring(scale, { stiffness: 100, damping: 30 });
   const smoothY = useSpring(y, { stiffness: 100, damping: 30 });
 
   return (
-    <section ref={ref} className="relative min-h-[120vh] flex items-center justify-center">
+    <section ref={ref} className="relative min-h-screen flex items-center overflow-hidden">
+      {/* Radial glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[800px] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.03)_0%,transparent_70%)] pointer-events-none" />
       <motion.div
-        className="text-center px-6 max-w-4xl"
-        style={{ opacity: smoothOpacity, scale: smoothScale, y: smoothY }}
+        className="mx-auto max-w-7xl px-6 w-full pt-32 pb-20"
+        style={{ opacity: smoothOpacity, y: smoothY }}
       >
-        <ScrollReveal>
-          <BrainLogo size={64} className="mx-auto mb-8 opacity-60" />
-        </ScrollReveal>
-        <ScrollReveal delay={0.15}>
-          <h1 className="font-[590] text-6xl sm:text-7xl md:text-8xl tracking-[-0.022em] leading-[0.9]">
-            {BRAND.tagline}
-          </h1>
-        </ScrollReveal>
-        <ScrollReveal delay={0.3}>
-          <p className="mt-8 text-lg sm:text-xl text-foreground-muted max-w-lg mx-auto leading-relaxed">
-            {BRAND.description}
-          </p>
-        </ScrollReveal>
-        <ScrollReveal delay={0.4}>
-          <div className="mt-10 flex items-center justify-center gap-4">
-            <Link
-              href="/pricing"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover transition-colors"
-            >
-              Get Started
-              <ArrowRight size={14} />
-            </Link>
-            <Link
-              href="/about"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light rounded-[6px] transition-colors"
-            >
-              Learn More
-            </Link>
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-end">
+          {/* Left — massive headline */}
+          <div>
+            <ScrollReveal>
+              <h1 className="gradient-text font-[590] text-[clamp(3.5rem,8vw,7rem)] tracking-[-0.032em] leading-[0.95] whitespace-pre-line">
+                {BRAND.tagline}
+              </h1>
+            </ScrollReveal>
           </div>
-        </ScrollReveal>
 
-        <ScrollReveal delay={0.55}>
-          <div className="mt-20 flex flex-col items-center gap-2 text-foreground-muted">
+          {/* Right — description + CTAs */}
+          <div className="lg:pb-3">
+            <ScrollReveal delay={0.15}>
+              <p className="text-lg text-foreground-muted max-w-md leading-relaxed">
+                {BRAND.description}
+              </p>
+            </ScrollReveal>
+            <ScrollReveal delay={0.25}>
+              <div className="mt-8 flex items-center gap-4">
+                <Link
+                  href="/pricing"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.15)] active:scale-[0.98] transition-all duration-150"
+                >
+                  Get Started
+                  <ArrowRight size={14} />
+                </Link>
+                <Link
+                  href="/about"
+                  className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light hover:bg-white/[0.03] rounded-[6px] active:scale-[0.98] transition-all duration-150"
+                >
+                  Learn More
+                </Link>
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+
+        <ScrollReveal delay={0.45}>
+          <div className="mt-24 flex flex-col items-center gap-2 text-foreground-muted">
             <span className="text-[10px] uppercase tracking-[0.2em]">Scroll</span>
-            <div className="w-px h-8 bg-border-light" />
+            <div className="w-px h-8 bg-gradient-to-b from-foreground-muted/40 to-transparent animate-pulse" />
           </div>
         </ScrollReveal>
       </motion.div>

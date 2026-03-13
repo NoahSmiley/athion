@@ -20,7 +20,7 @@ export default async function DownloadsPage() {
     : [];
 
   const activeProducts = subs.map((s) => s.product);
-  const hasFlux = activeProducts.includes("flux");
+  const hasSubscription = activeProducts.includes("athion");
 
   return (
     <div className="max-w-4xl">
@@ -39,14 +39,14 @@ export default async function DownloadsPage() {
                 Voice & text chat desktop app
               </p>
             </div>
-            {!hasFlux && (
+            {!hasSubscription && (
               <span className="text-xs text-foreground-muted border border-border px-2 py-0.5">
                 Subscription required
               </span>
             )}
           </div>
 
-          {hasFlux ? (
+          {hasSubscription ? (
             <div className="mt-6 flex flex-wrap gap-3">
               <a
                 href="#"
@@ -72,12 +72,12 @@ export default async function DownloadsPage() {
             </div>
           ) : (
             <p className="mt-4 text-sm text-foreground-muted">
-              Subscribe to Flux to access downloads.
+              Subscribe to Athion to access downloads.
             </p>
           )}
         </div>
 
-        {/* IDE — always free */}
+        {/* IDE — included with subscription */}
         <div className="p-6 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200">
           <div className="flex items-center justify-between">
             <div>

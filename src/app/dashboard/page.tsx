@@ -35,17 +35,22 @@ export default async function DashboardPage() {
         Manage your account and subscriptions.
       </p>
 
-      <div className="mt-10 grid sm:grid-cols-2 gap-6">
-        {/* Subscription status cards */}
+      <div className="mt-10">
+        {/* Athion subscription status */}
         <div className="p-6 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200">
           <p className="text-xs text-foreground-muted uppercase tracking-wider mb-3">
-            Flux
+            Athion Subscription
           </p>
-          {activeProducts.includes("flux") ? (
-            <p className="text-sm text-accent">Active</p>
+          {activeProducts.includes("athion") ? (
+            <>
+              <p className="text-sm text-accent">Active</p>
+              <p className="mt-2 text-xs text-foreground-muted">
+                Full access to Flux, Liminal IDE, Hosting, and game servers.
+              </p>
+            </>
           ) : (
             <>
-              <p className="text-sm text-foreground-muted">No subscription</p>
+              <p className="text-sm text-foreground-muted">No active subscription</p>
               <Link
                 href="/pricing"
                 className="group mt-3 inline-flex items-center gap-1 text-xs text-accent hover:text-foreground transition-colors"
@@ -54,32 +59,6 @@ export default async function DashboardPage() {
               </Link>
             </>
           )}
-        </div>
-
-        <div className="p-6 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200">
-          <p className="text-xs text-foreground-muted uppercase tracking-wider mb-3">
-            Game Servers
-          </p>
-          {activeProducts.includes("game_servers") ? (
-            <p className="text-sm text-accent">Active</p>
-          ) : (
-            <>
-              <p className="text-sm text-foreground-muted">No subscription</p>
-              <Link
-                href="/pricing"
-                className="group mt-3 inline-flex items-center gap-1 text-xs text-accent hover:text-foreground transition-colors"
-              >
-                Subscribe <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform duration-200" />
-              </Link>
-            </>
-          )}
-        </div>
-
-        <div className="p-6 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200">
-          <p className="text-xs text-foreground-muted uppercase tracking-wider mb-3">
-            Liminal IDE
-          </p>
-          <p className="text-sm text-accent">Free — included</p>
         </div>
       </div>
 

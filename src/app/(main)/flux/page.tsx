@@ -1326,7 +1326,7 @@ function FluxHero() {
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:opacity-90 shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
           >
             <Download size={14} />
-            Download for Free
+            Download
           </a>
           <a
             href="#features"

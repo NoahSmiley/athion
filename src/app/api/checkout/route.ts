@@ -24,10 +24,8 @@ export async function POST(request: Request) {
 
     // Resolve price key to Stripe price ID
     const priceMap: Record<string, string | undefined> = {
-      flux_monthly: process.env.STRIPE_PRICE_FLUX_MONTHLY,
-      flux_yearly: process.env.STRIPE_PRICE_FLUX_YEARLY,
-      game_servers_monthly: process.env.STRIPE_PRICE_GAMESERVERS_MONTHLY,
-      game_servers_yearly: process.env.STRIPE_PRICE_GAMESERVERS_YEARLY,
+      athion_monthly: process.env.STRIPE_PRICE_ATHION_MONTHLY,
+      athion_yearly: process.env.STRIPE_PRICE_ATHION_YEARLY,
     };
 
     const stripePriceId = priceMap[priceKey] || priceKey;

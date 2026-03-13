@@ -7,211 +7,16 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { PageTransition } from "@/components/page-transition";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { PRICING_PLANS, HOSTING_PLANS } from "@/lib/constants";
+import { ATHION_PLAN } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-
-const TABS = ["Software", "Hosting", "Consulting"] as const;
-type Tab = (typeof TABS)[number];
-
-type PricingPlan = {
-  product: string;
-  name: string;
-  description: string;
-  monthlyPrice: number;
-  yearlyPrice: number;
-  features: readonly string[];
-};
-
-function PlanCard({
-  plan,
-  annual,
-  loading,
-  onCheckout,
-}: {
-  plan: PricingPlan;
-  annual: boolean;
-  loading: string | null;
-  onCheckout: (product: string) => void;
-}) {
-  return (
-    <div className="p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200 flex flex-col h-full">
-      <h3 className="font-[590] text-2xl tracking-[-0.012em]">{plan.name}</h3>
-      <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
-        {plan.description}
-      </p>
-
-      <div className="mt-6 flex items-baseline gap-1">
-        <span className="font-[590] text-4xl tracking-[-0.022em]">
-          ${annual ? plan.yearlyPrice : plan.monthlyPrice}
-        </span>
-        <span className="text-sm text-foreground-muted">
-          /{annual ? "year" : "month"}
-        </span>
-      </div>
-
-      {annual && (
-        <p className="mt-1 text-xs text-foreground-muted">
-          ${(plan.yearlyPrice / 12).toFixed(2)}/month billed annually
-        </p>
-      )}
-
-      <ul className="mt-8 flex flex-col gap-3 flex-1">
-        {plan.features.map((feature) => (
-          <li key={feature} className="flex items-start gap-2 text-sm">
-            <Check size={14} className="text-accent mt-0.5 shrink-0" />
-            <span className="text-foreground-muted">{feature}</span>
-          </li>
-        ))}
-      </ul>
-
-      <button
-        onClick={() => onCheckout(plan.product)}
-        disabled={loading === plan.product}
-        className="mt-8 w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150 disabled:opacity-50"
-      >
-        {loading === plan.product ? "Loading..." : "Subscribe"}
-        {loading !== plan.product && <ArrowRight size={14} />}
-      </button>
-    </div>
-  );
-}
-
-function SoftwareTab({
-  annual,
-  loading,
-  onCheckout,
-}: {
-  annual: boolean;
-  loading: string | null;
-  onCheckout: (product: string) => void;
-}) {
-  return (
-    <div className="grid md:grid-cols-2 gap-8">
-      {PRICING_PLANS.map((plan) => (
-        <PlanCard
-          key={plan.product}
-          plan={plan}
-          annual={annual}
-          loading={loading}
-          onCheckout={onCheckout}
-        />
-      ))}
-
-      <div className="p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-center">
-        <h3 className="font-[590] text-2xl tracking-[-0.012em]">Liminal IDE</h3>
-        <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
-          Free with every account. No subscription required.
-        </p>
-        <Link
-          href="/ide"
-          className="group mt-6 text-xs text-accent hover:text-foreground transition-colors inline-flex items-center gap-1"
-        >
-          Learn more <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform duration-200" />
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-function HostingTab({
-  annual,
-  loading,
-  onCheckout,
-}: {
-  annual: boolean;
-  loading: string | null;
-  onCheckout: (product: string) => void;
-}) {
-  return (
-    <div className="grid md:grid-cols-3 gap-8">
-      {HOSTING_PLANS.map((plan) => (
-        <PlanCard
-          key={plan.product}
-          plan={plan}
-          annual={annual}
-          loading={loading}
-          onCheckout={onCheckout}
-        />
-      ))}
-    </div>
-  );
-}
-
-function ConsultingTab() {
-  return (
-    <div className="flex flex-col gap-10">
-      {/* Credibility banner */}
-      <div className="p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-8 sm:gap-12">
-          <div className="flex-1">
-            <p className="text-foreground leading-relaxed">
-              5+ years of enterprise consulting for Fortune 100 and 500 companies,
-              with delivered project ROIs in the billions. Enterprise-grade
-              engineering, now available to teams of any size.
-            </p>
-          </div>
-          <Link
-            href="/consulting"
-            className="group text-xs text-accent hover:text-foreground transition-colors inline-flex items-center gap-1 shrink-0"
-          >
-            Our track record <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform duration-200" />
-          </Link>
-        </div>
-      </div>
-
-      {/* Pricing cards */}
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200 flex flex-col">
-          <h3 className="font-[590] text-2xl tracking-[-0.012em]">Hourly Rate</h3>
-          <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
-            For advisory, code reviews, and shorter engagements. Billed in 1-hour increments.
-          </p>
-          <div className="mt-6 flex items-baseline gap-1">
-            <span className="font-[590] text-4xl tracking-[-0.022em]">$150</span>
-            <span className="text-sm text-foreground-muted">/hour</span>
-          </div>
-          <div className="mt-auto pt-8">
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
-            >
-              Book a Call
-              <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-
-        <div className="p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200 flex flex-col">
-          <h3 className="font-[590] text-2xl tracking-[-0.012em]">Project-Based</h3>
-          <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
-            Fixed-scope projects with clear deliverables, timeline, and pricing agreed upfront.
-          </p>
-          <div className="mt-6">
-            <span className="font-[590] text-2xl tracking-[-0.012em] text-foreground-muted">Custom quote</span>
-          </div>
-          <div className="mt-auto pt-8">
-            <Link
-              href="/consulting#quote"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
-            >
-              Request a Quote
-              <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function PricingPage() {
   const [annual, setAnnual] = useState(true);
-  const [tab, setTab] = useState<Tab>("Software");
-  const [loading, setLoading] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleCheckout = async (product: string) => {
-    setLoading(product);
+  const handleCheckout = async () => {
+    setLoading(true);
 
     const meRes = await fetch("/api/auth/me");
     const meData = await meRes.json();
@@ -221,7 +26,7 @@ export default function PricingPage() {
       return;
     }
 
-    const priceKey = `${product}_${annual ? "yearly" : "monthly"}`;
+    const priceKey = `athion_${annual ? "yearly" : "monthly"}`;
 
     try {
       const res = await fetch("/api/checkout", {
@@ -237,11 +42,9 @@ export default function PricingPage() {
     } catch {
       // Error handled silently
     } finally {
-      setLoading(null);
+      setLoading(false);
     }
   };
-
-  const showToggle = tab === "Software" || tab === "Hosting";
 
   return (
     <PageTransition>
@@ -252,87 +55,124 @@ export default function PricingPage() {
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
             <h1 className="font-[590] text-5xl sm:text-6xl tracking-[-0.022em]">
-              Simple, transparent pricing.
+              One subscription.{"\n"}Everything included.
             </h1>
           </ScrollReveal>
           <ScrollReveal delay={0.2}>
             <p className="mt-6 text-lg text-foreground-muted max-w-lg mx-auto leading-relaxed">
-              No hidden fees. No usage limits. Cancel anytime.
+              Full access to Flux, Liminal IDE, Hosting, and game servers. No hidden fees. Cancel anytime.
             </p>
           </ScrollReveal>
 
-          {/* Tabs */}
+          {/* Monthly/Yearly toggle */}
           <ScrollReveal delay={0.3}>
             <div className="mt-10 inline-flex items-center gap-1 p-1 border border-white/[0.06] rounded-[6px]">
-              {TABS.map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  className="relative px-5 py-2 text-sm transition-colors"
-                >
-                  {tab === t && (
-                    <motion.div
-                      layoutId="pricing-tab"
-                      className="absolute inset-0 bg-accent rounded-[4px]"
-                      transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                    />
-                  )}
-                  <span className={cn("relative z-10", tab === t ? "text-background" : "text-foreground-muted hover:text-foreground")}>{t}</span>
-                </button>
-              ))}
+              <button
+                onClick={() => setAnnual(false)}
+                className="relative px-5 py-2 text-sm transition-colors"
+              >
+                {!annual && (
+                  <motion.div
+                    layoutId="pricing-toggle"
+                    className="absolute inset-0 bg-accent rounded-[4px]"
+                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                  />
+                )}
+                <span className={cn("relative z-10", !annual ? "text-background" : "text-foreground-muted hover:text-foreground")}>
+                  Monthly
+                </span>
+              </button>
+              <button
+                onClick={() => setAnnual(true)}
+                className="relative px-5 py-2 text-sm transition-colors"
+              >
+                {annual && (
+                  <motion.div
+                    layoutId="pricing-toggle"
+                    className="absolute inset-0 bg-accent rounded-[4px]"
+                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                  />
+                )}
+                <span className={cn("relative z-10", annual ? "text-background" : "text-foreground-muted hover:text-foreground")}>
+                  Yearly
+                  <span className="ml-1.5 text-[10px] uppercase tracking-wider opacity-70">
+                    Save 20%
+                  </span>
+                </span>
+              </button>
             </div>
           </ScrollReveal>
-
-          {/* Monthly/Yearly toggle — only for Software & Hosting */}
-          {showToggle && (
-            <ScrollReveal delay={0.35}>
-              <div className="mt-6 inline-flex items-center gap-3 p-1 border border-white/[0.06] rounded-[6px]">
-                <button
-                  onClick={() => setAnnual(false)}
-                  className="relative px-4 py-2 text-sm transition-colors"
-                >
-                  {!annual && (
-                    <motion.div
-                      layoutId="pricing-toggle"
-                      className="absolute inset-0 bg-accent rounded-[4px]"
-                      transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                    />
-                  )}
-                  <span className={cn("relative z-10", !annual ? "text-background" : "text-foreground-muted hover:text-foreground")}>Monthly</span>
-                </button>
-                <button
-                  onClick={() => setAnnual(true)}
-                  className="relative px-4 py-2 text-sm transition-colors"
-                >
-                  {annual && (
-                    <motion.div
-                      layoutId="pricing-toggle"
-                      className="absolute inset-0 bg-accent rounded-[4px]"
-                      transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                    />
-                  )}
-                  <span className={cn("relative z-10", annual ? "text-background" : "text-foreground-muted hover:text-foreground")}>
-                    Yearly
-                    <span className="ml-1.5 text-[10px] uppercase tracking-wider opacity-70">
-                      Save 20%
-                    </span>
-                  </span>
-                </button>
-              </div>
-            </ScrollReveal>
-          )}
         </div>
       </section>
 
       <section className="pb-32 px-6">
-        <div className="mx-auto max-w-5xl">
-          {tab === "Software" && (
-            <SoftwareTab annual={annual} loading={loading} onCheckout={handleCheckout} />
-          )}
-          {tab === "Hosting" && (
-            <HostingTab annual={annual} loading={loading} onCheckout={handleCheckout} />
-          )}
-          {tab === "Consulting" && <ConsultingTab />}
+        <div className="mx-auto max-w-2xl">
+          <ScrollReveal>
+            <div className="p-10 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] transition-all duration-200">
+              <h3 className="font-[590] text-3xl tracking-[-0.012em]">
+                {ATHION_PLAN.name}
+              </h3>
+              <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
+                {ATHION_PLAN.description}
+              </p>
+
+              <div className="mt-8 flex items-baseline gap-1">
+                <span className="font-[590] text-5xl tracking-[-0.022em]">
+                  ${annual ? ATHION_PLAN.yearlyPrice : ATHION_PLAN.monthlyPrice}
+                </span>
+                <span className="text-sm text-foreground-muted">
+                  /{annual ? "year" : "month"}
+                </span>
+              </div>
+
+              {annual && (
+                <p className="mt-1 text-xs text-foreground-muted">
+                  ${(ATHION_PLAN.yearlyPrice / 12).toFixed(2)}/month billed annually
+                </p>
+              )}
+
+              <ul className="mt-10 flex flex-col gap-3">
+                {ATHION_PLAN.features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-2 text-sm">
+                    <Check size={14} className="text-accent mt-0.5 shrink-0" />
+                    <span className="text-foreground-muted">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={handleCheckout}
+                disabled={loading}
+                className="mt-10 w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150 disabled:opacity-50"
+              >
+                {loading ? "Loading..." : "Subscribe"}
+                {!loading && <ArrowRight size={14} />}
+              </button>
+            </div>
+          </ScrollReveal>
+
+          {/* Consulting callout */}
+          <ScrollReveal delay={0.1}>
+            <div className="mt-8 p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] transition-all duration-200">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-12">
+                <div className="flex-1">
+                  <h3 className="font-[590] text-lg tracking-[-0.012em]">
+                    Need custom development?
+                  </h3>
+                  <p className="mt-1 text-sm text-foreground-muted leading-relaxed">
+                    Enterprise consulting starting at $150/hour. Architecture reviews, full-stack development, and technical advisory.
+                  </p>
+                </div>
+                <Link
+                  href="/consulting"
+                  className="group inline-flex items-center gap-2 px-5 py-2.5 border border-white/[0.08] text-foreground-muted text-sm font-[510] hover:text-foreground hover:border-white/[0.15] rounded-[6px] active:scale-[0.98] transition-all duration-150 shrink-0"
+                >
+                  Get a quote
+                  <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform duration-200" />
+                </Link>
+              </div>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
     </PageTransition>

@@ -95,23 +95,23 @@ export const IDE_FEATURES = [
   },
 ] as const;
 
-export const PRICING_PLANS = [
-  {
-    product: "flux" as const,
-    name: "Flux",
-    description: "Crystal-clear voice chat with E2EE, lossless screen share, and zero bloat.",
-    monthlyPrice: 6,
-    yearlyPrice: 60,
-    features: [
-      "48kHz stereo voice (Opus CBR)",
-      "End-to-end encryption (AES-256-GCM)",
-      "Lossless screen share (up to 4K VP9)",
-      "Krisp noise suppression",
-      "Desktop app (macOS, Windows, Linux)",
-      "Unlimited servers & channels",
-    ],
-  },
-] as const;
+export const ATHION_PLAN = {
+  product: "athion" as const,
+  name: "Athion",
+  description: "One subscription. Every product. Full access to Flux, Liminal IDE, Hosting, and game servers.",
+  monthlyPrice: 20,
+  yearlyPrice: 192,
+  features: [
+    "Flux — voice chat, E2EE, lossless screen share",
+    "Liminal IDE — AI-native code editor, Rust core",
+    "Hosting — web apps, APIs, and static sites",
+    "Game Servers — Minecraft, modpacks, always online",
+    "VPS — full root access, 2 vCPU, 4 GB RAM",
+    "Custom domains with automatic SSL",
+    "Daily backups across all services",
+    "Priority support",
+  ],
+} as const;
 
 export const HOSTING_TIERS = [
   {
@@ -164,53 +164,6 @@ export const HOSTING_FEATURES = [
   },
 ] as const;
 
-export const HOSTING_PLANS = [
-  {
-    product: "game_servers" as const,
-    name: "Game Servers",
-    description: "Always-online private game servers with modpack support and one-click setup.",
-    monthlyPrice: 8,
-    yearlyPrice: 72,
-    features: [
-      "Minecraft (Java & Bedrock)",
-      "Modpack auto-install",
-      "Always online — no port forwarding",
-      "Daily backups",
-      "Custom domain support",
-      "Up to 20 player slots",
-    ],
-  },
-  {
-    product: "web_hosting" as const,
-    name: "Web & App Hosting",
-    description: "Deploy web apps, APIs, and static sites with zero-downtime deploys.",
-    monthlyPrice: 10,
-    yearlyPrice: 96,
-    features: [
-      "Zero-downtime deploys",
-      "Custom domains with auto-SSL",
-      "Node.js, Python, Go, Rust runtimes",
-      "Daily backups",
-      "CI/CD integration",
-      "100 GB bandwidth/month",
-    ],
-  },
-  {
-    product: "vps" as const,
-    name: "VPS",
-    description: "Full root access to a virtual private server. Run anything you want.",
-    monthlyPrice: 15,
-    yearlyPrice: 144,
-    features: [
-      "Full root / SSH access",
-      "2 vCPU, 4 GB RAM, 80 GB SSD",
-      "Choice of Linux distro",
-      "Daily snapshots",
-      "Private networking",
-      "Unmetered bandwidth",
-    ],
-  },
-] as const;
 
 export const CONSULTING_SERVICES = [
   {

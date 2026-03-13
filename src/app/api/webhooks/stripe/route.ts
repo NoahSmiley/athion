@@ -5,14 +5,9 @@ import { db } from "@/lib/db";
 import { users, subscriptions } from "@/lib/db/schema";
 import type Stripe from "stripe";
 
-// Map price IDs to product names
-function getProduct(priceId: string): "flux" | "game_servers" {
-  const fluxPrices = [
-    process.env.STRIPE_PRICE_FLUX_MONTHLY,
-    process.env.STRIPE_PRICE_FLUX_YEARLY,
-  ];
-  if (fluxPrices.includes(priceId)) return "flux";
-  return "game_servers";
+// Map price IDs to product name
+function getProduct(_priceId: string): "athion" {
+  return "athion";
 }
 
 async function upsertSubscription(subscription: Stripe.Subscription) {

@@ -158,7 +158,7 @@ export function Navbar() {
                   />
                 </button>
                 {openDropdown === item.label && (
-                  <div className="absolute top-full left-0 mt-2 py-2 min-w-[160px] bg-background/90 backdrop-blur-xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.4)] rounded-lg">
+                  <div className="absolute top-full left-0 mt-2 py-2 min-w-[160px] bg-background/90 backdrop-blur-xl border border-white/[0.06] rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
                     {item.children.map((child) => (
                       <Link
                         key={child.href}

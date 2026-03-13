@@ -86,19 +86,19 @@ export default async function DashboardPage() {
       <div className="mt-10 grid sm:grid-cols-3 gap-4">
         <Link
           href="/dashboard/billing"
-          className="p-4 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm text-foreground-muted hover:text-foreground hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200"
+          className="p-4 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm text-foreground-muted hover:text-foreground hover:border-white/[0.1] hover:-translate-y-0.5 hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-200"
         >
           Manage billing
         </Link>
         <Link
           href="/dashboard/downloads"
-          className="p-4 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm text-foreground-muted hover:text-foreground hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200"
+          className="p-4 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm text-foreground-muted hover:text-foreground hover:border-white/[0.1] hover:-translate-y-0.5 hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-200"
         >
           Downloads
         </Link>
         <Link
           href="/dashboard/settings"
-          className="p-4 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm text-foreground-muted hover:text-foreground hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200"
+          className="p-4 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm text-foreground-muted hover:text-foreground hover:border-white/[0.1] hover:-translate-y-0.5 hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-200"
         >
           Account settings
         </Link>

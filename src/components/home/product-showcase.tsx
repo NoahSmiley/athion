@@ -302,10 +302,10 @@ function ShowcaseBlock({
   replica,
 }: ShowcaseProps) {
   return (
-    <section className="pt-24 pb-32 md:pt-12 md:pb-24 border-t border-white/[0.08]">
-      {/* Two-column header — exact Linear grid: 1fr 1fr, pb-96px desktop */}
+    <section className="pt-24 pb-32 md:pt-12 md:pb-24">
+      {/* Two-column header */}
       <div className="grid grid-cols-1 lg:grid-cols-2 pb-16 lg:pb-24 px-8">
-        {/* Left: headline — Linear uses title-6 (3rem), weight 510, tracking -0.022em, line-height 1 */}
+        {/* Left: headline */}
         <ScrollReveal>
           <div className="pr-0 lg:pr-8">
             <h2
@@ -320,7 +320,6 @@ function ShowcaseBlock({
         {/* Right: description + version label */}
         <ScrollReveal delay={0.1}>
           <div className="mt-6 lg:mt-0 px-0">
-            {/* Description — Linear uses title-3 (1.5rem) on desktop for this, color: text-secondary (#b4bcd0) */}
             <p
               className="font-[590] text-[1.0625rem] md:text-[1.25rem] lg:text-[1.5rem] leading-[1.4] md:leading-[1.33] tracking-[-0.012em] text-[#b4bcd0]"
               style={{ textWrap: "balance" }}
@@ -328,7 +327,6 @@ function ShowcaseBlock({
               {description}
             </p>
 
-            {/* Version label — Linear: text-regular (0.9375rem), mt-48px, color quaternary */}
             <Link
               href={href}
               className="group inline-flex items-center mt-6 lg:mt-12"
@@ -350,10 +348,20 @@ function ShowcaseBlock({
         </ScrollReveal>
       </div>
 
-      {/* Full-width demo — Linear uses a panel container with grain texture */}
+      {/* Full-width demo with Linear-style vignette fade */}
       <ScrollReveal delay={0.15}>
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl hover:border-white/[0.1] transition-all duration-500 overflow-hidden">
-          {replica}
+        <div
+          className="relative rounded-[22px] border border-white/[0.08] p-2 select-none"
+          style={{
+            WebkitMaskImage:
+              "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+            maskImage:
+              "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+          }}
+        >
+          <div className="rounded-xl overflow-hidden bg-[#0a0a0f]">
+            {replica}
+          </div>
         </div>
       </ScrollReveal>
     </section>
@@ -363,51 +371,60 @@ function ShowcaseBlock({
 /* ─── Public Export ─── */
 
 export function ProductShowcase() {
+  const sections = [
+    {
+      version: "1.0",
+      name: "Flux",
+      headline: "Communicate without compromise",
+      description:
+        "Voice and text chat built for teams that care about privacy. Crystal-clear 48kHz Opus audio, end-to-end encryption on everything, and lossless screen share at 60fps.",
+      href: "/flux",
+      replica: <FluxMiniReplica />,
+    },
+    {
+      version: "2.0",
+      name: "Liminal IDE",
+      headline: "Code at the speed of thought",
+      description:
+        "A code editor that stays out of your way. AI-native intelligence meets terminal-first workflow — built entirely in Rust, opens in 80ms.",
+      href: "/ide",
+      replica: <IDEMiniReplica />,
+    },
+    {
+      version: "3.0",
+      name: "Hosting",
+      headline: "Infrastructure that disappears",
+      description:
+        "Game servers, web hosting, and VPS — all running on dedicated hardware. No shared tenancy, no noisy neighbors, no surprises.",
+      href: "/hosting",
+      replica: <HostingMiniReplica />,
+    },
+    {
+      version: "4.0",
+      name: "Consulting",
+      headline: "Engineering expertise, on demand",
+      description:
+        "Custom software development, architecture reviews, and technical advisory. Five years of enterprise consulting for Fortune 100 and 500 companies — now available to teams of any size.",
+      href: "/consulting",
+      replica: <ConsultingMiniReplica />,
+    },
+  ];
+
   return (
-    <section className="px-6 lg:px-12">
-      <div className="mx-auto max-w-[1344px]">
-        <div className="flex flex-col">
-          {/* Flux */}
-          <ShowcaseBlock
-            version="1.0"
-            name="Flux"
-            headline="Communicate without compromise"
-            description="Voice and text chat built for teams that care about privacy. Crystal-clear 48kHz Opus audio, end-to-end encryption on everything, and lossless screen share at 60fps."
-            href="/flux"
-            replica={<FluxMiniReplica />}
-          />
-
-          {/* IDE */}
-          <ShowcaseBlock
-            version="2.0"
-            name="Liminal IDE"
-            headline="Code at the speed of thought"
-            description="A code editor that stays out of your way. AI-native intelligence meets terminal-first workflow — built entirely in Rust, opens in 80ms."
-            href="/ide"
-            replica={<IDEMiniReplica />}
-          />
-
-          {/* Hosting */}
-          <ShowcaseBlock
-            version="3.0"
-            name="Hosting"
-            headline="Infrastructure that disappears"
-            description="Game servers, web hosting, and VPS — all running on dedicated hardware. No shared tenancy, no noisy neighbors, no surprises."
-            href="/hosting"
-            replica={<HostingMiniReplica />}
-          />
-
-          {/* Consulting */}
-          <ShowcaseBlock
-            version="4.0"
-            name="Consulting"
-            headline="Engineering expertise, on demand"
-            description="Custom software development, architecture reviews, and technical advisory. Five years of enterprise consulting for Fortune 100 and 500 companies — now available to teams of any size."
-            href="/consulting"
-            replica={<ConsultingMiniReplica />}
-          />
+    <div>
+      {sections.map((s, i) => (
+        <div key={s.version}>
+          {/* Full-width border line */}
+          <div className="border-t border-white/[0.08]" />
+          <div className="px-6 lg:px-12">
+            <div className="mx-auto max-w-[1344px]">
+              <ShowcaseBlock {...s} />
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+      ))}
+      {/* Bottom border after last section */}
+      <div className="border-t border-white/[0.08]" />
+    </div>
   );
 }

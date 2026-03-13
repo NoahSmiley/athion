@@ -302,41 +302,61 @@ function ShowcaseBlock({
   replica,
 }: ShowcaseProps) {
   return (
-    <div className="border-t border-white/[0.08] pt-20">
-      {/* Two-column header — Linear style */}
-      <div className="grid lg:grid-cols-2 gap-8 lg:gap-20 mb-16 items-start">
+    <section className="pt-24 pb-32 md:pt-12 md:pb-24">
+      {/* Two-column header — exact Linear grid: 1fr 1fr, pb-96px desktop */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 pb-16 lg:pb-24 px-8">
+        {/* Left: headline — Linear uses title-6 (3rem), weight 510, tracking -0.022em, line-height 1 */}
         <ScrollReveal>
-          <h2 className="font-[590] text-[clamp(2.5rem,5vw,4rem)] tracking-[-0.028em] leading-[1.08]">
-            {headline}
-          </h2>
+          <div className="pr-0 lg:pr-8">
+            <h2
+              className="font-[510] text-[1.5rem] md:text-[2.5rem] lg:text-[3rem] leading-[1.33] md:leading-[1.1] lg:leading-[1] tracking-[-0.022em]"
+              style={{ textWrap: "balance", maxWidth: "18ch" }}
+            >
+              {headline}
+            </h2>
+          </div>
         </ScrollReveal>
+
+        {/* Right: description + version label */}
         <ScrollReveal delay={0.1}>
-          <div className="lg:pt-2">
-            <p className="text-[#b4b4b4] leading-[1.6] text-xl max-w-lg">
+          <div className="mt-6 lg:mt-0 px-0">
+            {/* Description — Linear uses title-3 (1.5rem) on desktop for this, color: text-secondary (#b4bcd0) */}
+            <p
+              className="font-[590] text-[1.0625rem] md:text-[1.25rem] lg:text-[1.5rem] leading-[1.4] md:leading-[1.33] tracking-[-0.012em] text-[#b4bcd0]"
+              style={{ textWrap: "balance" }}
+            >
               {description}
             </p>
+
+            {/* Version label — Linear: text-regular (0.9375rem), mt-48px, color quaternary */}
             <Link
               href={href}
-              className="group mt-8 inline-flex items-center gap-3 text-base font-mono tracking-tight"
+              className="group inline-flex items-center mt-6 lg:mt-12"
             >
-              <span className="text-[#666]">{version}</span>
-              <span className="text-[#eee]">{name}</span>
+              <span className="text-[0.9375rem] leading-[1.6] tracking-[-0.011em] text-[#86848d] tabular-nums">
+                {version}
+              </span>
+              <span className="text-[0.9375rem] leading-[1.6] tracking-[-0.011em] text-[#b4bcd0] ml-3">
+                {name}
+              </span>
               {comingSoon && (
-                <span className="text-[#555] text-sm">(Coming soon)</span>
+                <span className="text-[0.9375rem] leading-[1.6] text-[#86848d] ml-2">(Coming soon)</span>
               )}
-              <ArrowRight size={14} className="text-[#666] group-hover:translate-x-0.5 transition-transform duration-200" />
+              <span className="text-[0.9375rem] text-[#86848d] ml-1.5 group-hover:translate-x-0.5 transition-transform duration-200">
+                →
+              </span>
             </Link>
           </div>
         </ScrollReveal>
       </div>
 
-      {/* Full-width demo replica */}
+      {/* Full-width demo — Linear uses a panel container with grain texture */}
       <ScrollReveal delay={0.15}>
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl hover:border-white/[0.1] hover:shadow-[0_0_60px_rgba(255,255,255,0.02)] transition-all duration-500 overflow-hidden">
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl hover:border-white/[0.1] transition-all duration-500 overflow-hidden">
           {replica}
         </div>
       </ScrollReveal>
-    </div>
+    </section>
   );
 }
 
@@ -344,9 +364,9 @@ function ShowcaseBlock({
 
 export function ProductShowcase() {
   return (
-    <section className="py-40 px-6">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-col gap-40">
+    <section className="px-6 lg:px-12">
+      <div className="mx-auto max-w-[1344px]">
+        <div className="flex flex-col">
           {/* Flux */}
           <ShowcaseBlock
             version="1.0"

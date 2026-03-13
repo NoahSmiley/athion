@@ -9,43 +9,41 @@ import { BRAND } from "@/lib/constants";
 
 function Hero() {
   return (
-    <section className="pt-32 pb-20 px-6">
-      <div className="mx-auto max-w-7xl">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-end">
-          {/* Left — headline */}
-          <div>
-            <ScrollReveal>
-              <h1 className="font-[590] text-[clamp(3rem,6vw,5.5rem)] tracking-[-0.032em] leading-[0.95] whitespace-pre-line">
-                {BRAND.tagline}
-              </h1>
-            </ScrollReveal>
-          </div>
+    <section className="pt-[284px] pb-12 md:pt-[478px] md:pb-24 lg:pt-[460px] lg:pb-32 border-b border-white/[0.08] px-6 lg:px-12">
+      <div className="mx-auto max-w-[1344px]">
+        {/* Title — Linear uses title-8 (4rem/64px) desktop, title-5 (2.5rem) mobile, weight 510 */}
+        <ScrollReveal>
+          <h1
+            className="font-[510] text-[2.5rem] md:text-[3.5rem] lg:text-[4rem] tracking-[-0.022em] leading-[1.1] md:leading-[1.1] lg:leading-[1.06] whitespace-pre-line px-8"
+          >
+            {BRAND.tagline}
+          </h1>
+        </ScrollReveal>
 
-          {/* Right — description + CTAs */}
-          <div className="lg:pb-3">
-            <ScrollReveal delay={0.15}>
-              <p className="text-lg text-foreground-muted max-w-md leading-relaxed">
-                {BRAND.description}
-              </p>
-            </ScrollReveal>
-            <ScrollReveal delay={0.25}>
-              <div className="mt-8 flex items-center gap-4">
-                <Link
-                  href="/pricing"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.15)] active:scale-[0.98] transition-all duration-150"
-                >
-                  Get Started
-                  <ArrowRight size={14} />
-                </Link>
-                <Link
-                  href="/about"
-                  className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm hover:text-foreground hover:border-border-light hover:bg-white/[0.03] rounded-[6px] active:scale-[0.98] transition-all duration-150"
-                >
-                  Learn More
-                </Link>
-              </div>
-            </ScrollReveal>
-          </div>
+        {/* Description row — Linear uses flex justify-between for desc + link */}
+        <div className="mt-5 md:mt-8 flex flex-col md:flex-row md:items-start md:justify-between gap-6 px-8">
+          <ScrollReveal delay={0.15}>
+            <p className="text-[0.9375rem] leading-[1.6] tracking-[-0.011em] text-[#b4bcd0] max-w-lg">
+              {BRAND.description}
+            </p>
+          </ScrollReveal>
+          <ScrollReveal delay={0.25}>
+            <div className="flex items-center gap-4 shrink-0">
+              <Link
+                href="/pricing"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#111] text-sm font-[510] rounded-full hover:bg-white/90 active:scale-[0.98] transition-all duration-150"
+              >
+                Get Started
+                <ArrowRight size={14} />
+              </Link>
+              <Link
+                href="/about"
+                className="inline-flex items-center gap-2 px-5 py-2.5 border border-white/[0.08] text-[#b4bcd0] text-sm font-[510] hover:text-white hover:border-white/[0.15] rounded-full active:scale-[0.98] transition-all duration-150"
+              >
+                Learn More
+              </Link>
+            </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>

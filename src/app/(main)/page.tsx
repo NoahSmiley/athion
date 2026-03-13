@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useEffect, useState } from "react";
-import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import { ArrowRight, Server } from "lucide-react";
 import { PageTransition } from "@/components/page-transition";
 import { ScrollReveal } from "@/components/scroll-reveal";
@@ -138,46 +138,9 @@ function HeroComposite() {
 /* ─── Hero ─── */
 
 function Hero() {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-
-  const glowOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const smoothGlow = useSpring(glowOpacity, { stiffness: 80, damping: 30 });
-
   return (
-    <section
-      ref={ref}
-      className="relative pt-[180px] md:pt-[260px] lg:pt-[280px] pb-24 md:pb-32 lg:pb-40 border-b border-white/[0.08] overflow-hidden"
+    <section className="relative pt-[180px] md:pt-[260px] lg:pt-[280px] pb-24 md:pb-32 lg:pb-40 border-b border-white/[0.08] overflow-hidden"
     >
-      {/* Ambient glow */}
-      <motion.div
-        className="absolute pointer-events-none"
-        style={{
-          opacity: smoothGlow,
-          top: "15%",
-          left: "5%",
-          width: "700px",
-          height: "500px",
-          background:
-            "radial-gradient(ellipse at center, rgba(90, 90, 200, 0.06) 0%, rgba(90, 90, 200, 0.02) 40%, transparent 70%)",
-        }}
-      />
-      <motion.div
-        className="absolute pointer-events-none"
-        style={{
-          opacity: smoothGlow,
-          top: "30%",
-          right: "10%",
-          width: "500px",
-          height: "400px",
-          background:
-            "radial-gradient(ellipse at center, rgba(130, 100, 220, 0.04) 0%, transparent 60%)",
-        }}
-      />
-
       <div className="relative mx-auto max-w-[1344px] px-6 lg:px-12">
         {/* Title */}
         <ScrollReveal>

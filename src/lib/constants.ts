@@ -18,6 +18,7 @@ export const NAV_ITEMS: NavItem[] = [
     ],
   },
   { href: "/hosting", label: "Hosting" },
+  { href: "/servers", label: "Game Servers" },
   { href: "/consulting", label: "Consulting" },
   { href: "/pricing", label: "Pricing" },
   { href: "/about", label: "About" },
@@ -164,6 +165,80 @@ export const HOSTING_FEATURES = [
   },
 ] as const;
 
+
+export const GAME_SERVERS = [
+  {
+    title: "Minecraft Java",
+    description:
+      "Primary server with full modpack support. Heavily modded, always online, automatic updates.",
+    icon: "Sword" as const,
+    status: "online" as const,
+    tags: ["Java", "Modded", "Always On"],
+  },
+  {
+    title: "Factorio",
+    description:
+      "Multiplayer factory building with a persistent world. Drop in anytime.",
+    icon: "Factory" as const,
+    status: "online" as const,
+    tags: ["Multiplayer", "Persistent"],
+  },
+  {
+    title: "Satisfactory",
+    description:
+      "Co-op dedicated server with save persistence. Build together, pick up where you left off.",
+    icon: "HardDrive" as const,
+    status: "online" as const,
+    tags: ["Co-op", "Dedicated"],
+  },
+  {
+    title: "CS2 Surf",
+    description:
+      "Community surf server with custom maps. Competitive timers and leaderboards.",
+    icon: "Crosshair" as const,
+    status: "coming_soon" as const,
+    tags: ["Surf", "Custom Maps"],
+  },
+] as const;
+
+export const SERVER_FEATURES = [
+  {
+    title: "Always Online",
+    description:
+      "24/7 uptime on dedicated hardware. No sleep timers, no cold starts, no rental service limitations.",
+    icon: "Power" as const,
+  },
+  {
+    title: "Modpack Support",
+    description:
+      "Upload custom modpacks and we handle server-side installation. Automatic version management.",
+    icon: "Settings" as const,
+  },
+  {
+    title: "Daily Backups",
+    description:
+      "Automated snapshots of every server. One-click rollback to any previous state.",
+    icon: "HardDrive" as const,
+  },
+  {
+    title: "Low Latency",
+    description:
+      "Self-hosted on dedicated network hardware. Optimized routing for minimal ping.",
+    icon: "Wifi" as const,
+  },
+  {
+    title: "Full Control",
+    description:
+      "Console access, config editing, and whitelist management. Your server, your rules.",
+    icon: "Terminal" as const,
+  },
+  {
+    title: "Included with Athion",
+    description:
+      "No extra cost. Every game server is part of your Athion subscription.",
+    icon: "Shield" as const,
+  },
+] as const;
 
 export const CONSULTING_SERVICES = [
   {

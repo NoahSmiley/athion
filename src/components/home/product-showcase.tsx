@@ -302,7 +302,7 @@ function ShowcaseBlock({
   replica,
 }: ShowcaseProps) {
   return (
-    <section className="pt-24 pb-32 md:pt-12 md:pb-24">
+    <section className="pt-24 pb-32 md:pt-12 md:pb-24 border-t border-white/[0.08]">
       {/* Two-column header — exact Linear grid: 1fr 1fr, pb-96px desktop */}
       <div className="grid grid-cols-1 lg:grid-cols-2 pb-16 lg:pb-24 px-8">
         {/* Left: headline — Linear uses title-6 (3rem), weight 510, tracking -0.022em, line-height 1 */}

@@ -89,10 +89,6 @@ export function Navbar() {
   const smoothLogoX = useSpring(logoX, { stiffness: 100, damping: 22 });
   const smoothLogoScale = useSpring(logoScale, { stiffness: 100, damping: 22 });
 
-  // Backdrop blur kicks in
-  const bgOpacity = useTransform(scrollY, [0, 100], [0, 1]);
-  const smoothBgOpacity = useSpring(bgOpacity, { stiffness: 100, damping: 30 });
-
   /** Check if a dropdown item has an active child */
   function isDropdownActive(item: NavDropdown) {
     return item.children.some((child) => pathname === child.href);
@@ -100,16 +96,8 @@ export function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
-      {/* Backdrop — animated opacity */}
-      <motion.div
-        className="absolute inset-0 bg-background/80 backdrop-blur-xl"
-        style={{ opacity: smoothBgOpacity }}
-      />
-      {/* Bottom border on scroll */}
-      <motion.div
-        className="absolute bottom-0 left-0 right-0 h-px bg-border"
-        style={{ opacity: smoothBgOpacity }}
-      />
+      {/* Backdrop — always transparent, no border */}
+      <div className="absolute inset-0 bg-background" />
 
       <nav className="relative mx-auto max-w-7xl px-6 h-[72px] flex items-center justify-between">
         <Link

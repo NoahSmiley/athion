@@ -1,6 +1,6 @@
 export const BRAND = {
   name: "Athion",
-  tagline: "Build software\nthat disappears.",
+  tagline: "Software that\ndisappears.",
   description:
     "Tools, infrastructure, and consulting for teams that care about performance, privacy, and craft. Every product is built to use less, start faster, and stay invisible.",
 } as const;

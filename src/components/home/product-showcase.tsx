@@ -302,29 +302,29 @@ function ShowcaseBlock({
   replica,
 }: ShowcaseProps) {
   return (
-    <div>
+    <div className="border-t border-white/[0.08] pt-20">
       {/* Two-column header — Linear style */}
-      <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-16">
+      <div className="grid lg:grid-cols-2 gap-8 lg:gap-20 mb-16 items-start">
         <ScrollReveal>
-          <h2 className="font-[590] text-[clamp(2.5rem,5vw,4.5rem)] tracking-[-0.028em] leading-[1.05]">
+          <h2 className="font-[590] text-[clamp(2.5rem,5vw,4rem)] tracking-[-0.028em] leading-[1.08]">
             {headline}
           </h2>
         </ScrollReveal>
         <ScrollReveal delay={0.1}>
-          <div className="lg:pt-4">
-            <p className="text-foreground-muted leading-relaxed text-lg max-w-lg">
+          <div className="lg:pt-2">
+            <p className="text-[#b4b4b4] leading-[1.6] text-xl max-w-lg">
               {description}
             </p>
             <Link
               href={href}
-              className="group mt-6 inline-flex items-center gap-2 text-sm font-mono tracking-tight"
+              className="group mt-8 inline-flex items-center gap-3 text-base font-mono tracking-tight"
             >
-              <span className="text-foreground-muted/60">{version}</span>
-              <span className="text-foreground/90">{name}</span>
+              <span className="text-[#666]">{version}</span>
+              <span className="text-[#eee]">{name}</span>
               {comingSoon && (
-                <span className="text-foreground-muted/40 text-xs">(Coming soon)</span>
+                <span className="text-[#555] text-sm">(Coming soon)</span>
               )}
-              <ArrowRight size={12} className="text-foreground-muted/60 group-hover:translate-x-0.5 transition-transform duration-200" />
+              <ArrowRight size={14} className="text-[#666] group-hover:translate-x-0.5 transition-transform duration-200" />
             </Link>
           </div>
         </ScrollReveal>

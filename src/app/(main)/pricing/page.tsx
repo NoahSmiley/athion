@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { PageTransition } from "@/components/page-transition";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { ATHION_PLAN } from "@/lib/constants";
+import { ATHION_PRO, ADDON_PACKAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 export default function PricingPage() {
@@ -26,7 +26,7 @@ export default function PricingPage() {
       return;
     }
 
-    const priceKey = `athion_${annual ? "yearly" : "monthly"}`;
+    const priceKey = `athion_pro_${annual ? "yearly" : "monthly"}`;
 
     try {
       const res = await fetch("/api/checkout", {
@@ -110,15 +110,15 @@ export default function PricingPage() {
           <ScrollReveal>
             <div className="p-10 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] transition-all duration-200">
               <h3 className="font-[590] text-3xl tracking-[-0.012em]">
-                {ATHION_PLAN.name}
+                {ATHION_PRO.name}
               </h3>
               <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
-                {ATHION_PLAN.description}
+                {ATHION_PRO.description}
               </p>
 
               <div className="mt-8 flex items-baseline gap-1">
                 <span className="font-[590] text-5xl tracking-[-0.022em]">
-                  ${annual ? ATHION_PLAN.yearlyPrice : ATHION_PLAN.monthlyPrice}
+                  ${annual ? ATHION_PRO.yearlyPrice : ATHION_PRO.monthlyPrice}
                 </span>
                 <span className="text-sm text-foreground-muted">
                   /{annual ? "year" : "month"}
@@ -127,12 +127,12 @@ export default function PricingPage() {
 
               {annual && (
                 <p className="mt-1 text-xs text-foreground-muted">
-                  ${(ATHION_PLAN.yearlyPrice / 12).toFixed(2)}/month billed annually
+                  ${(ATHION_PRO.yearlyPrice / 12).toFixed(2)}/month billed annually
                 </p>
               )}
 
               <ul className="mt-10 flex flex-col gap-3">
-                {ATHION_PLAN.features.map((feature) => (
+                {ATHION_PRO.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2 text-sm">
                     <Check size={14} className="text-accent mt-0.5 shrink-0" />
                     <span className="text-foreground-muted">{feature}</span>
@@ -148,6 +148,38 @@ export default function PricingPage() {
                 {loading ? "Loading..." : "Subscribe"}
                 {!loading && <ArrowRight size={14} />}
               </button>
+            </div>
+          </ScrollReveal>
+
+          {/* Add-on packages */}
+          <ScrollReveal delay={0.05}>
+            <div className="mt-16 border-t border-white/[0.08] pt-16">
+              <p className="overline mb-4">Add-ons</p>
+              <h2 className="font-[590] text-2xl tracking-[-0.012em]">
+                Build your own stack.
+              </h2>
+              <p className="mt-3 text-sm text-foreground-muted leading-relaxed max-w-lg">
+                Don&apos;t need everything? Pick individual services and pay only for what you use. All add-ons are included free with Pro.
+              </p>
+
+              <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {ADDON_PACKAGES.map((addon) => (
+                  <div
+                    key={addon.id}
+                    className="p-5 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] transition-all duration-200"
+                  >
+                    <div className="flex items-baseline justify-between gap-4">
+                      <span className="font-[510] text-sm">{addon.name}</span>
+                      <span className="text-sm text-foreground-muted font-mono tabular-nums shrink-0">
+                        ${addon.monthlyPrice}/mo
+                      </span>
+                    </div>
+                    <p className="mt-1.5 text-xs text-foreground-muted/70 leading-relaxed">
+                      {addon.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </ScrollReveal>
 
@@ -252,7 +284,7 @@ export default function PricingPage() {
                   <span className="font-[510] text-sm text-foreground-muted line-through decoration-foreground-muted/30">$60–79/mo</span>
                 </div>
                 <div className="flex items-baseline justify-between mt-1">
-                  <span className="text-xs text-foreground">With Athion, it&apos;s</span>
+                  <span className="text-xs text-foreground">With Athion Pro, it&apos;s</span>
                   <span className="font-[590] text-lg">$20/mo</span>
                 </div>
               </div>

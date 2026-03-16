@@ -6,8 +6,18 @@ import { users, subscriptions } from "@/lib/db/schema";
 import type Stripe from "stripe";
 
 // Map price IDs to product name
-function getProduct(_priceId: string): "athion" {
-  return "athion";
+function getProduct(priceId: string): string {
+  const priceToProduct: Record<string, string> = {
+    [process.env.STRIPE_PRICE_ATHION_PRO_MONTHLY!]: "athion_pro",
+    [process.env.STRIPE_PRICE_ATHION_PRO_YEARLY!]: "athion_pro",
+    [process.env.STRIPE_PRICE_ADDON_MINECRAFT!]: "addon_minecraft",
+    [process.env.STRIPE_PRICE_ADDON_FACTORIO!]: "addon_factorio",
+    [process.env.STRIPE_PRICE_ADDON_SATISFACTORY!]: "addon_satisfactory",
+    [process.env.STRIPE_PRICE_ADDON_CS2_SURF!]: "addon_cs2_surf",
+    [process.env.STRIPE_PRICE_ADDON_HOSTING!]: "addon_hosting",
+    [process.env.STRIPE_PRICE_ADDON_VPS!]: "addon_vps",
+  };
+  return priceToProduct[priceId] ?? "athion_pro";
 }
 
 async function upsertSubscription(subscription: Stripe.Subscription) {

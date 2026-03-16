@@ -96,9 +96,9 @@ export const IDE_FEATURES = [
   },
 ] as const;
 
-export const ATHION_PLAN = {
-  product: "athion" as const,
-  name: "Athion",
+export const ATHION_PRO = {
+  product: "athion_pro" as const,
+  name: "Athion Pro",
   description: "One subscription. Every product. Full access to Flux, Liminal IDE, Hosting, and game servers.",
   monthlyPrice: 20,
   yearlyPrice: 192,
@@ -113,6 +113,45 @@ export const ATHION_PLAN = {
     "Priority support",
   ],
 } as const;
+
+export const ADDON_PACKAGES = [
+  {
+    id: "minecraft" as const,
+    name: "Minecraft Server",
+    description: "Java Edition with full modpack support, always online.",
+    monthlyPrice: 5,
+  },
+  {
+    id: "factorio" as const,
+    name: "Factorio Server",
+    description: "Persistent multiplayer world. Drop in anytime.",
+    monthlyPrice: 4,
+  },
+  {
+    id: "satisfactory" as const,
+    name: "Satisfactory Server",
+    description: "Co-op dedicated server with save persistence.",
+    monthlyPrice: 4,
+  },
+  {
+    id: "cs2_surf" as const,
+    name: "CS2 Surf Server",
+    description: "Custom maps, competitive timers, and leaderboards.",
+    monthlyPrice: 4,
+  },
+  {
+    id: "hosting" as const,
+    name: "Web Hosting",
+    description: "Web apps, APIs, and static sites with custom domains.",
+    monthlyPrice: 6,
+  },
+  {
+    id: "vps" as const,
+    name: "VPS",
+    description: "Full root access, 2 vCPU, 4 GB RAM.",
+    monthlyPrice: 12,
+  },
+] as const;
 
 export const HOSTING_TIERS = [
   {
@@ -233,7 +272,7 @@ export const SERVER_FEATURES = [
     icon: "Terminal" as const,
   },
   {
-    title: "Included with Athion",
+    title: "Included with Athion Pro",
     description:
       "No extra cost. Every game server is part of your Athion subscription.",
     icon: "Shield" as const,

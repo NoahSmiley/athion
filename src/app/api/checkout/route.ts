@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
-import { stripe } from "@/lib/stripe";
+import { randomUUID } from "crypto";
 import { getSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
-import { users } from "@/lib/db/schema";
+import { subscriptions } from "@/lib/db/schema";
 
 export async function POST(request: Request) {
   try {
@@ -22,50 +21,28 @@ export async function POST(request: Request) {
       );
     }
 
-    // Resolve price key to Stripe price ID
-    const priceMap: Record<string, string | undefined> = {
-      athion_pro_monthly: process.env.STRIPE_PRICE_ATHION_PRO_MONTHLY,
-      athion_pro_yearly: process.env.STRIPE_PRICE_ATHION_PRO_YEARLY,
-      // Legacy keys
-      athion_monthly: process.env.STRIPE_PRICE_ATHION_PRO_MONTHLY,
-      athion_yearly: process.env.STRIPE_PRICE_ATHION_PRO_YEARLY,
-    };
-
-    const stripePriceId = priceMap[priceKey] || priceKey;
-
-    if (!stripePriceId) {
-      return NextResponse.json(
-        { error: "Invalid price" },
-        { status: 400 }
-      );
+    const isYearly = priceKey.includes("yearly");
+    const now = new Date();
+    const periodEnd = new Date(now);
+    if (isYearly) {
+      periodEnd.setFullYear(periodEnd.getFullYear() + 1);
+    } else {
+      periodEnd.setMonth(periodEnd.getMonth() + 1);
     }
 
-    // Get or create Stripe customer
-    let customerId = user.stripeCustomerId;
-
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email: user.email,
-        metadata: { user_id: user.id },
-      });
-      customerId = customer.id;
-
-      await db
-        .update(users)
-        .set({ stripeCustomerId: customerId })
-        .where(eq(users.id, user.id));
-    }
-
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      line_items: [{ price: stripePriceId, quantity: 1 }],
-      mode: "subscription",
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard/billing?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/pricing`,
-      metadata: { user_id: user.id },
+    await db.insert(subscriptions).values({
+      id: `sim_${randomUUID()}`,
+      userId: user.id,
+      status: "active",
+      product: "athion_pro",
+      stripePriceId: priceKey,
+      currentPeriodStart: now,
+      currentPeriodEnd: periodEnd,
+      cancelAtPeriodEnd: false,
     });
 
-    return NextResponse.json({ url: session.url });
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+    return NextResponse.json({ url: `${siteUrl}/dashboard/billing?success=true` });
   } catch (err) {
     console.error("Checkout error:", err);
     return NextResponse.json(

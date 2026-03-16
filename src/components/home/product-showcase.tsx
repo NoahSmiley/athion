@@ -6,6 +6,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { ArrowRight, Server } from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { FluxAppMock } from "@/components/home/flux-mock";
 
 /* ─── Flux Mini Replica ─── */
 
@@ -379,7 +380,7 @@ export function ProductShowcase() {
       description:
         "Voice and text chat built for teams that care about privacy. Crystal-clear 48kHz Opus audio, end-to-end encryption on everything, and lossless screen share at 60fps.",
       href: "/flux",
-      replica: <FluxMiniReplica />,
+      replica: <FluxAppMock height="520px" />,
     },
     {
       version: "2.0",

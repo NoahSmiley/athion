@@ -1527,7 +1527,7 @@ function StreamingSection() {
         <SectionHeader
           number="4.0"
           label="Streaming"
-          title={"Lossless screen share.\n6 presets up to 4K."}
+          title={"Screen share without\nthe compromise."}
           description="Share your screen at full fidelity — from 480p for low bandwidth to lossless VP9 at 4K 60fps pushing 20 Mbps. No Nitro paywall, no resolution caps. Every pixel, every frame."
         />
 

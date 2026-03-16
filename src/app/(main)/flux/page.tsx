@@ -1708,7 +1708,7 @@ function DownloadCTA() {
       if (!meData.user) { setAuthState("none"); return; }
       const subsRes = await fetch("/api/subscriptions");
       const subsData = await subsRes.json();
-      const hasFlux = subsData.subscriptions?.some((s: { product: string }) => s.product === "flux");
+      const hasFlux = subsData.subscriptions?.some((s: { product: string }) => s.product === "athion_pro" || s.product === "athion" || s.product === "flux");
       setAuthState(hasFlux ? "active" : "no-sub");
     };
     check();

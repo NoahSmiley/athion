@@ -6,10 +6,42 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { BrainLogo } from "@/components/brain-logo";
 
+const APP_CONFIG: Record<string, { name: string; description: string; errorHint: string; returnText: string }> = {
+  flux: {
+    name: "Flux",
+    description: "Connect your Athion account to Flux.",
+    errorHint: "Invalid login link. Please try again from Flux.",
+    returnText: "After signing in, you can close this tab and return to Flux.",
+  },
+  liminal: {
+    name: "Liminal",
+    description: "Connect your Athion account to the IDE.",
+    errorHint: "Invalid login link. Please try again from Liminal IDE.",
+    returnText: "After signing in, you can close this tab and return to the IDE.",
+  },
+};
+
+function FluxLogo({ size = 28 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1024" height="1024" rx="180" ry="180" fill="#111111" />
+      <g transform="translate(512,512) scale(7.5)" fill="#ffffff" stroke="#ffffff" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M0 -24a24 24 0 1 0 0 48a24 24 0 1 0 0-48zm0 10a14 14 0 1 1 0 28a14 14 0 1 1 0-28z" fillRule="evenodd" stroke="none" />
+        <line x1="18" y1="-18" x2="30" y2="-30" strokeWidth="3.5" fill="none" />
+        <polygon points="24,-32 32,-32 32,-24" stroke="none" />
+        <line x1="-18" y1="18" x2="-30" y2="30" strokeWidth="3.5" fill="none" />
+        <polygon points="-32,24 -32,32 -24,32" stroke="none" />
+      </g>
+    </svg>
+  );
+}
+
 function IdeLoginContent() {
   const params = useSearchParams();
   const router = useRouter();
   const code = params.get("code");
+  const appParam = params.get("app") ?? "liminal";
+  const config = APP_CONFIG[appParam] ?? APP_CONFIG.liminal;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,7 +51,7 @@ function IdeLoginContent() {
   if (!code) {
     return (
       <p className="text-sm text-red-400 text-center">
-        Invalid login link. Please try again from Liminal IDE.
+        {config.errorHint}
       </p>
     );
   }
@@ -54,10 +86,10 @@ function IdeLoginContent() {
   return (
     <>
       <h1 className="font-[590] text-3xl tracking-[-0.022em] text-center">
-        Sign in to Liminal
+        Sign in to {config.name}
       </h1>
       <p className="mt-2 text-sm text-foreground-muted text-center">
-        Connect your Athion account to the IDE.
+        {config.description}
       </p>
 
       {error && (
@@ -110,7 +142,7 @@ function IdeLoginContent() {
       </p>
 
       <p className="mt-4 text-xs text-foreground-muted text-center">
-        After signing in, you can close this tab and return to the IDE.
+        {config.returnText}
       </p>
     </>
   );
@@ -119,18 +151,32 @@ function IdeLoginContent() {
 export default function IdeLoginPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12">
-      <Link
-        href="/"
-        className="mb-10 flex items-center gap-2 text-foreground hover:text-accent transition-colors"
-      >
-        <BrainLogo size={28} />
-        <span className="font-[590] text-lg tracking-[-0.022em]">Athion</span>
-      </Link>
+      <Suspense>
+        <IdeLoginBranding />
+      </Suspense>
       <div className="w-full max-w-sm">
         <Suspense>
           <IdeLoginContent />
         </Suspense>
       </div>
     </div>
+  );
+}
+
+function IdeLoginBranding() {
+  const params = useSearchParams();
+  const appParam = params.get("app") ?? "liminal";
+  const isFlux = appParam === "flux";
+
+  return (
+    <Link
+      href="/"
+      className="mb-10 flex items-center gap-2 text-foreground hover:text-accent transition-colors"
+    >
+      {isFlux ? <FluxLogo size={28} /> : <BrainLogo size={28} />}
+      <span className="font-[590] text-lg tracking-[-0.022em]">
+        {isFlux ? "Flux" : "Athion"}
+      </span>
+    </Link>
   );
 }

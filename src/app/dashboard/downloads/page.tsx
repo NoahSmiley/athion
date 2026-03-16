@@ -20,7 +20,7 @@ export default async function DownloadsPage() {
     : [];
 
   const activeProducts = subs.map((s) => s.product);
-  const hasSubscription = activeProducts.includes("athion");
+  const hasSubscription = activeProducts.includes("athion_pro") || activeProducts.includes("athion");
 
   return (
     <div className="max-w-4xl">
@@ -49,26 +49,19 @@ export default async function DownloadsPage() {
           {hasSubscription ? (
             <div className="mt-6 flex flex-wrap gap-3">
               <a
-                href="#"
+                href="/download/mac"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
               >
                 <Apple size={16} />
-                macOS (Apple Silicon)
+                macOS
               </a>
               <a
-                href="#"
+                href="/download/windows"
                 className="inline-flex items-center gap-2 px-6 py-3 border border-border text-sm text-foreground-muted hover:text-foreground hover:border-border-light hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
               >
-                <Apple size={16} />
-                macOS (Intel)
-              </a>
-              <button
-                disabled
-                className="inline-flex items-center gap-2 px-6 py-3 border border-border text-sm text-foreground-muted/50 cursor-not-allowed"
-              >
                 <MonitorDot size={16} />
-                Windows — Soon
-              </button>
+                Windows
+              </a>
             </div>
           ) : (
             <p className="mt-4 text-sm text-foreground-muted">

@@ -52,7 +52,7 @@ function FluxMiniReplica() {
       </div>
       {/* Sidebar */}
       <div className="w-[100px] shrink-0 bg-[#0c0c12] border-r border-[#1a1a22] pt-3 px-2">
-        <p className="text-[9px] uppercase tracking-wider text-[#555] mb-2 px-1">Channels</p>
+        <p className="text-[9px] uppercase tracking-wider text-[#52525b] mb-2 px-1">Channels</p>
         {["general", "design", "random"].map((ch, i) => (
           <div
             key={ch}
@@ -64,7 +64,7 @@ function FluxMiniReplica() {
       </div>
       {/* Chat area */}
       <div className="flex-1 flex flex-col min-w-0">
-        <div className="h-8 border-b border-[#1a1a22] flex items-center px-3 text-[11px] text-[#888]">
+        <div className="h-8 border-b border-[#1a1a22] flex items-center px-3 text-[11px] text-[#71717a]">
           # general
         </div>
         <div className="flex-1 p-3 space-y-3 overflow-hidden">
@@ -84,7 +84,7 @@ function FluxMiniReplica() {
             </motion.div>
           ))}
         </div>
-        <div className="h-9 border-t border-[#1a1a22] mx-3 mb-2 mt-auto flex items-center px-3 rounded-sm bg-[#0e0e14] text-[11px] text-[#555]">
+        <div className="h-9 border-t border-[#1a1a22] mx-3 mb-2 mt-auto flex items-center px-3 rounded-sm bg-[#0e0e14] text-[11px] text-[#52525b]">
           Message #general
         </div>
       </div>
@@ -120,15 +120,15 @@ function IDEMiniReplica() {
     <div className="flex h-[520px] bg-[#050507] text-xs select-none">
       {/* Activity bar */}
       <div className="w-[36px] shrink-0 bg-[#08080a] flex flex-col items-center gap-4 pt-3 border-r border-[#1a1a1f]">
-        <span className="text-[13px] text-[#888]">&#10022;</span>
-        <span className="text-[11px] text-[#555]">&#9776;</span>
-        <span className="text-[11px] text-[#555]">&gt;_</span>
+        <span className="text-[13px] text-[#71717a]">&#10022;</span>
+        <span className="text-[11px] text-[#52525b]">&#9776;</span>
+        <span className="text-[11px] text-[#52525b]">&gt;_</span>
       </div>
       {/* Editor */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Tab bar */}
         <div className="h-7 border-b border-[#1a1a1f] flex items-center px-3">
-          <span className="text-[10px] text-[#888] bg-[#0e0e12] px-2 py-0.5 rounded-sm">main.rs</span>
+          <span className="text-[10px] text-[#71717a] bg-[#0e0e12] px-2 py-0.5 rounded-sm">main.rs</span>
         </div>
         {/* Code */}
         <div className="flex-1 p-3 font-mono text-[11px] leading-[1.7] overflow-hidden">
@@ -150,7 +150,7 @@ function IDEMiniReplica() {
           ))}
         </div>
         {/* Status bar */}
-        <div className="h-6 border-t border-[#1a1a1f] bg-[#08080a] flex items-center justify-between px-3 text-[10px] text-[#555]">
+        <div className="h-6 border-t border-[#1a1a1f] bg-[#08080a] flex items-center justify-between px-3 text-[10px] text-[#52525b]">
           <span>main.rs</span>
           <span>Rust &middot; Ln 4, Col 52</span>
         </div>
@@ -181,23 +181,23 @@ function HostingMiniReplica() {
       <div className="flex-1 p-4 space-y-3 overflow-hidden">
         {servers.map((s) => (
           <div key={s.name} className="border border-[#1a1a1f] rounded-sm p-3 flex items-center gap-3">
-            <Server size={14} className="text-[#555] shrink-0" />
+            <Server size={14} className="text-[#52525b] shrink-0" />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <span className="text-[11px] text-[#ccc] font-medium truncate">{s.name}</span>
-                <span className="text-[9px] text-[#555]">{s.type}</span>
+                <span className="text-[9px] text-[#52525b]">{s.type}</span>
               </div>
             </div>
             <span className="flex items-center gap-1.5 text-[10px] text-emerald-400 shrink-0">
               <PulsingDot /> Online
             </span>
-            <span className="text-[10px] text-[#888] shrink-0">{s.metric}</span>
+            <span className="text-[10px] text-[#71717a] shrink-0">{s.metric}</span>
           </div>
         ))}
       </div>
       {/* Uptime bars */}
       <div className="px-4 pb-4">
-        <p className="text-[9px] text-[#555] mb-2 uppercase tracking-wider">Uptime — 30 days</p>
+        <p className="text-[9px] text-[#52525b] mb-2 uppercase tracking-wider">Uptime — 30 days</p>
         <div className="flex items-end gap-[2px] h-8">
           {Array.from({ length: 30 }, (_, i) => (
             <div
@@ -238,7 +238,7 @@ function ConsultingMiniReplica() {
       {/* Top bar */}
       <div className="h-9 border-b border-[#1a1a1f] flex items-center justify-between px-4">
         <span className="text-[11px] text-[#ccc] font-medium">Active Projects</span>
-        <span className="text-[10px] text-[#888]">3 in progress</span>
+        <span className="text-[10px] text-[#71717a]">3 in progress</span>
       </div>
       {/* Project rows */}
       <div className="flex-1 p-4 space-y-3 overflow-hidden">
@@ -271,7 +271,7 @@ function ConsultingMiniReplica() {
                   </span>
                 ))}
               </div>
-              <span className="text-[9px] text-[#555]">{p.progress}%</span>
+              <span className="text-[9px] text-[#52525b]">{p.progress}%</span>
             </div>
           </div>
         ))}

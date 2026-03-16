@@ -20,9 +20,9 @@ function HeroFluxTile() {
   return (
     <div className="w-full h-full bg-[#0a0a0f] rounded-xl overflow-hidden border border-white/[0.06] text-xs select-none flex">
       <div className="w-[72px] shrink-0 bg-[#0c0c12] border-r border-[#1a1a22] pt-3 px-2">
-        <p className="text-[8px] uppercase tracking-wider text-[#555] mb-1.5 px-0.5">Channels</p>
+        <p className="text-[8px] uppercase tracking-wider text-[#52525b] mb-1.5 px-0.5">Channels</p>
         {["general", "design"].map((ch, i) => (
-          <div key={ch} className={`px-1.5 py-0.5 rounded-sm text-[9px] ${i === 0 ? "bg-[#ffffff08] text-white" : "text-[#555]"}`}>
+          <div key={ch} className={`px-1.5 py-0.5 rounded-sm text-[9px] ${i === 0 ? "bg-[#ffffff08] text-white" : "text-[#52525b]"}`}>
             # {ch}
           </div>
         ))}
@@ -73,15 +73,15 @@ function HeroHostingTile() {
     <div className="w-full h-full bg-[#0a0a0d] rounded-xl overflow-hidden border border-white/[0.06] text-xs select-none flex flex-col">
       <div className="h-6 border-b border-[#1a1a1f] flex items-center justify-between px-3">
         <span className="text-[9px] text-[#ccc] font-medium">Athion Hosting</span>
-        <span className="flex items-center gap-1 text-[8px] text-emerald-400">
-          <span className="w-1 h-1 rounded-full bg-emerald-400" />
+        <span className="flex items-center gap-1 text-[8px] text-cyan-400">
+          <span className="w-1 h-1 rounded-full bg-cyan-400" />
           Online
         </span>
       </div>
       <div className="flex-1 p-2 space-y-1.5 overflow-hidden">
         {[{ name: "minecraft-smp", metric: "8/20" }, { name: "api-prod", metric: "142 req/s" }].map((s) => (
           <div key={s.name} className="border border-[#1a1a1f] rounded-sm p-2 flex items-center gap-2">
-            <Server size={10} className="text-[#555] shrink-0" />
+            <Server size={10} className="text-[#52525b] shrink-0" />
             <span className="text-[9px] text-[#ccc] truncate">{s.name}</span>
             <span className="text-[8px] text-[#666] ml-auto shrink-0">{s.metric}</span>
           </div>

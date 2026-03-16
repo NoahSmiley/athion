@@ -147,7 +147,7 @@ function TypingIndicator({ user }: { user: string }) {
       exit={{ opacity: 0, y: 8 }}
       transition={{ duration: 0.2 }}
     >
-      <span style={{ fontSize: "12px", color: "#888" }}>
+      <span style={{ fontSize: "12px", color: "#71717a" }}>
         {user} is typing
       </span>
       <div className="flex gap-0.5">
@@ -186,8 +186,8 @@ function FluxSidebar({
       className="flex-shrink-0 flex-col hidden md:flex"
       style={{
         width: compact ? "200px" : "240px",
-        background: "#0e0e0e",
-        borderRight: "1px solid #161616",
+        background: "#0e0e12",
+        borderRight: "1px solid #1a1a1f",
       }}
     >
       {/* Server header */}
@@ -195,7 +195,7 @@ function FluxSidebar({
         className="flex items-center gap-2 px-4"
         style={{ height: "40px" }}
       >
-        <span style={{ fontSize: "14px", fontWeight: 600, color: "#e8e8e8" }}>
+        <span style={{ fontSize: "14px", fontWeight: 600, color: "#e4e4e7" }}>
           flux
         </span>
       </div>
@@ -204,8 +204,8 @@ function FluxSidebar({
       <div className="flex-1 overflow-hidden px-2 pt-1 flex flex-col">
         {/* Roadmap */}
         <div className="flex items-center gap-2 px-2 py-1.5 rounded mb-1">
-          <Map size={14} style={{ color: "#888" }} />
-          <span style={{ fontSize: "13px", color: "#888" }}>Roadmap</span>
+          <Map size={14} style={{ color: "#71717a" }} />
+          <span style={{ fontSize: "13px", color: "#71717a" }}>Roadmap</span>
         </div>
 
         {/* Channels — flat list, no categories */}
@@ -241,8 +241,8 @@ function FluxSidebar({
           >
             <div className="flex items-center justify-between px-3 py-2">
               <div className="flex items-center gap-1.5">
-                <ChevronDown size={10} style={{ color: "#555" }} />
-                <span style={{ fontSize: "11px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em", color: "#888" }}>
+                <ChevronDown size={10} style={{ color: "#52525b" }} />
+                <span style={{ fontSize: "11px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em", color: "#71717a" }}>
                   Room 1
                 </span>
               </div>
@@ -253,14 +253,14 @@ function FluxSidebar({
                     fontSize: "10px",
                     fontWeight: 600,
                     color: "#fff",
-                    background: "#43b581",
+                    background: "#22d3ee",
                     width: 16,
                     height: 16,
                   }}
                 >
                   {roomParticipants.length}
                 </span>
-                <Lock size={10} style={{ color: "#555" }} />
+                <Lock size={10} style={{ color: "#52525b" }} />
               </div>
             </div>
             <div className="px-3 pb-2.5 flex flex-col gap-1.5">
@@ -288,22 +288,22 @@ function FluxSidebar({
 
       {/* Bottom controls */}
       {showRoom && (
-        <div style={{ borderTop: "1px solid #161616" }}>
+        <div style={{ borderTop: "1px solid #1a1a1f" }}>
           <div className="flex items-center justify-between px-3 py-2">
             <div className="flex items-center gap-1.5">
-              <span style={{ fontSize: "11px", fontWeight: 500, color: "#43b581" }}>Connected</span>
-              <span style={{ fontSize: "10px", color: "#555" }}>Room 1</span>
+              <span style={{ fontSize: "11px", fontWeight: 500, color: "#22d3ee" }}>Connected</span>
+              <span style={{ fontSize: "10px", color: "#52525b" }}>Room 1</span>
             </div>
           </div>
           <div className="flex items-center gap-1 px-3 pb-2">
-            <div className="flex items-center justify-center rounded-md" style={{ width: 28, height: 28, background: "#1a1a1a" }}>
-              <Mic size={14} style={{ color: "#e8e8e8" }} />
+            <div className="flex items-center justify-center rounded-md" style={{ width: 28, height: 28, background: "#1a1a1f" }}>
+              <Mic size={14} style={{ color: "#e4e4e7" }} />
             </div>
-            <div className="flex items-center justify-center rounded-md" style={{ width: 28, height: 28, background: "#1a1a1a" }}>
-              <Headphones size={14} style={{ color: "#e8e8e8" }} />
+            <div className="flex items-center justify-center rounded-md" style={{ width: 28, height: 28, background: "#1a1a1f" }}>
+              <Headphones size={14} style={{ color: "#e4e4e7" }} />
             </div>
-            <div className="flex items-center justify-center rounded-md" style={{ width: 28, height: 28, background: "#1a1a1a" }}>
-              <HeadphoneOff size={14} style={{ color: "#555" }} />
+            <div className="flex items-center justify-center rounded-md" style={{ width: 28, height: 28, background: "#1a1a1f" }}>
+              <HeadphoneOff size={14} style={{ color: "#52525b" }} />
             </div>
             <div className="flex items-center justify-center rounded-md" style={{ width: 28, height: 28, background: "#ff4444" }}>
               <PhoneOff size={14} style={{ color: "#fff" }} />
@@ -314,7 +314,7 @@ function FluxSidebar({
 
       {/* Settings */}
       <div className="px-3 pb-2">
-        <Settings size={14} style={{ color: "#555" }} />
+        <Settings size={14} style={{ color: "#52525b" }} />
       </div>
     </div>
   );
@@ -328,7 +328,7 @@ function IconRail() {
       className="flex-shrink-0 flex-col items-center pt-3 gap-3 hidden md:flex"
       style={{
         width: "48px",
-        background: "#080808",
+        background: "#08080d",
         borderRight: "1px solid #111",
       }}
     >
@@ -374,10 +374,10 @@ function MessageRow({
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline gap-2">
-          <span style={{ fontSize: "13px", fontWeight: 700, color: "#e8e8e8" }}>
+          <span style={{ fontSize: "13px", fontWeight: 700, color: "#e4e4e7" }}>
             {user}
           </span>
-          <span style={{ fontSize: "10px", color: "#555" }}>
+          <span style={{ fontSize: "10px", color: "#52525b" }}>
             {time}
           </span>
         </div>
@@ -432,8 +432,8 @@ function FluxAppReplica() {
     <div
       className="rounded-xl overflow-hidden w-full mx-auto"
       style={{
-        background: "#0a0a0a",
-        border: "1px solid #161616",
+        background: "#0a0a0d",
+        border: "1px solid #1a1a1f",
       }}
     >
       <div className="flex" style={{ height: "680px" }}>
@@ -457,14 +457,14 @@ function FluxAppReplica() {
             className="flex items-center justify-between px-4 flex-shrink-0"
             style={{
               height: "40px",
-              borderBottom: "1px solid #161616",
+              borderBottom: "1px solid #1a1a1f",
             }}
           >
-            <span style={{ fontSize: "14px", fontWeight: 600, color: "#e8e8e8" }}>
+            <span style={{ fontSize: "14px", fontWeight: 600, color: "#e4e4e7" }}>
               general
             </span>
             <div className="flex items-center gap-3">
-              <Search size={14} style={{ color: "#555" }} />
+              <Search size={14} style={{ color: "#52525b" }} />
             </div>
           </div>
 
@@ -496,15 +496,15 @@ function FluxAppReplica() {
             <div
               className="flex items-center gap-2 px-3 py-2 rounded-lg"
               style={{
-                background: "#0e0e0e",
-                border: "1px solid #161616",
+                background: "#0e0e12",
+                border: "1px solid #1a1a1f",
               }}
             >
-              <Paperclip size={16} style={{ color: "#555", flexShrink: 0 }} />
-              <span className="flex-1" style={{ fontSize: "13px", color: "#555" }}>
+              <Paperclip size={16} style={{ color: "#52525b", flexShrink: 0 }} />
+              <span className="flex-1" style={{ fontSize: "13px", color: "#52525b" }}>
                 Message #general
               </span>
-              <Smile size={16} style={{ color: "#555", flexShrink: 0 }} />
+              <Smile size={16} style={{ color: "#52525b", flexShrink: 0 }} />
             </div>
           </div>
         </div>
@@ -513,18 +513,18 @@ function FluxAppReplica() {
       {/* Bottom bar (voice controls) */}
       <div
         className="flex items-center justify-between px-4 py-2"
-        style={{ borderTop: "1px solid #161616" }}
+        style={{ borderTop: "1px solid #1a1a1f" }}
       >
         <div />
         <div className="flex items-center gap-1.5">
-          <div className="flex items-center justify-center rounded-full" style={{ width: 32, height: 32, background: "#1a1a1a" }}>
-            <Mic size={16} style={{ color: "#e8e8e8" }} />
+          <div className="flex items-center justify-center rounded-full" style={{ width: 32, height: 32, background: "#1a1a1f" }}>
+            <Mic size={16} style={{ color: "#e4e4e7" }} />
           </div>
-          <div className="flex items-center justify-center rounded-full" style={{ width: 32, height: 32, background: "#1a1a1a" }}>
-            <Headphones size={16} style={{ color: "#e8e8e8" }} />
+          <div className="flex items-center justify-center rounded-full" style={{ width: 32, height: 32, background: "#1a1a1f" }}>
+            <Headphones size={16} style={{ color: "#e4e4e7" }} />
           </div>
-          <div className="flex items-center justify-center rounded-full" style={{ width: 32, height: 32, background: "#1a1a1a" }}>
-            <MonitorUp size={16} style={{ color: "#e8e8e8" }} />
+          <div className="flex items-center justify-center rounded-full" style={{ width: 32, height: 32, background: "#1a1a1f" }}>
+            <MonitorUp size={16} style={{ color: "#e4e4e7" }} />
           </div>
           <div className="flex items-center justify-center rounded-full" style={{ width: 32, height: 32, background: "#ff4444" }}>
             <PhoneOff size={16} style={{ color: "#fff" }} />
@@ -583,8 +583,8 @@ function FluxChatReplica() {
     <div
       className="rounded-xl overflow-hidden w-full max-w-[800px] mx-auto h-[380px] md:h-[480px]"
       style={{
-        background: "#0a0a0a",
-        border: "1px solid #161616",
+        background: "#0a0a0d",
+        border: "1px solid #1a1a1f",
       }}
     >
       <div className="flex h-full">
@@ -598,13 +598,13 @@ function FluxChatReplica() {
             className="flex items-center justify-between px-4 flex-shrink-0"
             style={{
               height: "40px",
-              borderBottom: "1px solid #161616",
+              borderBottom: "1px solid #1a1a1f",
             }}
           >
-            <span style={{ fontSize: "14px", fontWeight: 600, color: "#e8e8e8" }}>
+            <span style={{ fontSize: "14px", fontWeight: 600, color: "#e4e4e7" }}>
               general
             </span>
-            <Search size={14} style={{ color: "#555" }} />
+            <Search size={14} style={{ color: "#52525b" }} />
           </div>
 
           {/* Messages */}
@@ -635,16 +635,16 @@ function FluxChatReplica() {
             <div
               className="flex items-center gap-2 px-3 py-2.5 rounded-lg"
               style={{
-                background: "#0e0e0e",
-                border: "1px solid #161616",
+                background: "#0e0e12",
+                border: "1px solid #1a1a1f",
               }}
             >
-              <Paperclip size={16} style={{ color: "#555", flexShrink: 0 }} />
-              <span className="flex-1" style={{ fontSize: "13px", color: "#555" }}>
+              <Paperclip size={16} style={{ color: "#52525b", flexShrink: 0 }} />
+              <span className="flex-1" style={{ fontSize: "13px", color: "#52525b" }}>
                 Message #general
               </span>
-              <Smile size={16} style={{ color: "#555", flexShrink: 0 }} />
-              <Send size={16} style={{ color: "#555", flexShrink: 0 }} />
+              <Smile size={16} style={{ color: "#52525b", flexShrink: 0 }} />
+              <Send size={16} style={{ color: "#52525b", flexShrink: 0 }} />
             </div>
           </div>
         </div>
@@ -662,7 +662,7 @@ function WaveformBars() {
         <motion.div
           key={i}
           className="rounded-sm"
-          style={{ width: 2, background: "#43b581" }}
+          style={{ width: 2, background: "#22d3ee" }}
           animate={{
             height: [3, 8 + Math.random() * 4, 4, 10 + Math.random() * 2, 3],
           }}
@@ -685,15 +685,15 @@ function SpeakingGlow() {
     <motion.div
       className="absolute inset-0 rounded-xl"
       style={{
-        boxShadow: `0 0 0 2px #43b581, 0 0 12px rgba(67,181,129,0.4)`,
+        boxShadow: `0 0 0 2px #22d3ee, 0 0 12px rgba(67,181,129,0.4)`,
         background: "rgba(67,181,129,0.06)",
       }}
       animate={{
         opacity: [1, 0.5, 1],
         boxShadow: [
-          "0 0 0 2px #43b581, 0 0 12px rgba(67,181,129,0.4)",
-          "0 0 0 2px #43b581, 0 0 20px rgba(67,181,129,0.6)",
-          "0 0 0 2px #43b581, 0 0 12px rgba(67,181,129,0.4)",
+          "0 0 0 2px #22d3ee, 0 0 12px rgba(67,181,129,0.4)",
+          "0 0 0 2px #22d3ee, 0 0 20px rgba(67,181,129,0.6)",
+          "0 0 0 2px #22d3ee, 0 0 12px rgba(67,181,129,0.4)",
         ],
       }}
       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -736,14 +736,14 @@ function FluxVoiceReplica() {
     <div
       className="rounded-xl overflow-hidden w-full max-w-[620px] mx-auto"
       style={{
-        background: "#0a0a0a",
-        border: "1px solid #161616",
+        background: "#0a0a0d",
+        border: "1px solid #1a1a1f",
       }}
     >
       {/* Tab bar */}
       <div
         className="flex items-center gap-0 px-4"
-        style={{ borderBottom: "1px solid #161616" }}
+        style={{ borderBottom: "1px solid #1a1a1f" }}
       >
         {VOICE_TABS.map((tab) => (
           <div
@@ -759,14 +759,14 @@ function FluxVoiceReplica() {
             {tab.active && (
               <div
                 className="absolute bottom-0 left-3 right-3"
-                style={{ height: "2px", background: "#e8e8e8", borderRadius: "1px" }}
+                style={{ height: "2px", background: "#e4e4e7", borderRadius: "1px" }}
               />
             )}
           </div>
         ))}
         <div className="ml-auto flex items-center gap-1.5 pr-1">
-          <div className="rounded-full" style={{ width: 6, height: 6, background: "#43b581" }} />
-          <span style={{ fontSize: "12px", color: "#888", fontFamily: "monospace" }}>
+          <div className="rounded-full" style={{ width: 6, height: 6, background: "#22d3ee" }} />
+          <span style={{ fontSize: "12px", color: "#71717a", fontFamily: "monospace" }}>
             {participants.length}
           </span>
         </div>
@@ -786,7 +786,7 @@ function FluxVoiceReplica() {
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.3, ease: EASE }}
                 className="relative flex flex-col items-center rounded-xl"
-                style={{ width: "140px", background: "#0e0e0e", padding: "16px 12px 12px" }}
+                style={{ width: "140px", background: "#0e0e12", padding: "16px 12px 12px" }}
               >
                 {isSpeaking && <SpeakingGlow />}
                 <motion.div
@@ -801,14 +801,14 @@ function FluxVoiceReplica() {
                   <img src={p.avatar} alt={p.name} className="w-full h-full" />
                 </motion.div>
                 <div className="flex items-center gap-1.5" style={{ position: "relative", zIndex: 1 }}>
-                  <span style={{ fontSize: "13px", fontWeight: 500, color: "#e8e8e8" }}>
+                  <span style={{ fontSize: "13px", fontWeight: 500, color: "#e4e4e7" }}>
                     {p.name}
                   </span>
                   {isSpeaking && <WaveformBars />}
                 </div>
                 <div className="flex items-center gap-1.5 mt-1.5" style={{ position: "relative", zIndex: 1 }}>
-                  {p.muted && <MicOffIcon size={14} style={{ color: "#555" }} />}
-                  {p.deafened && <HeadphoneOff size={14} style={{ color: "#555" }} />}
+                  {p.muted && <MicOffIcon size={14} style={{ color: "#52525b" }} />}
+                  {p.deafened && <HeadphoneOff size={14} style={{ color: "#52525b" }} />}
                 </div>
               </motion.div>
             );
@@ -817,15 +817,15 @@ function FluxVoiceReplica() {
       </div>
 
       {/* Controls bar */}
-      <div className="flex items-center justify-center gap-1 px-4 py-2.5" style={{ borderTop: "1px solid #161616" }}>
-        <div className="flex items-center justify-center rounded-full" style={{ width: "36px", height: "36px", background: "#1a1a1a" }}>
-          <Mic size={20} style={{ color: "#e8e8e8" }} />
+      <div className="flex items-center justify-center gap-1 px-4 py-2.5" style={{ borderTop: "1px solid #1a1a1f" }}>
+        <div className="flex items-center justify-center rounded-full" style={{ width: "36px", height: "36px", background: "#1a1a1f" }}>
+          <Mic size={20} style={{ color: "#e4e4e7" }} />
         </div>
-        <div className="flex items-center justify-center rounded-full" style={{ width: "36px", height: "36px", background: "#1a1a1a" }}>
-          <Headphones size={20} style={{ color: "#e8e8e8" }} />
+        <div className="flex items-center justify-center rounded-full" style={{ width: "36px", height: "36px", background: "#1a1a1f" }}>
+          <Headphones size={20} style={{ color: "#e4e4e7" }} />
         </div>
-        <div className="flex items-center justify-center rounded-full" style={{ width: "36px", height: "36px", background: "#1a1a1a" }}>
-          <MonitorUp size={20} style={{ color: "#e8e8e8" }} />
+        <div className="flex items-center justify-center rounded-full" style={{ width: "36px", height: "36px", background: "#1a1a1f" }}>
+          <MonitorUp size={20} style={{ color: "#e4e4e7" }} />
         </div>
         <div className="flex items-center justify-center rounded-full" style={{ width: "36px", height: "36px", background: "#ff4444" }}>
           <PhoneOff size={20} style={{ color: "#ffffff" }} />
@@ -884,8 +884,8 @@ function FluxMusicReplica() {
     <div
       className="rounded-xl overflow-hidden w-full max-w-[520px] mx-auto"
       style={{
-        background: "#0a0a0a",
-        border: "1px solid #161616",
+        background: "#0a0a0d",
+        border: "1px solid #1a1a1f",
         position: "relative",
       }}
     >
@@ -963,7 +963,7 @@ function FluxMusicReplica() {
               top: "46%",
               left: "46%",
               zIndex: 3,
-              background: "#0a0a0a",
+              background: "#0a0a0d",
               boxShadow: "inset 0 1px 2px rgba(0,0,0,0.8), 0 0 0 2px #222",
             }}
           />
@@ -1000,10 +1000,10 @@ function FluxMusicReplica() {
             />
           </div>
           <div className="flex justify-between mt-1.5">
-            <span style={{ fontSize: "11px", fontFamily: "monospace", color: "#888" }}>
+            <span style={{ fontSize: "11px", fontFamily: "monospace", color: "#71717a" }}>
               {formatTime(currentSeconds)}
             </span>
-            <span style={{ fontSize: "11px", fontFamily: "monospace", color: "#888" }}>
+            <span style={{ fontSize: "11px", fontFamily: "monospace", color: "#71717a" }}>
               {currentTrack.duration}
             </span>
           </div>
@@ -1012,21 +1012,21 @@ function FluxMusicReplica() {
         {/* Playback controls */}
         <div className="flex items-center justify-center gap-4">
           <div className="flex items-center justify-center rounded-full" style={{ width: "34px", height: "34px" }}>
-            <SkipForward size={18} style={{ color: "#e8e8e8", transform: "scaleX(-1)" }} />
+            <SkipForward size={18} style={{ color: "#e4e4e7", transform: "scaleX(-1)" }} />
           </div>
-          <div className="flex items-center justify-center rounded-full" style={{ width: "34px", height: "34px", background: "#e8e8e8" }}>
+          <div className="flex items-center justify-center rounded-full" style={{ width: "34px", height: "34px", background: "#e4e4e7" }}>
             <Pause size={16} style={{ color: "#0a0a0a" }} />
           </div>
           <div className="flex items-center justify-center rounded-full" style={{ width: "34px", height: "34px" }}>
-            <SkipForward size={18} style={{ color: "#e8e8e8" }} />
+            <SkipForward size={18} style={{ color: "#e4e4e7" }} />
           </div>
         </div>
       </div>
 
       {/* Queue */}
-      <div className="relative" style={{ borderTop: "1px solid #161616" }}>
+      <div className="relative" style={{ borderTop: "1px solid #1a1a1f" }}>
         <div className="px-4 py-2">
-          <span style={{ fontSize: "12px", fontWeight: 600, color: "#888" }}>Queue</span>
+          <span style={{ fontSize: "12px", fontWeight: 600, color: "#71717a" }}>Queue</span>
         </div>
         <AnimatePresence mode="popLayout">
           {queueTracks.map((track, i) => (
@@ -1038,7 +1038,7 @@ function FluxMusicReplica() {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.3, delay: i * 0.05 }}
               className="flex items-center gap-3 px-4 py-2"
-              style={{ borderTop: "1px solid #16161666" }}
+              style={{ borderTop: "1px solid #1a1a1f66" }}
             >
               <motion.div
                 className="rounded flex-shrink-0"
@@ -1047,10 +1047,10 @@ function FluxMusicReplica() {
                 transition={{ duration: 0.4 }}
               />
               <div className="flex-1 min-w-0">
-                <p style={{ fontSize: "12px", fontWeight: 500, color: "#e8e8e8" }}>{track.title}</p>
-                <p style={{ fontSize: "11px", color: "#888" }}>{track.artist}</p>
+                <p style={{ fontSize: "12px", fontWeight: 500, color: "#e4e4e7" }}>{track.title}</p>
+                <p style={{ fontSize: "11px", color: "#71717a" }}>{track.artist}</p>
               </div>
-              <span style={{ fontSize: "11px", color: "#555", flexShrink: 0 }}>{track.duration}</span>
+              <span style={{ fontSize: "11px", color: "#52525b", flexShrink: 0 }}>{track.duration}</span>
             </motion.div>
           ))}
         </AnimatePresence>
@@ -1107,14 +1107,14 @@ function FluxStreamReplica() {
   return (
     <div
       className="rounded-xl overflow-hidden w-full max-w-[900px] mx-auto"
-      style={{ background: "#0a0a0a", border: "1px solid #161616" }}
+      style={{ background: "#0a0a0d", border: "1px solid #1a1a1f" }}
     >
       {/* Stream header */}
-      <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid #161616", background: "#0e0e0e" }}>
+      <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid #1a1a1f", background: "#0e0e12" }}>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <MonitorUp size={14} style={{ color: "#43b581" }} />
-            <span style={{ fontSize: "13px", fontWeight: 600, color: "#e8e8e8" }}>noah&apos;s screen</span>
+            <MonitorUp size={14} style={{ color: "#22d3ee" }} />
+            <span style={{ fontSize: "13px", fontWeight: 600, color: "#e4e4e7" }}>noah&apos;s screen</span>
           </div>
           <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full" style={{ background: "#ff444420" }}>
             <div className="w-1.5 h-1.5 rounded-full bg-red-500" style={{ animation: "pulse-dot 2s ease-in-out infinite" }} />
@@ -1122,7 +1122,7 @@ function FluxStreamReplica() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <span style={{ fontSize: "11px", color: "#888" }}>{viewerCount} watching</span>
+          <span style={{ fontSize: "11px", color: "#71717a" }}>{viewerCount} watching</span>
           <div className="flex -space-x-1.5">
             {[USERS.trevor, USERS.riley, USERS.quinn].map((u) => (
               <div key={u.id} className="w-5 h-5 rounded-full overflow-hidden border-2" style={{ borderColor: "#0e0e0e", background: u.color + "33" }}>
@@ -1145,8 +1145,8 @@ function FluxStreamReplica() {
 
         {/* Minimap — top right */}
         <div className="absolute top-3 right-3 rounded" style={{ width: "80px", height: "80px", background: "rgba(0,0,0,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}>
-          <div className="absolute rounded-full" style={{ width: 4, height: 4, background: "#43b581", top: "30%", left: "40%", boxShadow: "0 0 4px #43b581" }} />
-          <div className="absolute rounded-full" style={{ width: 4, height: 4, background: "#43b581", top: "55%", left: "60%", boxShadow: "0 0 4px #43b581" }} />
+          <div className="absolute rounded-full" style={{ width: 4, height: 4, background: "#22d3ee", top: "30%", left: "40%", boxShadow: "0 0 4px #22d3ee" }} />
+          <div className="absolute rounded-full" style={{ width: 4, height: 4, background: "#22d3ee", top: "55%", left: "60%", boxShadow: "0 0 4px #22d3ee" }} />
           <div className="absolute rounded-full" style={{ width: 3, height: 3, background: "#ff4444", top: "45%", left: "25%", boxShadow: "0 0 4px #ff4444" }} />
           <div className="absolute rounded-full" style={{ width: 3, height: 3, background: "#ff4444", top: "70%", left: "50%", boxShadow: "0 0 4px #ff4444" }} />
           <div className="absolute rounded-full" style={{ width: 3, height: 3, background: "#f59e0b", top: "20%", left: "70%", boxShadow: "0 0 4px #f59e0b" }} />
@@ -1170,9 +1170,9 @@ function FluxStreamReplica() {
           </div>
           {/* Health bar */}
           <div className="flex items-center gap-2">
-            <span style={{ fontSize: "10px", color: "#43b581", fontFamily: "monospace", width: "20px" }}>82</span>
+            <span style={{ fontSize: "10px", color: "#22d3ee", fontFamily: "monospace", width: "20px" }}>82</span>
             <div style={{ width: "120px", height: "6px", background: "rgba(255,255,255,0.1)", borderRadius: "2px" }}>
-              <div style={{ width: "82%", height: "100%", background: "linear-gradient(90deg, #22c55e, #43b581)", borderRadius: "2px" }} />
+              <div style={{ width: "82%", height: "100%", background: "linear-gradient(90deg, #22c55e, #22d3ee)", borderRadius: "2px" }} />
             </div>
           </div>
         </div>
@@ -1180,11 +1180,11 @@ function FluxStreamReplica() {
         {/* Ammo counter — bottom right */}
         <div className="absolute bottom-3 right-3 flex items-end gap-2">
           <div className="flex flex-col items-end">
-            <div style={{ fontSize: "9px", color: "#888", fontFamily: "monospace", marginBottom: "2px" }}>RIFLE</div>
+            <div style={{ fontSize: "9px", color: "#71717a", fontFamily: "monospace", marginBottom: "2px" }}>RIFLE</div>
             <div className="flex items-baseline gap-1">
-              <span style={{ fontSize: "24px", fontWeight: 700, color: "#e8e8e8", fontFamily: "monospace", lineHeight: 1 }}>24</span>
-              <span style={{ fontSize: "12px", color: "#555", fontFamily: "monospace" }}>/</span>
-              <span style={{ fontSize: "14px", color: "#888", fontFamily: "monospace" }}>90</span>
+              <span style={{ fontSize: "24px", fontWeight: 700, color: "#e4e4e7", fontFamily: "monospace", lineHeight: 1 }}>24</span>
+              <span style={{ fontSize: "12px", color: "#52525b", fontFamily: "monospace" }}>/</span>
+              <span style={{ fontSize: "14px", color: "#71717a", fontFamily: "monospace" }}>90</span>
             </div>
           </div>
           <div className="rounded" style={{ width: "28px", height: "28px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -1194,9 +1194,9 @@ function FluxStreamReplica() {
       </div>
 
       {/* Preset selector bar */}
-      <div className="px-4 py-3 flex items-center justify-between" style={{ borderTop: "1px solid #161616", background: "#0e0e0e" }}>
+      <div className="px-4 py-3 flex items-center justify-between" style={{ borderTop: "1px solid #1a1a1f", background: "#0e0e12" }}>
         <div className="flex items-center gap-2">
-          <Monitor size={14} style={{ color: "#888" }} />
+          <Monitor size={14} style={{ color: "#71717a" }} />
           <AnimatePresence mode="wait">
             <motion.span
               key={activePreset}
@@ -1204,12 +1204,12 @@ function FluxStreamReplica() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.2 }}
-              style={{ fontSize: "12px", color: "#e8e8e8", fontFamily: "monospace" }}
+              style={{ fontSize: "12px", color: "#e4e4e7", fontFamily: "monospace" }}
             >
               {preset.preset}
             </motion.span>
           </AnimatePresence>
-          <span style={{ fontSize: "10px", color: "#555" }}>·</span>
+          <span style={{ fontSize: "10px", color: "#52525b" }}>·</span>
           <AnimatePresence mode="wait">
             <motion.span
               key={activePreset}
@@ -1217,7 +1217,7 @@ function FluxStreamReplica() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              style={{ fontSize: "11px", color: "#888" }}
+              style={{ fontSize: "11px", color: "#71717a" }}
             >
               {preset.codec} · {preset.bitrate} · {preset.framerate}
             </motion.span>
@@ -1259,7 +1259,7 @@ function KrispLogo({ size = 20 }: { size?: number }) {
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
       <path
         d="M2 12c1.5-3 3-5 4.5-5s2.5 2 4 2 2.5-4 4-4 2.5 3 4 3 2-2 3.5-2"
-        stroke="#43b581"
+        stroke="#22d3ee"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -1267,7 +1267,7 @@ function KrispLogo({ size = 20 }: { size?: number }) {
       />
       <path
         d="M2 16c1.5-2 3-3.5 4.5-3.5s2.5 1.5 4 1.5 2.5-3 4-3 2.5 2 4 2 2-1.5 3.5-1.5"
-        stroke="#43b581"
+        stroke="#22d3ee"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"

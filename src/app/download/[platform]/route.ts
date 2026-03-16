@@ -1,0 +1,63 @@
+import { NextRequest, NextResponse } from "next/server";
+
+const REPO = "NoahSmiley/fluxchat";
+
+const ASSET_PATTERNS: Record<string, RegExp> = {
+  windows: /\.exe$/,
+  mac: /\.dmg$/,
+};
+
+async function getRelease(beta: boolean) {
+  // For stable: fetch latest non-prerelease. For beta: fetch latest prerelease.
+  const url = beta
+    ? `https://api.github.com/repos/${REPO}/releases`
+    : `https://api.github.com/repos/${REPO}/releases/latest`;
+
+  const res = await fetch(url, {
+    headers: { Accept: "application/vnd.github+json" },
+    next: { revalidate: 300 }, // cache 5 min
+  });
+
+  if (!res.ok) return null;
+
+  if (beta) {
+    const releases = await res.json();
+    return releases.find((r: { prerelease: boolean }) => r.prerelease) ?? null;
+  }
+
+  return res.json();
+}
+
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ platform: string }> },
+) {
+  const { platform } = await params;
+  const beta = req.nextUrl.searchParams.get("beta") === "true";
+
+  const pattern = ASSET_PATTERNS[platform];
+  if (!pattern) {
+    return NextResponse.json(
+      { error: `Unknown platform: ${platform}. Use "windows" or "mac".` },
+      { status: 400 },
+    );
+  }
+
+  const release = await getRelease(beta);
+  if (!release) {
+    return NextResponse.json({ error: "No release found" }, { status: 404 });
+  }
+
+  const asset = release.assets?.find((a: { name: string }) =>
+    pattern.test(a.name),
+  );
+
+  if (!asset) {
+    return NextResponse.json(
+      { error: `No ${platform} installer found in ${release.tag_name}` },
+      { status: 404 },
+    );
+  }
+
+  return NextResponse.redirect(asset.browser_download_url, 302);
+}

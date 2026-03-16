@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import {
   AudioWaveform, Lock, Monitor, MicOff, MessageSquare, Zap,
   Download, Apple, MonitorDot, ArrowRight, Volume2, Mic, MicOff as MicOffIcon,
@@ -30,6 +29,20 @@ const fluxBenchmarks: BenchmarkGroup[] = [
 ];
 
 const iconMap = { AudioWaveform, Lock, Monitor, MicOff, MessageSquare, Zap } as const;
+
+// ── OS detection for download buttons ──
+
+function useDetectedPlatform() {
+  const [platform, setPlatform] = useState<"windows" | "mac" | null>(null);
+
+  useEffect(() => {
+    const ua = navigator.userAgent.toLowerCase();
+    if (ua.includes("mac")) setPlatform("mac");
+    else setPlatform("windows"); // default to Windows
+  }, []);
+
+  return platform;
+}
 
 const EASE: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
@@ -1282,6 +1295,11 @@ function KrispLogo({ size = 20 }: { size?: number }) {
 // ── Hero ──
 
 function FluxHero() {
+  const platform = useDetectedPlatform();
+  const downloadHref = platform === "mac" ? "/download/mac" : "/download/windows";
+  const PlatformIcon = platform === "mac" ? Apple : MonitorDot;
+  const platformLabel = platform === "mac" ? "Download for macOS" : "Download for Windows";
+
   return (
     <section className="relative pt-32 sm:pt-40 pb-6">
       <div className="relative mx-auto max-w-7xl px-6">
@@ -1323,11 +1341,18 @@ function FluxHero() {
           variants={fadeUp}
         >
           <a
-            href="#download"
+            href={downloadHref}
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:opacity-90 shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
           >
-            <Download size={14} />
-            Download
+            <PlatformIcon size={14} />
+            {platformLabel}
+          </a>
+          <a
+            href={platform === "mac" ? "/download/windows" : "/download/mac"}
+            className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground-muted text-sm rounded-full hover:text-foreground hover:border-foreground/20 hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
+          >
+            {platform === "mac" ? <MonitorDot size={14} /> : <Apple size={14} />}
+            {platform === "mac" ? "Windows" : "macOS"}
           </a>
           <a
             href="#features"
@@ -1337,6 +1362,9 @@ function FluxHero() {
             <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-200" />
           </a>
         </motion.div>
+        <p className="mt-4 text-xs text-foreground-muted/50">
+          Available for macOS and Windows. Free with Athion subscription.
+        </p>
       </div>
     </section>
   );
@@ -1698,29 +1726,10 @@ function TechSpecs() {
 // ── Bottom CTA ──
 
 function DownloadCTA() {
-  const [authState, setAuthState] = useState<"loading" | "none" | "no-sub" | "active">("loading");
-  const router = useRouter();
-
-  useEffect(() => {
-    const check = async () => {
-      const meRes = await fetch("/api/auth/me");
-      const meData = await meRes.json();
-      if (!meData.user) { setAuthState("none"); return; }
-      const subsRes = await fetch("/api/subscriptions");
-      const subsData = await subsRes.json();
-      const hasFlux = subsData.subscriptions?.some((s: { product: string }) => s.product === "athion_pro" || s.product === "athion" || s.product === "flux");
-      setAuthState(hasFlux ? "active" : "no-sub");
-    };
-    check();
-  }, []);
-
-  const handleDownloadClick = () => {
-    if (authState === "none") router.push("/signup");
-    else if (authState === "no-sub") router.push("/pricing");
-    else router.push("/dashboard/downloads");
-  };
-
-  const ctaLabel = authState === "none" ? "Sign Up to Download" : authState === "no-sub" ? "Subscribe to Download" : "Download for macOS";
+  const platform = useDetectedPlatform();
+  const downloadHref = platform === "mac" ? "/download/mac" : "/download/windows";
+  const PlatformIcon = platform === "mac" ? Apple : MonitorDot;
+  const platformLabel = platform === "mac" ? "Download for macOS" : "Download for Windows";
 
   return (
     <section id="download" className="py-32 border-t border-border/50">
@@ -1734,23 +1743,23 @@ function DownloadCTA() {
 
         <ScrollReveal delay={0.1}>
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <button
-              onClick={handleDownloadClick}
+            <a
+              href={downloadHref}
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:opacity-90 shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
             >
-              <Apple size={14} />
-              {ctaLabel}
-            </button>
-            <button
-              onClick={handleDownloadClick}
+              <PlatformIcon size={14} />
+              {platformLabel}
+            </a>
+            <a
+              href={platform === "mac" ? "/download/windows" : "/download/mac"}
               className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground-muted text-sm rounded-full hover:text-foreground hover:border-foreground/20 hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
             >
-              <MonitorDot size={14} />
-              {authState === "active" ? "Download for Windows" : ctaLabel}
-            </button>
+              {platform === "mac" ? <MonitorDot size={14} /> : <Apple size={14} />}
+              {platform === "mac" ? "Windows" : "macOS"}
+            </a>
           </div>
           <p className="mt-6 text-xs text-foreground-muted/50">
-            Available for macOS and Windows. Linux coming soon.
+            Available for macOS and Windows. Free with Athion subscription.
           </p>
         </ScrollReveal>
       </div>

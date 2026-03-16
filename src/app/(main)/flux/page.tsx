@@ -16,6 +16,7 @@ import { FluxLogo } from "@/components/flux-logo";
 
 import { BenchmarkSection, type BenchmarkGroup } from "@/components/benchmark";
 import { FLUX_FEATURES, SCREEN_SHARE_PRESETS } from "@/lib/constants";
+import { FluxAppMock } from "@/components/home/flux-mock";
 
 // ── Data ──
 
@@ -43,7 +44,7 @@ const fadeUp = {
 
 // ── Channel icon (chat bubble, not hashtag) ──
 
-function ChannelIcon({ size = 14, color = "#555" }: { size?: number; color?: string }) {
+function ChannelIcon({ size = 14, color = "#52525b" }: { size?: number; color?: string }) {
   return (
     <MessageSquare size={size} style={{ color }} />
   );
@@ -155,7 +156,7 @@ function TypingIndicator({ user }: { user: string }) {
           <motion.div
             key={i}
             className="rounded-full"
-            style={{ width: 4, height: 4, background: "#888" }}
+            style={{ width: 4, height: 4, background: "#71717a" }}
             animate={{ y: [0, -4, 0] }}
             transition={{
               duration: 0.6,
@@ -218,12 +219,12 @@ function FluxSidebar({
               cursor: "pointer",
             }}
           >
-            <ChannelIcon size={14} color={ch.active ? "#e8e8e8" : "#555"} />
+            <ChannelIcon size={14} color={ch.active ? "#e4e4e7" : "#52525b"} />
             <span
               style={{
                 fontSize: "13px",
                 fontWeight: ch.active ? 500 : 400,
-                color: ch.active ? "#e8e8e8" : "#888",
+                color: ch.active ? "#e4e4e7" : "#71717a",
               }}
             >
               {ch.name}
@@ -237,7 +238,7 @@ function FluxSidebar({
         {showRoom && roomParticipants && (
           <div
             className="mx-1 mb-2 rounded-lg"
-            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid #1a1a1a" }}
+            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid #1a1a1f" }}
           >
             <div className="flex items-center justify-between px-3 py-2">
               <div className="flex items-center gap-1.5">
@@ -328,8 +329,8 @@ function IconRail() {
       className="flex-shrink-0 flex-col items-center pt-3 gap-3 hidden md:flex"
       style={{
         width: "48px",
-        background: "#08080d",
-        borderRight: "1px solid #111",
+        background: "#050507",
+        borderRight: "1px solid rgba(26,26,31,0.19)",
       }}
     >
       <FluxLogo size={24} className="text-foreground-muted/60" />
@@ -540,7 +541,7 @@ function FluxAppReplica() {
 
 function FluxChatReplica() {
   const [messages, setMessages] = useState(
-    SECTION_INITIAL_MESSAGES.map((m) => ({ ...m, avatar: USERS[m.user as keyof typeof USERS]?.avatar || "?", color: USERS[m.user as keyof typeof USERS]?.color || "#888" }))
+    SECTION_INITIAL_MESSAGES.map((m) => ({ ...m, avatar: USERS[m.user as keyof typeof USERS]?.avatar || "?", color: USERS[m.user as keyof typeof USERS]?.color || "#71717a" }))
   );
   const [typingUser, setTypingUser] = useState<string | null>(null);
   const nextMsgIdx = useRef(0);
@@ -563,7 +564,7 @@ function FluxChatReplica() {
           id: nextMsgIdx.current + 100,
           user: extra.user,
           avatar: USERS[extra.user as keyof typeof USERS]?.avatar || "?",
-          color: USERS[extra.user as keyof typeof USERS]?.color || "#888",
+          color: USERS[extra.user as keyof typeof USERS]?.color || "#71717a",
           time: timeStr,
           text: extra.text,
         };
@@ -752,7 +753,7 @@ function FluxVoiceReplica() {
             style={{
               fontSize: "13px",
               fontWeight: 500,
-              color: tab.active ? "#e8e8e8" : "#555",
+              color: tab.active ? "#e4e4e7" : "#52525b",
             }}
           >
             {tab.label}
@@ -910,8 +911,8 @@ function FluxMusicReplica() {
               background: `
                 repeating-radial-gradient(
                   circle at center,
-                  #111 0px, #111 2px,
-                  #1a1a1a 2px, #1a1a1a 4px
+                  #0e0e12 0px, #0e0e12 2px,
+                  #1a1a1f 2px, #1a1a1f 4px
                 )
               `,
               boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
@@ -936,7 +937,7 @@ function FluxMusicReplica() {
               top: "29%",
               left: "29%",
               zIndex: 2,
-              boxShadow: "0 0 0 3px #1a1a1a",
+              boxShadow: "0 0 0 3px #1a1a1f",
               background: `linear-gradient(135deg, ${currentTrack.gradientFrom}, ${currentTrack.gradientTo})`,
               transition: "background 0.6s ease",
             }}
@@ -1125,7 +1126,7 @@ function FluxStreamReplica() {
           <span style={{ fontSize: "11px", color: "#71717a" }}>{viewerCount} watching</span>
           <div className="flex -space-x-1.5">
             {[USERS.trevor, USERS.riley, USERS.quinn].map((u) => (
-              <div key={u.id} className="w-5 h-5 rounded-full overflow-hidden border-2" style={{ borderColor: "#0e0e0e", background: u.color + "33" }}>
+              <div key={u.id} className="w-5 h-5 rounded-full overflow-hidden border-2" style={{ borderColor: "#0e0e12", background: u.color + "33" }}>
                 <img src={u.avatar} alt="" className="w-full h-full" />
               </div>
             ))}
@@ -1188,7 +1189,7 @@ function FluxStreamReplica() {
             </div>
           </div>
           <div className="rounded" style={{ width: "28px", height: "28px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ width: "16px", height: "10px", background: "#888", borderRadius: "2px", clipPath: "polygon(0 20%, 85% 0, 100% 30%, 100% 100%, 0 100%)" }} />
+            <div style={{ width: "16px", height: "10px", background: "#71717a", borderRadius: "2px", clipPath: "polygon(0 20%, 85% 0, 100% 30%, 100% 100%, 0 100%)" }} />
           </div>
         </div>
       </div>
@@ -1233,7 +1234,7 @@ function FluxStreamReplica() {
                 fontSize: "10px",
                 fontFamily: "monospace",
                 background: i === activePreset ? "#ffffff10" : "transparent",
-                color: i === activePreset ? "#e8e8e8" : "#555",
+                color: i === activePreset ? "#e4e4e7" : "#52525b",
               }}
             >
               {p.preset}
@@ -1354,7 +1355,7 @@ function HeroAppSection() {
           transition={{ duration: 0.8, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
         >
           <div className="relative overflow-hidden rounded-xl">
-            <FluxAppReplica />
+            <FluxAppMock height="680px" />
             {/* Bottom gradient mask — subtle fade into background */}
             <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background via-background/30 to-transparent pointer-events-none" />
             {/* Left gradient mask — subtle */}

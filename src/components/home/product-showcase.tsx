@@ -352,7 +352,7 @@ function ShowcaseBlock({
       {/* Full-width demo with Linear-style vignette fade */}
       <ScrollReveal delay={0.15}>
         <div
-          className="relative rounded-[22px] border border-white/[0.08] p-2 select-none"
+          className="relative select-none"
           style={{
             WebkitMaskImage:
               "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",

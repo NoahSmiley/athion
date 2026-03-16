@@ -23,6 +23,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // Protect download routes — require login to download Flux
+  if (!isAuthenticated && request.nextUrl.pathname.startsWith("/download")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("redirect", request.nextUrl.pathname);
+    return NextResponse.redirect(url);
+  }
+
   // Redirect logged-in users away from auth pages
   if (
     isAuthenticated &&
@@ -38,5 +46,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/signup"],
+  matcher: ["/dashboard/:path*", "/download/:path*", "/login", "/signup"],
 };

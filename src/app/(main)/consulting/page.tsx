@@ -41,8 +41,13 @@ function ConsultingHero() {
         <ScrollReveal delay={0.2}>
           <p className="mt-6 text-lg text-foreground-muted max-w-xl leading-relaxed">
             Five years of enterprise consulting for Fortune 100 and Fortune 500
-            companies — now available directly through Athion.
+            companies — coming soon to Athion.
           </p>
+        </ScrollReveal>
+        <ScrollReveal delay={0.3}>
+          <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 border border-accent/20 text-accent text-sm rounded-[6px]">
+            Coming Soon
+          </div>
         </ScrollReveal>
       </div>
     </section>

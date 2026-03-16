@@ -2,7 +2,7 @@ export const BRAND = {
   name: "Athion",
   tagline: "Software that\ndisappears.",
   description:
-    "Tools, infrastructure, and consulting for teams that care about performance, privacy, and craft. Every product is built to use less, start faster, and stay invisible.",
+    "Tools and infrastructure for teams that care about performance, privacy, and craft. Every product is built to use less, start faster, and stay invisible.",
 } as const;
 
 export type NavLink = { href: string; label: string };
@@ -17,9 +17,6 @@ export const NAV_ITEMS: NavItem[] = [
       { href: "/ide", label: "IDE" },
     ],
   },
-  { href: "/hosting", label: "Hosting" },
-  { href: "/servers", label: "Game Servers" },
-  { href: "/consulting", label: "Consulting" },
   { href: "/pricing", label: "Pricing" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
@@ -99,59 +96,21 @@ export const IDE_FEATURES = [
 export const ATHION_PRO = {
   product: "athion_pro" as const,
   name: "Athion Pro",
-  description: "One subscription. Every product. Full access to Flux, Liminal IDE, Hosting, and game servers.",
+  description: "One subscription. Full access to Flux and Liminal IDE — with hosting, game servers, and more on the way.",
   monthlyPrice: 20,
   yearlyPrice: 192,
   features: [
     "Flux — voice chat, E2EE, lossless screen share",
     "Liminal IDE — AI-native code editor, Rust core",
+    "Priority support",
+  ],
+  comingSoon: [
     "Hosting — web apps, APIs, and static sites",
     "Game Servers — Minecraft, modpacks, always online",
     "VPS — full root access, 2 vCPU, 4 GB RAM",
-    "Custom domains with automatic SSL",
-    "Daily backups across all services",
-    "Priority support",
+    "Consulting — custom development and advisory",
   ],
 } as const;
-
-export const ADDON_PACKAGES = [
-  {
-    id: "minecraft" as const,
-    name: "Minecraft Server",
-    description: "Java Edition with full modpack support, always online.",
-    monthlyPrice: 5,
-  },
-  {
-    id: "factorio" as const,
-    name: "Factorio Server",
-    description: "Persistent multiplayer world. Drop in anytime.",
-    monthlyPrice: 4,
-  },
-  {
-    id: "satisfactory" as const,
-    name: "Satisfactory Server",
-    description: "Co-op dedicated server with save persistence.",
-    monthlyPrice: 4,
-  },
-  {
-    id: "cs2_surf" as const,
-    name: "CS2 Surf Server",
-    description: "Custom maps, competitive timers, and leaderboards.",
-    monthlyPrice: 4,
-  },
-  {
-    id: "hosting" as const,
-    name: "Web Hosting",
-    description: "Web apps, APIs, and static sites with custom domains.",
-    monthlyPrice: 6,
-  },
-  {
-    id: "vps" as const,
-    name: "VPS",
-    description: "Full root access, 2 vCPU, 4 GB RAM.",
-    monthlyPrice: 12,
-  },
-] as const;
 
 export const HOSTING_TIERS = [
   {

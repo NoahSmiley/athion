@@ -5,8 +5,6 @@ const footerLinks = {
   Products: [
     { href: "/flux", label: "Flux" },
     { href: "/ide", label: "IDE" },
-    { href: "/hosting", label: "Hosting" },
-    { href: "/consulting", label: "Consulting" },
     { href: "/pricing", label: "Pricing" },
   ],
   Company: [
@@ -37,7 +35,7 @@ export function Footer() {
               className="flex items-center gap-2 text-foreground hover:text-accent transition-colors"
             >
               <BrainLogo size={20} />
-              <span className="font-[590] text-base tracking-[-0.022em]">Athion</span>
+              <span className="font-[400] text-base tracking-[-0.022em]">athion</span>
             </Link>
             <p className="mt-4 text-xs text-foreground-muted leading-relaxed max-w-[200px]">
               Engineering, refined.

@@ -41,11 +41,11 @@ export default async function DashboardPage() {
           <p className="text-xs text-foreground-muted uppercase tracking-wider mb-3">
             Athion Subscription
           </p>
-          {activeProducts.includes("athion") ? (
+          {activeProducts.includes("athion") || activeProducts.includes("athion_pro") ? (
             <>
               <p className="text-sm text-accent">Active</p>
               <p className="mt-2 text-xs text-foreground-muted">
-                Full access to Flux, Liminal IDE, Hosting, and game servers.
+                Full access to Flux and Liminal IDE.
               </p>
             </>
           ) : (

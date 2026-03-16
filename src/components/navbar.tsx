@@ -106,10 +106,10 @@ export function Navbar() {
         >
           {/* Text wordmark — slides right and fades out on scroll */}
           <motion.span
-            className="font-[590] text-lg tracking-[-0.022em]"
+            className="font-[400] text-lg tracking-[-0.022em]"
             style={{ opacity: smoothTextOpacity, x: smoothTextX }}
           >
-            Athion
+            athion
           </motion.span>
           {/* Brain logo — slides in from left on scroll */}
           <motion.div

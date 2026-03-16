@@ -26,12 +26,6 @@ export async function POST(request: Request) {
     const priceMap: Record<string, string | undefined> = {
       athion_pro_monthly: process.env.STRIPE_PRICE_ATHION_PRO_MONTHLY,
       athion_pro_yearly: process.env.STRIPE_PRICE_ATHION_PRO_YEARLY,
-      addon_minecraft: process.env.STRIPE_PRICE_ADDON_MINECRAFT,
-      addon_factorio: process.env.STRIPE_PRICE_ADDON_FACTORIO,
-      addon_satisfactory: process.env.STRIPE_PRICE_ADDON_SATISFACTORY,
-      addon_cs2_surf: process.env.STRIPE_PRICE_ADDON_CS2_SURF,
-      addon_hosting: process.env.STRIPE_PRICE_ADDON_HOSTING,
-      addon_vps: process.env.STRIPE_PRICE_ADDON_VPS,
       // Legacy keys
       athion_monthly: process.env.STRIPE_PRICE_ATHION_PRO_MONTHLY,
       athion_yearly: process.env.STRIPE_PRICE_ATHION_PRO_YEARLY,

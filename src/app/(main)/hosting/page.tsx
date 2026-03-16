@@ -39,20 +39,8 @@ function HostingHero() {
           </p>
         </ScrollReveal>
         <ScrollReveal delay={0.3}>
-          <div className="mt-10 flex items-center gap-4">
-            <Link
-              href="/pricing"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
-            >
-              View Plans
-              <ArrowRight size={14} />
-            </Link>
-            <a
-              href="#tiers"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground-muted text-sm rounded-[6px] hover:text-foreground hover:border-border-light hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
-            >
-              Learn more
-            </a>
+          <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 border border-accent/20 text-accent text-sm rounded-[6px]">
+            Coming Soon
           </div>
         </ScrollReveal>
       </div>

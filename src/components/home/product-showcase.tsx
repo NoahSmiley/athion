@@ -397,6 +397,7 @@ export function ProductShowcase() {
       description:
         "Game servers, web hosting, and VPS — all running on dedicated hardware. No shared tenancy, no noisy neighbors, no surprises.",
       href: "/hosting",
+      comingSoon: true,
       replica: <HostingMiniReplica />,
     },
     {
@@ -406,6 +407,7 @@ export function ProductShowcase() {
       description:
         "Custom software development, architecture reviews, and technical advisory. Five years of enterprise consulting for Fortune 100 and 500 companies — now available to teams of any size.",
       href: "/consulting",
+      comingSoon: true,
       replica: <ConsultingMiniReplica />,
     },
   ];

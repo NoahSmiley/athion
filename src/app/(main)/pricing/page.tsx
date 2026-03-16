@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import Link from "next/link";
 import { Check, ArrowRight, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -162,6 +162,18 @@ export default function PricingPage() {
                 {loading ? "Loading..." : "Subscribe"}
                 {!loading && <ArrowRight size={14} />}
               </button>
+            </div>
+          </ScrollReveal>
+          {/* Transparency link */}
+          <ScrollReveal delay={0.05}>
+            <div className="mt-10 text-center">
+              <Link
+                href="/transparency"
+                className="group inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-foreground transition-colors"
+              >
+                See where your money goes
+                <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform duration-200" />
+              </Link>
             </div>
           </ScrollReveal>
         </div>

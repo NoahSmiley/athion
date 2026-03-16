@@ -43,7 +43,7 @@ function FluxMiniReplica() {
   }, [inView]);
 
   return (
-    <div ref={ref} className="flex h-[520px] bg-[#0a0a0f] text-white text-xs select-none">
+    <div ref={ref} className="flex h-[520px] bg-[#0a0a0d] text-white text-xs select-none">
       {/* Icon rail */}
       <div className="w-[36px] shrink-0 bg-[#07070b] flex flex-col items-center gap-3 pt-3 border-r border-[#1a1a22]">
         <div className="w-5 h-5 rounded-full bg-[#a78bfa]/20" />
@@ -51,7 +51,7 @@ function FluxMiniReplica() {
         <div className="w-5 h-5 rounded-full bg-[#ffffff08]" />
       </div>
       {/* Sidebar */}
-      <div className="w-[100px] shrink-0 bg-[#0c0c12] border-r border-[#1a1a22] pt-3 px-2">
+      <div className="w-[100px] shrink-0 bg-[#0a0a0d] border-r border-[#1a1a22] pt-3 px-2">
         <p className="text-[9px] uppercase tracking-wider text-[#52525b] mb-2 px-1">Channels</p>
         {["general", "design", "random"].map((ch, i) => (
           <div
@@ -359,7 +359,7 @@ function ShowcaseBlock({
               "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
           }}
         >
-          <div className="rounded-xl overflow-hidden bg-[#0a0a0f]">
+          <div className="rounded-xl overflow-hidden bg-[#0a0a0d]">
             {replica}
           </div>
         </div>

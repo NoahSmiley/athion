@@ -186,7 +186,7 @@ function FluxSidebar({
       className="flex-shrink-0 flex-col hidden md:flex"
       style={{
         width: compact ? "200px" : "240px",
-        background: "#0e0e12",
+        background: "#0a0a0d",
         borderRight: "1px solid #1a1a1f",
       }}
     >

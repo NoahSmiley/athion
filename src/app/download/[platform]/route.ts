@@ -82,9 +82,12 @@ export async function GET(
     return NextResponse.json({ error: "No release found" }, { status: 404 });
   }
 
-  const asset = release.assets?.find((a: { name: string }) =>
-    pattern.test(a.name),
-  );
+  // Match the asset whose name contains the release version to avoid stale duplicates
+  const version = (release.tag_name as string)?.replace(/^v/, "");
+  const assets = (release.assets ?? []) as { name: string; browser_download_url: string }[];
+  const asset =
+    assets.find((a) => pattern.test(a.name) && version && a.name.includes(version)) ??
+    assets.findLast((a) => pattern.test(a.name));
 
   if (!asset) {
     return NextResponse.json(

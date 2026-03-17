@@ -1508,8 +1508,18 @@ function MessagingSection() {
           description="Every message, file, and reaction is encrypted end-to-end with AES-256-GCM before leaving your device. Rich text, emoji, reactions, and threaded replies — without compromising privacy."
         />
 
-        <ScrollReveal>
-          <FluxChatReplica />
+        <ScrollReveal delay={0.15}>
+          <div
+            className="relative select-none -mx-6 lg:-mx-12"
+            style={{
+              WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+            }}
+          >
+            <div className="rounded-xl overflow-hidden bg-[#0a0a0d]">
+              <FluxChatReplica />
+            </div>
+          </div>
         </ScrollReveal>
 
         <SubFeatures
@@ -1545,8 +1555,18 @@ function VoiceSection() {
           </div>
         </ScrollReveal>
 
-        <ScrollReveal>
-          <FluxVoiceReplica />
+        <ScrollReveal delay={0.15}>
+          <div
+            className="relative select-none -mx-6 lg:-mx-12"
+            style={{
+              WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+            }}
+          >
+            <div className="rounded-xl overflow-hidden bg-[#0a0a0d]">
+              <FluxVoiceReplica />
+            </div>
+          </div>
         </ScrollReveal>
 
         <SubFeatures
@@ -1575,8 +1595,18 @@ function MusicSection() {
           description="Listen together in real time. Queue tracks, skip, and control playback collectively — without leaving your voice channel. Everyone hears the same beat, in perfect sync."
         />
 
-        <ScrollReveal>
-          <FluxMusicReplica />
+        <ScrollReveal delay={0.15}>
+          <div
+            className="relative select-none -mx-6 lg:-mx-12"
+            style={{
+              WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+            }}
+          >
+            <div className="rounded-xl overflow-hidden bg-[#0a0a0d]">
+              <FluxMusicReplica />
+            </div>
+          </div>
         </ScrollReveal>
 
         <SubFeatures
@@ -1605,8 +1635,18 @@ function StreamingSection() {
           description="Share your screen at full fidelity — from 480p for low bandwidth to lossless VP9 at 4K 60fps pushing 20 Mbps. No Nitro paywall, no resolution caps. Every pixel, every frame."
         />
 
-        <ScrollReveal>
-          <FluxStreamReplica />
+        <ScrollReveal delay={0.15}>
+          <div
+            className="relative select-none -mx-6 lg:-mx-12"
+            style={{
+              WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+            }}
+          >
+            <div className="rounded-xl overflow-hidden bg-[#0a0a0d]">
+              <FluxStreamReplica />
+            </div>
+          </div>
         </ScrollReveal>
 
         <SubFeatures

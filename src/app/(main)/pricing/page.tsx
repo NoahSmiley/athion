@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Check, ArrowRight, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,22 @@ import { cn } from "@/lib/utils";
 export default function PricingPage() {
   const [annual, setAnnual] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [hasSubscription, setHasSubscription] = useState(false);
+  const [checkingSubscription, setCheckingSubscription] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    fetch("/api/subscriptions")
+      .then((r) => r.json())
+      .then((data) => {
+        const active = data.subscriptions?.some(
+          (s: { product: string }) => s.product === "athion_pro" || s.product === "athion"
+        );
+        setHasSubscription(!!active);
+      })
+      .catch(() => {})
+      .finally(() => setCheckingSubscription(false));
+  }, []);
 
   const handleCheckout = async () => {
     setLoading(true);
@@ -35,6 +50,21 @@ export default function PricingPage() {
         body: JSON.stringify({ priceId: priceKey }),
       });
 
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch {
+      // Error handled silently
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/portal", { method: "POST" });
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
@@ -154,14 +184,25 @@ export default function PricingPage() {
                 </div>
               )}
 
-              <button
-                onClick={handleCheckout}
-                disabled={loading}
-                className="mt-10 w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150 disabled:opacity-50"
-              >
-                {loading ? "Loading..." : "Subscribe"}
-                {!loading && <ArrowRight size={14} />}
-              </button>
+              {!checkingSubscription && hasSubscription ? (
+                <button
+                  onClick={handleManageSubscription}
+                  disabled={loading}
+                  className="mt-10 w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-border text-sm font-medium rounded-[6px] hover:bg-white/[0.03] hover:border-border-light active:scale-[0.98] transition-all duration-150 disabled:opacity-50"
+                >
+                  {loading ? "Loading..." : "Manage Subscription"}
+                  {!loading && <ArrowRight size={14} />}
+                </button>
+              ) : (
+                <button
+                  onClick={handleCheckout}
+                  disabled={loading || checkingSubscription}
+                  className="mt-10 w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150 disabled:opacity-50"
+                >
+                  {loading ? "Loading..." : "Subscribe"}
+                  {!loading && <ArrowRight size={14} />}
+                </button>
+              )}
             </div>
           </ScrollReveal>
           {/* Transparency link */}

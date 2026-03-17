@@ -1,4 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { eq, inArray, and } from "drizzle-orm";
+import { getSession } from "@/lib/auth/session";
+import { db } from "@/lib/db";
+import { subscriptions } from "@/lib/db/schema";
 
 const REPO = "NoahSmiley/fluxchat";
 
@@ -32,6 +36,36 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ platform: string }> },
 ) {
+  // Require active subscription to download
+  const user = await getSession();
+  if (!user) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("redirect", req.nextUrl.pathname);
+    return NextResponse.redirect(url);
+  }
+
+  const subs = await db
+    .select({ product: subscriptions.product })
+    .from(subscriptions)
+    .where(
+      and(
+        eq(subscriptions.userId, user.id),
+        inArray(subscriptions.status, ["active", "trialing"])
+      )
+    );
+
+  const hasSubscription = subs.some(
+    (s) => s.product === "athion_pro" || s.product === "athion"
+  );
+
+  if (!hasSubscription) {
+    return NextResponse.json(
+      { error: "Active subscription required to download Flux." },
+      { status: 403 },
+    );
+  }
+
   const { platform } = await params;
   const beta = req.nextUrl.searchParams.get("beta") === "true";
 

@@ -1299,6 +1299,21 @@ function FluxHero() {
   const downloadHref = platform === "mac" ? "/download/mac" : "/download/windows";
   const PlatformIcon = platform === "mac" ? Apple : MonitorDot;
   const platformLabel = platform === "mac" ? "Download for macOS" : "Download for Windows";
+  const [hasSubscription, setHasSubscription] = useState(false);
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/subscriptions")
+      .then((r) => r.json())
+      .then((data) => {
+        const active = data.subscriptions?.some(
+          (s: { product: string }) => s.product === "athion_pro" || s.product === "athion"
+        );
+        setHasSubscription(!!active);
+      })
+      .catch(() => {})
+      .finally(() => setChecked(true));
+  }, []);
 
   return (
     <section className="relative pt-32 sm:pt-40 pb-6">
@@ -1340,25 +1355,46 @@ function FluxHero() {
           custom={0.2}
           variants={fadeUp}
         >
+          {checked && hasSubscription ? (
+            <>
+              <a
+                href={downloadHref}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:opacity-90 shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
+              >
+                <PlatformIcon size={14} />
+                {platformLabel}
+              </a>
+              <a
+                href={platform === "mac" ? "/download/windows" : "/download/mac"}
+                className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground-muted text-sm rounded-full hover:text-foreground hover:border-foreground/20 hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
+              >
+                {platform === "mac" ? <MonitorDot size={14} /> : <Apple size={14} />}
+                {platform === "mac" ? "Windows" : "macOS"}
+              </a>
+            </>
+          ) : (
+            <>
+              <span
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground/30 text-background/50 text-sm font-medium rounded-full cursor-not-allowed"
+                title="Athion subscription required"
+              >
+                <PlatformIcon size={14} />
+                {platformLabel}
+              </span>
+              <span
+                className="inline-flex items-center gap-2 px-5 py-2.5 border border-border/50 text-foreground-muted/40 text-sm rounded-full cursor-not-allowed"
+                title="Athion subscription required"
+              >
+                {platform === "mac" ? <MonitorDot size={14} /> : <Apple size={14} />}
+                {platform === "mac" ? "Windows" : "macOS"}
+              </span>
+            </>
+          )}
           <a
-            href={downloadHref}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:opacity-90 shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
-          >
-            <PlatformIcon size={14} />
-            {platformLabel}
-          </a>
-          <a
-            href={platform === "mac" ? "/download/windows" : "/download/mac"}
-            className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground-muted text-sm rounded-full hover:text-foreground hover:border-foreground/20 hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
-          >
-            {platform === "mac" ? <MonitorDot size={14} /> : <Apple size={14} />}
-            {platform === "mac" ? "Windows" : "macOS"}
-          </a>
-          <a
-            href="#features"
+            href={checked && !hasSubscription ? "/pricing" : "#features"}
             className="group inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-foreground transition-colors"
           >
-            See what&apos;s inside
+            {checked && !hasSubscription ? "Subscribe to download" : "See what's inside"}
             <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-200" />
           </a>
         </motion.div>

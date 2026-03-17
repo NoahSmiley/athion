@@ -1447,27 +1447,36 @@ function SectionHeader({
   description: string;
 }) {
   return (
-    <>
+    <div className="grid grid-cols-1 lg:grid-cols-2 mb-16">
       <ScrollReveal>
-        <div className="flex items-center gap-2 mb-16">
-          <span className="text-sm font-mono text-foreground-muted/30">{number}</span>
-          <span className="text-sm text-foreground-muted/60">{label}</span>
-          <ArrowRight size={14} className="text-foreground-muted/40" />
-        </div>
-      </ScrollReveal>
-      <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-16">
-        <ScrollReveal>
-          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[510] tracking-[-0.022em] leading-[1.12] text-foreground whitespace-pre-line">
+        <div className="pr-0 lg:pr-8">
+          <h2
+            className="font-[510] text-[1.5rem] md:text-[2.5rem] lg:text-[3rem] leading-[1.33] md:leading-[1.1] lg:leading-[1] tracking-[-0.022em] text-foreground whitespace-pre-line"
+            style={{ textWrap: "balance", maxWidth: "18ch" }}
+          >
             {title}
           </h2>
-        </ScrollReveal>
-        <ScrollReveal delay={0.1}>
-          <p className="text-[0.9375rem] leading-[1.6] tracking-[-0.011em] text-[#b4bcd0] lg:pt-2">
+        </div>
+      </ScrollReveal>
+      <ScrollReveal delay={0.1}>
+        <div className="mt-6 lg:mt-0">
+          <p
+            className="font-[590] text-[1.0625rem] md:text-[1.25rem] lg:text-[1.5rem] leading-[1.4] md:leading-[1.33] tracking-[-0.012em] text-[#b4bcd0]"
+            style={{ textWrap: "balance" }}
+          >
             {description}
           </p>
-        </ScrollReveal>
-      </div>
-    </>
+          <div className="inline-flex items-center mt-6 lg:mt-12">
+            <span className="text-[0.9375rem] leading-[1.6] tracking-[-0.011em] text-[#86848d] tabular-nums">
+              {number}
+            </span>
+            <span className="text-[0.9375rem] leading-[1.6] tracking-[-0.011em] text-[#b4bcd0] ml-3">
+              {label}
+            </span>
+          </div>
+        </div>
+      </ScrollReveal>
+    </div>
   );
 }
 

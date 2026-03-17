@@ -595,7 +595,7 @@ function FluxChatReplica() {
 
   return (
     <div
-      className="rounded-xl overflow-hidden w-full max-w-[800px] mx-auto h-[380px] md:h-[480px]"
+      className="overflow-hidden w-full h-[380px] md:h-[480px]"
       style={{
         background: "#0a0a0d",
         border: "1px solid #1a1a1f",
@@ -748,7 +748,7 @@ function FluxVoiceReplica() {
 
   return (
     <div
-      className="rounded-xl overflow-hidden w-full max-w-[620px] mx-auto"
+      className="overflow-hidden w-full"
       style={{
         background: "#0a0a0d",
         border: "1px solid #1a1a1f",
@@ -896,7 +896,7 @@ function FluxMusicReplica() {
 
   return (
     <div
-      className="rounded-xl overflow-hidden w-full max-w-[520px] mx-auto"
+      className="overflow-hidden w-full"
       style={{
         background: "#0a0a0d",
         border: "1px solid #1a1a1f",
@@ -1120,7 +1120,7 @@ function FluxStreamReplica() {
 
   return (
     <div
-      className="rounded-xl overflow-hidden w-full max-w-[900px] mx-auto"
+      className="overflow-hidden w-full"
       style={{ background: "#0a0a0d", border: "1px solid #1a1a1f" }}
     >
       {/* Stream header */}

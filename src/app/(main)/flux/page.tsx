@@ -1316,20 +1316,20 @@ function FluxHero() {
   }, []);
 
   return (
-    <section className="relative pt-32 sm:pt-40 pb-6">
-      <div className="relative mx-auto max-w-7xl px-6">
+    <section className="relative pt-[180px] md:pt-[260px] lg:pt-[280px] pb-6">
+      <div className="relative mx-auto max-w-[1344px] px-6 lg:px-12">
         <motion.div
           initial="hidden"
           animate="visible"
           custom={0}
           variants={fadeUp}
-          className="mb-4"
+          className="mb-4 px-8"
         >
           <FluxLogo size={48} />
         </motion.div>
 
         <motion.h1
-          className="text-[clamp(2.75rem,7vw,5.5rem)] font-[590] tracking-[-0.022em] leading-[1.08]"
+          className="text-[2.5rem] md:text-[3.5rem] lg:text-[4rem] font-[510] tracking-[-0.022em] leading-[1.1] md:leading-[1.1] lg:leading-[1.06] px-8"
           initial="hidden"
           animate="visible"
           custom={0}
@@ -1339,7 +1339,7 @@ function FluxHero() {
         </motion.h1>
 
         <motion.p
-          className="mt-4 text-lg text-foreground-muted"
+          className="mt-5 md:mt-8 text-[0.9375rem] leading-[1.6] tracking-[-0.011em] text-[#b4bcd0] px-8"
           initial="hidden"
           animate="visible"
           custom={0.1}
@@ -1349,7 +1349,7 @@ function FluxHero() {
         </motion.p>
 
         <motion.div
-          className="mt-10 flex flex-wrap items-center gap-4"
+          className="mt-10 flex flex-wrap items-center gap-4 px-8"
           initial="hidden"
           animate="visible"
           custom={0.2}
@@ -1359,14 +1359,14 @@ function FluxHero() {
             <>
               <a
                 href={downloadHref}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:opacity-90 shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#111] text-sm font-[510] rounded-full hover:bg-white/90 active:scale-[0.98] transition-all duration-150"
               >
                 <PlatformIcon size={14} />
                 {platformLabel}
               </a>
               <a
                 href={platform === "mac" ? "/download/windows" : "/download/mac"}
-                className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground-muted text-sm rounded-full hover:text-foreground hover:border-foreground/20 hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
+                className="inline-flex items-center gap-2 px-5 py-2.5 border border-white/[0.08] text-[#b4bcd0] text-sm font-[510] hover:text-white hover:border-white/[0.15] rounded-full active:scale-[0.98] transition-all duration-150"
               >
                 {platform === "mac" ? <MonitorDot size={14} /> : <Apple size={14} />}
                 {platform === "mac" ? "Windows" : "macOS"}
@@ -1398,7 +1398,7 @@ function FluxHero() {
             <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-200" />
           </a>
         </motion.div>
-        <p className="mt-4 text-xs text-foreground-muted/50">
+        <p className="mt-4 text-xs text-foreground-muted/50 px-8">
           Available for macOS and Windows. Free with Athion subscription.
         </p>
       </div>
@@ -1411,7 +1411,7 @@ function FluxHero() {
 function HeroAppSection() {
   return (
     <section className="relative pt-16 pb-32">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <motion.div
           className="relative"
           initial={{ opacity: 0, y: 30 }}
@@ -1457,12 +1457,12 @@ function SectionHeader({
       </ScrollReveal>
       <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-16">
         <ScrollReveal>
-          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[590] tracking-[-0.022em] leading-[1.12] text-foreground whitespace-pre-line">
+          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[510] tracking-[-0.022em] leading-[1.12] text-foreground whitespace-pre-line">
             {title}
           </h2>
         </ScrollReveal>
         <ScrollReveal delay={0.1}>
-          <p className="text-foreground-muted leading-relaxed lg:pt-2">
+          <p className="text-[0.9375rem] leading-[1.6] tracking-[-0.011em] text-[#b4bcd0] lg:pt-2">
             {description}
           </p>
         </ScrollReveal>
@@ -1491,7 +1491,7 @@ function SubFeatures({ items }: { items: { number: string; label: string }[] }) 
 function MessagingSection() {
   return (
     <section className="py-24 sm:py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <SectionHeader
           number="2.0"
           label="Messaging"
@@ -1521,7 +1521,7 @@ function MessagingSection() {
 function VoiceSection() {
   return (
     <section className="py-24 sm:py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <SectionHeader
           number="1.0"
           label="Voice"
@@ -1558,7 +1558,7 @@ function VoiceSection() {
 function MusicSection() {
   return (
     <section className="py-24 sm:py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <SectionHeader
           number="3.0"
           label="Music"
@@ -1588,7 +1588,7 @@ function MusicSection() {
 function StreamingSection() {
   return (
     <section className="py-24 sm:py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <SectionHeader
           number="4.0"
           label="Streaming"
@@ -1629,10 +1629,10 @@ function FeatureSections() {
 function FeatureGrid() {
   return (
     <section className="py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <ScrollReveal>
           <p className="overline mb-4">Details</p>
-          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[590] tracking-[-0.022em] leading-[1.12] max-w-2xl">
+          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[510] tracking-[-0.022em] leading-[1.12] max-w-2xl">
             Every detail, considered.
           </h2>
         </ScrollReveal>
@@ -1695,7 +1695,7 @@ function TechSpecs() {
 
   return (
     <section className="py-24 sm:py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <SectionHeader
           number="6.0"
           label="Specifications"
@@ -1769,11 +1769,11 @@ function DownloadCTA() {
 
   return (
     <section id="download" className="py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <ScrollReveal>
-          <h2 className="text-[clamp(2.75rem,5vw,4.5rem)] font-[590] tracking-[-0.022em] leading-[1.1]">
+          <h2 className="text-[2.5rem] md:text-[3.5rem] lg:text-[4rem] font-[510] tracking-[-0.022em] leading-[1.1] md:leading-[1.1] lg:leading-[1.06]">
             <span className="text-foreground">Ready to switch? </span>
-            <span className="text-foreground-muted">Join the voice chat that respects your privacy and your machine.</span>
+            <span className="text-[#b4bcd0]">Join the voice chat that respects your privacy and your machine.</span>
           </h2>
         </ScrollReveal>
 
@@ -1781,14 +1781,14 @@ function DownloadCTA() {
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <a
               href={downloadHref}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:opacity-90 shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#111] text-sm font-[510] rounded-full hover:bg-white/90 active:scale-[0.98] transition-all duration-150"
             >
               <PlatformIcon size={14} />
               {platformLabel}
             </a>
             <a
               href={platform === "mac" ? "/download/windows" : "/download/mac"}
-              className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground-muted text-sm rounded-full hover:text-foreground hover:border-foreground/20 hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
+              className="inline-flex items-center gap-2 px-5 py-2.5 border border-white/[0.08] text-[#b4bcd0] text-sm font-[510] hover:text-white hover:border-white/[0.15] rounded-full active:scale-[0.98] transition-all duration-150"
             >
               {platform === "mac" ? <MonitorDot size={14} /> : <Apple size={14} />}
               {platform === "mac" ? "Windows" : "macOS"}

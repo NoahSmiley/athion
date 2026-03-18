@@ -19,6 +19,12 @@ const APP_CONFIG: Record<string, { name: string; description: string; errorHint:
     errorHint: "Invalid login link. Please try again from Liminal IDE.",
     returnText: "After signing in, you can close this tab and return to the IDE.",
   },
+  opendock: {
+    name: "OpenDock",
+    description: "Connect your Athion account to OpenDock.",
+    errorHint: "Invalid login link. Please try again from OpenDock.",
+    returnText: "After signing in, you can close this tab and return to OpenDock.",
+  },
 };
 
 function FluxLogo({ size = 28 }: { size?: number }) {

@@ -14,6 +14,7 @@ export const NAV_ITEMS: NavItem[] = [
     label: "Products",
     children: [
       { href: "/flux", label: "Flux" },
+      { href: "/opendock", label: "OpenDock" },
       { href: "/ide", label: "IDE" },
     ],
   },
@@ -68,6 +69,45 @@ export const SCREEN_SHARE_PRESETS = [
   { preset: "720p30", codec: "H.264", bitrate: "2.5 Mbps", framerate: "30 fps" },
   { preset: "480p30", codec: "H.264", bitrate: "1.5 Mbps", framerate: "30 fps" },
   { preset: "Lossless", codec: "VP9", bitrate: "20 Mbps", framerate: "60 fps" },
+] as const;
+
+export const OPENDOCK_FEATURES = [
+  {
+    title: "Kanban Boards",
+    description:
+      "Full project management with sprints, epics, labels, and drag-and-drop ticket organization.",
+    icon: "Kanban" as const,
+  },
+  {
+    title: "Rich Notes",
+    description:
+      "Markdown editor with collections, folders, and tags. Write docs alongside your tasks.",
+    icon: "FileText" as const,
+  },
+  {
+    title: "Claude AI",
+    description:
+      "Built-in AI assistant that understands your boards, notes, and calendar. Ask it anything.",
+    icon: "Bot" as const,
+  },
+  {
+    title: "Calendar",
+    description:
+      "Event scheduling linked to your tickets. See deadlines, sprints, and meetings in one view.",
+    icon: "Calendar" as const,
+  },
+  {
+    title: "Native Desktop",
+    description:
+      "Tauri-powered app using 30MB of RAM. No Electron, no web wrapper — real native performance.",
+    icon: "Monitor" as const,
+  },
+  {
+    title: "Local-First",
+    description:
+      "SQLite database on your machine. Your data never leaves your device unless you want it to.",
+    icon: "HardDrive" as const,
+  },
 ] as const;
 
 export const IDE_FEATURES = [

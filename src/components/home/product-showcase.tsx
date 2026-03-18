@@ -7,6 +7,7 @@ import { useRef } from "react";
 import { ArrowRight, Server } from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { FluxAppMock } from "@/components/home/flux-mock";
+import { OpenDockAppMock } from "@/components/home/opendock-mock";
 
 /* ─── Flux Mini Replica ─── */
 
@@ -381,6 +382,15 @@ export function ProductShowcase() {
         "Voice and text chat built for teams that care about privacy. Crystal-clear 48kHz Opus audio, end-to-end encryption on everything, and lossless screen share at 60fps.",
       href: "/flux",
       replica: <FluxAppMock height="520px" />,
+    },
+    {
+      version: "1.5",
+      name: "OpenDock",
+      headline: "Organize without overhead",
+      description:
+        "Kanban boards, rich notes, calendar, and AI — in a single native app that runs on 30MB of RAM. Local-first SQLite, no cloud dependency, no Electron bloat.",
+      href: "/opendock",
+      replica: <OpenDockAppMock height="520px" />,
     },
     {
       version: "2.0",

@@ -32,23 +32,36 @@ const fadeUp = {
 
 function SectionHeader({ number, label, title, description }: { number: string; label: string; title: string; description: string }) {
   return (
-    <>
+    <div className="grid grid-cols-1 lg:grid-cols-2 mb-16">
       <ScrollReveal>
-        <div className="flex items-center gap-2 mb-16">
-          <span className="text-sm font-mono text-foreground-muted/30">{number}</span>
-          <span className="text-sm text-foreground-muted/60">{label}</span>
-          <ArrowRight size={14} className="text-foreground-muted/40" />
+        <div className="pr-0 lg:pr-8">
+          <h2
+            className="font-[510] text-[1.5rem] md:text-[2.5rem] lg:text-[3rem] leading-[1.33] md:leading-[1.1] lg:leading-[1] tracking-[-0.022em] text-foreground whitespace-pre-line"
+            style={{ textWrap: "balance", maxWidth: "18ch" }}
+          >
+            {title}
+          </h2>
         </div>
       </ScrollReveal>
-      <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-16">
-        <ScrollReveal>
-          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[590] tracking-[-0.022em] leading-[1.12] text-foreground whitespace-pre-line">{title}</h2>
-        </ScrollReveal>
-        <ScrollReveal delay={0.1}>
-          <p className="text-foreground-muted leading-relaxed lg:pt-2">{description}</p>
-        </ScrollReveal>
-      </div>
-    </>
+      <ScrollReveal delay={0.1}>
+        <div className="mt-6 lg:mt-0">
+          <p
+            className="font-[590] text-[1.0625rem] md:text-[1.25rem] lg:text-[1.5rem] leading-[1.4] md:leading-[1.33] tracking-[-0.012em] text-[#b4bcd0]"
+            style={{ textWrap: "balance" }}
+          >
+            {description}
+          </p>
+          <div className="inline-flex items-center mt-6 lg:mt-12">
+            <span className="text-[0.9375rem] leading-[1.6] tracking-[-0.011em] text-[#86848d] tabular-nums">
+              {number}
+            </span>
+            <span className="text-[0.9375rem] leading-[1.6] tracking-[-0.011em] text-[#b4bcd0] ml-3">
+              {label}
+            </span>
+          </div>
+        </div>
+      </ScrollReveal>
+    </div>
   );
 }
 
@@ -691,7 +704,7 @@ function LiminalTerminalReplica() {
 function HeroAppSection() {
   return (
     <section className="relative pt-16 pb-32">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <motion.div
           className="relative"
           initial={{ opacity: 0, y: 30 }}
@@ -712,19 +725,25 @@ function HeroAppSection() {
 
 function IDEHero() {
   return (
-    <section className="relative pt-32 sm:pt-40 pb-6">
-      <div className="relative mx-auto max-w-7xl px-6">
-        <motion.div initial="hidden" animate="visible" custom={0} variants={fadeUp} className="mb-4">
+    <section className="relative pt-[180px] md:pt-[260px] lg:pt-[280px] pb-6">
+      <div className="relative mx-auto max-w-[1344px] px-6 lg:px-12">
+        <motion.div initial="hidden" animate="visible" custom={0} variants={fadeUp} className="mb-4 px-8">
           <span className="font-mono text-4xl text-accent">&gt;_</span>
         </motion.div>
-        <motion.h1 className="text-[clamp(2.75rem,7vw,5.5rem)] font-[590] tracking-[-0.022em] leading-[1.08]" initial="hidden" animate="visible" custom={0} variants={fadeUp}>
+        <motion.h1
+          className="text-[2.5rem] md:text-[3.5rem] lg:text-[4rem] font-[510] tracking-[-0.022em] leading-[1.1] md:leading-[1.1] lg:leading-[1.06] px-8"
+          initial="hidden" animate="visible" custom={0} variants={fadeUp}
+        >
           <span className="text-foreground">Liminal IDE</span>
         </motion.h1>
-        <motion.p className="mt-4 text-lg text-foreground-muted max-w-lg leading-relaxed" initial="hidden" animate="visible" custom={0.1} variants={fadeUp}>
+        <motion.p
+          className="mt-5 md:mt-8 text-[0.9375rem] leading-[1.6] tracking-[-0.011em] text-[#b4bcd0] max-w-lg px-8"
+          initial="hidden" animate="visible" custom={0.1} variants={fadeUp}
+        >
           A code editor that stays out of your way. AI-native intelligence
           meets terminal-first workflow, built entirely in Rust.
         </motion.p>
-        <motion.div className="mt-6 inline-block px-3 py-1 border border-accent/30 text-accent text-xs uppercase tracking-widest" initial="hidden" animate="visible" custom={0.2} variants={fadeUp}>
+        <motion.div className="mt-6 inline-block px-3 py-1 border border-accent/30 text-accent text-xs uppercase tracking-widest ml-8" initial="hidden" animate="visible" custom={0.2} variants={fadeUp}>
           Coming Soon
         </motion.div>
       </div>
@@ -737,7 +756,7 @@ function IDEHero() {
 function AISection() {
   return (
     <section className="py-24 sm:py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <SectionHeader number="1.0" label="Intelligence" title={"AI that understands\nyour entire codebase."} description="Deep language model integration that goes beyond autocomplete. Contextual refactoring, codebase-aware suggestions, and inline explanations — all running locally on your machine." />
         <ScrollReveal><LiminalEditorReplica /></ScrollReveal>
         <SubFeatures items={[
@@ -756,7 +775,7 @@ function AISection() {
 function TerminalSection() {
   return (
     <section className="py-24 sm:py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <SectionHeader number="2.0" label="Terminal" title={"Your terminal,\nbuilt into the editor."} description="Integrated terminal with multiplexing, split panes, and shell integration. Run builds, tests, and servers without leaving the editor. Never context-switch again." />
         <ScrollReveal><LiminalTerminalReplica /></ScrollReveal>
         <SubFeatures items={[
@@ -811,7 +830,7 @@ function PerformanceReplica() {
 function PerformanceSection() {
   return (
     <section className="py-24 sm:py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <SectionHeader number="3.0" label="Performance" title={"Native Rust core.\nInstant at any scale."} description="Opens in under 100ms. Handles million-line codebases without breaking a sweat. Your editor should use a fraction of the memory and CPU that Electron-based tools demand." />
         <ScrollReveal delay={0.15}>
           <PerformanceReplica />
@@ -844,10 +863,10 @@ const GRID_FEATURES = [
 function FeatureGrid() {
   return (
     <section className="py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <ScrollReveal>
           <p className="overline mb-4">Details</p>
-          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[590] tracking-[-0.022em] leading-[1.12] max-w-2xl">Every detail, considered.</h2>
+          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[510] tracking-[-0.022em] leading-[1.12] max-w-2xl">Every detail, considered.</h2>
         </ScrollReveal>
         <StaggerContainer className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border/50">
           {GRID_FEATURES.map((feature) => {
@@ -905,7 +924,7 @@ function TechSpecs() {
 
   return (
     <section className="py-24 sm:py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <SectionHeader number="4.0" label="Specifications" title={"Under the hood."} description="Liminal is built from scratch in Rust with GPU-accelerated rendering, tree-sitter parsing, and native LSP support. No Electron, no compromises." />
         <ScrollReveal>
           <StaggerContainer className="grid grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-4">
@@ -954,7 +973,7 @@ function Waitlist() {
 
   return (
     <section className="py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <ScrollReveal>
           <h2 className="text-[2.5rem] md:text-[3.5rem] lg:text-[4rem] font-[510] tracking-[-0.022em] leading-[1.1] md:leading-[1.1] lg:leading-[1.06]">
             <span className="text-foreground">Join the waitlist. </span>

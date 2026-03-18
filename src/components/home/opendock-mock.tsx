@@ -3,64 +3,94 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  LayoutDashboard, Kanban, FileText, Calendar, Bot,
-  Plus, MoreHorizontal, Tag, Clock, User,
+  LayoutDashboard,
+  Kanban,
+  NotebookPen,
+  Calendar,
+  FolderOpen,
+  Bot,
+  Plus,
+  Bug,
+  CheckSquare,
+  BookOpen,
+  Zap,
 } from "lucide-react";
 
-/* ─── Color tokens (OpenDock dark theme) ─── */
+/* ─── Design tokens (from OpenDock base.css) ─── */
 const C = {
-  bgPrimary: "#0a0a0a",
-  bgSecondary: "#111111",
-  bgCard: "#161616",
-  bgHover: "#1a1a1a",
-  textPrimary: "#e5e5e5",
-  textSecondary: "#737373",
-  textMuted: "#525252",
-  accent: "#a78bfa",
-  accentGlow: "rgba(167,139,250,0.15)",
-  border: "#1e1e1e",
-  green: "#4ade80",
-  blue: "#60a5fa",
-  amber: "#fbbf24",
-  red: "#f87171",
+  bgPrimary: "#0c0c0d",
+  bgSecondary: "#111113",
+  bgTertiary: "#18181b",
+  bgElevated: "#1e1e21",
+  bgHover: "rgba(255, 255, 255, 0.04)",
+  textPrimary: "#e4e4e7",
+  textSecondary: "#8b8b96",
+  textTertiary: "#5a5a65",
+  accent: "#64cfe9",
+  border: "rgba(255, 255, 255, 0.08)",
+  borderSubtle: "rgba(255, 255, 255, 0.04)",
 } as const;
 
 /* ─── Sidebar nav items ─── */
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: "Dashboard", active: false },
   { icon: Kanban, label: "Boards", active: true },
-  { icon: FileText, label: "Notes", active: false },
+  { icon: NotebookPen, label: "Notes", active: false },
   { icon: Calendar, label: "Calendar", active: false },
+  { icon: FolderOpen, label: "Files", active: false },
 ];
+
+/* ─── Issue types ─── */
+type IssueType = "bug" | "task" | "story" | "epic";
+
+const ISSUE_TYPE_CONFIG: Record<
+  IssueType,
+  { icon: typeof Bug; color: string }
+> = {
+  bug: { icon: Bug, color: "#f87171" },
+  task: { icon: CheckSquare, color: "#60a5fa" },
+  story: { icon: BookOpen, color: "#4ade80" },
+  epic: { icon: Zap, color: "#a78bfa" },
+};
 
 /* ─── Board columns ─── */
 const COLUMNS = [
-  { id: "backlog", title: "Backlog", color: "#525252" },
-  { id: "todo", title: "To Do", color: "#60a5fa" },
-  { id: "progress", title: "In Progress", color: "#fbbf24" },
-  { id: "done", title: "Done", color: "#4ade80" },
+  { id: "backlog", title: "Backlog" },
+  { id: "todo", title: "To Do" },
+  { id: "progress", title: "In Progress" },
+  { id: "done", title: "Done" },
 ];
+
+/* ─── Label colors ─── */
+const LABEL_COLORS: Record<string, string> = {
+  frontend: "#60a5fa",
+  backend: "#a78bfa",
+  bug: "#f87171",
+  feature: "#4ade80",
+  infra: "#f59e0b",
+};
 
 /* ─── Tickets ─── */
-const INITIAL_TICKETS: Ticket[] = [
-  { id: "OD-14", title: "Add drag-and-drop reorder", col: "backlog", priority: "medium", assignee: "R", tags: ["frontend"] },
-  { id: "OD-15", title: "Calendar recurring events", col: "backlog", priority: "low", assignee: "Q", tags: ["feature"] },
-  { id: "OD-10", title: "Build notification system", col: "todo", priority: "high", assignee: "N", tags: ["backend"] },
-  { id: "OD-11", title: "Fix sidebar collapse anim", col: "todo", priority: "medium", assignee: "T", tags: ["bug"] },
-  { id: "OD-7", title: "Implement sprint planning", col: "progress", priority: "high", assignee: "N", tags: ["feature"] },
-  { id: "OD-8", title: "Notes markdown preview", col: "progress", priority: "medium", assignee: "R", tags: ["frontend"] },
-  { id: "OD-3", title: "Auth session management", col: "done", priority: "high", assignee: "T", tags: ["backend"] },
-  { id: "OD-4", title: "Board snapshot API", col: "done", priority: "medium", assignee: "N", tags: ["backend"] },
-];
-
 interface Ticket {
   id: string;
   title: string;
   col: string;
   priority: "low" | "medium" | "high";
+  type: IssueType;
   assignee: string;
-  tags: string[];
+  labels: string[];
 }
+
+const INITIAL_TICKETS: Ticket[] = [
+  { id: "OD-14", title: "Add drag-and-drop reorder", col: "backlog", priority: "medium", type: "story", assignee: "R", labels: ["frontend"] },
+  { id: "OD-15", title: "Calendar recurring events", col: "backlog", priority: "low", type: "story", assignee: "Q", labels: ["feature"] },
+  { id: "OD-10", title: "Build notification system", col: "todo", priority: "high", type: "task", assignee: "N", labels: ["backend"] },
+  { id: "OD-11", title: "Fix sidebar collapse anim", col: "todo", priority: "medium", type: "bug", assignee: "T", labels: ["bug"] },
+  { id: "OD-7", title: "Implement sprint planning", col: "progress", priority: "high", type: "epic", assignee: "N", labels: ["feature"] },
+  { id: "OD-8", title: "Notes markdown preview", col: "progress", priority: "medium", type: "story", assignee: "R", labels: ["frontend"] },
+  { id: "OD-3", title: "Auth session management", col: "done", priority: "high", type: "task", assignee: "T", labels: ["backend"] },
+  { id: "OD-4", title: "Board snapshot API", col: "done", priority: "medium", type: "task", assignee: "N", labels: ["backend"] },
+];
 
 const USERS: Record<string, { color: string; avatar: string }> = {
   N: { color: "#6366f1", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Noah&top=shortCurly&clothing=hoodie&clothesColor=6366f1&skinColor=f8d25c" },
@@ -69,65 +99,182 @@ const USERS: Record<string, { color: string; avatar: string }> = {
   Q: { color: "#f59e0b", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Quinn&top=dreads01&facialHair=beardMedium&clothing=hoodie&clothesColor=f59e0b&skinColor=ae5d29" },
 };
 
-const PRIORITY_COLORS = { low: C.green, medium: C.amber, high: C.red };
+const PRIORITY_COLORS = {
+  high: "rgba(248, 113, 113, 0.8)",
+  medium: "rgba(252, 211, 77, 0.8)",
+  low: "rgba(52, 211, 153, 0.8)",
+};
 
 const EASE: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
-/* ─── Ticket Card ─── */
+/* ─── View tabs ─── */
+const VIEW_TABS = [
+  { label: "Board", active: true },
+  { label: "List", active: false },
+  { label: "Timeline", active: false },
+];
+
+/* ─── Ticket Card (matches TicketCard.tsx) ─── */
 function TicketCard({ ticket }: { ticket: Ticket }) {
   const user = USERS[ticket.assignee];
+  const issueType = ISSUE_TYPE_CONFIG[ticket.type];
+  const IssueIcon = issueType.icon;
+
   return (
     <div
-      className="rounded-lg p-3 mb-2"
-      style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+      style={{
+        borderRadius: 6,
+        border: "1px solid rgba(255, 255, 255, 0.06)",
+        background: "rgba(255, 255, 255, 0.015)",
+        padding: "10px 12px",
+        cursor: "pointer",
+        transition: "border-color 150ms, background 150ms",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.1)";
+        e.currentTarget.style.background = "rgba(255, 255, 255, 0.03)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.06)";
+        e.currentTarget.style.background = "rgba(255, 255, 255, 0.015)";
+      }}
     >
-      <div className="flex items-start justify-between mb-2">
-        <span style={{ fontSize: "10px", fontFamily: "monospace", color: C.textMuted }}>{ticket.id}</span>
-        <MoreHorizontal size={12} style={{ color: C.textMuted }} />
+      {/* Title row with issue type icon */}
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 6, marginBottom: 6 }}>
+        <IssueIcon
+          size={12}
+          style={{ color: issueType.color, flexShrink: 0, marginTop: 2 }}
+        />
+        <span
+          style={{
+            fontSize: 13,
+            fontWeight: 500,
+            color: "#d4d4d8",
+            lineHeight: 1.4,
+          }}
+        >
+          {ticket.title}
+        </span>
       </div>
-      <p style={{ fontSize: "12px", color: C.textPrimary, lineHeight: 1.4, marginBottom: "8px" }}>
-        {ticket.title}
-      </p>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5">
+
+      {/* Bottom row: key + dots on left, assignee on right */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span
+            style={{
+              fontFamily: "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace",
+              fontSize: 10,
+              color: "#737373",
+            }}
+          >
+            {ticket.id}
+          </span>
+          {/* Priority dot */}
           <div
-            className="rounded-full"
-            style={{ width: 6, height: 6, background: PRIORITY_COLORS[ticket.priority] }}
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: "50%",
+              background: PRIORITY_COLORS[ticket.priority],
+              flexShrink: 0,
+            }}
           />
-          {ticket.tags.map((tag) => (
-            <span
-              key={tag}
-              className="px-1.5 py-0.5 rounded"
-              style={{ fontSize: "9px", background: C.accentGlow, color: C.accent }}
-            >
-              {tag}
-            </span>
+          {/* Label dots */}
+          {ticket.labels.map((label) => (
+            <div
+              key={label}
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: LABEL_COLORS[label] || "#737373",
+                flexShrink: 0,
+              }}
+            />
           ))}
         </div>
+        {/* Assignee avatar (initial letter in circle) */}
         <div
-          className="w-5 h-5 rounded-full overflow-hidden flex-shrink-0"
-          style={{ background: user.color + "33" }}
+          style={{
+            width: 18,
+            height: 18,
+            borderRadius: "50%",
+            background: "rgba(255, 255, 255, 0.06)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
         >
-          <img src={user.avatar} alt="" className="w-full h-full" />
+          <span
+            style={{
+              fontSize: 9,
+              fontWeight: 500,
+              color: "#a1a1aa",
+            }}
+          >
+            {ticket.assignee}
+          </span>
         </div>
       </div>
     </div>
   );
 }
 
-/* ─── Board Column ─── */
-function BoardColumn({ column, tickets }: { column: typeof COLUMNS[number]; tickets: Ticket[] }) {
+/* ─── Board Column (matches KanbanColumn.tsx) ─── */
+function BoardColumn({
+  column,
+  tickets,
+}: {
+  column: (typeof COLUMNS)[number];
+  tickets: Ticket[];
+}) {
   return (
-    <div className="flex-1 min-w-0">
-      <div className="flex items-center justify-between mb-3 px-1">
-        <div className="flex items-center gap-2">
-          <div className="rounded-full" style={{ width: 8, height: 8, background: column.color }} />
-          <span style={{ fontSize: "12px", fontWeight: 600, color: C.textPrimary }}>{column.title}</span>
-          <span style={{ fontSize: "10px", color: C.textMuted }}>{tickets.length}</span>
+    <div
+      style={{
+        width: 288,
+        flexShrink: 0,
+        alignSelf: "flex-start",
+        borderRadius: 8,
+        border: "1px solid rgba(255, 255, 255, 0.06)",
+        padding: 14,
+      }}
+    >
+      {/* Column header */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 12,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 500,
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              color: "#737373",
+            }}
+          >
+            {column.title}
+          </span>
+          <span
+            style={{
+              fontSize: 11,
+              fontVariantNumeric: "tabular-nums",
+              color: "#525252",
+            }}
+          >
+            {tickets.length}
+          </span>
         </div>
-        <Plus size={12} style={{ color: C.textMuted }} />
       </div>
-      <div className="flex flex-col">
+
+      {/* Ticket list */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <AnimatePresence mode="popLayout">
           {tickets.map((t) => (
             <motion.div
@@ -142,6 +289,21 @@ function BoardColumn({ column, tickets }: { column: typeof COLUMNS[number]; tick
             </motion.div>
           ))}
         </AnimatePresence>
+      </div>
+
+      {/* Quick create */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 4,
+          marginTop: 10,
+          padding: "4px 0",
+          cursor: "pointer",
+        }}
+      >
+        <Plus size={12} style={{ color: "#525252" }} />
+        <span style={{ fontSize: 11, color: "#525252" }}>Create</span>
       </div>
     </div>
   );
@@ -178,78 +340,216 @@ export function OpenDockAppMock({ height = "520px" }: { height?: string }) {
 
   return (
     <div
-      className="rounded-xl overflow-hidden w-full mx-auto"
-      style={{ background: C.bgPrimary, border: `1px solid ${C.border}` }}
+      style={{
+        borderRadius: 12,
+        overflow: "hidden",
+        width: "100%",
+        background: C.bgPrimary,
+        border: `1px solid ${C.border}`,
+      }}
     >
-      <div className="flex" style={{ height }}>
-        {/* Sidebar */}
+      <div style={{ display: "flex", height }}>
+        {/* ─── Sidebar ─── */}
         <div
-          className="flex-shrink-0 flex-col hidden md:flex"
-          style={{ width: "200px", background: C.bgSecondary, borderRight: `1px solid ${C.border}` }}
+          className="hidden md:flex"
+          style={{
+            width: 200,
+            flexShrink: 0,
+            flexDirection: "column",
+            background: C.bgPrimary,
+            borderRight: `1px solid ${C.borderSubtle}`,
+          }}
         >
-          <div className="flex items-center gap-2 px-4" style={{ height: "44px", borderBottom: `1px solid ${C.border}` }}>
-            <div className="w-5 h-5 rounded" style={{ background: C.accent + "33" }}>
-              <div className="w-full h-full flex items-center justify-center">
-                <span style={{ fontSize: "10px", fontWeight: 700, color: C.accent }}>O</span>
-              </div>
-            </div>
-            <span style={{ fontSize: "13px", fontWeight: 600, color: C.textPrimary }}>OpenDock</span>
-          </div>
-          <div className="flex-1 px-2 pt-2 flex flex-col gap-0.5">
+          {/* Nav items */}
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              padding: "12px 8px",
+            }}
+          >
             {NAV_ITEMS.map((item) => (
               <div
                 key={item.label}
-                className="flex items-center gap-2.5 px-2.5 py-2 rounded-md"
                 style={{
-                  background: item.active ? "rgba(167,139,250,0.08)" : "transparent",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "6px 12px",
+                  borderRadius: 6,
+                  background: item.active
+                    ? "rgba(255, 255, 255, 0.04)"
+                    : "transparent",
                   cursor: "pointer",
+                  transition: "background 150ms",
+                }}
+                onMouseEnter={(e) => {
+                  if (!item.active)
+                    e.currentTarget.style.background =
+                      "rgba(255, 255, 255, 0.04)";
+                }}
+                onMouseLeave={(e) => {
+                  if (!item.active)
+                    e.currentTarget.style.background = "transparent";
                 }}
               >
-                <item.icon size={14} style={{ color: item.active ? C.accent : C.textMuted }} />
-                <span style={{ fontSize: "13px", fontWeight: item.active ? 500 : 400, color: item.active ? C.textPrimary : C.textSecondary }}>
+                <item.icon
+                  size={16}
+                  style={{
+                    color: item.active ? C.textPrimary : C.textSecondary,
+                    opacity: item.active ? 1 : 0.7,
+                  }}
+                />
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 450,
+                    color: item.active ? C.textPrimary : C.textSecondary,
+                  }}
+                >
                   {item.label}
                 </span>
               </div>
             ))}
           </div>
-          {/* Claude button at bottom */}
-          <div className="px-2 pb-3">
+
+          {/* Sidebar footer — Claude button */}
+          <div
+            style={{
+              borderTop: `1px solid ${C.borderSubtle}`,
+              padding: "8px 8px 12px",
+            }}
+          >
             <div
-              className="flex items-center gap-2.5 px-2.5 py-2 rounded-md"
-              style={{ background: "rgba(167,139,250,0.06)", cursor: "pointer" }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "6px 12px",
+                borderRadius: 6,
+                cursor: "pointer",
+                transition: "background 150ms",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(255, 255, 255, 0.04)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+              }}
             >
-              <Bot size={14} style={{ color: C.accent }} />
-              <span style={{ fontSize: "13px", color: C.textSecondary }}>Claude</span>
+              <Bot
+                size={16}
+                style={{ color: C.textSecondary, opacity: 0.7 }}
+              />
+              <span
+                style={{
+                  fontSize: 12,
+                  fontWeight: 450,
+                  color: C.textSecondary,
+                }}
+              >
+                Claude
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Main content — board */}
-        <div className="flex-1 flex flex-col min-w-0">
+        {/* ─── Main content area ─── */}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            minWidth: 0,
+            background: C.bgSecondary,
+          }}
+        >
           {/* Board header */}
-          <div
-            className="flex items-center justify-between px-5 flex-shrink-0"
-            style={{ height: "44px", borderBottom: `1px solid ${C.border}` }}
-          >
-            <div className="flex items-center gap-3">
-              <span style={{ fontSize: "14px", fontWeight: 600, color: C.textPrimary }}>Sprint 4</span>
-              <span className="px-2 py-0.5 rounded-full" style={{ fontSize: "10px", background: C.accentGlow, color: C.accent }}>
-                Active
+          <div style={{ padding: "16px 20px 0" }}>
+            {/* Board name + ticket count */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                marginBottom: 12,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 15,
+                  fontWeight: 500,
+                  color: "#ffffff",
+                }}
+              >
+                Sprint 4
+              </span>
+              <span
+                style={{
+                  fontSize: 11,
+                  color: "#737373",
+                }}
+              >
+                {tickets.length} issues
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="flex -space-x-1.5">
-                {Object.values(USERS).map((u) => (
-                  <div key={u.color} className="w-5 h-5 rounded-full overflow-hidden" style={{ border: `2px solid ${C.bgPrimary}`, background: u.color + "33" }}>
-                    <img src={u.avatar} alt="" className="w-full h-full" />
-                  </div>
-                ))}
-              </div>
+
+            {/* View tabs */}
+            <div
+              style={{
+                display: "flex",
+                gap: 0,
+                borderBottom: `1px solid ${C.borderSubtle}`,
+              }}
+            >
+              {VIEW_TABS.map((tab) => (
+                <div
+                  key={tab.label}
+                  style={{
+                    position: "relative",
+                    padding: "6px 12px 10px",
+                    cursor: "pointer",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 500,
+                      color: tab.active ? C.textPrimary : C.textTertiary,
+                    }}
+                  >
+                    {tab.label}
+                  </span>
+                  {tab.active && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 12,
+                        right: 12,
+                        height: 1.5,
+                        borderRadius: 1,
+                        background: C.textPrimary,
+                      }}
+                    />
+                  )}
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Columns */}
-          <div className="flex-1 overflow-hidden flex gap-3 p-4">
+          {/* Columns area */}
+          <div
+            style={{
+              flex: 1,
+              overflow: "hidden",
+              display: "flex",
+              gap: 16,
+              padding: 16,
+            }}
+          >
             {COLUMNS.map((col) => (
               <BoardColumn
                 key={col.id}

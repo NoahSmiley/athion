@@ -772,26 +772,49 @@ function TerminalSection() {
 
 // ── 3.0 Performance ──
 
+function StartupComparisonBar({ label, value, max, color, delay }: { label: string; value: number; max: number; color: string; delay: number }) {
+  return (
+    <div className="flex items-center gap-4">
+      <span className="text-xs text-foreground-muted/60 w-24 shrink-0 text-right font-mono">{label}</span>
+      <div className="flex-1 h-6 rounded-sm overflow-hidden" style={{ background: "rgba(255,255,255,0.03)" }}>
+        <motion.div
+          className="h-full rounded-sm flex items-center justify-end pr-3"
+          style={{ background: color }}
+          initial={{ width: 0 }}
+          whileInView={{ width: `${(value / max) * 100}%` }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay, ease: [0.25, 0.1, 0.25, 1] }}
+        >
+          <span className="text-[11px] font-mono text-background/80 whitespace-nowrap">{value}ms</span>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+function PerformanceReplica() {
+  return (
+    <div className="w-full max-w-[900px] mx-auto rounded-xl overflow-hidden" style={{ background: L.bg, border: `1px solid ${L.border}` }}>
+      <div className="px-6 py-4" style={{ borderBottom: `1px solid ${L.border}` }}>
+        <span style={{ fontSize: "10px", color: L.z600, textTransform: "uppercase", letterSpacing: "0.05em" }}>cold start time</span>
+      </div>
+      <div className="px-6 py-8 flex flex-col gap-5">
+        <StartupComparisonBar label="Liminal IDE" value={80} max={1000} color={`${L.cyan500}cc`} delay={0.1} />
+        <StartupComparisonBar label="Zed" value={180} max={1000} color="rgba(255,255,255,0.15)" delay={0.2} />
+        <StartupComparisonBar label="Sublime Text" value={320} max={1000} color="rgba(255,255,255,0.10)" delay={0.3} />
+        <StartupComparisonBar label="VS Code" value={920} max={1000} color="rgba(255,255,255,0.07)" delay={0.4} />
+      </div>
+    </div>
+  );
+}
+
 function PerformanceSection() {
   return (
     <section className="py-24 sm:py-32 border-t border-border/50">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader number="3.0" label="Performance" title={"Native Rust core.\nInstant at any scale."} description="Opens in under 100ms. Handles million-line codebases without breaking a sweat. Your editor should use a fraction of the memory and CPU that Electron-based tools demand." />
-        <ScrollReveal>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            {[
-              { value: "80ms", label: "Cold start", detail: "vs 920ms VS Code" },
-              { value: "45 MB", label: "Memory (idle)", detail: "vs 550 MB VS Code" },
-              { value: "8 MB", label: "Binary size", detail: "vs 350 MB VS Code" },
-              { value: "0.3%", label: "CPU (idle)", detail: "vs 4.2% VS Code" },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className="font-mono text-3xl sm:text-4xl text-foreground tabular-nums">{stat.value}</p>
-                <p className="text-xs text-foreground-muted mt-1.5">{stat.label}</p>
-                <p className="text-[10px] text-foreground-muted/50 mt-0.5">{stat.detail}</p>
-              </div>
-            ))}
-          </div>
+        <ScrollReveal delay={0.15}>
+          <PerformanceReplica />
         </ScrollReveal>
         <SubFeatures items={[
           { number: "3.1", label: "Rust core" },
@@ -823,7 +846,7 @@ function FeatureGrid() {
     <section className="py-32 border-t border-border/50">
       <div className="mx-auto max-w-7xl px-6">
         <ScrollReveal>
-          <p className="text-[11px] uppercase tracking-[0.08em] text-foreground-muted/50 mb-4">Details</p>
+          <p className="overline mb-4">Details</p>
           <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[590] tracking-[-0.022em] leading-[1.12] max-w-2xl">Every detail, considered.</h2>
         </ScrollReveal>
         <StaggerContainer className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border/50">
@@ -933,24 +956,29 @@ function Waitlist() {
     <section className="py-32 border-t border-border/50">
       <div className="mx-auto max-w-7xl px-6">
         <ScrollReveal>
-          <h2 className="text-[clamp(2.75rem,5vw,4.5rem)] font-[590] tracking-[-0.022em] leading-[1.1]">
+          <h2 className="text-[2.5rem] md:text-[3.5rem] lg:text-[4rem] font-[510] tracking-[-0.022em] leading-[1.1] md:leading-[1.1] lg:leading-[1.06]">
             <span className="text-foreground">Join the waitlist. </span>
-            <span className="text-foreground-muted">Be the first to know when Liminal IDE is ready.</span>
+            <span className="text-[#b4bcd0]">Be the first to know when Liminal IDE is ready.</span>
           </h2>
         </ScrollReveal>
-        <ScrollReveal delay={0.15}>
+        <ScrollReveal delay={0.1}>
           {submitted ? (
             <div className="mt-8 p-6 border border-accent/30 text-accent text-sm max-w-md">Thank you. We&apos;ll be in touch.</div>
           ) : (
             <>
               {error && <div className="mt-8 p-3 border border-red-500/30 text-red-400 text-sm max-w-md">{error}</div>}
-              <form onSubmit={handleSubmit} className="mt-10 flex gap-3 max-w-md">
-                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="flex-1 px-4 py-3 bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors rounded-full" />
-                <button type="submit" disabled={loading} className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background text-sm font-medium hover:opacity-90 shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150 disabled:opacity-50 rounded-full">
-                  {loading ? "Joining..." : "Notify Me"}
-                  {!loading && <ArrowRight size={14} />}
-                </button>
-              </form>
+              <div className="mt-10 flex flex-wrap items-center gap-4">
+                <form onSubmit={handleSubmit} className="flex gap-3 max-w-md">
+                  <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="flex-1 px-4 py-2.5 bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors rounded-full" />
+                  <button type="submit" disabled={loading} className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#111] text-sm font-[510] rounded-full hover:bg-white/90 active:scale-[0.98] transition-all duration-150 disabled:opacity-50">
+                    {loading ? "Joining..." : "Notify Me"}
+                    {!loading && <ArrowRight size={14} />}
+                  </button>
+                </form>
+              </div>
+              <p className="mt-6 text-xs text-foreground-muted/50">
+                We&apos;ll notify you when Liminal IDE is ready for early access.
+              </p>
             </>
           )}
         </ScrollReveal>

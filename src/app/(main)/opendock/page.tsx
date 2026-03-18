@@ -29,6 +29,20 @@ const opendockBenchmarks: BenchmarkGroup[] = [
 
 const iconMap = { Kanban, FileText, Bot, Calendar, Monitor, HardDrive } as const;
 
+// ── OS detection for download buttons ──
+
+function useDetectedPlatform() {
+  const [platform, setPlatform] = useState<"windows" | "mac" | null>(null);
+
+  useEffect(() => {
+    const ua = navigator.userAgent.toLowerCase();
+    if (ua.includes("mac")) setPlatform("mac");
+    else setPlatform("windows");
+  }, []);
+
+  return platform;
+}
+
 const EASE: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
 const fadeUp = {
@@ -49,7 +63,7 @@ const USERS = {
   quinn: { id: "Q", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Quinn&top=dreads01&facialHair=beardMedium&clothing=hoodie&clothesColor=f59e0b&skinColor=ae5d29", color: "#f59e0b" },
 };
 
-// ── Section Header ──
+// ── Section Header (matching Flux structure exactly) ──
 
 function SectionHeader({
   number,
@@ -63,27 +77,36 @@ function SectionHeader({
   description: string;
 }) {
   return (
-    <>
+    <div className="grid grid-cols-1 lg:grid-cols-2 mb-16">
       <ScrollReveal>
-        <div className="flex items-center gap-2 mb-16">
-          <span className="text-sm font-mono text-foreground-muted/30">{number}</span>
-          <span className="text-sm text-foreground-muted/60">{label}</span>
-          <ArrowRight size={14} className="text-foreground-muted/40" />
-        </div>
-      </ScrollReveal>
-      <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-16">
-        <ScrollReveal>
-          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[590] tracking-[-0.022em] leading-[1.12] text-foreground whitespace-pre-line">
+        <div className="pr-0 lg:pr-8">
+          <h2
+            className="font-[510] text-[1.5rem] md:text-[2.5rem] lg:text-[3rem] leading-[1.33] md:leading-[1.1] lg:leading-[1] tracking-[-0.022em] text-foreground whitespace-pre-line"
+            style={{ textWrap: "balance", maxWidth: "18ch" }}
+          >
             {title}
           </h2>
-        </ScrollReveal>
-        <ScrollReveal delay={0.1}>
-          <p className="text-foreground-muted leading-relaxed lg:pt-2">
+        </div>
+      </ScrollReveal>
+      <ScrollReveal delay={0.1}>
+        <div className="mt-6 lg:mt-0">
+          <p
+            className="font-[590] text-[1.0625rem] md:text-[1.25rem] lg:text-[1.5rem] leading-[1.4] md:leading-[1.33] tracking-[-0.012em] text-[#b4bcd0]"
+            style={{ textWrap: "balance" }}
+          >
             {description}
           </p>
-        </ScrollReveal>
-      </div>
-    </>
+          <div className="inline-flex items-center mt-6 lg:mt-12">
+            <span className="text-[0.9375rem] leading-[1.6] tracking-[-0.011em] text-[#86848d] tabular-nums">
+              {number}
+            </span>
+            <span className="text-[0.9375rem] leading-[1.6] tracking-[-0.011em] text-[#b4bcd0] ml-3">
+              {label}
+            </span>
+          </div>
+        </div>
+      </ScrollReveal>
+    </div>
   );
 }
 
@@ -102,24 +125,43 @@ function SubFeatures({ items }: { items: { number: string; label: string }[] }) 
   );
 }
 
-// ── Hero ──
+// ── Hero (matching Flux hero structure exactly) ──
 
 function OpenDockHero() {
+  const platform = useDetectedPlatform();
+  const PlatformIcon = platform === "mac" ? Apple : MonitorDot;
+  const platformLabel = platform === "mac" ? "Download for macOS" : "Download for Windows";
+  const [hasSubscription, setHasSubscription] = useState(false);
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/subscriptions")
+      .then((r) => r.json())
+      .then((data) => {
+        const active = data.subscriptions?.some(
+          (s: { product: string }) => s.product === "opendock" || s.product === "athion_pro" || s.product === "athion"
+        );
+        setHasSubscription(!!active);
+      })
+      .catch(() => {})
+      .finally(() => setChecked(true));
+  }, []);
+
   return (
-    <section className="relative pt-32 sm:pt-40 pb-6">
-      <div className="relative mx-auto max-w-7xl px-6">
+    <section className="relative pt-[180px] md:pt-[260px] lg:pt-[280px] pb-6">
+      <div className="relative mx-auto max-w-[1344px] px-6 lg:px-12">
         <motion.div
           initial="hidden"
           animate="visible"
           custom={0}
           variants={fadeUp}
-          className="mb-4"
+          className="mb-4 px-8"
         >
           <OpenDockLogo size={48} />
         </motion.div>
 
         <motion.h1
-          className="text-[clamp(2.75rem,7vw,5.5rem)] font-[590] tracking-[-0.022em] leading-[1.08]"
+          className="text-[2.5rem] md:text-[3.5rem] lg:text-[4rem] font-[510] tracking-[-0.022em] leading-[1.1] md:leading-[1.1] lg:leading-[1.06] px-8"
           initial="hidden"
           animate="visible"
           custom={0}
@@ -129,7 +171,7 @@ function OpenDockHero() {
         </motion.h1>
 
         <motion.p
-          className="mt-4 text-lg text-foreground-muted"
+          className="mt-5 md:mt-8 text-[0.9375rem] leading-[1.6] tracking-[-0.011em] text-[#b4bcd0] px-8"
           initial="hidden"
           animate="visible"
           custom={0.1}
@@ -139,46 +181,77 @@ function OpenDockHero() {
         </motion.p>
 
         <motion.div
-          className="mt-10 flex flex-wrap items-center gap-4"
+          className="mt-10 flex flex-wrap items-center gap-4 px-8"
           initial="hidden"
           animate="visible"
           custom={0.2}
           variants={fadeUp}
         >
+          {checked && hasSubscription ? (
+            <>
+              <a
+                href="/dashboard/downloads"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#111] text-sm font-[510] rounded-full hover:bg-white/90 active:scale-[0.98] transition-all duration-150"
+              >
+                <PlatformIcon size={14} />
+                {platformLabel}
+              </a>
+              <a
+                href="/dashboard/downloads"
+                className="inline-flex items-center gap-2 px-5 py-2.5 border border-white/[0.08] text-[#b4bcd0] text-sm font-[510] hover:text-white hover:border-white/[0.15] rounded-full active:scale-[0.98] transition-all duration-150"
+              >
+                {platform === "mac" ? <MonitorDot size={14} /> : <Apple size={14} />}
+                {platform === "mac" ? "Windows" : "macOS"}
+              </a>
+            </>
+          ) : (
+            <>
+              <span
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground/30 text-background/50 text-sm font-medium rounded-full cursor-not-allowed"
+                title="Subscription required"
+              >
+                <PlatformIcon size={14} />
+                {platformLabel}
+              </span>
+              <span
+                className="inline-flex items-center gap-2 px-5 py-2.5 border border-border/50 text-foreground-muted/40 text-sm rounded-full cursor-not-allowed"
+                title="Subscription required"
+              >
+                {platform === "mac" ? <MonitorDot size={14} /> : <Apple size={14} />}
+                {platform === "mac" ? "Windows" : "macOS"}
+              </span>
+            </>
+          )}
           <a
-            href="#download"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:opacity-90 shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
-          >
-            <Download size={14} />
-            Download
-          </a>
-          <a
-            href="#features"
+            href={checked && !hasSubscription ? "/pricing" : "#features"}
             className="group inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-foreground transition-colors"
           >
-            See what&apos;s inside
+            {checked && !hasSubscription ? "Subscribe to download" : "See what's inside"}
             <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-200" />
           </a>
         </motion.div>
+        <p className="mt-4 text-xs text-foreground-muted/50 px-8">
+          Available for macOS and Windows. Free with Athion subscription.
+        </p>
       </div>
     </section>
   );
 }
 
-// ── Hero App Mock ──
+// ── Hero App Mock (matching Flux HeroAppSection exactly) ──
 
 function HeroAppSection() {
   return (
     <section className="relative pt-16 pb-32">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <motion.div
           className="relative"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4, ease: EASE }}
+          transition={{ duration: 0.8, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
         >
           <div className="relative overflow-hidden rounded-xl">
-            <OpenDockAppMock height="640px" />
+            <OpenDockAppMock height="680px" />
             <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background via-background/30 to-transparent pointer-events-none" />
             <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background/40 to-transparent pointer-events-none" />
             <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background/40 to-transparent pointer-events-none" />
@@ -196,7 +269,7 @@ function BoardsReplica() {
 
   const columns = [
     {
-      title: "Backlog", color: "#525252", count: 3,
+      title: "BACKLOG", color: "#525252", count: 3,
       tickets: [
         { id: "OD-18", title: "Export board to CSV", priority: "#4ade80", tags: ["feature"] },
         { id: "OD-19", title: "Keyboard shortcuts panel", priority: "#fbbf24", tags: ["ux"] },
@@ -204,21 +277,21 @@ function BoardsReplica() {
       ],
     },
     {
-      title: "To Do", color: "#60a5fa", count: 2,
+      title: "TO DO", color: "#60a5fa", count: 2,
       tickets: [
         { id: "OD-15", title: "Sprint velocity chart", priority: "#f87171", tags: ["analytics"] },
         { id: "OD-16", title: "Board member permissions", priority: "#fbbf24", tags: ["backend"] },
       ],
     },
     {
-      title: "In Progress", color: "#fbbf24", count: 2,
+      title: "IN PROGRESS", color: "#fbbf24", count: 2,
       tickets: [
         { id: "OD-12", title: "Drag-and-drop reorder", priority: "#f87171", tags: ["frontend"] },
         { id: "OD-13", title: "Time tracking widget", priority: "#fbbf24", tags: ["feature"] },
       ],
     },
     {
-      title: "Done", color: "#4ade80", count: 3,
+      title: "DONE", color: "#4ade80", count: 3,
       tickets: [
         { id: "OD-9", title: "SSE real-time sync", priority: "#f87171", tags: ["backend"] },
         { id: "OD-10", title: "Label management", priority: "#4ade80", tags: ["frontend"] },
@@ -229,22 +302,22 @@ function BoardsReplica() {
 
   return (
     <div
-      className="rounded-xl overflow-hidden w-full mx-auto"
-      style={{ background: "#0a0a0a", border: "1px solid #1e1e1e" }}
+      className="overflow-hidden w-full mx-auto"
+      style={{ background: "#0c0c0d", border: "1px solid rgba(255,255,255,0.08)" }}
     >
       {/* Board header */}
-      <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: "1px solid #1e1e1e" }}>
+      <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
         <div className="flex items-center gap-3">
-          <Kanban size={14} style={{ color: "#a78bfa" }} />
-          <span style={{ fontSize: "14px", fontWeight: 600, color: "#e5e5e5" }}>Product Roadmap</span>
-          <span className="px-2 py-0.5 rounded-full" style={{ fontSize: "10px", background: "rgba(167,139,250,0.15)", color: "#a78bfa" }}>
+          <Kanban size={14} style={{ color: "#64cfe9" }} />
+          <span style={{ fontSize: "14px", fontWeight: 600, color: "#e4e4e7" }}>Product Roadmap</span>
+          <span className="px-2 py-0.5 rounded-full" style={{ fontSize: "10px", background: "rgba(100,207,233,0.15)", color: "#64cfe9" }}>
             Sprint 4
           </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex -space-x-1.5">
             {Object.values(USERS).map((u) => (
-              <div key={u.color} className="w-5 h-5 rounded-full overflow-hidden" style={{ border: "2px solid #0a0a0a", background: u.color + "33" }}>
+              <div key={u.color} className="w-5 h-5 rounded-full overflow-hidden" style={{ border: "2px solid #0c0c0d", background: u.color + "33" }}>
                 <img src={u.avatar} alt="" className="w-full h-full" />
               </div>
             ))}
@@ -264,7 +337,7 @@ function BoardsReplica() {
             <div className="flex items-center justify-between mb-3 px-1">
               <div className="flex items-center gap-2">
                 <div className="rounded-full" style={{ width: 8, height: 8, background: col.color }} />
-                <span style={{ fontSize: "12px", fontWeight: 600, color: "#e5e5e5" }}>{col.title}</span>
+                <span style={{ fontSize: "11px", fontWeight: 600, color: "#e4e4e7", letterSpacing: "0.05em", textTransform: "uppercase" as const }}>{col.title}</span>
                 <span style={{ fontSize: "10px", color: "#525252" }}>{col.count}</span>
               </div>
               <motion.div animate={{ opacity: hoveredCol === ci ? 1 : 0 }}>
@@ -275,16 +348,16 @@ function BoardsReplica() {
               <div
                 key={t.id}
                 className="rounded-lg p-3 mb-2"
-                style={{ background: "#161616", border: "1px solid #1e1e1e" }}
+                style={{ background: "#161616", border: "1px solid rgba(255,255,255,0.06)" }}
               >
                 <span style={{ fontSize: "10px", fontFamily: "monospace", color: "#525252" }}>{t.id}</span>
-                <p style={{ fontSize: "12px", color: "#e5e5e5", lineHeight: 1.4, margin: "4px 0 8px" }}>
+                <p style={{ fontSize: "12px", color: "#e4e4e7", lineHeight: 1.4, margin: "4px 0 8px" }}>
                   {t.title}
                 </p>
                 <div className="flex items-center gap-1.5">
                   <div className="rounded-full" style={{ width: 6, height: 6, background: t.priority }} />
                   {t.tags.map((tag) => (
-                    <span key={tag} className="px-1.5 py-0.5 rounded" style={{ fontSize: "9px", background: "rgba(167,139,250,0.15)", color: "#a78bfa" }}>
+                    <span key={tag} className="px-1.5 py-0.5 rounded" style={{ fontSize: "9px", background: "rgba(100,207,233,0.15)", color: "#64cfe9" }}>
                       {tag}
                     </span>
                   ))}
@@ -301,7 +374,7 @@ function BoardsReplica() {
 function BoardsSection() {
   return (
     <section className="py-24 sm:py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <SectionHeader
           number="1.0"
           label="Boards"
@@ -309,8 +382,18 @@ function BoardsSection() {
           description="Full kanban boards with sprints, epics, labels, time tracking, and real-time sync via SSE. Drag tickets between columns, bulk edit, and track velocity — all running locally with zero latency."
         />
 
-        <ScrollReveal>
-          <BoardsReplica />
+        <ScrollReveal delay={0.15}>
+          <div
+            className="relative select-none -mx-6 lg:-mx-12"
+            style={{
+              WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+            }}
+          >
+            <div className="rounded-xl overflow-hidden bg-[#0c0c0d]">
+              <BoardsReplica />
+            </div>
+          </div>
         </ScrollReveal>
 
         <SubFeatures
@@ -357,14 +440,14 @@ function NotesReplica() {
 
   return (
     <div
-      className="rounded-xl overflow-hidden w-full max-w-[900px] mx-auto"
-      style={{ background: "#0a0a0a", border: "1px solid #1e1e1e" }}
+      className="overflow-hidden w-full max-w-[900px] mx-auto"
+      style={{ background: "#0c0c0d", border: "1px solid rgba(255,255,255,0.08)" }}
     >
       <div className="flex" style={{ height: "420px" }}>
         {/* Note list sidebar */}
-        <div className="flex-shrink-0 hidden md:block" style={{ width: "220px", borderRight: "1px solid #1e1e1e" }}>
-          <div className="px-3 py-3" style={{ borderBottom: "1px solid #1e1e1e" }}>
-            <span style={{ fontSize: "12px", fontWeight: 600, color: "#e5e5e5" }}>Notes</span>
+        <div className="flex-shrink-0 hidden md:block" style={{ width: "220px", borderRight: "1px solid rgba(255,255,255,0.08)" }}>
+          <div className="px-3 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+            <span style={{ fontSize: "12px", fontWeight: 600, color: "#e4e4e7" }}>Notes</span>
           </div>
           {/* Folders */}
           <div className="px-2 pt-2">
@@ -378,18 +461,18 @@ function NotesReplica() {
               </div>
             ))}
           </div>
-          <div className="mx-3 my-2" style={{ height: 1, background: "#1e1e1e" }} />
+          <div className="mx-3 my-2" style={{ height: 1, background: "rgba(255,255,255,0.08)" }} />
           {/* Recent notes */}
           <div className="px-2">
             {notes.map((n, i) => (
               <div
                 key={n.title}
                 className="px-2 py-2 rounded"
-                style={{ background: i === 0 ? "rgba(167,139,250,0.08)" : "transparent", cursor: "pointer" }}
+                style={{ background: i === 0 ? "rgba(100,207,233,0.08)" : "transparent", cursor: "pointer" }}
               >
                 <div className="flex items-center gap-1">
-                  {n.pinned && <Tag size={8} style={{ color: "#a78bfa" }} />}
-                  <span style={{ fontSize: "11px", fontWeight: i === 0 ? 500 : 400, color: i === 0 ? "#e5e5e5" : "#a3a3a3" }}>
+                  {n.pinned && <Tag size={8} style={{ color: "#64cfe9" }} />}
+                  <span style={{ fontSize: "11px", fontWeight: i === 0 ? 500 : 400, color: i === 0 ? "#e4e4e7" : "#a3a3a3" }}>
                     {n.title}
                   </span>
                 </div>
@@ -402,37 +485,37 @@ function NotesReplica() {
         {/* Editor */}
         <div className="flex-1 flex flex-col min-w-0">
           {/* Toolbar */}
-          <div className="flex items-center gap-1 px-4 py-2" style={{ borderBottom: "1px solid #1e1e1e" }}>
+          <div className="flex items-center gap-1 px-4 py-2" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
             {[Heading, Bold, Italic, List].map((Icon, i) => (
               <div
                 key={i}
                 className="flex items-center justify-center rounded"
                 style={{ width: 28, height: 28, background: i === 0 ? "rgba(255,255,255,0.06)" : "transparent" }}
               >
-                <Icon size={14} style={{ color: i === 0 ? "#e5e5e5" : "#525252" }} />
+                <Icon size={14} style={{ color: i === 0 ? "#e4e4e7" : "#525252" }} />
               </div>
             ))}
           </div>
 
           {/* Content */}
           <div className="flex-1 px-6 py-4">
-            <h2 style={{ fontSize: "20px", fontWeight: 700, color: "#e5e5e5", marginBottom: "16px" }}>
+            <h2 style={{ fontSize: "20px", fontWeight: 700, color: "#e4e4e7", marginBottom: "16px" }}>
               Architecture Decision Record
             </h2>
             <div style={{ fontSize: "13px", color: "#a3a3a3", lineHeight: 1.7 }}>
               <p style={{ marginBottom: "12px" }}>
-                <span style={{ color: "#a78bfa", fontWeight: 600 }}>Status:</span> Accepted
+                <span style={{ color: "#64cfe9", fontWeight: 600 }}>Status:</span> Accepted
               </p>
               <p style={{ marginBottom: "12px" }}>
-                <span style={{ color: "#a78bfa", fontWeight: 600 }}>Context:</span> We need a local-first architecture that works offline and syncs when connected.
+                <span style={{ color: "#64cfe9", fontWeight: 600 }}>Context:</span> We need a local-first architecture that works offline and syncs when connected.
               </p>
               <p>
-                <span style={{ color: "#a78bfa", fontWeight: 600 }}>Decision:</span>{" "}
+                <span style={{ color: "#64cfe9", fontWeight: 600 }}>Decision:</span>{" "}
                 <span>{fullText.slice(0, cursorPos)}</span>
                 <motion.span
                   animate={{ opacity: [1, 0] }}
                   transition={{ duration: 0.8, repeat: Infinity }}
-                  style={{ color: "#a78bfa", fontWeight: 300 }}
+                  style={{ color: "#64cfe9", fontWeight: 300 }}
                 >
                   |
                 </motion.span>
@@ -448,7 +531,7 @@ function NotesReplica() {
 function NotesSection() {
   return (
     <section className="py-24 sm:py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <SectionHeader
           number="2.0"
           label="Notes"
@@ -456,8 +539,18 @@ function NotesSection() {
           description="Markdown-powered notes with folders, collections, and tags — living right next to your boards. Pin important docs, organize by project, and never context-switch to find what you wrote down."
         />
 
-        <ScrollReveal>
-          <NotesReplica />
+        <ScrollReveal delay={0.15}>
+          <div
+            className="relative select-none -mx-6 lg:-mx-12"
+            style={{
+              WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+            }}
+          >
+            <div className="rounded-xl overflow-hidden bg-[#0c0c0d]">
+              <NotesReplica />
+            </div>
+          </div>
         </ScrollReveal>
 
         <SubFeatures
@@ -504,12 +597,10 @@ function ClaudeReplica() {
       setTypingText(assistantText.slice(0, charIdx));
       if (charIdx >= assistantText.length) {
         clearInterval(typeInterval);
-        // Add the completed assistant message
         setTimeout(() => {
           setMessages((prev) => [...prev, { role: "assistant" as const, text: assistantText }]);
           setTypingText("");
 
-          // Add follow-up user message after a pause
           if (phase < followUps.length) {
             setTimeout(() => {
               setMessages((prev) => [...prev, { role: "user" as const, text: followUps[phase] }]);
@@ -525,13 +616,13 @@ function ClaudeReplica() {
 
   return (
     <div
-      className="rounded-xl overflow-hidden w-full max-w-[620px] mx-auto"
-      style={{ background: "#0a0a0a", border: "1px solid #1e1e1e" }}
+      className="overflow-hidden w-full max-w-[620px] mx-auto"
+      style={{ background: "#0c0c0d", border: "1px solid rgba(255,255,255,0.08)" }}
     >
       {/* Header */}
-      <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: "1px solid #1e1e1e" }}>
-        <Bot size={14} style={{ color: "#a78bfa" }} />
-        <span style={{ fontSize: "13px", fontWeight: 600, color: "#e5e5e5" }}>Claude</span>
+      <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+        <Bot size={14} style={{ color: "#64cfe9" }} />
+        <span style={{ fontSize: "13px", fontWeight: 600, color: "#e4e4e7" }}>Claude</span>
         <div className="flex items-center gap-1 ml-auto">
           <div className="rounded-full" style={{ width: 6, height: 6, background: "#4ade80" }} />
           <span style={{ fontSize: "10px", color: "#737373" }}>Connected</span>
@@ -552,8 +643,8 @@ function ClaudeReplica() {
               style={{
                 alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
                 maxWidth: "85%",
-                background: msg.role === "user" ? "#a78bfa" : "#161616",
-                color: msg.role === "user" ? "#000" : "#e5e5e5",
+                background: msg.role === "user" ? "#64cfe9" : "#161616",
+                color: msg.role === "user" ? "#000" : "#e4e4e7",
                 fontSize: "12px",
                 lineHeight: 1.6,
                 whiteSpace: "pre-wrap",
@@ -572,7 +663,7 @@ function ClaudeReplica() {
               alignSelf: "flex-start",
               maxWidth: "85%",
               background: "#161616",
-              color: "#e5e5e5",
+              color: "#e4e4e7",
               fontSize: "12px",
               lineHeight: 1.6,
               whiteSpace: "pre-wrap",
@@ -582,7 +673,7 @@ function ClaudeReplica() {
             <motion.span
               animate={{ opacity: [1, 0] }}
               transition={{ duration: 0.6, repeat: Infinity }}
-              style={{ color: "#a78bfa" }}
+              style={{ color: "#64cfe9" }}
             >
               |
             </motion.span>
@@ -594,10 +685,10 @@ function ClaudeReplica() {
       <div className="px-3 pb-3">
         <div
           className="flex items-center gap-2 px-3 py-2.5 rounded-lg"
-          style={{ background: "#111111", border: "1px solid #1e1e1e" }}
+          style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.08)" }}
         >
           <span style={{ fontSize: "12px", color: "#525252", flex: 1 }}>Ask Claude anything...</span>
-          <Sparkles size={14} style={{ color: "#a78bfa" }} />
+          <Sparkles size={14} style={{ color: "#64cfe9" }} />
         </div>
       </div>
     </div>
@@ -607,7 +698,7 @@ function ClaudeReplica() {
 function ClaudeSection() {
   return (
     <section className="py-24 sm:py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <SectionHeader
           number="3.0"
           label="Claude AI"
@@ -615,8 +706,18 @@ function ClaudeSection() {
           description="Claude lives inside OpenDock with full context on your boards, notes, and calendar. Ask it to move tickets, create tasks, summarize sprints, or draft notes — it acts directly on your data, not just in chat."
         />
 
-        <ScrollReveal>
-          <ClaudeReplica />
+        <ScrollReveal delay={0.15}>
+          <div
+            className="relative select-none -mx-6 lg:-mx-12"
+            style={{
+              WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+            }}
+          >
+            <div className="rounded-xl overflow-hidden bg-[#0c0c0d]">
+              <ClaudeReplica />
+            </div>
+          </div>
         </ScrollReveal>
 
         <SubFeatures
@@ -640,7 +741,7 @@ function CalendarReplica() {
 
   const events = [
     { day: 0, start: 0, span: 1, title: "Standup", color: "#6366f1" },
-    { day: 1, start: 1, span: 2, title: "Sprint Planning", color: "#a78bfa" },
+    { day: 1, start: 1, span: 2, title: "Sprint Planning", color: "#64cfe9" },
     { day: 2, start: 0, span: 1, title: "Standup", color: "#6366f1" },
     { day: 2, start: 3, span: 1, title: "Design Review", color: "#0ea5e9" },
     { day: 3, start: 2, span: 2, title: "OD-7 Due", color: "#f87171" },
@@ -650,17 +751,17 @@ function CalendarReplica() {
 
   return (
     <div
-      className="rounded-xl overflow-hidden w-full max-w-[800px] mx-auto"
-      style={{ background: "#0a0a0a", border: "1px solid #1e1e1e" }}
+      className="overflow-hidden w-full max-w-[800px] mx-auto"
+      style={{ background: "#0c0c0d", border: "1px solid rgba(255,255,255,0.08)" }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid #1e1e1e" }}>
+      <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
         <div className="flex items-center gap-3">
-          <Calendar size={14} style={{ color: "#a78bfa" }} />
-          <span style={{ fontSize: "14px", fontWeight: 600, color: "#e5e5e5" }}>March 2026</span>
+          <Calendar size={14} style={{ color: "#64cfe9" }} />
+          <span style={{ fontSize: "14px", fontWeight: 600, color: "#e4e4e7" }}>March 2026</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="px-2 py-0.5 rounded" style={{ fontSize: "10px", background: "rgba(167,139,250,0.15)", color: "#a78bfa" }}>Week</span>
+          <span className="px-2 py-0.5 rounded" style={{ fontSize: "10px", background: "rgba(100,207,233,0.15)", color: "#64cfe9" }}>Week</span>
           <span className="px-2 py-0.5 rounded" style={{ fontSize: "10px", color: "#525252" }}>Month</span>
         </div>
       </div>
@@ -679,9 +780,9 @@ function CalendarReplica() {
 
         {/* Day columns */}
         {days.map((day, di) => (
-          <div key={day} className="flex-1 min-w-0" style={{ borderLeft: "1px solid #1e1e1e" }}>
-            <div className="text-center py-2" style={{ height: "32px", borderBottom: "1px solid #1e1e1e" }}>
-              <span style={{ fontSize: "11px", fontWeight: 500, color: di === 2 ? "#a78bfa" : "#737373" }}>{day}</span>
+          <div key={day} className="flex-1 min-w-0" style={{ borderLeft: "1px solid rgba(255,255,255,0.08)" }}>
+            <div className="text-center py-2" style={{ height: "32px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+              <span style={{ fontSize: "11px", fontWeight: 500, color: di === 2 ? "#64cfe9" : "#737373" }}>{day}</span>
             </div>
             <div className="relative" style={{ height: `${hours.length * 48}px` }}>
               {events
@@ -715,7 +816,7 @@ function CalendarReplica() {
 function CalendarSection() {
   return (
     <section className="py-24 sm:py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <SectionHeader
           number="4.0"
           label="Calendar"
@@ -723,8 +824,18 @@ function CalendarSection() {
           description="A calendar that links to your board tickets. See sprint deadlines, due dates, and team events in week or month view. Events are color-coded and filterable — everything you need, nothing you don't."
         />
 
-        <ScrollReveal>
-          <CalendarReplica />
+        <ScrollReveal delay={0.15}>
+          <div
+            className="relative select-none -mx-6 lg:-mx-12"
+            style={{
+              WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+            }}
+          >
+            <div className="rounded-xl overflow-hidden bg-[#0c0c0d]">
+              <CalendarReplica />
+            </div>
+          </div>
         </ScrollReveal>
 
         <SubFeatures
@@ -756,10 +867,10 @@ function FeatureSections() {
 function FeatureGrid() {
   return (
     <section className="py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <ScrollReveal>
           <p className="overline mb-4">Details</p>
-          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[590] tracking-[-0.022em] leading-[1.12] max-w-2xl">
+          <h2 className="text-[clamp(2.25rem,5vw,4rem)] font-[510] tracking-[-0.022em] leading-[1.12] max-w-2xl">
             Everything in one dock.
           </h2>
         </ScrollReveal>
@@ -795,9 +906,9 @@ function OpenDockBenchmarks() {
       description="OpenDock uses less memory than Notion's loading screen. Starts in under half a second, runs offline, and never phones home. Built with Tauri and Rust — no Electron, no web wrapper."
       benchmarks={opendockBenchmarks}
       statCards={[
-        { value: "15×", label: "Less memory", detail: "30 MB vs 450 MB idle" },
-        { value: "21×", label: "Smaller install", detail: "18 MB vs 380 MB" },
-        { value: "8×", label: "Faster startup", detail: "0.4s vs 3.2s" },
+        { value: "15\u00d7", label: "Less memory", detail: "30 MB vs 450 MB idle" },
+        { value: "21\u00d7", label: "Smaller install", detail: "18 MB vs 380 MB" },
+        { value: "8\u00d7", label: "Faster startup", detail: "0.4s vs 3.2s" },
         { value: "100%", label: "Offline capable", detail: "Full functionality" },
       ]}
     />
@@ -810,19 +921,19 @@ function TechSpecs() {
   const specs = [
     { label: "Desktop Framework", value: "Tauri 2 (Rust)" },
     { label: "Frontend", value: "React 19 + TypeScript" },
-    { label: "State Management", value: "Zustand" },
+    { label: "State", value: "Zustand" },
     { label: "Database", value: "SQLite (local)" },
     { label: "Backend", value: "Rust (Axum)" },
-    { label: "Build Tool", value: "Vite" },
-    { label: "AI Integration", value: "Claude (Anthropic)" },
-    { label: "Real-Time Sync", value: "Server-Sent Events" },
-    { label: "Editor", value: "Lexical (Rich Text)" },
+    { label: "Build", value: "Vite" },
+    { label: "AI", value: "Claude (Anthropic)" },
+    { label: "Sync", value: "Server-Sent Events" },
+    { label: "Editor", value: "Lexical" },
     { label: "DnD", value: "@hello-pangea/dnd" },
   ];
 
   return (
     <section className="py-24 sm:py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <SectionHeader
           number="6.0"
           label="Specifications"
@@ -856,62 +967,78 @@ function TechSpecs() {
   );
 }
 
-// ── Bottom CTA ──
+// ── Bottom CTA (auth-aware, matching Flux pattern) ──
 
 function DownloadCTA() {
-  const [authState, setAuthState] = useState<"loading" | "none" | "no-sub" | "active">("loading");
-  const router = useRouter();
+  const platform = useDetectedPlatform();
+  const PlatformIcon = platform === "mac" ? Apple : MonitorDot;
+  const platformLabel = platform === "mac" ? "Download for macOS" : "Download for Windows";
+  const [hasSubscription, setHasSubscription] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    const check = async () => {
-      const meRes = await fetch("/api/auth/me");
-      const meData = await meRes.json();
-      if (!meData.user) { setAuthState("none"); return; }
-      const subsRes = await fetch("/api/subscriptions");
-      const subsData = await subsRes.json();
-      const hasOpenDock = subsData.subscriptions?.some((s: { product: string }) => s.product === "opendock");
-      setAuthState(hasOpenDock ? "active" : "no-sub");
-    };
-    check();
+    fetch("/api/subscriptions")
+      .then((r) => r.json())
+      .then((data) => {
+        const active = data.subscriptions?.some(
+          (s: { product: string }) => s.product === "opendock" || s.product === "athion_pro" || s.product === "athion"
+        );
+        setHasSubscription(!!active);
+      })
+      .catch(() => {})
+      .finally(() => setChecked(true));
   }, []);
-
-  const handleDownloadClick = () => {
-    if (authState === "none") router.push("/signup");
-    else if (authState === "no-sub") router.push("/pricing");
-    else router.push("/dashboard/downloads");
-  };
-
-  const ctaLabel = authState === "none" ? "Sign Up to Download" : authState === "no-sub" ? "Subscribe to Download" : "Download for macOS";
 
   return (
     <section id="download" className="py-32 border-t border-border/50">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-[1344px] px-6 lg:px-12">
         <ScrollReveal>
-          <h2 className="text-[clamp(2.75rem,5vw,4.5rem)] font-[590] tracking-[-0.022em] leading-[1.1]">
+          <h2 className="text-[2.5rem] md:text-[3.5rem] lg:text-[4rem] font-[510] tracking-[-0.022em] leading-[1.1] md:leading-[1.1] lg:leading-[1.06]">
             <span className="text-foreground">Ship faster. </span>
-            <span className="text-foreground-muted">The productivity suite that actually feels productive.</span>
+            <span className="text-[#b4bcd0]">The productivity suite that actually feels productive.</span>
           </h2>
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <button
-              onClick={handleDownloadClick}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:opacity-90 shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150"
-            >
-              <Apple size={14} />
-              {ctaLabel}
-            </button>
-            <button
-              onClick={handleDownloadClick}
-              className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground-muted text-sm rounded-full hover:text-foreground hover:border-foreground/20 hover:bg-white/[0.03] active:scale-[0.98] transition-all duration-150"
-            >
-              <MonitorDot size={14} />
-              {authState === "active" ? "Download for Windows" : ctaLabel}
-            </button>
+            {checked && hasSubscription ? (
+              <>
+                <a
+                  href="/dashboard/downloads"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#111] text-sm font-[510] rounded-full hover:bg-white/90 active:scale-[0.98] transition-all duration-150"
+                >
+                  <PlatformIcon size={14} />
+                  {platformLabel}
+                </a>
+                <a
+                  href="/dashboard/downloads"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 border border-white/[0.08] text-[#b4bcd0] text-sm font-[510] hover:text-white hover:border-white/[0.15] rounded-full active:scale-[0.98] transition-all duration-150"
+                >
+                  {platform === "mac" ? <MonitorDot size={14} /> : <Apple size={14} />}
+                  {platform === "mac" ? "Windows" : "macOS"}
+                </a>
+              </>
+            ) : (
+              <>
+                <a
+                  href="/pricing"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#111] text-sm font-[510] rounded-full hover:bg-white/90 active:scale-[0.98] transition-all duration-150"
+                >
+                  <PlatformIcon size={14} />
+                  {platformLabel}
+                </a>
+                <a
+                  href="/pricing"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 border border-white/[0.08] text-[#b4bcd0] text-sm font-[510] hover:text-white hover:border-white/[0.15] rounded-full active:scale-[0.98] transition-all duration-150"
+                >
+                  {platform === "mac" ? <MonitorDot size={14} /> : <Apple size={14} />}
+                  {platform === "mac" ? "Windows" : "macOS"}
+                </a>
+              </>
+            )}
           </div>
           <p className="mt-6 text-xs text-foreground-muted/50">
-            Available for macOS and Windows. Linux coming soon.
+            Available for macOS and Windows. Free with Athion subscription.
           </p>
         </ScrollReveal>
       </div>

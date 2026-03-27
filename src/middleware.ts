@@ -37,6 +37,22 @@ export async function middleware(request: NextRequest) {
     (request.nextUrl.pathname === "/login" ||
       request.nextUrl.pathname === "/signup")
   ) {
+    // Preserve redirect param — if it's an athion.me subdomain, honor it
+    const redirectParam = request.nextUrl.searchParams.get("redirect");
+    if (redirectParam) {
+      try {
+        const redirectUrl = new URL(redirectParam);
+        if (redirectUrl.hostname.endsWith(".athion.me")) {
+          return NextResponse.redirect(redirectUrl);
+        }
+      } catch {
+        // Not a full URL — treat as a path
+        const url = request.nextUrl.clone();
+        url.pathname = redirectParam;
+        url.searchParams.delete("redirect");
+        return NextResponse.redirect(url);
+      }
+    }
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);

@@ -34,7 +34,18 @@ function LoginForm() {
         return;
       }
 
-      router.push(redirectTo || "/dashboard");
+      // Support external redirects to athion.me subdomains (e.g. labs.athion.me)
+      const target = redirectTo || "/dashboard";
+      try {
+        const url = new URL(target);
+        if (url.hostname.endsWith(".athion.me")) {
+          window.location.href = target;
+          return;
+        }
+      } catch {
+        // Not a full URL — treat as a path
+      }
+      router.push(target);
       router.refresh();
     } catch {
       setError("Something went wrong");

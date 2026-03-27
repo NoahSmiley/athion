@@ -2,6 +2,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 import { BrainLogo } from "@/components/brain-logo";
+import { db } from "@/lib/db";
+import { labPermissions } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 const sidebarLinks = [
   { href: "/dashboard", label: "Overview" },
@@ -21,6 +24,14 @@ export default async function DashboardLayout({
   if (!user) {
     redirect("/login");
   }
+
+  const [labPerm] = await db
+    .select()
+    .from(labPermissions)
+    .where(eq(labPermissions.userId, user.id))
+    .limit(1);
+
+  const hasLabAccess = !!labPerm;
 
   const displayName =
     user.displayName || user.email.split("@")[0] || "User";
@@ -49,6 +60,18 @@ export default async function DashboardLayout({
               {link.label}
             </Link>
           ))}
+          {hasLabAccess && (
+            <>
+              <div className="h-px bg-border my-2" />
+              <a
+                href="https://labs.athion.me"
+                className="px-3 py-2 text-sm text-foreground-muted hover:text-foreground hover:bg-background-elevated transition-colors rounded-[6px] flex items-center gap-2"
+              >
+                Labs
+                <span className="ml-auto text-[10px] text-foreground-muted/50">&#8599;</span>
+              </a>
+            </>
+          )}
         </nav>
 
         <div className="p-4 border-t border-border">

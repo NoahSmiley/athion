@@ -58,3 +58,16 @@ export const ideAuthCodes = pgTable("ide_auth_codes", {
   usedAt: timestamp("used_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+export const labPermissions = pgTable("lab_permissions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  role: text("role").notNull().default("viewer"), // "admin" | "operator" | "viewer"
+  // Machine-level access: JSON array of allowed vmids, null = all
+  allowedMachines: text("allowed_machines"), // JSON string like "[100,101,103]" or null for all
+  canControl: boolean("can_control").notNull().default(false), // start/stop/restart
+  canTerminal: boolean("can_terminal").notNull().default(false), // SSH terminal access
+  canRcon: boolean("can_rcon").notNull().default(false), // Minecraft RCON
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});

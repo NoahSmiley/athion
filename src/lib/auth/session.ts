@@ -39,22 +39,26 @@ export async function getSession(): Promise<SessionUser | null> {
 
 export async function setSessionCookie(token: string) {
   const cookieStore = await cookies();
+  const isProduction = process.env.NODE_ENV === "production";
   cookieStore.set(COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: isProduction,
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 30, // 30 days
+    ...(isProduction && { domain: ".athion.me" }), // share across subdomains (labs.athion.me)
   });
 }
 
 export async function clearSessionCookie() {
   const cookieStore = await cookies();
+  const isProduction = process.env.NODE_ENV === "production";
   cookieStore.set(COOKIE_NAME, "", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: isProduction,
     sameSite: "lax",
     path: "/",
     maxAge: 0,
+    ...(isProduction && { domain: ".athion.me" }),
   });
 }

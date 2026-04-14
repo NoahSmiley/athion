@@ -39,57 +39,52 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <div className="text-center">
-        <h1 className="font-[590] text-3xl tracking-[-0.022em]">Check your email</h1>
-        <p className="mt-4 text-sm text-foreground-muted">
-          If an account exists for <span className="text-foreground">{email}</span>, we sent a password reset link.
+      <>
+        <h1 style={{ fontSize: 15, margin: "0 0 8px" }}>Check your email</h1>
+        <p style={{ color: "#828282" }}>
+          If an account exists for <strong>{email}</strong>, we sent a password reset link.
         </p>
-      </div>
+      </>
     );
   }
 
   return (
     <>
-      <h1 className="font-[590] text-3xl tracking-[-0.022em] text-center">
-        Reset password
-      </h1>
-      <p className="mt-2 text-sm text-foreground-muted text-center">
+      <h1 style={{ fontSize: 15, margin: "0 0 4px" }}>Reset password</h1>
+      <p style={{ color: "#828282", marginBottom: 12 }}>
         Enter your email and we&apos;ll send you a reset link.
       </p>
 
       {error && (
-        <div className="mt-6 p-3 border border-red-500/30 text-red-400 text-sm">
-          {error}
-        </div>
+        <p style={{ color: "#c44", marginBottom: 8 }}>{error}</p>
       )}
 
-      <form onSubmit={handleReset} className="mt-8 flex flex-col gap-4">
-        <div>
-          <label className="block text-xs text-foreground-muted uppercase tracking-wider mb-2">
-            Email
-          </label>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            className="w-full px-4 py-3 bg-background-elevated border border-border rounded-[6px] text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-2 w-full px-6 py-3 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150 disabled:opacity-50"
-        >
-          {loading ? "Sending..." : "Send Reset Link"}
-        </button>
+      <form onSubmit={handleReset}>
+        <table style={{ borderCollapse: "collapse" }}>
+          <tbody>
+            <tr>
+              <td style={{ padding: "4px 8px 4px 0", verticalAlign: "top" }}>Email:</td>
+              <td style={{ padding: "4px 0" }}>
+                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  style={{ width: 240, fontFamily: "inherit", fontSize: 13, padding: "2px 4px" }} />
+              </td>
+            </tr>
+            <tr>
+              <td />
+              <td style={{ padding: "8px 0 0" }}>
+                <button type="submit" disabled={loading}
+                  style={{ fontFamily: "inherit", fontSize: 13, padding: "2px 12px", cursor: "pointer" }}>
+                  {loading ? "Sending..." : "Send Reset Link"}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </form>
 
-      <p className="mt-8 text-sm text-foreground-muted text-center">
-        <Link href="/login" className="text-accent hover:text-foreground transition-colors">
-          Back to sign in
-        </Link>
+      <p style={{ marginTop: 16, color: "#828282" }}>
+        <Link href="/login">Back to sign in</Link>
       </p>
     </>
   );

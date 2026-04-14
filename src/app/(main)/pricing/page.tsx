@@ -2,223 +2,62 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Check, ArrowRight, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { PageTransition } from "@/components/page-transition";
-import { ScrollReveal } from "@/components/scroll-reveal";
-import { ATHION_PRO } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+
+const features = ["Flux — voice chat, E2EE, lossless screen share", "Liminal IDE — AI-native code editor, Rust core", "Priority support"];
+const comingSoon = ["Hosting — web apps, APIs, and static sites", "Game Servers — Minecraft, modpacks, always online", "VPS — full root access, 2 vCPU, 4 GB RAM", "Consulting — custom development and advisory"];
 
 export default function PricingPage() {
   const [annual, setAnnual] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [hasSubscription, setHasSubscription] = useState(false);
-  const [checkingSubscription, setCheckingSubscription] = useState(true);
+  const [hasSub, setHasSub] = useState(false);
+  const [checking, setChecking] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    fetch("/api/subscriptions")
-      .then((r) => r.json())
-      .then((data) => {
-        const active = data.subscriptions?.some(
-          (s: { product: string }) => s.product === "athion_pro" || s.product === "athion"
-        );
-        setHasSubscription(!!active);
-      })
-      .catch(() => {})
-      .finally(() => setCheckingSubscription(false));
+    fetch("/api/subscriptions").then((r) => r.json()).then((d) => {
+      setHasSub(!!d.subscriptions?.some((s: { product: string }) => s.product === "athion_pro" || s.product === "athion"));
+    }).catch(() => {}).finally(() => setChecking(false));
   }, []);
 
-  const handleCheckout = async () => {
+  const checkout = async () => {
     setLoading(true);
-
-    const meRes = await fetch("/api/auth/me");
-    const meData = await meRes.json();
-
-    if (!meData.user) {
-      router.push("/signup");
-      return;
-    }
-
-    const priceKey = `athion_pro_${annual ? "yearly" : "monthly"}`;
-
+    const me = await fetch("/api/auth/me").then((r) => r.json());
+    if (!me.user) { router.push("/signup"); return; }
     try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId: priceKey }),
-      });
-
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      }
-    } catch {
-      // Error handled silently
-    } finally {
-      setLoading(false);
-    }
+      const d = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ priceId: `athion_pro_${annual ? "yearly" : "monthly"}` }) }).then((r) => r.json());
+      if (d.url) window.location.href = d.url;
+    } catch {} finally { setLoading(false); }
   };
 
-  const handleManageSubscription = async () => {
+  const manage = async () => {
     setLoading(true);
-    try {
-      const res = await fetch("/api/portal", { method: "POST" });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      }
-    } catch {
-      // Error handled silently
-    } finally {
-      setLoading(false);
-    }
+    try { const d = await fetch("/api/portal", { method: "POST" }).then((r) => r.json()); if (d.url) window.location.href = d.url; } catch {} finally { setLoading(false); }
   };
+
+  const price = annual ? 192 : 20;
+  const period = annual ? "year" : "month";
 
   return (
-    <PageTransition>
-      <section className="relative min-h-[50vh] flex items-center">
-        <div className="mx-auto max-w-7xl px-6 pt-32 pb-12 text-center">
-          <ScrollReveal>
-            <p className="overline mb-4">Pricing</p>
-          </ScrollReveal>
-          <ScrollReveal delay={0.1}>
-            <h1 className="font-[590] text-5xl sm:text-6xl tracking-[-0.022em]">
-              One subscription.{"\n"}Everything included.
-            </h1>
-          </ScrollReveal>
-          <ScrollReveal delay={0.2}>
-            <p className="mt-6 text-lg text-foreground-muted max-w-lg mx-auto leading-relaxed">
-              Full access to Flux and Liminal IDE — with more on the way. No hidden fees. Cancel anytime.
-            </p>
-          </ScrollReveal>
-
-          {/* Monthly/Yearly toggle */}
-          <ScrollReveal delay={0.3}>
-            <div className="mt-10 inline-flex items-center gap-1 p-1 border border-white/[0.06] rounded-[6px]">
-              <button
-                onClick={() => setAnnual(false)}
-                className="relative px-5 py-2 text-sm transition-colors"
-              >
-                {!annual && (
-                  <motion.div
-                    layoutId="pricing-toggle"
-                    className="absolute inset-0 bg-accent rounded-[4px]"
-                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                  />
-                )}
-                <span className={cn("relative z-10", !annual ? "text-background" : "text-foreground-muted hover:text-foreground")}>
-                  Monthly
-                </span>
-              </button>
-              <button
-                onClick={() => setAnnual(true)}
-                className="relative px-5 py-2 text-sm transition-colors"
-              >
-                {annual && (
-                  <motion.div
-                    layoutId="pricing-toggle"
-                    className="absolute inset-0 bg-accent rounded-[4px]"
-                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                  />
-                )}
-                <span className={cn("relative z-10", annual ? "text-background" : "text-foreground-muted hover:text-foreground")}>
-                  Yearly
-                  <span className="ml-1.5 text-[10px] uppercase tracking-wider opacity-70">
-                    Save 20%
-                  </span>
-                </span>
-              </button>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      <section className="pb-32 px-6">
-        <div className="mx-auto max-w-2xl">
-          <ScrollReveal>
-            <div className="p-10 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] transition-all duration-200">
-              <h3 className="font-[590] text-3xl tracking-[-0.012em]">
-                {ATHION_PRO.name}
-              </h3>
-              <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
-                {ATHION_PRO.description}
-              </p>
-
-              <div className="mt-8 flex items-baseline gap-1">
-                <span className="font-[590] text-5xl tracking-[-0.022em]">
-                  ${annual ? ATHION_PRO.yearlyPrice : ATHION_PRO.monthlyPrice}
-                </span>
-                <span className="text-sm text-foreground-muted">
-                  /{annual ? "year" : "month"}
-                </span>
-              </div>
-
-              {annual && (
-                <p className="mt-1 text-xs text-foreground-muted">
-                  ${(ATHION_PRO.yearlyPrice / 12).toFixed(2)}/month billed annually
-                </p>
-              )}
-
-              <ul className="mt-10 flex flex-col gap-3">
-                {ATHION_PRO.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2 text-sm">
-                    <Check size={14} className="text-accent mt-0.5 shrink-0" />
-                    <span className="text-foreground-muted">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {ATHION_PRO.comingSoon.length > 0 && (
-                <div className="mt-6 pt-6 border-t border-white/[0.06]">
-                  <p className="text-xs text-foreground-muted/50 uppercase tracking-wider mb-3">Coming soon</p>
-                  <ul className="flex flex-col gap-3">
-                    {ATHION_PRO.comingSoon.map((feature) => (
-                      <li key={feature} className="flex items-start gap-2 text-sm">
-                        <Clock size={14} className="text-foreground-muted/30 mt-0.5 shrink-0" />
-                        <span className="text-foreground-muted/50">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {!checkingSubscription && hasSubscription ? (
-                <button
-                  onClick={handleManageSubscription}
-                  disabled={loading}
-                  className="mt-10 w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-border text-sm font-medium rounded-[6px] hover:bg-white/[0.03] hover:border-border-light active:scale-[0.98] transition-all duration-150 disabled:opacity-50"
-                >
-                  {loading ? "Loading..." : "Manage Subscription"}
-                  {!loading && <ArrowRight size={14} />}
-                </button>
-              ) : (
-                <button
-                  onClick={handleCheckout}
-                  disabled={loading || checkingSubscription}
-                  className="mt-10 w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-accent text-background text-sm font-medium rounded-[6px] hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150 disabled:opacity-50"
-                >
-                  {loading ? "Loading..." : "Subscribe"}
-                  {!loading && <ArrowRight size={14} />}
-                </button>
-              )}
-            </div>
-          </ScrollReveal>
-          {/* Transparency link */}
-          <ScrollReveal delay={0.05}>
-            <div className="mt-10 text-center">
-              <Link
-                href="/transparency"
-                className="group inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-foreground transition-colors"
-              >
-                See where your money goes
-                <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform duration-200" />
-              </Link>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-    </PageTransition>
+    <>
+      <h1>Pricing</h1>
+      <p className="muted">One subscription. Full access to Flux and Liminal IDE. No hidden fees. Cancel anytime.</p>
+      <h2>Athion Pro</h2>
+      <p>
+        <label style={{ marginRight: 12, cursor: "pointer" }}><input type="radio" checked={!annual} onChange={() => setAnnual(false)} style={{ marginRight: 4 }} />Monthly ($20/mo)</label>
+        <label style={{ cursor: "pointer" }}><input type="radio" checked={annual} onChange={() => setAnnual(true)} style={{ marginRight: 4 }} />Yearly ($192/yr — save 20%)</label>
+      </p>
+      <p><b>${price}/{period}</b>{annual && <span className="muted"> (${(192 / 12).toFixed(2)}/mo billed annually)</span>}</p>
+      <p>Includes:</p>
+      <ul>{features.map((f) => <li key={f}>{f}</li>)}</ul>
+      <p className="muted">Coming soon:</p>
+      <ul>{comingSoon.map((f) => <li key={f} className="muted">{f}</li>)}</ul>
+      {!checking && hasSub ? (
+        <button onClick={manage} disabled={loading} style={{ fontFamily: "inherit", fontSize: 13, padding: "2px 12px", cursor: "pointer", marginTop: 8 }}>{loading ? "Loading..." : "Manage Subscription"}</button>
+      ) : (
+        <button onClick={checkout} disabled={loading || checking} style={{ background: "#c8c8c8", border: "none", color: "#0e0e0e", padding: "2px 12px", cursor: "pointer", fontFamily: "inherit", fontSize: 13, marginTop: 8 }}>{loading ? "Loading..." : "Subscribe"}</button>
+      )}
+      <p className="muted" style={{ marginTop: 16 }}><Link href="/transparency">See where your money goes</Link></p>
+    </>
   );
 }

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { BrainLogo } from "@/components/brain-logo";
 
 export default function AuthLayout({
   children,
@@ -7,18 +6,14 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12">
-      <Link
-        href="/"
-        className="mb-12 flex items-center gap-2.5 text-foreground hover:text-accent transition-colors"
-      >
-        <BrainLogo size={24} />
-        <span className="font-[590] text-base tracking-[-0.022em]">Athion</span>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 24px" }}>
+      <Link href="/" style={{ marginBottom: 24, fontWeight: "bold", fontSize: 15, textDecoration: "none" }}>
+        Athion
       </Link>
-      <div className="w-full max-w-[380px] p-8 bg-white/[0.02] border border-white/[0.06] rounded-xl">
+      <div style={{ width: "100%", maxWidth: 380, padding: 24, border: "1px solid #333", background: "#222" }}>
         {children}
       </div>
-      <p className="mt-6 text-xs text-foreground-muted/40">
+      <p style={{ marginTop: 16, fontSize: 11, color: "#828282" }}>
         Secure authentication powered by Athion
       </p>
     </div>

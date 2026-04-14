@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight } from "lucide-react";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -43,78 +42,56 @@ export default function SignupPage() {
 
   return (
     <>
-      <h1 className="font-[590] text-2xl tracking-[-0.022em]">
-        Create account
-      </h1>
-      <p className="mt-1.5 text-[0.8125rem] text-foreground-muted/60">
-        Get started with Athion.
-      </p>
+      <h1 style={{ fontSize: 15, margin: "0 0 4px" }}>Create account</h1>
+      <p style={{ color: "#828282", marginBottom: 12 }}>Get started with Athion.</p>
 
       {error && (
-        <div className="mt-5 px-3 py-2.5 border border-red-500/20 bg-red-500/5 rounded-lg text-[0.8125rem] text-red-400">
-          {error}
-        </div>
+        <p style={{ color: "#c44", marginBottom: 8 }}>{error}</p>
       )}
 
-      <form onSubmit={handleSignup} className="mt-7 flex flex-col gap-5">
-        <div>
-          <label className="block text-[0.6875rem] text-foreground-muted/50 uppercase tracking-[0.06em] font-medium mb-2">
-            Display Name
-          </label>
-          <input
-            type="text"
-            required
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            placeholder="Your name"
-            className="w-full px-3.5 py-2.5 bg-transparent border border-white/[0.08] rounded-lg text-sm text-foreground placeholder:text-foreground-muted/30 focus:outline-none focus:border-white/[0.2] transition-colors"
-          />
-        </div>
-        <div>
-          <label className="block text-[0.6875rem] text-foreground-muted/50 uppercase tracking-[0.06em] font-medium mb-2">
-            Email
-          </label>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            className="w-full px-3.5 py-2.5 bg-transparent border border-white/[0.08] rounded-lg text-sm text-foreground placeholder:text-foreground-muted/30 focus:outline-none focus:border-white/[0.2] transition-colors"
-          />
-        </div>
-        <div>
-          <label className="block text-[0.6875rem] text-foreground-muted/50 uppercase tracking-[0.06em] font-medium mb-2">
-            Password
-          </label>
-          <input
-            type="password"
-            required
-            minLength={8}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="At least 8 characters"
-            className="w-full px-3.5 py-2.5 bg-transparent border border-white/[0.08] rounded-lg text-sm text-foreground placeholder:text-foreground-muted/30 focus:outline-none focus:border-white/[0.2] transition-colors"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-1 w-full inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-white text-[#111] text-sm font-[510] rounded-lg hover:bg-white/90 active:scale-[0.98] transition-all duration-150 disabled:opacity-50"
-        >
-          {loading ? "Creating account..." : "Create Account"}
-          {!loading && <ArrowRight size={14} />}
-        </button>
+      <form onSubmit={handleSignup}>
+        <table style={{ borderCollapse: "collapse" }}>
+          <tbody>
+            <tr>
+              <td style={{ padding: "4px 8px 4px 0", verticalAlign: "top" }}>Name:</td>
+              <td style={{ padding: "4px 0" }}>
+                <input type="text" required value={displayName} onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="Your name"
+                  style={{ width: 240, fontFamily: "inherit", fontSize: 13, padding: "2px 4px" }} />
+              </td>
+            </tr>
+            <tr>
+              <td style={{ padding: "4px 8px 4px 0", verticalAlign: "top" }}>Email:</td>
+              <td style={{ padding: "4px 0" }}>
+                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  style={{ width: 240, fontFamily: "inherit", fontSize: 13, padding: "2px 4px" }} />
+              </td>
+            </tr>
+            <tr>
+              <td style={{ padding: "4px 8px 4px 0", verticalAlign: "top" }}>Password:</td>
+              <td style={{ padding: "4px 0" }}>
+                <input type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)}
+                  placeholder="At least 8 characters"
+                  style={{ width: 240, fontFamily: "inherit", fontSize: 13, padding: "2px 4px" }} />
+              </td>
+            </tr>
+            <tr>
+              <td />
+              <td style={{ padding: "8px 0 0" }}>
+                <button type="submit" disabled={loading}
+                  style={{ fontFamily: "inherit", fontSize: 13, padding: "2px 12px", cursor: "pointer" }}>
+                  {loading ? "Creating account..." : "Create Account"}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </form>
 
-      <div className="mt-7 pt-5 border-t border-white/[0.06] text-center">
-        <p className="text-[0.8125rem] text-foreground-muted/50">
-          Already have an account?{" "}
-          <Link href="/login" className="text-foreground hover:text-accent transition-colors font-medium">
-            Sign in
-          </Link>
-        </p>
-      </div>
+      <p style={{ marginTop: 16, color: "#828282" }}>
+        Already have an account? <Link href="/login">Sign in</Link>
+      </p>
     </>
   );
 }

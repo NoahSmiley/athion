@@ -3,7 +3,6 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowRight } from "lucide-react";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -34,7 +33,6 @@ function LoginForm() {
         return;
       }
 
-      // Support external redirects to athion.me subdomains (e.g. labs.athion.me)
       const target = redirectTo || "/dashboard";
       try {
         const url = new URL(target);
@@ -42,9 +40,7 @@ function LoginForm() {
           window.location.href = target;
           return;
         }
-      } catch {
-        // Not a full URL — treat as a path
-      }
+      } catch {}
       router.push(target);
       router.refresh();
     } catch {
@@ -55,72 +51,50 @@ function LoginForm() {
 
   return (
     <>
-      <h1 className="font-[590] text-2xl tracking-[-0.022em]">
-        Sign in
-      </h1>
-      <p className="mt-1.5 text-[0.8125rem] text-foreground-muted/60">
-        Welcome back to Athion.
-      </p>
+      <h1 style={{ fontSize: 15, margin: "0 0 4px" }}>Sign in</h1>
+      <p style={{ color: "#828282", marginBottom: 12 }}>Welcome back to Athion.</p>
 
       {error && (
-        <div className="mt-5 px-3 py-2.5 border border-red-500/20 bg-red-500/5 rounded-lg text-[0.8125rem] text-red-400">
-          {error}
-        </div>
+        <p style={{ color: "#c44", marginBottom: 8 }}>{error}</p>
       )}
 
-      <form onSubmit={handleLogin} className="mt-7 flex flex-col gap-5">
-        <div>
-          <label className="block text-[0.6875rem] text-foreground-muted/50 uppercase tracking-[0.06em] font-medium mb-2">
-            Email
-          </label>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            className="w-full px-3.5 py-2.5 bg-transparent border border-white/[0.08] rounded-lg text-sm text-foreground placeholder:text-foreground-muted/30 focus:outline-none focus:border-white/[0.2] transition-colors"
-          />
-        </div>
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <label className="block text-[0.6875rem] text-foreground-muted/50 uppercase tracking-[0.06em] font-medium">
-              Password
-            </label>
-            <Link
-              href="/reset-password"
-              className="text-[0.6875rem] text-foreground-muted/40 hover:text-foreground-muted transition-colors"
-            >
-              Forgot?
-            </Link>
-          </div>
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Your password"
-            className="w-full px-3.5 py-2.5 bg-transparent border border-white/[0.08] rounded-lg text-sm text-foreground placeholder:text-foreground-muted/30 focus:outline-none focus:border-white/[0.2] transition-colors"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-1 w-full inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-white text-[#111] text-sm font-[510] rounded-lg hover:bg-white/90 active:scale-[0.98] transition-all duration-150 disabled:opacity-50"
-        >
-          {loading ? "Signing in..." : "Continue"}
-          {!loading && <ArrowRight size={14} />}
-        </button>
+      <form onSubmit={handleLogin}>
+        <table style={{ borderCollapse: "collapse" }}>
+          <tbody>
+            <tr>
+              <td style={{ padding: "4px 8px 4px 0", verticalAlign: "top" }}>Email:</td>
+              <td style={{ padding: "4px 0" }}>
+                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  style={{ width: 240, fontFamily: "inherit", fontSize: 13, padding: "2px 4px" }} />
+              </td>
+            </tr>
+            <tr>
+              <td style={{ padding: "4px 8px 4px 0", verticalAlign: "top" }}>Password:</td>
+              <td style={{ padding: "4px 0" }}>
+                <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Your password"
+                  style={{ width: 240, fontFamily: "inherit", fontSize: 13, padding: "2px 4px" }} />
+                <br />
+                <Link href="/reset-password" style={{ fontSize: 11, color: "#828282" }}>Forgot password?</Link>
+              </td>
+            </tr>
+            <tr>
+              <td />
+              <td style={{ padding: "8px 0 0" }}>
+                <button type="submit" disabled={loading}
+                  style={{ fontFamily: "inherit", fontSize: 13, padding: "2px 12px", cursor: "pointer" }}>
+                  {loading ? "Signing in..." : "Sign in"}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </form>
 
-      <div className="mt-7 pt-5 border-t border-white/[0.06] text-center">
-        <p className="text-[0.8125rem] text-foreground-muted/50">
-          Don&apos;t have an account?{" "}
-          <Link href="/signup" className="text-foreground hover:text-accent transition-colors font-medium">
-            Create one
-          </Link>
-        </p>
-      </div>
+      <p style={{ marginTop: 16, color: "#828282" }}>
+        Don&apos;t have an account? <Link href="/signup">Create one</Link>
+      </p>
     </>
   );
 }

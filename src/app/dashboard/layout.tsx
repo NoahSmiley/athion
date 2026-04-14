@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
-import { BrainLogo } from "@/components/brain-logo";
 import { db } from "@/lib/db";
 import { labPermissions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -45,8 +44,7 @@ export default async function DashboardLayout({
             href="/"
             className="flex items-center gap-2 text-foreground hover:text-accent transition-colors"
           >
-            <BrainLogo size={20} />
-            <span className="font-[590] text-base tracking-[-0.022em]">Athion</span>
+            <span className="font-bold text-base">Athion</span>
           </Link>
         </div>
 

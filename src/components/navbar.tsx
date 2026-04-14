@@ -29,20 +29,20 @@ export function Navbar() {
     router.refresh();
   };
 
-  const lnk = (href: string) => ({ color: pathname === href ? "#c8c8c8" : "#828282", textDecoration: "none" as const });
-
   return (
     <nav style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 13 }}>
       <Link href="/" style={{ fontSize: 15, fontWeight: 500, textDecoration: "none", marginBottom: 8 }}>Athion</Link>
-      {links.map(([href, label]) => <Link key={href} href={href} style={lnk(href)}>{label}</Link>)}
+      {links.map(([href, label]) => (
+        <Link key={href} href={href} className="nav-link" style={pathname === href ? { color: "#c8c8c8" } : undefined}>{label}</Link>
+      ))}
       <span style={{ height: 12 }} />
       {user ? (
         <>
-          <Link href="/dashboard" style={lnk("/dashboard")}>dashboard</Link>
-          <button onClick={logout} style={{ background: "none", border: "none", color: "#828282", cursor: "pointer", fontSize: 13, fontFamily: "inherit", padding: 0, textAlign: "left" }}>logout</button>
+          <Link href="/dashboard" className="nav-link" style={pathname.startsWith("/dashboard") ? { color: "#c8c8c8" } : undefined}>dashboard</Link>
+          <button onClick={logout} className="nav-link" style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, fontFamily: "inherit", padding: 0, textAlign: "left" }}>logout</button>
         </>
       ) : (
-        <Link href="/login" style={{ color: "#828282", textDecoration: "none" }}>login</Link>
+        <Link href="/login" className="nav-link">login</Link>
       )}
     </nav>
   );

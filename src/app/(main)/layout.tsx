@@ -7,26 +7,16 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <div
-        style={{
-          maxWidth: 960,
-          margin: "0 auto",
-          padding: "20px 10px",
-          display: "flex",
-          gap: 80,
-          flex: 1,
-          width: "100%",
-        }}
-      >
-        <div style={{ width: 100, display: "flex", alignItems: "center", marginLeft: -40 }}>
-          <Navbar />
-        </div>
-        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <main>{children}</main>
-        </div>
+    <>
+      <div style={{ position: "fixed", left: 80, top: 0, bottom: 0, display: "flex", alignItems: "center" }}>
+        <Navbar />
       </div>
-      <Footer />
-    </div>
+      <div style={{ position: "fixed", inset: 0, display: "flex", justifyContent: "center", alignItems: "center", pointerEvents: "none" }}>
+        <main style={{ maxWidth: 700, width: "100%", padding: "0 10px", pointerEvents: "auto" }}>{children}</main>
+      </div>
+      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0 }}>
+        <Footer />
+      </div>
+    </>
   );
 }

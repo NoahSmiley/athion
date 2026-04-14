@@ -6,16 +6,9 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 24px" }}>
-      <Link href="/" style={{ marginBottom: 24, fontWeight: "bold", fontSize: 15, textDecoration: "none" }}>
-        Athion
-      </Link>
-      <div style={{ width: "100%", maxWidth: 380, padding: 24, border: "1px solid #333", background: "#222" }}>
-        {children}
-      </div>
-      <p style={{ marginTop: 16, fontSize: 11, color: "#828282" }}>
-        Secure authentication powered by Athion
-      </p>
+    <div style={{ position: "fixed", inset: 0, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+      <Link href="/" style={{ fontWeight: 500, fontSize: 15, textDecoration: "none", marginBottom: 24 }}>Athion</Link>
+      <div style={{ width: "100%", maxWidth: 300 }}>{children}</div>
     </div>
   );
 }

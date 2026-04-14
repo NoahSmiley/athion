@@ -15,20 +15,10 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <h1>Welcome back, {displayName}.</h1>
-      <p className="muted">Manage your account and subscriptions.</p>
-      <h2>Subscription</h2>
-      {active ? (
-        <p>Status: <b>Active</b> &mdash; Full access to Flux and Liminal IDE.</p>
-      ) : (
-        <p className="muted">No active subscription. <Link href="/pricing">Subscribe</Link></p>
-      )}
-      <h2>Quick Links</h2>
-      <ul>
-        <li><Link href="/dashboard/billing">Manage billing</Link></li>
-        <li><Link href="/dashboard/downloads">Downloads</Link></li>
-        <li><Link href="/dashboard/settings">Account settings</Link></li>
-      </ul>
+      <p>Welcome back, {displayName}.</p>
+      <p className="muted" style={{ marginTop: 12 }}>
+        Subscription: {active ? <><b>Active</b> &mdash; Full access to Flux and Liminal IDE.</> : <>None. <Link href="/pricing">Subscribe</Link></>}
+      </p>
     </>
   );
 }

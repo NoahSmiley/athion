@@ -55,7 +55,7 @@ export default function PricingPage() {
       {!checking && hasSub ? (
         <button onClick={manage} disabled={loading} style={{ fontFamily: "inherit", fontSize: 13, padding: "2px 12px", cursor: "pointer", marginTop: 8 }}>{loading ? "Loading..." : "Manage Subscription"}</button>
       ) : (
-        <button onClick={checkout} disabled={loading || checking} style={{ background: "#c8c8c8", border: "none", color: "#0e0e0e", padding: "2px 12px", cursor: "pointer", fontFamily: "inherit", fontSize: 13, marginTop: 8 }}>{loading ? "Loading..." : "Subscribe"}</button>
+        <button onClick={checkout} disabled={loading || checking} style={{ background: "#c8c8c8", border: "none", color: "#080808", padding: "2px 12px", cursor: "pointer", fontFamily: "inherit", fontSize: 13, marginTop: 8 }}>{loading ? "Loading..." : "Subscribe"}</button>
       )}
       <p className="muted" style={{ marginTop: 16 }}><Link href="/transparency">See where your money goes</Link></p>
     </>

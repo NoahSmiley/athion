@@ -6,56 +6,30 @@ import { PortalButton } from "./portal-button";
 
 export default async function BillingPage() {
   const user = await getSession();
-
-  const subs = user
-    ? await db
-        .select()
-        .from(subscriptions)
-        .where(eq(subscriptions.userId, user.id))
-        .orderBy(desc(subscriptions.createdAt))
-    : [];
+  const subs = user ? await db.select().from(subscriptions).where(eq(subscriptions.userId, user.id)).orderBy(desc(subscriptions.createdAt)) : [];
 
   return (
-    <div className="max-w-4xl">
-      <h1 className="font-[590] text-3xl tracking-[-0.022em]">Billing</h1>
-      <p className="mt-2 text-foreground-muted">
-        Manage your subscriptions and payment methods.
-      </p>
-
+    <>
+      <h1>Billing</h1>
+      <p className="muted">Manage your subscriptions and payment methods.</p>
+      <h2>Subscriptions</h2>
       {subs.length > 0 ? (
-        <div className="mt-10 flex flex-col gap-4">
-          {subs.map((sub) => (
-            <div
-              key={sub.id}
-              className="p-6 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-between"
-            >
-              <div>
-                <p className="text-sm font-medium capitalize">
-                  {sub.product === "game_servers" ? "Game Servers" : sub.product}
-                </p>
-                <p className="mt-1 text-xs text-foreground-muted">
-                  Status: <span className="capitalize">{sub.status}</span>
-                  {sub.cancelAtPeriodEnd && " (cancels at period end)"}
-                </p>
-                {sub.currentPeriodEnd && (
-                  <p className="text-xs text-foreground-muted">
-                    Current period ends:{" "}
-                    {new Date(sub.currentPeriodEnd).toLocaleDateString()}
-                  </p>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+        <table>
+          <thead><tr><th>Product</th><th>Status</th><th>Period End</th></tr></thead>
+          <tbody>
+            {subs.map((sub) => (
+              <tr key={sub.id}>
+                <td><b>{sub.product === "game_servers" ? "Game Servers" : sub.product}</b></td>
+                <td>{sub.status}{sub.cancelAtPeriodEnd && " (cancels at period end)"}</td>
+                <td className="muted">{sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString() : "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       ) : (
-        <div className="mt-10 p-8 bg-white/[0.02] border border-white/[0.06] rounded-lg hover:border-white/[0.1] transition-all duration-200 text-center">
-          <p className="text-foreground-muted">No active subscriptions.</p>
-        </div>
+        <p className="muted">No active subscriptions.</p>
       )}
-
-      <div className="mt-8">
-        <PortalButton />
-      </div>
-    </div>
+      <div style={{ marginTop: 16 }}><PortalButton /></div>
+    </>
   );
 }

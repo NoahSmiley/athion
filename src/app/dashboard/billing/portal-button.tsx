@@ -5,27 +5,16 @@ import { useState } from "react";
 export function PortalButton() {
   const [loading, setLoading] = useState(false);
 
-  const handlePortal = async () => {
+  const handle = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/portal", { method: "POST" });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      }
-    } catch {
-      // Error handled silently
-    } finally {
-      setLoading(false);
-    }
+      const d = await fetch("/api/portal", { method: "POST" }).then((r) => r.json());
+      if (d.url) window.location.href = d.url;
+    } catch {} finally { setLoading(false); }
   };
 
   return (
-    <button
-      onClick={handlePortal}
-      disabled={loading}
-      className="px-6 py-3 border border-border text-sm text-foreground-muted hover:text-foreground hover:border-border-light transition-colors disabled:opacity-50"
-    >
+    <button onClick={handle} disabled={loading} style={{ fontFamily: "inherit", fontSize: 13, padding: "2px 12px", cursor: "pointer" }}>
       {loading ? "Opening..." : "Manage in Stripe"}
     </button>
   );

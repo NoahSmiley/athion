@@ -9,91 +9,39 @@ export function ApiKeySection() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetch("/api/settings/api-key")
-      .then((res) => res.json())
-      .then((data) => { if (data.keyHint) setKeyHint(data.keyHint); })
-      .catch(() => {});
+    fetch("/api/settings/api-key").then((r) => r.json()).then((d) => { if (d.keyHint) setKeyHint(d.keyHint); }).catch(() => {});
   }, []);
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-
-    const res = await fetch("/api/settings/api-key", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ apiKey: newKey }),
-    });
-
-    if (!res.ok) {
-      const data = await res.json();
-      setMessage(data.error || "Failed to save API key");
-    } else {
-      const data = await res.json();
-      setKeyHint(data.keyHint);
-      setNewKey("");
-      setMessage("API key saved.");
-    }
+  const save = async (e: React.FormEvent) => {
+    e.preventDefault(); setLoading(true); setMessage("");
+    const res = await fetch("/api/settings/api-key", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ apiKey: newKey }) });
+    if (res.ok) { const d = await res.json(); setKeyHint(d.keyHint); setNewKey(""); setMessage("API key saved."); } else { setMessage((await res.json()).error || "Failed"); }
     setLoading(false);
   };
 
-  const handleRemove = async () => {
+  const remove = async () => {
     setLoading(true);
-    const res = await fetch("/api/settings/api-key", { method: "DELETE" });
-    if (res.ok) {
-      setKeyHint(null);
-      setMessage("API key removed.");
-    }
+    if ((await fetch("/api/settings/api-key", { method: "DELETE" })).ok) { setKeyHint(null); setMessage("API key removed."); }
     setLoading(false);
   };
+
+  const input = { fontFamily: "inherit", fontSize: 13, padding: "2px 4px", width: 240 } as const;
 
   return (
-    <div className="mt-12 flex flex-col gap-4 border-t border-border pt-8">
-      <p className="text-xs text-foreground-muted uppercase tracking-wider">
-        Liminal IDE
-      </p>
-      <p className="text-sm text-foreground-muted">
-        Add your Anthropic API key to use with Liminal IDE.
-      </p>
-
-      {message && (
-        <div className="p-3 border border-accent/30 text-accent text-sm">
-          {message}
-        </div>
-      )}
-
+    <>
+      <h2>Liminal IDE API Key</h2>
+      <p className="muted">Add your Anthropic API key to use with Liminal IDE.</p>
+      {message && <p style={{ color: "#c44", marginTop: 4 }}>{message}</p>}
       {keyHint && (
-        <div className="flex items-center justify-between p-3 border border-border bg-background-elevated">
-          <span className="text-sm text-foreground-muted">
-            sk-ant-...{keyHint}
-          </span>
-          <button
-            onClick={handleRemove}
-            disabled={loading}
-            className="text-xs text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
-          >
-            Remove
-          </button>
-        </div>
+        <p style={{ marginTop: 4 }}>
+          <span className="muted" style={{ fontFamily: "var(--font-mono)" }}>sk-ant-...{keyHint}</span>
+          {" "}<button onClick={remove} disabled={loading} style={{ fontFamily: "inherit", fontSize: 11, color: "#c44", background: "none", border: "none", cursor: "pointer", padding: 0 }}>remove</button>
+        </p>
       )}
-
-      <form onSubmit={handleSave} className="flex gap-3">
-        <input
-          type="password"
-          value={newKey}
-          onChange={(e) => setNewKey(e.target.value)}
-          placeholder={keyHint ? "Replace API key" : "sk-ant-..."}
-          className="flex-1 px-4 py-3 bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none focus:border-accent/50 transition-colors"
-        />
-        <button
-          type="submit"
-          disabled={loading || !newKey}
-          className="px-6 py-3 bg-accent text-background text-sm font-medium hover:bg-accent-hover shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98] transition-all duration-150 disabled:opacity-50"
-        >
-          Save
-        </button>
+      <form onSubmit={save} style={{ marginTop: 8 }}>
+        <input type="password" value={newKey} onChange={(e) => setNewKey(e.target.value)} placeholder={keyHint ? "Replace API key" : "sk-ant-..."} style={input} />
+        {" "}<button type="submit" disabled={loading || !newKey} style={{ fontFamily: "inherit", fontSize: 13, padding: "2px 12px", cursor: "pointer" }}>Save</button>
       </form>
-    </div>
+    </>
   );
 }

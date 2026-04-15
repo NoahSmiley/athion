@@ -4,46 +4,46 @@ export const metadata: Metadata = { title: "Design System" };
 
 const colors = [
   ["--a-bg", "#060606", "Background"],
-  ["--a-bg-elevated", "#0a0a0a", "Elevated surface"],
-  ["--a-bg-input", "#111", "Input background"],
+  ["--a-bg-elevated", "#0a0a0a", "Elevated surface (sheets, modals)"],
+  ["--a-bg-input", "#111", "Input background, search pills"],
   ["--a-text", "#c8c8c8", "Primary text"],
-  ["--a-text-muted", "#828282", "Muted text"],
-  ["--a-text-faint", "#555", "Faint text"],
-  ["--a-text-ghost", "#333", "Ghost text (footer)"],
-  ["--a-text-active", "#fff", "Active / hover text"],
-  ["--a-border", "#1a1a1a", "Border"],
-  ["--a-border-strong", "#2a2a2a", "Input border"],
-  ["--a-border-faint", "#333", "Table header border"],
-  ["--a-error", "#c44", "Error"],
-  ["--a-selection-bg", "#444", "Selection background"],
+  ["--a-text-muted", "#828282", "Secondary text, back buttons"],
+  ["--a-text-faint", "#555", "Tertiary text, metadata, timestamps"],
+  ["--a-text-ghost", "#333", "Ghost text (footer, placeholders)"],
+  ["--a-text-active", "#fff", "Active text, headings, selected items"],
+  ["--a-border", "#1a1a1a", "Structural dividers"],
+  ["--a-border-strong", "#2a2a2a", "Input borders, row separators"],
+  ["--a-error", "#c44", "Destructive actions, errors"],
+  ["--a-selection-bg", "#444", "Text selection background"],
 ];
 
 const weights = [
   ["300", "Light", "Rarely used. Long-form body text if needed."],
-  ["400", "Regular", "Body text, descriptions, form labels."],
-  ["500", "Medium", "Navigation, product names, subtle emphasis."],
-  ["600", "Semibold", "Headings (h1, h2), logo wordmark, strong emphasis."],
-  ["700", "Bold", "Inline bold text (<b>, <strong>)."],
+  ["400", "Regular", "Body text, descriptions, previews, metadata."],
+  ["500", "Medium", "Branding labels, navigation items, product names."],
+  ["600", "Semibold", "Page titles, note titles, strong emphasis."],
+  ["700", "Bold", "Inline bold text."],
 ];
 
 export default function DesignPage() {
   return (
     <>
       <h1>Design System</h1>
-      <p className="muted">Athion visual language. Used across all products.</p>
+      <p className="muted">Athion visual language. Used across all products and platforms.</p>
 
       <h2>Principles</h2>
       <ul>
         <li><b>Dark only</b> &mdash; no light mode. #060606 background, always.</li>
-        <li><b>Utilitarian</b> &mdash; no gradients, no shadows, no rounded corners, no animations (except subtle fades).</li>
-        <li><b>Information-dense</b> &mdash; 13px base, tight spacing, no decorative whitespace.</li>
-        <li><b>Monochrome</b> &mdash; grayscale only. Color is reserved for errors and state.</li>
-        <li><b>System-level</b> &mdash; feels like a terminal or IDE, not a marketing site.</li>
+        <li><b>Utilitarian</b> &mdash; no gradients, no shadows, no animations (except subtle fades).</li>
+        <li><b>Information-dense</b> &mdash; 13-14px base, tight spacing, no decorative whitespace.</li>
+        <li><b>Monochrome</b> &mdash; grayscale only. No accent colors. Color is reserved for errors.</li>
+        <li><b>No emoji</b> &mdash; use text symbols or system icons only.</li>
+        <li><b>Cross-platform</b> &mdash; same visual language on web, desktop, iOS.</li>
       </ul>
 
       <h2>Colors</h2>
       <table>
-        <thead><tr><th>Token</th><th>Value</th><th>Usage</th><th>Swatch</th></tr></thead>
+        <thead><tr><th>Token</th><th>Value</th><th>Usage</th><th></th></tr></thead>
         <tbody>
           {colors.map(([token, hex, usage]) => (
             <tr key={token}>
@@ -57,11 +57,9 @@ export default function DesignPage() {
       </table>
 
       <h2>Typography</h2>
-      <p>Font: <b>OpenAI Sans</b>. Monospace: <span style={{ fontFamily: "var(--font-mono)" }}>Courier New</span>.</p>
-      <p>Base size: 13px. Line height: 1.6.</p>
-
+      <p>Font: <b>OpenAI Sans</b>. Monospace: <span style={{ fontFamily: "var(--font-mono)" }}>Menlo / Courier New</span>.</p>
       <table style={{ marginTop: 8 }}>
-        <thead><tr><th>Weight</th><th>Name</th><th>Usage</th></tr></thead>
+        <thead><tr><th>Weight</th><th>Sample</th><th>Usage</th></tr></thead>
         <tbody>
           {weights.map(([w, name, usage]) => (
             <tr key={w}>
@@ -73,25 +71,71 @@ export default function DesignPage() {
         </tbody>
       </table>
 
-      <h2>Spacing</h2>
-      <p className="muted">No spacing scale. Use values that feel right. General guidance:</p>
+      <h2>App Branding</h2>
+      <p className="muted">Every Athion app shows the product hierarchy: parent brand above tool name.</p>
       <ul>
-        <li>4px &mdash; tight gaps (between list items, inline elements)</li>
-        <li>8px &mdash; standard padding (sidebar items, footer)</li>
-        <li>16px &mdash; content padding, section gaps</li>
-        <li>20-24px &mdash; section separation</li>
-        <li>80px &mdash; fixed nav left offset</li>
+        <li><b>Brand label</b> &mdash; &quot;OpenDock&quot; in 12-13px medium weight, faint color (#555).</li>
+        <li><b>Tool title</b> &mdash; &quot;Notes&quot; / &quot;Boards&quot; / &quot;Calendar&quot; in 20-28px semibold, white.</li>
+        <li><b>Hierarchy</b> &mdash; brand label sits directly above the tool title, left-aligned.</li>
+      </ul>
+
+      <h2>Search</h2>
+      <p className="muted">All search inputs use the pill style:</p>
+      <ul>
+        <li>Background: #111 (--a-bg-input)</li>
+        <li>Border-radius: 8-10px</li>
+        <li>Padding: 8-12px</li>
+        <li>Placeholder: ghost color (#333)</li>
+        <li>No border. No outline on focus &mdash; subtle box-shadow or border-color change only.</li>
       </ul>
 
       <h2>Borders</h2>
-      <p className="muted">1px solid. No border-radius. Three tiers:</p>
       <ul>
-        <li><b>#1a1a1a</b> &mdash; structural dividers (sidebar, panels)</li>
-        <li><b>#2a2a2a</b> &mdash; input borders, table row separators</li>
+        <li><b>#1a1a1a</b> &mdash; structural dividers (sidebar, panels, nav)</li>
+        <li><b>#2a2a2a</b> &mdash; row separators, input borders</li>
         <li><b>#333</b> &mdash; table headers, subtle emphasis</li>
+        <li>Border-radius: 0px on web, 8-10px on iOS inputs/search/cards</li>
       </ul>
 
-      <h2>Components</h2>
+      <h2>Platform Guidelines</h2>
+
+      <p style={{ marginTop: 8 }}><b>Web (Next.js / athion.me)</b></p>
+      <ul>
+        <li>Font: OpenAI Sans via @font-face (woff2)</li>
+        <li>Base size: 13px, line-height 1.6</li>
+        <li>Layout: fixed sidebar nav, centered content, fixed footer</li>
+        <li>No border-radius on any element</li>
+        <li>Inline styles preferred over Tailwind utility classes</li>
+        <li>CSS tokens: --a-* prefix from @athion/style</li>
+      </ul>
+
+      <p style={{ marginTop: 12 }}><b>Desktop (Tauri + React)</b></p>
+      <ul>
+        <li>Font: OpenAI Sans via @font-face (woff2)</li>
+        <li>Base size: 14px, line-height 1.5</li>
+        <li>Layout: narrow nav rail (140px) + tool list (280px) + content area</li>
+        <li>Nav rail: horizontal text, not rotated. Brand label at top, tool links below.</li>
+        <li>Search: pill style with #111 background, 8px border-radius</li>
+        <li>CSS tokens: --a-* prefix, same values as web</li>
+        <li>-webkit-app-region: drag on headers/titlebars for frameless windows</li>
+      </ul>
+
+      <p style={{ marginTop: 12 }}><b>iOS (SwiftUI)</b></p>
+      <ul>
+        <li>Font: OpenAI Sans via TTF in bundle (registered in Info.plist UIAppFonts)</li>
+        <li>Font names: OpenAISans-Regular, OpenAISans-Medium, OpenAISans-Semibold</li>
+        <li>Base size: 14-16px depending on context</li>
+        <li>Layout: custom headers (no default NavigationBar chrome), native TabView for tools</li>
+        <li>Colors: defined in Theme.swift enum, matching --a-* token values exactly</li>
+        <li>Search: custom pill (HStack with TextField), not .searchable modifier</li>
+        <li>Border-radius: 8-10px on inputs, search pills, cards</li>
+        <li>Use .scrollContentBackground(.hidden) to remove default list backgrounds</li>
+        <li>Use .navigationBarHidden(true) for custom headers</li>
+        <li>Tab bar: UITabBarAppearance with bg=#060606, ghost inactive, white active</li>
+        <li>Swipe actions and context menus use native iOS patterns</li>
+      </ul>
+
+      <h2>Component Patterns</h2>
 
       <p style={{ marginTop: 8 }}><b>Buttons</b></p>
       <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
@@ -111,21 +155,11 @@ export default function DesignPage() {
         <span className="muted">Muted text with <a href="#">inline link</a></span>
       </p>
 
-      <h2>Layout</h2>
-      <p className="muted">Fixed sidebar nav on the left (80px from edge). Content centered in viewport. Footer fixed to bottom, barely visible (#333 text).</p>
-      <ul>
-        <li>Nav: fixed left, vertically centered, stacked links</li>
-        <li>Content: max-width 700px, centered in remaining space</li>
-        <li>Footer: fixed bottom, centered, ghost-colored links</li>
-        <li>No scrolling on short pages. Content area scrolls internally on long pages.</li>
-      </ul>
-
       <h2>Package</h2>
-      <p className="muted">Install the shared style package:</p>
-      <p style={{ fontFamily: "var(--font-mono)", marginTop: 4 }}>npm install @athion/style</p>
-      <p className="muted" style={{ marginTop: 4 }}>Then import in your entry file:</p>
+      <p className="muted">Shared CSS package for web and Tauri apps:</p>
       <p style={{ fontFamily: "var(--font-mono)", marginTop: 4 }}>import &quot;@athion/style&quot;;</p>
-      <p className="muted" style={{ marginTop: 8 }}>This gives you fonts, tokens (CSS variables), and the base reset. All tokens are prefixed with <span style={{ fontFamily: "var(--font-mono)" }}>--a-</span>.</p>
+      <p className="muted" style={{ marginTop: 8 }}>Provides: fonts.css (OpenAI Sans @font-face), tokens.css (--a-* variables), reset.css (base styles).</p>
+      <p className="muted" style={{ marginTop: 4 }}>For SwiftUI, use Theme.swift with matching Color values. No shared package &mdash; colors are defined in code.</p>
     </>
   );
 }

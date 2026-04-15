@@ -6,9 +6,11 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div style={{ position: "fixed", inset: 0, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-      <Link href="/" style={{ fontWeight: 500, fontSize: 15, textDecoration: "none", marginBottom: 24 }}>Athion</Link>
-      <div style={{ width: "100%", maxWidth: 300 }}>{children}</div>
+    <div style={{ position: "fixed", inset: 0, display: "flex", justifyContent: "center", alignItems: "center", pointerEvents: "none" }}>
+      <div style={{ width: 260, pointerEvents: "auto" }}>
+        <Link href="/" style={{ textDecoration: "none", color: "#fff", fontSize: 15, fontWeight: 500, display: "block", marginBottom: 20 }}>Athion</Link>
+        {children}
+      </div>
     </div>
   );
 }

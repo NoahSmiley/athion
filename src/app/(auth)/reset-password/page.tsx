@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 
+const input = { width: "100%", fontFamily: "inherit", fontSize: 13, padding: "6px 8px", marginTop: 4, boxSizing: "border-box" as const };
+
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
@@ -13,79 +15,36 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
-      const res = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Something went wrong");
-        setLoading(false);
-        return;
-      }
-
+      const res = await fetch("/api/auth/reset-password", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
+      if (!res.ok) { setError((await res.json()).error || "Something went wrong"); setLoading(false); return; }
       setSuccess(true);
       setLoading(false);
-    } catch {
-      setError("Something went wrong");
-      setLoading(false);
-    }
+    } catch { setError("Something went wrong"); setLoading(false); }
   };
 
   if (success) {
     return (
       <>
-        <h1 style={{ fontSize: 15, margin: "0 0 8px" }}>Check your email</h1>
-        <p style={{ color: "#828282" }}>
-          If an account exists for <strong>{email}</strong>, we sent a password reset link.
-        </p>
+        <p>Check your email.</p>
+        <p className="muted">If an account exists for <b>{email}</b>, we sent a reset link.</p>
       </>
     );
   }
 
   return (
-    <>
-      <h1 style={{ fontSize: 15, margin: "0 0 4px" }}>Reset password</h1>
-      <p style={{ color: "#828282", marginBottom: 12 }}>
-        Enter your email and we&apos;ll send you a reset link.
-      </p>
-
-      {error && (
-        <p style={{ color: "#c44", marginBottom: 8 }}>{error}</p>
-      )}
-
-      <form onSubmit={handleReset}>
-        <table style={{ borderCollapse: "collapse" }}>
-          <tbody>
-            <tr>
-              <td style={{ padding: "4px 8px 4px 0", verticalAlign: "top" }}>Email:</td>
-              <td style={{ padding: "4px 0" }}>
-                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  style={{ width: 240, fontFamily: "inherit", fontSize: 13, padding: "2px 4px" }} />
-              </td>
-            </tr>
-            <tr>
-              <td />
-              <td style={{ padding: "8px 0 0" }}>
-                <button type="submit" disabled={loading}
-                  style={{ fontFamily: "inherit", fontSize: 13, padding: "2px 12px", cursor: "pointer" }}>
-                  {loading ? "Sending..." : "Send Reset Link"}
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </form>
-
-      <p style={{ marginTop: 16, color: "#828282" }}>
+    <form onSubmit={handleReset} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      {error && <p style={{ color: "#c44", margin: 0 }}>{error}</p>}
+      <div>
+        <label className="muted" style={{ fontSize: 11 }}>Email</label>
+        <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" style={input} />
+      </div>
+      <button type="submit" disabled={loading} style={{ fontFamily: "inherit", fontSize: 13, padding: "6px 12px", cursor: "pointer", marginTop: 4 }}>
+        {loading ? "Sending..." : "Send reset link"}
+      </button>
+      <p className="muted" style={{ margin: 0, fontSize: 11 }}>
         <Link href="/login">Back to sign in</Link>
       </p>
-    </>
+    </form>
   );
 }

@@ -4,9 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-const features = ["Flux — voice chat, E2EE, lossless screen share", "Liminal IDE — AI-native code editor, Rust core", "Priority support"];
-const comingSoon = ["Hosting — web apps, APIs, and static sites", "Game Servers — Minecraft, modpacks, always online", "VPS — full root access, 2 vCPU, 4 GB RAM", "Consulting — custom development and advisory"];
-
 export default function PricingPage() {
   const [annual, setAnnual] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -37,27 +34,55 @@ export default function PricingPage() {
 
   const price = annual ? 192 : 20;
   const period = annual ? "year" : "month";
+  const toggle = { padding: "6px 16px", cursor: "pointer", fontFamily: "inherit", fontSize: 13, border: "1px solid #2a2a2a", background: "none", color: "#828282", transition: "all 0.15s" } as const;
+  const active = { ...toggle, background: "#c8c8c8", color: "#060606", border: "1px solid #c8c8c8" };
 
   return (
     <>
       <h1>Pricing</h1>
-      <p className="muted">One subscription. Full access to Flux and Liminal IDE. No hidden fees. Cancel anytime.</p>
-      <h2>Athion Pro</h2>
-      <p>
-        <label style={{ marginRight: 12, cursor: "pointer" }}><input type="radio" checked={!annual} onChange={() => setAnnual(false)} style={{ marginRight: 4 }} />Monthly ($20/mo)</label>
-        <label style={{ cursor: "pointer" }}><input type="radio" checked={annual} onChange={() => setAnnual(true)} style={{ marginRight: 4 }} />Yearly ($192/yr — save 20%)</label>
-      </p>
-      <p><b>${price}/{period}</b>{annual && <span className="muted"> (${(192 / 12).toFixed(2)}/mo billed annually)</span>}</p>
-      <p>Includes:</p>
-      <ul>{features.map((f) => <li key={f}>{f}</li>)}</ul>
-      <p className="muted">Coming soon:</p>
-      <ul>{comingSoon.map((f) => <li key={f} className="muted">{f}</li>)}</ul>
-      {!checking && hasSub ? (
-        <button onClick={manage} disabled={loading} style={{ fontFamily: "inherit", fontSize: 13, padding: "2px 12px", cursor: "pointer", marginTop: 8 }}>{loading ? "Loading..." : "Manage Subscription"}</button>
-      ) : (
-        <button onClick={checkout} disabled={loading || checking} style={{ background: "#c8c8c8", border: "none", color: "#060606", padding: "2px 12px", cursor: "pointer", fontFamily: "inherit", fontSize: 13, marginTop: 8 }}>{loading ? "Loading..." : "Subscribe"}</button>
-      )}
-      <p className="muted" style={{ marginTop: 16 }}><Link href="/transparency">See where your money goes</Link></p>
+      <p className="muted" style={{ marginBottom: 20 }}>One subscription. Everything included.</p>
+
+      <div style={{ border: "1px solid #1a1a1a", padding: 24 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+          <span style={{ fontSize: 15, fontWeight: 500 }}>Athion Pro</span>
+          <span>
+            <b style={{ fontSize: 20 }}>${price}</b>
+            <span className="muted">/{period}</span>
+          </span>
+        </div>
+
+        {annual && <p className="muted" style={{ textAlign: "right", margin: "2px 0 0", fontSize: 11 }}>${(192 / 12).toFixed(2)}/mo billed annually</p>}
+
+        <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+          <button onClick={() => setAnnual(false)} style={!annual ? active : toggle}>Monthly</button>
+          <button onClick={() => setAnnual(true)} style={annual ? active : toggle}>Yearly <span style={{ fontSize: 11, opacity: 0.7 }}>save 20%</span></button>
+        </div>
+
+        <div style={{ borderTop: "1px solid #1a1a1a", marginTop: 20, paddingTop: 16 }}>
+          <p style={{ margin: "0 0 8px", fontSize: 11, color: "#555", textTransform: "uppercase", letterSpacing: 1 }}>Included</p>
+          <p style={{ margin: "0 0 4px" }}>Flux &mdash; voice chat, E2EE, lossless screen share</p>
+          <p style={{ margin: "0 0 4px" }}>Liminal IDE &mdash; AI-native code editor, Rust core</p>
+          <p style={{ margin: "0 0 0" }}>Priority support</p>
+        </div>
+
+        <div style={{ borderTop: "1px solid #1a1a1a", marginTop: 16, paddingTop: 16 }}>
+          <p style={{ margin: "0 0 8px", fontSize: 11, color: "#555", textTransform: "uppercase", letterSpacing: 1 }}>Coming soon</p>
+          <p className="muted" style={{ margin: "0 0 4px" }}>Hosting &mdash; web apps, APIs, static sites</p>
+          <p className="muted" style={{ margin: "0 0 4px" }}>Game Servers &mdash; Minecraft, modpacks, always online</p>
+          <p className="muted" style={{ margin: "0 0 4px" }}>VPS &mdash; full root access, 2 vCPU, 4 GB RAM</p>
+          <p className="muted" style={{ margin: 0 }}>Consulting &mdash; custom development and advisory</p>
+        </div>
+
+        <div style={{ marginTop: 20 }}>
+          {!checking && hasSub ? (
+            <button onClick={manage} disabled={loading} style={{ ...toggle, width: "100%", padding: "8px 16px" }}>{loading ? "Loading..." : "Manage Subscription"}</button>
+          ) : (
+            <button onClick={checkout} disabled={loading || checking} style={{ ...active, width: "100%", padding: "8px 16px", cursor: "pointer" }}>{loading ? "Loading..." : "Subscribe"}</button>
+          )}
+        </div>
+      </div>
+
+      <p className="muted" style={{ marginTop: 12, fontSize: 11 }}><Link href="/transparency">See where your money goes &rarr;</Link></p>
     </>
   );
 }

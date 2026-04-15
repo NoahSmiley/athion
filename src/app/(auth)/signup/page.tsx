@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+const input = { width: "100%", fontFamily: "inherit", fontSize: 13, padding: "6px 8px", marginTop: 4, boxSizing: "border-box" as const };
+
 export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,82 +18,36 @@ export default function SignupPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, displayName }),
-      });
-
+      const res = await fetch("/api/auth/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password, displayName }) });
       const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Signup failed");
-        setLoading(false);
-        return;
-      }
-
+      if (!res.ok) { setError(data.error || "Signup failed"); setLoading(false); return; }
       router.push("/dashboard");
       router.refresh();
-    } catch {
-      setError("Something went wrong");
-      setLoading(false);
-    }
+    } catch { setError("Something went wrong"); setLoading(false); }
   };
 
   return (
-    <>
-      <h1 style={{ fontSize: 15, margin: "0 0 4px" }}>Create account</h1>
-      <p style={{ color: "#828282", marginBottom: 12 }}>Get started with Athion.</p>
-
-      {error && (
-        <p style={{ color: "#c44", marginBottom: 8 }}>{error}</p>
-      )}
-
-      <form onSubmit={handleSignup}>
-        <table style={{ borderCollapse: "collapse" }}>
-          <tbody>
-            <tr>
-              <td style={{ padding: "4px 8px 4px 0", verticalAlign: "top" }}>Name:</td>
-              <td style={{ padding: "4px 0" }}>
-                <input type="text" required value={displayName} onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="Your name"
-                  style={{ width: 240, fontFamily: "inherit", fontSize: 13, padding: "2px 4px" }} />
-              </td>
-            </tr>
-            <tr>
-              <td style={{ padding: "4px 8px 4px 0", verticalAlign: "top" }}>Email:</td>
-              <td style={{ padding: "4px 0" }}>
-                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  style={{ width: 240, fontFamily: "inherit", fontSize: 13, padding: "2px 4px" }} />
-              </td>
-            </tr>
-            <tr>
-              <td style={{ padding: "4px 8px 4px 0", verticalAlign: "top" }}>Password:</td>
-              <td style={{ padding: "4px 0" }}>
-                <input type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)}
-                  placeholder="At least 8 characters"
-                  style={{ width: 240, fontFamily: "inherit", fontSize: 13, padding: "2px 4px" }} />
-              </td>
-            </tr>
-            <tr>
-              <td />
-              <td style={{ padding: "8px 0 0" }}>
-                <button type="submit" disabled={loading}
-                  style={{ fontFamily: "inherit", fontSize: 13, padding: "2px 12px", cursor: "pointer" }}>
-                  {loading ? "Creating account..." : "Create Account"}
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </form>
-
-      <p style={{ marginTop: 16, color: "#828282" }}>
+    <form onSubmit={handleSignup} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      {error && <p style={{ color: "#c44", margin: 0 }}>{error}</p>}
+      <div>
+        <label className="muted" style={{ fontSize: 11 }}>Name</label>
+        <input type="text" required value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your name" style={input} />
+      </div>
+      <div>
+        <label className="muted" style={{ fontSize: 11 }}>Email</label>
+        <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" style={input} />
+      </div>
+      <div>
+        <label className="muted" style={{ fontSize: 11 }}>Password</label>
+        <input type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters" style={input} />
+      </div>
+      <button type="submit" disabled={loading} style={{ fontFamily: "inherit", fontSize: 13, padding: "6px 12px", cursor: "pointer", marginTop: 4 }}>
+        {loading ? "Creating account..." : "Create account"}
+      </button>
+      <p className="muted" style={{ margin: 0, fontSize: 11 }}>
         Already have an account? <Link href="/login">Sign in</Link>
       </p>
-    </>
+    </form>
   );
 }

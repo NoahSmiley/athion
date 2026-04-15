@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 const TYPES = ["Web App", "Mobile App", "Infrastructure", "Advisory"] as const;
+const input = { width: "100%", fontFamily: "inherit", fontSize: 13, padding: "6px 8px", marginTop: 4, boxSizing: "border-box" as const };
 
 export default function ConsultingPage() {
   const [form, setForm] = useState({ name: "", email: "", type: TYPES[0] as string, message: "" });
@@ -19,8 +20,6 @@ export default function ConsultingPage() {
       setState("sent");
     } catch { setError("Something went wrong"); setState("error"); }
   };
-
-  const input = { fontFamily: "inherit", fontSize: 13, padding: "2px 4px", width: 300 } as const;
 
   return (
     <>
@@ -40,15 +39,27 @@ export default function ConsultingPage() {
       <ul><li><b>Hourly:</b> $150/hour</li><li><b>Project-based:</b> Custom quote</li></ul>
       <h2 id="quote">Request a Quote</h2>
       {state === "sent" ? <p><b>Request received.</b> We&apos;ll respond within 2 business days.</p> : (
-        <form onSubmit={submit}>
-          {state === "error" && <p style={{ color: "#c44" }}>{error}</p>}
-          <table><tbody>
-            <tr><td style={{ verticalAlign: "top" }}>Name:</td><td><input type="text" required value={form.name} onChange={set("name")} style={input} /></td></tr>
-            <tr><td style={{ verticalAlign: "top" }}>Email:</td><td><input type="email" required value={form.email} onChange={set("email")} style={input} /></td></tr>
-            <tr><td style={{ verticalAlign: "top" }}>Type:</td><td><select value={form.type} onChange={set("type")} style={{ fontFamily: "inherit", fontSize: 13, padding: "2px 4px" }}>{TYPES.map((t) => <option key={t}>{t}</option>)}</select></td></tr>
-            <tr><td style={{ verticalAlign: "top" }}>Details:</td><td><textarea required rows={6} value={form.message} onChange={set("message")} style={{ ...input, resize: "vertical" }} /></td></tr>
-            <tr><td /><td style={{ paddingTop: 8 }}><button type="submit" disabled={state === "loading"} style={{ fontFamily: "inherit", fontSize: 13, padding: "2px 12px", cursor: "pointer" }}>{state === "loading" ? "Sending..." : "Submit"}</button></td></tr>
-          </tbody></table>
+        <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 8, maxWidth: 400 }}>
+          {state === "error" && <p style={{ color: "#c44", margin: 0 }}>{error}</p>}
+          <div>
+            <label className="muted" style={{ fontSize: 11 }}>Name</label>
+            <input type="text" required value={form.name} onChange={set("name")} style={input} />
+          </div>
+          <div>
+            <label className="muted" style={{ fontSize: 11 }}>Email</label>
+            <input type="email" required value={form.email} onChange={set("email")} style={input} />
+          </div>
+          <div>
+            <label className="muted" style={{ fontSize: 11 }}>Type</label>
+            <select value={form.type} onChange={set("type")} style={{ ...input, width: "auto" }}>{TYPES.map((t) => <option key={t}>{t}</option>)}</select>
+          </div>
+          <div>
+            <label className="muted" style={{ fontSize: 11 }}>Details</label>
+            <textarea required rows={5} value={form.message} onChange={set("message")} placeholder="Describe your project, goals, and timeline..." style={{ ...input, resize: "vertical" }} />
+          </div>
+          <button type="submit" disabled={state === "loading"} style={{ fontFamily: "inherit", fontSize: 13, padding: "6px 12px", cursor: "pointer", alignSelf: "flex-start" }}>
+            {state === "loading" ? "Sending..." : "Submit"}
+          </button>
         </form>
       )}
     </>

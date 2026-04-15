@@ -1,8 +1,19 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-Light.woff2") format("woff2"); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-LightItalic.woff2") format("woff2"); font-weight: 300; font-style: italic; font-display: swap; }
+@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-RegularItalic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-Medium.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-MediumItalic.woff2") format("woff2"); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-Semibold.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-SemiboldItalic.woff2") format("woff2"); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-Bold.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-BoldItalic.woff2") format("woff2"); font-weight: 700; font-style: italic; font-display: swap; }
+
 @theme {
-  --font-sans: Verdana, Geneva, sans-serif;
+  --font-sans: "OpenAI Sans", sans-serif;
   --font-mono: "Courier New", Courier, monospace;
 }
 
@@ -20,10 +31,16 @@ a:hover { color: #fff !important; }
 
 input, textarea, select { background: #111; color: #c8c8c8; border: 1px solid #2a2a2a; }
 input::placeholder, textarea::placeholder { color: #555; }
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #111 inset !important;
+  -webkit-text-fill-color: #c8c8c8 !important;
+  border: 1px solid #2a2a2a !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
 button { background: #111; color: #c8c8c8; border: 1px solid #2a2a2a; }
 
 .muted { color: #828282; }
-h1 { font-size: 15px; margin: 0 0 4px; }
+h1 { font-size: 15px; margin: 0 0 4px; font-weight: 600; }
 h2 { font-size: 13px; margin: 16px 0 8px; }
 table { border-collapse: collapse; width: 100%; }
 th { padding: 4px 8px 4px 0; font-weight: bold; text-align: left; }

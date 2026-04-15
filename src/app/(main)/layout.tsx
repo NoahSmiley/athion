@@ -8,7 +8,7 @@ export default function MainLayout({
 }) {
   return (
     <>
-      <div style={{ position: "fixed", left: 80, top: 0, bottom: 0, display: "flex", alignItems: "center" }}>
+      <div style={{ position: "fixed", left: 80, top: 0, bottom: 0, display: "flex", alignItems: "center", zIndex: 1 }}>
         <Navbar />
       </div>
       <div style={{ position: "fixed", inset: 0, display: "flex", justifyContent: "center", alignItems: "center", pointerEvents: "none" }}>

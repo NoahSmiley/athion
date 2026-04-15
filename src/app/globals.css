@@ -17,7 +17,7 @@
   --font-mono: "Courier New", Courier, monospace;
 }
 
-html, body { overflow: hidden; height: 100%; }
+html, body { height: 100%; }
 body { background: #060606; color: #c8c8c8; font-family: var(--font-sans); font-size: 13px; line-height: 1.6; }
 a { color: #c8c8c8; text-decoration: none; transition: color 0.15s; }
 a:visited { color: #828282; }

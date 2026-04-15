@@ -1,0 +1,33 @@
+/* Athion Design Tokens */
+:root {
+  /* Background */
+  --a-bg:            #060606;
+  --a-bg-elevated:   #0a0a0a;
+  --a-bg-input:      #111;
+
+  /* Text */
+  --a-text:          #c8c8c8;
+  --a-text-muted:    #828282;
+  --a-text-faint:    #555;
+  --a-text-ghost:    #333;
+  --a-text-active:   #fff;
+
+  /* Borders */
+  --a-border:        #1a1a1a;
+  --a-border-strong: #2a2a2a;
+  --a-border-faint:  #333;
+
+  /* Feedback */
+  --a-error:         #c44;
+  --a-selection-bg:  #444;
+  --a-selection-fg:  #fff;
+
+  /* Typography */
+  --a-font:          "OpenAI Sans", sans-serif;
+  --a-mono:          "Courier New", Courier, monospace;
+  --a-size:          13px;
+  --a-leading:       1.6;
+
+  /* Transitions */
+  --a-speed:         0.15s;
+}

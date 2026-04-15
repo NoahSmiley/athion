@@ -1,0 +1,8 @@
+{
+  "name": "@athion/style",
+  "version": "0.1.0",
+  "description": "Athion design system — tokens, base styles, fonts",
+  "type": "module",
+  "main": "index.css",
+  "files": ["index.css", "tokens.css", "fonts.css", "reset.css", "fonts/"]
+}

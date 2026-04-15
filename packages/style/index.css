@@ -1,0 +1,4 @@
+/* @athion/style — import this one file to get everything */
+@import "./fonts.css";
+@import "./tokens.css";
+@import "./reset.css";

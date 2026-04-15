@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Design System" };
@@ -160,6 +161,10 @@ export default function DesignPage() {
       <p style={{ fontFamily: "var(--font-mono)", marginTop: 4 }}>import &quot;@athion/style&quot;;</p>
       <p className="muted" style={{ marginTop: 8 }}>Provides: fonts.css (OpenAI Sans @font-face), tokens.css (--a-* variables), reset.css (base styles).</p>
       <p className="muted" style={{ marginTop: 4 }}>For SwiftUI, use Theme.swift with matching Color values. No shared package &mdash; colors are defined in code.</p>
+
+      <h2>Dev Guidelines</h2>
+      <p className="muted">Architecture, file size limits, and code standards for each platform.</p>
+      <p style={{ marginTop: 4 }}><Link href="/design/dev">View dev guidelines</Link></p>
     </>
   );
 }

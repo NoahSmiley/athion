@@ -163,8 +163,12 @@ export default function DesignPage() {
       <p className="muted" style={{ marginTop: 4 }}>For SwiftUI, use Theme.swift with matching Color values. No shared package &mdash; colors are defined in code.</p>
 
       <h2>Dev Guidelines</h2>
-      <p className="muted">Architecture, file size limits, and code standards for each platform.</p>
+      <p className="muted">File size limits, naming, and code standards for each platform.</p>
       <p style={{ marginTop: 4 }}><Link href="/design/dev">View dev guidelines</Link></p>
+
+      <h2>Architecture Guidelines</h2>
+      <p className="muted">State management patterns, layer model, and common anti-patterns.</p>
+      <p style={{ marginTop: 4 }}><Link href="/design/architecture">View architecture guidelines</Link></p>
     </>
   );
 }

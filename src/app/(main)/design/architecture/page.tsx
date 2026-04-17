@@ -21,15 +21,15 @@ export default function ArchitectureGuidelinesPage() {
       <h2>Layer Model</h2>
       <p className="muted">Every Athion product has four layers. Dependencies flow downward only.</p>
       <table>
-        <thead><tr><th>Layer</th><th>Responsibility</th><th>React</th><th>SwiftUI</th></tr></thead>
+        <thead><tr><th>Layer</th><th>Responsibility</th><th>React</th><th>SwiftUI</th><th>Rust API</th></tr></thead>
         <tbody>
-          <tr><td><b>View</b></td><td>Render UI, dispatch events</td><td>components/</td><td>*View.swift</td></tr>
-          <tr><td><b>Store</b></td><td>State, mutations, persistence</td><td>stores/</td><td>*Store.swift</td></tr>
-          <tr><td><b>Lib</b></td><td>Pure helpers, formatters, parsers</td><td>lib/</td><td>*Util.swift</td></tr>
-          <tr><td><b>API</b></td><td>Network, external services</td><td>api/</td><td>*API.swift</td></tr>
+          <tr><td><b>View / Handler</b></td><td>Render UI / serve HTTP</td><td>components/</td><td>*View.swift</td><td>routes/</td></tr>
+          <tr><td><b>Store / DB</b></td><td>State or persistence</td><td>stores/</td><td>*Store.swift</td><td>db/</td></tr>
+          <tr><td><b>Lib</b></td><td>Pure helpers, formatters, parsers</td><td>lib/</td><td>*Util.swift</td><td>in-module</td></tr>
+          <tr><td><b>API / DTO</b></td><td>Network shapes, external services</td><td>api/</td><td>*API.swift</td><td>dto/</td></tr>
         </tbody>
       </table>
-      <p className="muted" style={{ marginTop: 8 }}>Views import Stores, Lib, or API types. Stores import Lib and API. Lib imports nothing app-specific. API imports nothing app-specific.</p>
+      <p className="muted" style={{ marginTop: 8 }}>Views import Stores, Lib, or API types. Stores import Lib and API. Lib imports nothing app-specific. API imports nothing app-specific. On Rust: routes import db + dto, db imports dto, dto imports nothing app-specific.</p>
 
       <h2>React / Tauri</h2>
       <p className="muted">Zustand for state. Functional components. No HOCs, no render props, no component libraries.</p>
@@ -79,6 +79,68 @@ export default function ArchitectureGuidelinesPage() {
         <li>No computed properties that do heavy work. A <span style={{ fontFamily: "var(--font-mono)" }}>var filtered: [Note]</span> that calls <span style={{ fontFamily: "var(--font-mono)" }}>notes.filter(...)</span> runs on every view access. Cache with <span style={{ fontFamily: "var(--font-mono)" }}>didSet</span> or <span style={{ fontFamily: "var(--font-mono)" }}>@Published var filtered</span>.</li>
         <li>Navigation state in a <span style={{ fontFamily: "var(--font-mono)" }}>@State</span> <span style={{ fontFamily: "var(--font-mono)" }}>NavigationPath</span> at the shell level. Push via <span style={{ fontFamily: "var(--font-mono)" }}>path.append(id)</span>.</li>
         <li>Confirmation dialogs use <span style={{ fontFamily: "var(--font-mono)" }}>.alert</span>. Sheets use <span style={{ fontFamily: "var(--font-mono)" }}>.sheet</span>. Do not reinvent.</li>
+      </ul>
+
+      <h2>Rust API</h2>
+      <p className="muted">axum + sqlx (Postgres). Identity from athion.me via Bearer-token verification. One domain per module, thin handlers.</p>
+
+      <p style={{ marginTop: 8 }}><b>Module layout</b></p>
+      <ul>
+        <li><span style={{ fontFamily: "var(--font-mono)" }}>main.rs</span> &mdash; entry, router composition, migrations at startup via <span style={{ fontFamily: "var(--font-mono)" }}>sqlx::migrate!().run()</span>.</li>
+        <li><span style={{ fontFamily: "var(--font-mono)" }}>config.rs</span> &mdash; env loading into a <span style={{ fontFamily: "var(--font-mono)" }}>Config</span> struct. No <span style={{ fontFamily: "var(--font-mono)" }}>env::var</span> calls outside this file.</li>
+        <li><span style={{ fontFamily: "var(--font-mono)" }}>state.rs</span> &mdash; <span style={{ fontFamily: "var(--font-mono)" }}>AppState</span> with pool + http client + config values. Cloned into handlers.</li>
+        <li><span style={{ fontFamily: "var(--font-mono)" }}>error.rs</span> &mdash; single <span style={{ fontFamily: "var(--font-mono)" }}>ApiError</span> enum implementing <span style={{ fontFamily: "var(--font-mono)" }}>IntoResponse</span>. Handlers return <span style={{ fontFamily: "var(--font-mono)" }}>ApiResult&lt;T&gt;</span>.</li>
+        <li><span style={{ fontFamily: "var(--font-mono)" }}>auth/</span> &mdash; <span style={{ fontFamily: "var(--font-mono)" }}>verify.rs</span> (token forwarder), <span style={{ fontFamily: "var(--font-mono)" }}>extract.rs</span> (<span style={{ fontFamily: "var(--font-mono)" }}>AuthUser</span> FromRequestParts).</li>
+        <li><span style={{ fontFamily: "var(--font-mono)" }}>dto/</span> &mdash; one file per domain (<span style={{ fontFamily: "var(--font-mono)" }}>note.rs</span>, <span style={{ fontFamily: "var(--font-mono)" }}>board.rs</span>). Serialize/Deserialize structs + FromRow-deriving records.</li>
+        <li><span style={{ fontFamily: "var(--font-mono)" }}>db/</span> &mdash; one file per domain. Pure functions, <span style={{ fontFamily: "var(--font-mono)" }}>(pool, args) -&gt; ApiResult&lt;T&gt;</span>. No HTTP types.</li>
+        <li><span style={{ fontFamily: "var(--font-mono)" }}>routes/</span> &mdash; one file per resource. Thin handlers: extract, call <span style={{ fontFamily: "var(--font-mono)" }}>db::</span>, return JSON.</li>
+      </ul>
+
+      <p style={{ marginTop: 12 }}><b>Handler pattern</b></p>
+      <pre style={{ background: "var(--a-bg-input)", padding: 12, fontSize: 12, fontFamily: "var(--font-mono)", overflow: "auto" }}>{`async fn create(
+  State(s): State<AppState>,
+  user: AuthUser,
+  Json(body): Json<CreateNote>,
+) -> ApiResult<(StatusCode, Json<Note>)> {
+  let n = db::note::create(&s.pool, user.0.id, body).await?;
+  Ok((StatusCode::CREATED, Json(n)))
+}`}</pre>
+
+      <p style={{ marginTop: 12 }}><b>Database patterns</b></p>
+      <ul>
+        <li>sqlx, not diesel, not seaorm. <span style={{ fontFamily: "var(--font-mono)" }}>query_as::&lt;_, T&gt;()</span> with derive-FromRow structs.</li>
+        <li>Bind every user value. Never format SQL with user input.</li>
+        <li>Ownership scoping lives in the <span style={{ fontFamily: "var(--font-mono)" }}>WHERE</span> clause. Every query that returns a user&apos;s resource filters by <span style={{ fontFamily: "var(--font-mono)" }}>owner_id = $1</span> or joins through a membership table.</li>
+        <li><span style={{ fontFamily: "var(--font-mono)" }}>fetch_optional()</span> + <span style={{ fontFamily: "var(--font-mono)" }}>.ok_or(ApiError::NotFound)</span> for single-row lookups. Don&apos;t let sqlx panic on missing rows.</li>
+        <li><span style={{ fontFamily: "var(--font-mono)" }}>COALESCE($n, column)</span> for optional patches &mdash; one <span style={{ fontFamily: "var(--font-mono)" }}>UPDATE</span> statement covers all fields, <span style={{ fontFamily: "var(--font-mono)" }}>None</span> preserves existing value.</li>
+        <li>For nullable patches where <span style={{ fontFamily: "var(--font-mono)" }}>null</span> means &quot;clear&quot;, use <span style={{ fontFamily: "var(--font-mono)" }}>Option&lt;Option&lt;T&gt;&gt;</span> on the DTO and a <span style={{ fontFamily: "var(--font-mono)" }}>CASE WHEN</span> in SQL.</li>
+      </ul>
+
+      <p style={{ marginTop: 12 }}><b>Auth pattern</b></p>
+      <ul>
+        <li>athion.me is the identity provider. OpenDock (and future services) never hash passwords.</li>
+        <li><span style={{ fontFamily: "var(--font-mono)" }}>AuthUser</span> extractor: pull <span style={{ fontFamily: "var(--font-mono)" }}>Authorization: Bearer ...</span> header, forward to <span style={{ fontFamily: "var(--font-mono)" }}>ATHION_VERIFY_URL</span>, deserialize user JSON, upsert into local <span style={{ fontFamily: "var(--font-mono)" }}>users</span> table.</li>
+        <li>Every user-returning route takes <span style={{ fontFamily: "var(--font-mono)" }}>user: AuthUser</span> as an argument &mdash; compile-time enforcement of auth.</li>
+        <li>Membership checks live at the handler layer (<span style={{ fontFamily: "var(--font-mono)" }}>is_member(pool, resource_id, user_id)</span>), returning <span style={{ fontFamily: "var(--font-mono)" }}>ApiError::NotFound</span> on failure &mdash; never leak existence of resources you can&apos;t access.</li>
+        <li>Never share <span style={{ fontFamily: "var(--font-mono)" }}>JWT_SECRET</span> with downstream services. Verification always round-trips to athion.me.</li>
+      </ul>
+
+      <p style={{ marginTop: 12 }}><b>Migrations</b></p>
+      <ul>
+        <li>Timestamped filenames: <span style={{ fontFamily: "var(--font-mono)" }}>YYYYMMDDHHMMSS_name.sql</span>.</li>
+        <li>Forward-only. No down-migrations. If a change is wrong, write a new forward migration.</li>
+        <li>Run at startup via <span style={{ fontFamily: "var(--font-mono)" }}>sqlx::migrate!().run(&pool)</span>. Safe to re-run &mdash; sqlx tracks applied versions.</li>
+        <li>Index all FK columns. Index by <span style={{ fontFamily: "var(--font-mono)" }}>owner_id</span> + sort column for list endpoints.</li>
+      </ul>
+
+      <p style={{ marginTop: 12 }}><b>Anti-patterns (Rust)</b></p>
+      <ul>
+        <li><b>SQL in handlers</b> &mdash; handlers should be &lt;20 lines and delegate to <span style={{ fontFamily: "var(--font-mono)" }}>db::</span>.</li>
+        <li><b>HTTP types in db/</b> &mdash; no <span style={{ fontFamily: "var(--font-mono)" }}>StatusCode</span>, <span style={{ fontFamily: "var(--font-mono)" }}>Json</span>, <span style={{ fontFamily: "var(--font-mono)" }}>Response</span> in db modules.</li>
+        <li><b>Panics in request paths</b> &mdash; no <span style={{ fontFamily: "var(--font-mono)" }}>.unwrap()</span>, <span style={{ fontFamily: "var(--font-mono)" }}>.expect()</span>, or panicky numeric conversions in handlers. Use <span style={{ fontFamily: "var(--font-mono)" }}>?</span> and let <span style={{ fontFamily: "var(--font-mono)" }}>ApiError</span> carry it.</li>
+        <li><b>Per-request DB pools</b> &mdash; one pool on <span style={{ fontFamily: "var(--font-mono)" }}>AppState</span>, clone cheaply. Never <span style={{ fontFamily: "var(--font-mono)" }}>PgPool::connect()</span> inside a handler.</li>
+        <li><b>String-formatted SQL</b> &mdash; always <span style={{ fontFamily: "var(--font-mono)" }}>$1, $2, ...</span> parameters.</li>
+        <li><b>Verifying JWTs locally with a shared secret</b> &mdash; route through athion.me instead.</li>
       </ul>
 
       <h2>Persistence</h2>

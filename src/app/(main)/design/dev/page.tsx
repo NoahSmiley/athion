@@ -120,6 +120,33 @@ export default function DevGuidelinesPage() {
         </tbody>
       </table>
 
+      <h2>Rust (API)</h2>
+      <p className="muted">axum + tokio + sqlx (Postgres) + reqwest. Identity from athion.me via Bearer-token verification, never local password auth.</p>
+      <ul>
+        <li><b>Framework:</b> axum for HTTP, tokio runtime, tower-http layers (CORS, trace). No actix, no warp, no rocket.</li>
+        <li><b>Database:</b> sqlx with the Postgres driver. <span style={{ fontFamily: "var(--font-mono)" }}>query_as::&lt;_, T&gt;()</span> with <span style={{ fontFamily: "var(--font-mono)" }}>FromRow</span>-deriving structs. No ORM.</li>
+        <li><b>Migrations:</b> timestamped files under <span style={{ fontFamily: "var(--font-mono)" }}>migrations/</span>, run at startup via <span style={{ fontFamily: "var(--font-mono)" }}>sqlx::migrate!().run(&pool)</span>. No down-migrations &mdash; forward only.</li>
+        <li><b>Auth:</b> <span style={{ fontFamily: "var(--font-mono)" }}>AuthUser</span> extractor implements <span style={{ fontFamily: "var(--font-mono)" }}>FromRequestParts</span>, forwards the Bearer token to athion.me <span style={{ fontFamily: "var(--font-mono)" }}>/api/auth/verify</span>, upserts the user. Never verify JWTs locally &mdash; athion.me is the identity provider.</li>
+        <li><b>Errors:</b> one <span style={{ fontFamily: "var(--font-mono)" }}>ApiError</span> enum per service implementing <span style={{ fontFamily: "var(--font-mono)" }}>IntoResponse</span>. Handlers return <span style={{ fontFamily: "var(--font-mono)" }}>ApiResult&lt;T&gt;</span>. No panics in request paths.</li>
+        <li><b>Module layout:</b> <span style={{ fontFamily: "var(--font-mono)" }}>main.rs</span> (entry), <span style={{ fontFamily: "var(--font-mono)" }}>config.rs</span>, <span style={{ fontFamily: "var(--font-mono)" }}>state.rs</span>, <span style={{ fontFamily: "var(--font-mono)" }}>error.rs</span>, <span style={{ fontFamily: "var(--font-mono)" }}>auth/</span>, <span style={{ fontFamily: "var(--font-mono)" }}>dto/</span>, <span style={{ fontFamily: "var(--font-mono)" }}>db/</span>, <span style={{ fontFamily: "var(--font-mono)" }}>routes/</span>. One domain per file.</li>
+        <li><b>Handlers are thin.</b> Handler extracts, calls <span style={{ fontFamily: "var(--font-mono)" }}>db::</span>, returns JSON. No SQL in handlers, no HTTP concerns in <span style={{ fontFamily: "var(--font-mono)" }}>db::</span>.</li>
+        <li><b>Deployment:</b> <span style={{ fontFamily: "var(--font-mono)" }}>--release</span> binary under systemd, fronted by Cloudflare Tunnel. No Docker in the hot path unless the service specifically needs it.</li>
+      </ul>
+
+      <p style={{ marginTop: 8 }}><b>Target file sizes (Rust API):</b></p>
+      <table>
+        <thead><tr><th>File</th><th>Target</th><th>Max</th></tr></thead>
+        <tbody>
+          <tr><td>main.rs</td><td>30-50 lines</td><td>60</td></tr>
+          <tr><td>route module</td><td>20-60 lines</td><td>100</td></tr>
+          <tr><td>db module</td><td>30-80 lines</td><td>100</td></tr>
+          <tr><td>dto module</td><td>20-80 lines</td><td>100</td></tr>
+          <tr><td>error.rs</td><td>20-40 lines</td><td>60</td></tr>
+          <tr><td>migration</td><td>10-60 lines</td><td>100</td></tr>
+          <tr><td>Total service</td><td>400-900 lines</td><td>1500</td></tr>
+        </tbody>
+      </table>
+
       <h2>Architecture Principles</h2>
       <ul>
         <li><b>Feature-first.</b> Build one feature completely before starting the next. No half-finished scaffolding.</li>

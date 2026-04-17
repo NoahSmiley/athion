@@ -6,7 +6,6 @@ import Link from "next/link";
 
 const apps: Record<string, { name: string; desc: string; hint: string }> = {
   flux: { name: "Flux", desc: "Connect your Athion account to Flux.", hint: "Invalid link. Try again from Flux." },
-  liminal: { name: "Liminal", desc: "Connect your Athion account to the IDE.", hint: "Invalid link. Try again from Liminal IDE." },
   opendock: { name: "OpenDock", desc: "Connect your Athion account to OpenDock.", hint: "Invalid link. Try again from OpenDock." },
 };
 
@@ -16,7 +15,7 @@ function IdeLoginContent() {
   const params = useSearchParams();
   const router = useRouter();
   const code = params.get("code");
-  const app = apps[params.get("app") ?? "liminal"] ?? apps.liminal;
+  const app = apps[params.get("app") ?? "opendock"] ?? apps.opendock;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(params.get("error") ? "Authentication failed." : "");

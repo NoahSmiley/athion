@@ -33,6 +33,7 @@ export async function POST(request: Request) {
     await setSessionCookie(token);
 
     return NextResponse.json({
+      token,
       user: {
         id: user.id,
         email: user.email,

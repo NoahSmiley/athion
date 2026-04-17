@@ -169,6 +169,10 @@ export default function DesignPage() {
       <h2>Architecture Guidelines</h2>
       <p className="muted">State management patterns, layer model, and common anti-patterns.</p>
       <p style={{ marginTop: 4 }}><Link href="/design/architecture">View architecture guidelines</Link></p>
+
+      <h2>Repository Guidelines</h2>
+      <p className="muted">Branching, commits, pull requests, and Git hygiene across Athion repos.</p>
+      <p style={{ marginTop: 4 }}><Link href="/design/repository">View repository guidelines</Link></p>
     </>
   );
 }

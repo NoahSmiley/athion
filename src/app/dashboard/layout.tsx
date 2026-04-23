@@ -20,8 +20,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <>
-      <div style={{ position: "fixed", left: 80, top: 0, bottom: 0, display: "flex", alignItems: "center" }}>
-        <nav style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 13 }}>
+      <div className="dash-sidebar">
+        <nav className="athion-nav" style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 13 }}>
           <Link href="/" style={{ fontSize: 15, fontWeight: 500, textDecoration: "none", marginBottom: 8 }}>Athion</Link>
           {links.map(([href, label]) => <Link key={href} href={href} className="nav-link">{label}</Link>)}
           {labPerm && (
@@ -31,14 +31,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
             </>
           )}
           <span style={{ height: 12 }} />
-          <span style={{ color: "#828282", fontSize: 11 }}>{displayName}</span>
-          <span style={{ color: "#555", fontSize: 11 }}>{user.email}</span>
+          <span className="dash-user-name" style={{ color: "#828282", fontSize: 11 }}>{displayName}</span>
+          <span className="dash-user-email" style={{ color: "#555", fontSize: 11 }}>{user.email}</span>
         </nav>
       </div>
-      <div style={{ position: "fixed", top: 0, bottom: 0, left: 200, right: 0, display: "flex", justifyContent: "center", alignItems: "center", pointerEvents: "none" }}>
-        <main style={{ maxWidth: 700, width: "100%", padding: "0 10px", pointerEvents: "auto" }}>{children}</main>
+      <div className="dash-stage">
+        <main>{children}</main>
       </div>
-      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0 }}>
+      <div className="main-footer-wrap">
         <Footer />
       </div>
     </>

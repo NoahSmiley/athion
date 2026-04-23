@@ -10,7 +10,7 @@ export default function BlogPage() {
       <h1>Blog</h1>
       <p className="muted">Engineering decisions, product updates, and the ideas behind what we build.</p>
       {posts.length === 0 ? <p className="muted">No posts yet.</p> : (
-        <table>
+        <table className="blog-list">
           <tbody>{posts.map((p) => (
             <tr key={p.slug}>
               <td className="muted" style={{ whiteSpace: "nowrap", verticalAlign: "top" }}>{fmt(p.date)}</td>

@@ -6,8 +6,8 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div style={{ position: "fixed", inset: 0, display: "flex", justifyContent: "center", alignItems: "center", pointerEvents: "none" }}>
-      <div style={{ width: 260, pointerEvents: "auto" }}>
+    <div className="auth-shell">
+      <div className="auth-card">
         <Link href="/" style={{ textDecoration: "none", color: "#fff", fontSize: 15, fontWeight: 500, display: "block", marginBottom: 20 }}>Athion</Link>
         {children}
       </div>

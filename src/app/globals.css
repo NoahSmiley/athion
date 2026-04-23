@@ -65,7 +65,7 @@ li { margin-bottom: 4px; }
 
 @media (max-width: 720px) {
   html, body { height: auto; }
-  body { display: flex; flex-direction: column; min-height: 100vh; font-size: 15px; line-height: 1.55; }
+  body { display: flex; flex-direction: column; min-height: 100svh; font-size: 15px; line-height: 1.55; }
   h1 { font-size: 22px; margin: 0 0 8px; }
   h2 { font-size: 15px; margin: 20px 0 8px; }
   .main-sidebar { position: static; left: auto; top: auto; bottom: auto; display: block; padding: 20px 18px 0; }

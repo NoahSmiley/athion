@@ -8,21 +8,11 @@ export default function MainLayout({
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <div
-        style={{
-          maxWidth: 960,
-          margin: "0 auto",
-          padding: "20px 10px",
-          display: "flex",
-          gap: 80,
-          flex: 1,
-          width: "100%",
-        }}
-      >
-        <div style={{ width: 100, display: "flex", alignItems: "center", marginLeft: -40, marginTop: -80 }}>
+      <div className="main-shell">
+        <div className="main-sidebar">
           <Navbar />
         </div>
-        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <div className="main-content">
           <main>{children}</main>
         </div>
       </div>

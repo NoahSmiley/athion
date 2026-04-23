@@ -6,6 +6,7 @@
   --font-mono: "Courier New", Courier, monospace;
 }
 
+html, body { overflow-x: hidden; }
 body { background: #0e0e0e; color: #c8c8c8; font-family: var(--font-sans); font-size: 13px; line-height: 1.6; }
 a { color: #c8c8c8; text-decoration: none; }
 a:visited { color: #828282; }
@@ -22,3 +23,65 @@ thead tr { border-bottom: 1px solid #333; }
 tbody tr { border-bottom: 1px solid #2a2a2a; }
 ul { margin: 0; padding-left: 20px; }
 li { margin-bottom: 4px; }
+
+.main-shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px 16px;
+  display: flex;
+  gap: 80px;
+  flex: 1;
+  width: 100%;
+}
+.main-sidebar {
+  width: 100px;
+  display: flex;
+  align-items: center;
+  margin-left: -40px;
+  margin-top: -80px;
+}
+.main-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.main-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+.main-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+@media (max-width: 720px) {
+  .main-shell {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px 14px;
+  }
+  .main-sidebar {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0;
+    align-items: flex-start;
+  }
+  .main-content {
+    justify-content: flex-start;
+  }
+  .main-nav {
+    width: 100%;
+    gap: 8px;
+  }
+  .main-nav-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+  }
+  .main-nav-links > span { display: none; }
+}

@@ -32,18 +32,20 @@ export function Navbar() {
   const lnk = (href: string) => ({ color: pathname === href ? "#c8c8c8" : "#828282", textDecoration: "none" as const });
 
   return (
-    <nav style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 13 }}>
+    <nav className="main-nav">
       <Link href="/" style={{ fontSize: 15, fontWeight: 500, textDecoration: "none", marginBottom: 8 }}>Athion</Link>
-      {links.map(([href, label]) => <Link key={href} href={href} style={lnk(href)}>{label}</Link>)}
-      <span style={{ height: 12 }} />
-      {user ? (
-        <>
-          <Link href="/dashboard" style={lnk("/dashboard")}>dashboard</Link>
-          <button onClick={logout} style={{ background: "none", border: "none", color: "#828282", cursor: "pointer", fontSize: 13, fontFamily: "inherit", padding: 0, textAlign: "left" }}>logout</button>
-        </>
-      ) : (
-        <Link href="/login" style={{ color: "#828282", textDecoration: "none" }}>login</Link>
-      )}
+      <div className="main-nav-links">
+        {links.map(([href, label]) => <Link key={href} href={href} style={lnk(href)}>{label}</Link>)}
+        <span style={{ height: 12 }} />
+        {user ? (
+          <>
+            <Link href="/dashboard" style={lnk("/dashboard")}>dashboard</Link>
+            <button onClick={logout} style={{ background: "none", border: "none", color: "#828282", cursor: "pointer", fontSize: 13, fontFamily: "inherit", padding: 0, textAlign: "left" }}>logout</button>
+          </>
+        ) : (
+          <Link href="/login" style={{ color: "#828282", textDecoration: "none" }}>login</Link>
+        )}
+      </div>
     </nav>
   );
 }

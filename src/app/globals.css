@@ -68,17 +68,18 @@ li { margin-bottom: 4px; }
   body { display: flex; flex-direction: column; min-height: 100svh; font-size: 15px; line-height: 1.55; }
   h1 { font-size: 22px; margin: 0 0 8px; }
   h2 { font-size: 15px; margin: 20px 0 8px; }
-  .main-sidebar { position: static; left: auto; top: auto; bottom: auto; display: flex; justify-content: center; padding: 18px 18px 0; }
-  .main-stage { position: static; inset: auto; display: flex; overflow: visible; pointer-events: auto; flex: 1; align-items: center; justify-content: center; }
-  .main-stage > main { max-width: none; width: 100%; padding: 20px 18px; margin: 0; }
+  .main-sidebar { position: static; left: auto; top: auto; bottom: auto; display: block; padding: 14px 18px 0; }
+  .main-stage { position: static; inset: auto; display: flex; overflow: visible; pointer-events: auto; flex: 1; align-items: flex-start; justify-content: flex-start; }
+  .main-stage:has(.home-page) { align-items: center; }
+  .main-stage > main { max-width: none; width: 100%; padding: 16px 18px; margin: 0; }
   .main-footer-wrap { position: static; bottom: auto; left: auto; right: auto; margin-top: auto; border-top: 1px solid #1a1a1a; }
-  .main-footer-wrap footer { justify-content: center; gap: 10px 18px !important; font-size: 12px !important; padding: 14px 16px !important; }
-  nav.athion-nav { flex-direction: row !important; flex-wrap: wrap; gap: 8px 18px !important; align-items: center; justify-content: center; font-size: 14px !important; }
+  .main-footer-wrap footer { justify-content: center; gap: 8px 16px !important; font-size: 11px !important; padding: 10px 16px !important; }
+  nav.athion-nav { flex-direction: row !important; flex-wrap: wrap; gap: 8px 18px !important; align-items: center; justify-content: flex-start; font-size: 14px !important; }
   nav.athion-nav > span { display: none; }
   nav.athion-nav a, nav.athion-nav button { font-size: 14px !important; }
   nav.athion-nav svg { height: 20px !important; }
-  .dash-sidebar { position: static; left: auto; top: auto; bottom: auto; display: flex; justify-content: center; padding: 18px 18px 0; }
-  .dash-stage { position: static; top: auto; bottom: auto; left: auto; right: auto; display: flex; pointer-events: auto; flex: 1; align-items: center; justify-content: center; }
+  .dash-sidebar { position: static; left: auto; top: auto; bottom: auto; display: block; padding: 18px 18px 0; }
+  .dash-stage { position: static; top: auto; bottom: auto; left: auto; right: auto; display: flex; pointer-events: auto; flex: 1; align-items: flex-start; justify-content: flex-start; }
   .dash-stage > main { max-width: none; width: 100%; padding: 20px 18px; }
   .dash-user-name, .dash-user-email { font-size: 12px !important; }
   .auth-shell { position: static; inset: auto; display: flex; pointer-events: auto; padding: 18px; flex: 1; align-items: center; justify-content: center; }
@@ -91,4 +92,7 @@ li { margin-bottom: 4px; }
   input, textarea, select, button { font-size: 16px !important; padding: 10px 12px !important; }
   form label { font-size: 13px !important; }
   form button { padding: 10px 20px !important; }
+  .pricing-card { padding: 14px !important; }
+  .pricing-card p { margin-bottom: 2px !important; line-height: 1.5 !important; }
+  .pricing-card > div[style*="marginTop: 20"], .pricing-card > div[style*="margin-top:20"], .pricing-card > div:nth-child(4), .pricing-card > div:nth-child(5), .pricing-card > div:nth-child(6) { margin-top: 12px !important; padding-top: 12px !important; }
 }

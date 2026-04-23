@@ -42,7 +42,7 @@ export default function PricingPage() {
       <h1>Pricing</h1>
       <p className="muted" style={{ marginBottom: 20 }}>One subscription. Everything included.</p>
 
-      <div style={{ border: "1px solid #1a1a1a", padding: 24 }}>
+      <div className="pricing-card" style={{ border: "1px solid #1a1a1a", padding: 24 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <span style={{ fontSize: 15, fontWeight: 500 }}>Athion Pro</span>
           <span>

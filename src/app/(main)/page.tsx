@@ -26,9 +26,9 @@ export default function HomePage() {
   }, []);
 
   return (
-    <>
+    <div className="home-page">
       <h1>Athion</h1>
       <p className="muted" style={{ opacity, transition: "opacity 0.4s" }}>{slogans[i]}</p>
-    </>
+    </div>
   );
 }

@@ -64,35 +64,71 @@ li { margin-bottom: 4px; }
 .dash-stage > main { max-width: 700px; width: 100%; padding: 0 10px; pointer-events: auto; }
 
 @media (max-width: 720px) {
-  html, body { height: auto; margin: 0; padding: 0; }
-  body { display: flex; flex-direction: column; min-height: 100svh; font-size: 15px; line-height: 1.55; }
-  h1 { font-size: 22px; margin: 0 0 8px; }
-  h2 { font-size: 15px; margin: 20px 0 8px; }
-  .main-sidebar { position: static; left: auto; top: auto; bottom: auto; display: block; padding: 14px 18px 0; }
-  .main-stage { position: static; inset: auto; display: flex; overflow: visible; pointer-events: auto; flex: 1; align-items: flex-start; justify-content: flex-start; }
+  html, body { height: auto; margin: 0; padding: 0; overflow-x: hidden; }
+  body { display: flex; flex-direction: column; min-height: 100svh; font-size: 13px; line-height: 1.45; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  h2 { font-size: 13px; margin: 12px 0 4px; }
+  p { margin: 0 0 4px; }
+  ul { padding-left: 14px; margin: 0; }
+  li { margin-bottom: 1px; }
+
+  .main-sidebar {
+    position: static; left: auto; top: auto; bottom: auto;
+    display: flex; justify-content: center;
+    padding: 18px 0 0;
+  }
+  .main-sidebar nav.athion-nav {
+    width: 100%; max-width: 340px; box-sizing: border-box; padding: 0 18px;
+    flex-direction: row !important; flex-wrap: wrap; gap: 6px 16px !important;
+    align-items: center; justify-content: flex-start;
+    font-size: 13px !important;
+  }
+  .main-sidebar nav.athion-nav > span { display: none; }
+  .main-sidebar nav.athion-nav a, .main-sidebar nav.athion-nav button { font-size: 13px !important; }
+  .main-sidebar nav.athion-nav svg { height: 18px !important; }
+
+  .main-stage {
+    position: static; inset: auto;
+    display: flex; overflow: visible; pointer-events: auto;
+    flex: 1; align-items: flex-start; justify-content: center;
+  }
   .main-stage:has(.home-page) { align-items: center; }
-  .main-stage > main { max-width: none; width: 100%; padding: 16px 18px; margin: 0; }
+  .main-stage > main {
+    width: 100%; max-width: 340px; box-sizing: border-box;
+    padding: 20px 18px 12px; margin: 0;
+  }
+
   .main-footer-wrap { position: static; bottom: auto; left: auto; right: auto; margin-top: auto; border-top: 1px solid #1a1a1a; }
-  .main-footer-wrap footer { justify-content: center; gap: 8px 16px !important; font-size: 11px !important; padding: 10px 16px !important; }
-  nav.athion-nav { flex-direction: row !important; flex-wrap: wrap; gap: 8px 18px !important; align-items: center; justify-content: flex-start; font-size: 14px !important; }
-  nav.athion-nav > span { display: none; }
-  nav.athion-nav a, nav.athion-nav button { font-size: 14px !important; }
-  nav.athion-nav svg { height: 20px !important; }
-  .dash-sidebar { position: static; left: auto; top: auto; bottom: auto; display: block; padding: 18px 18px 0; }
-  .dash-stage { position: static; top: auto; bottom: auto; left: auto; right: auto; display: flex; pointer-events: auto; flex: 1; align-items: flex-start; justify-content: flex-start; }
-  .dash-stage > main { max-width: none; width: 100%; padding: 20px 18px; }
-  .dash-user-name, .dash-user-email { font-size: 12px !important; }
+  .main-footer-wrap footer { justify-content: center; gap: 4px 12px !important; font-size: 10.5px !important; padding: 6px 16px !important; }
+
+  .dash-sidebar {
+    position: static; left: auto; top: auto; bottom: auto;
+    display: flex; justify-content: center; padding: 18px 0 0;
+  }
+  .dash-sidebar nav.athion-nav {
+    width: 100%; max-width: 340px; box-sizing: border-box; padding: 0 18px;
+    flex-direction: row !important; flex-wrap: wrap; gap: 6px 16px !important;
+    align-items: center; justify-content: flex-start;
+    font-size: 13px !important;
+  }
+  .dash-sidebar nav.athion-nav > span { display: none; }
+  .dash-stage { position: static; top: auto; bottom: auto; left: auto; right: auto; display: flex; pointer-events: auto; flex: 1; align-items: flex-start; justify-content: center; }
+  .dash-stage > main { width: 100%; max-width: 340px; box-sizing: border-box; padding: 28px 18px 16px; }
+  .dash-user-name, .dash-user-email { font-size: 11px !important; }
+
   .auth-shell { position: static; inset: auto; display: flex; pointer-events: auto; padding: 18px; flex: 1; align-items: center; justify-content: center; }
-  .auth-card { width: 100%; max-width: 420px; margin: 0 auto; }
-  table { font-size: 14px; }
-  th, td { padding: 6px 10px 6px 0; }
-  .blog-list tr { display: block; padding: 10px 0; }
+  .auth-card { width: 100%; max-width: 340px; margin: 0 auto; }
+
+  table { font-size: 13px; }
+  th, td { padding: 4px 8px 4px 0; }
+  .blog-list tr { display: block; padding: 8px 0; }
   .blog-list td { display: block; padding: 0; white-space: normal !important; }
-  .blog-list td:first-child { font-size: 12px; margin-bottom: 4px; }
-  input, textarea, select, button { font-size: 16px !important; padding: 10px 12px !important; }
-  form label { font-size: 13px !important; }
-  form button { padding: 10px 20px !important; }
-  .pricing-card { padding: 14px !important; }
-  .pricing-card p { margin-bottom: 2px !important; line-height: 1.5 !important; }
-  .pricing-card > div[style*="marginTop: 20"], .pricing-card > div[style*="margin-top:20"], .pricing-card > div:nth-child(4), .pricing-card > div:nth-child(5), .pricing-card > div:nth-child(6) { margin-top: 12px !important; padding-top: 12px !important; }
+  .blog-list td:first-child { font-size: 11px; margin-bottom: 2px; }
+  input, textarea, select, button { font-size: 16px !important; padding: 8px 10px !important; }
+  form label { font-size: 12px !important; }
+  form button { padding: 9px 18px !important; }
+
+  .pricing-card { padding: 12px !important; }
+  .pricing-card p { margin-bottom: 1px !important; line-height: 1.45 !important; font-size: 13px !important; }
+  .pricing-card > div:nth-child(4), .pricing-card > div:nth-child(5), .pricing-card > div:nth-child(6) { margin-top: 10px !important; padding-top: 10px !important; }
 }

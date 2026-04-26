@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp, boolean, serial, integer } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, boolean, serial, integer, type AnyPgColumn } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -10,7 +10,7 @@ export const users = pgTable("users", {
   bio: text("bio"),
   avatarUrl: text("avatar_url"),
   tier: text("tier").notNull().default("member"), // founder | member | veteran | architect
-  invitedBy: uuid("invited_by").references((): { name: string } => users.id),
+  invitedBy: uuid("invited_by").references((): AnyPgColumn => users.id),
   invitesAvailable: integer("invites_available").notNull().default(0),
   invitesGrantedAt: timestamp("invites_granted_at", { withTimezone: true }),
   joinCooldownUntil: timestamp("join_cooldown_until", { withTimezone: true }),

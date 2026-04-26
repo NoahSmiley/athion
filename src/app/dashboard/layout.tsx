@@ -1,9 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
-import { db } from "@/lib/db";
-import { labPermissions } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
 import { Footer } from "@/components/footer";
 
 const links = [
@@ -15,7 +12,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const user = await getSession();
   if (!user) redirect("/login");
 
-  const [labPerm] = await db.select().from(labPermissions).where(eq(labPermissions.userId, user.id)).limit(1);
   const displayName = user.displayName || user.email.split("@")[0] || "User";
 
   return (
@@ -24,12 +20,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <nav className="athion-nav" style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 13 }}>
           <Link href="/" style={{ fontSize: 15, fontWeight: 500, textDecoration: "none", marginBottom: 8 }}>Athion</Link>
           {links.map(([href, label]) => <Link key={href} href={href} className="nav-link">{label}</Link>)}
-          {labPerm && (
-            <>
-              <span style={{ height: 4 }} />
-              <a href="https://labs.athion.me" className="nav-link">Labs &#8599;</a>
-            </>
-          )}
           <span style={{ height: 12 }} />
           <span className="dash-user-name" style={{ color: "#828282", fontSize: 11 }}>{displayName}</span>
           <span className="dash-user-email" style={{ color: "#555", fontSize: 11 }}>{user.email}</span>

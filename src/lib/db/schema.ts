@@ -1,16 +1,45 @@
-import { pgTable, uuid, text, timestamp, boolean, serial } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, boolean, serial, integer } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
+  memberNumber: serial("member_number").notNull(),
   email: text("email").notNull().unique(),
-  passwordHash: text("password_hash"),
+  username: text("username").unique(),
+  passwordHash: text("password_hash").notNull(),
   displayName: text("display_name"),
+  bio: text("bio"),
   avatarUrl: text("avatar_url"),
+  tier: text("tier").notNull().default("member"), // founder | member | veteran | architect
+  invitedBy: uuid("invited_by").references((): { name: string } => users.id),
+  invitesAvailable: integer("invites_available").notNull().default(0),
+  invitesGrantedAt: timestamp("invites_granted_at", { withTimezone: true }),
+  joinCooldownUntil: timestamp("join_cooldown_until", { withTimezone: true }),
+  lastSeenAt: timestamp("last_seen_at", { withTimezone: true }),
   stripeCustomerId: text("stripe_customer_id"),
-  oauthProvider: text("oauth_provider"),
-  oauthProviderId: text("oauth_provider_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const inviteCodes = pgTable("invite_codes", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  code: text("code").notNull().unique(),
+  issuedBy: uuid("issued_by").references(() => users.id, { onDelete: "set null" }),
+  usedBy: uuid("used_by").references(() => users.id, { onDelete: "set null" }),
+  usedAt: timestamp("used_at", { withTimezone: true }),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const accessRequests = pgTable("access_requests", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  email: text("email").notNull(),
+  reason: text("reason").notNull(),
+  status: text("status").notNull().default("pending"), // pending | approved | denied
+  reviewedBy: uuid("reviewed_by").references(() => users.id, { onDelete: "set null" }),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+  inviteCodeId: uuid("invite_code_id").references(() => inviteCodes.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const subscriptions = pgTable("subscriptions", {
@@ -42,9 +71,9 @@ export const contactSubmissions = pgTable("contact_submissions", {
 export const apiKeys = pgTable("api_keys", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  provider: text("provider").notNull(), // 'anthropic'
+  provider: text("provider").notNull(),
   encryptedKey: text("encrypted_key").notNull(),
-  keyHint: text("key_hint"), // last 4 chars for display
+  keyHint: text("key_hint"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -53,21 +82,8 @@ export const ideAuthCodes = pgTable("ide_auth_codes", {
   id: uuid("id").primaryKey().defaultRandom(),
   code: text("code").notNull().unique(),
   userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
-  token: text("token"), // JWT set after auth completes
+  token: text("token"),
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   usedAt: timestamp("used_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-});
-
-export const labPermissions = pgTable("lab_permissions", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  role: text("role").notNull().default("viewer"), // "admin" | "operator" | "viewer"
-  // Machine-level access: JSON array of allowed vmids, null = all
-  allowedMachines: text("allowed_machines"), // JSON string like "[100,101,103]" or null for all
-  canControl: boolean("can_control").notNull().default(false), // start/stop/restart
-  canTerminal: boolean("can_terminal").notNull().default(false), // SSH terminal access
-  canRcon: boolean("can_rcon").notNull().default(false), // Minecraft RCON
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });

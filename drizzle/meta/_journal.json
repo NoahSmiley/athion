@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1772751059383,
-      "tag": "0000_worthless_johnny_storm",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1773110844906,
-      "tag": "0001_loose_goliath",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1774571866309,
-      "tag": "0002_gray_quasimodo",
+      "when": 1777237899139,
+      "tag": "0000_initial",
       "breakpoints": true
     }
   ]

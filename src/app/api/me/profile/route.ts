@@ -17,7 +17,7 @@ export async function PATCH(request: Request) {
   const displayNameRaw = typeof body?.displayName === "string" ? body.displayName.trim() : "";
   const bioRaw = typeof body?.bio === "string" ? body.bio : "";
 
-  if (!username || !isValidUsername(username)) {
+  if (!username || !isValidUsername(username, me.username)) {
     return NextResponse.json({ error: "Username must be lowercase letters/numbers with optional hyphens or underscores, 2–32 chars" }, { status: 400 });
   }
   if (displayNameRaw.length > MAX_DISPLAY_NAME) {

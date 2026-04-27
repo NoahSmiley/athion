@@ -8,6 +8,7 @@ export type Role = "founder" | "admin" | "member";
 export type CurrentUser = {
   id: string;
   email: string;
+  username: string | null;
   role: Role;
   displayName: string | null;
 };
@@ -17,13 +18,13 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   const session = await getSession();
   if (!session) return null;
   const rows = await db
-    .select({ id: users.id, email: users.email, role: users.role, displayName: users.displayName })
+    .select({ id: users.id, email: users.email, username: users.username, role: users.role, displayName: users.displayName })
     .from(users)
     .where(eq(users.id, session.id))
     .limit(1);
   const u = rows[0];
   if (!u) return null;
-  return { id: u.id, email: u.email, role: u.role as Role, displayName: u.displayName };
+  return { id: u.id, email: u.email, username: u.username, role: u.role as Role, displayName: u.displayName };
 }
 
 // Admin pages and APIs: founder OR admin can access.

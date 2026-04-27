@@ -2,10 +2,26 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 
-const USERNAME_RE = /^[a-z0-9][a-z0-9_-]{1,30}$/;
+const USERNAME_RE = /^[a-z0-9][a-z0-9_-]{1,31}$/;
 
-export function isValidUsername(s: string): boolean {
-  return USERNAME_RE.test(s);
+// Reserved names that would let a member spoof an admin/system identity
+// or collide with a route segment. Compared after lowercasing.
+const RESERVED = new Set([
+  "admin", "administrator", "root", "system", "support", "help", "moderator", "mod",
+  "athion", "official", "staff", "team", "owner", "founder", "noah",
+  "api", "auth", "login", "signup", "logout", "settings", "invites", "docs", "blog",
+  "labs", "software", "members", "about", "process", "request-access", "reset-password",
+  "privacy", "terms", "security", "transparency", "careers", "u", "me", "you",
+  "null", "undefined", "anonymous", "guest", "test",
+]);
+
+// `current` allows a user to keep a name they were already assigned (e.g., founder
+// kept "noah" before reserved-name enforcement existed). Pass null/undefined for
+// signup or admin-name-rename flows where no grandfathering should apply.
+export function isValidUsername(s: string, current?: string | null): boolean {
+  if (!USERNAME_RE.test(s)) return false;
+  if (RESERVED.has(s) && s !== current) return false;
+  return true;
 }
 
 // Slug a string into a username candidate: lowercase, replace runs of

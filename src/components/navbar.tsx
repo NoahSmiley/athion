@@ -98,7 +98,8 @@ export function Navbar() {
       onClick={navigate("/")}
       style={{ textDecoration: "none", color: "#fff", fontWeight: 500, display: "inline-flex", alignItems: "center", gap: 6 }}
     >
-      <span style={{ viewTransitionName: "athion-mark" } as React.CSSProperties}>← Athion</span>
+      <span aria-hidden="true" style={{ color: "#828282" }}>←</span>
+      <span style={{ viewTransitionName: "athion-mark" } as React.CSSProperties}>Athion</span>
       <span
         className="labs-pill"
         style={{

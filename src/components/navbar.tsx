@@ -268,8 +268,20 @@ function NavbarInner() {
   const bSubRow = variant === "b" && user && bGroup && !isLabs ? B_SUB[bGroup] : null;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", width: "100%", maxWidth: 700, gap: 8 }}>
-      <nav className="athion-nav-top" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13, lineHeight: 1, padding: "0 24px" }}>
+    <div style={{ display: "flex", flexDirection: "column", width: "100%", maxWidth: 700 }}>
+      <nav
+        className="athion-nav-top"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          fontSize: 13,
+          lineHeight: 1,
+          padding: "0 24px",
+          paddingBottom: bSubRow ? 10 : 0,
+          borderBottom: bSubRow ? "1px solid #1a1a1a" : "none",
+        }}
+      >
         {wordmark}
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
           {variant === "default" && renderDefault()}
@@ -278,11 +290,26 @@ function NavbarInner() {
         </div>
       </nav>
       {bSubRow && (
-        <div style={{ display: "flex", gap: 14, fontSize: 12, padding: "0 24px", justifyContent: "flex-end" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 16,
+            fontSize: 12,
+            padding: "10px 24px 0",
+            justifyContent: "flex-end",
+          }}
+        >
           {bSubRow.map(([href, label]) => {
             const active = pathname === href || pathname.startsWith(href + "/");
             return (
-              <Link key={href} href={href} className="nav-link" style={{ color: active ? "#c8c8c8" : undefined }}>{label}</Link>
+              <Link
+                key={href}
+                href={href}
+                className="nav-link"
+                style={{ color: active ? "#c8c8c8" : undefined, fontSize: 12 }}
+              >
+                {label}
+              </Link>
             );
           })}
         </div>

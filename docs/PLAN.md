@@ -73,6 +73,14 @@ Memory: `~/.claude/projects/-Users-noahsmile/memory/reference_athion_deploy.md`
   member-number badges, Enter to send.
 - `athion-chat.service` systemd unit on CT 109. Builds with `cargo build --release`.
 
+### Phase 2.5 — Email notifications (2026-04-26)
+- `src/lib/mail.ts` with `sendMail()` no-op fallback (logs when
+  `RESEND_API_KEY` is unset/placeholder). Templates as pure functions.
+- Hooks: applicationReceived (on submit), applicationInReview, interviewScheduled,
+  approved (with invite code), denied, newMessage (admin → applicant only).
+- Mail errors never break the user-visible request. To activate: set a real
+  `RESEND_API_KEY` on CT 109 + verify athion.me DKIM/SPF in Resend.
+
 ## Next up
 
 For approved members only. Real-time chat.

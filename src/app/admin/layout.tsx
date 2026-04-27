@@ -10,7 +10,10 @@ const links = [
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const admin = await getAdminUser();
-  if (!admin) redirect("/login");
+  // Logged-out users are bounced by middleware. If we get here without an admin
+  // it means the viewer is a logged-in member who just doesn't have admin role —
+  // send them home rather than to /login (which would bounce them right back).
+  if (!admin) redirect("/");
 
   return (
     <>

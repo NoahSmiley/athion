@@ -268,7 +268,7 @@ function NavbarInner() {
   const bSubRow = variant === "b" && user && bGroup && !isLabs ? B_SUB[bGroup] : null;
 
   return (
-    <>
+    <div style={{ display: "flex", flexDirection: "column", width: "100%", maxWidth: 700, gap: 8 }}>
       <nav className="athion-nav-top" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13, lineHeight: 1, padding: "0 24px" }}>
         {wordmark}
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
@@ -278,17 +278,15 @@ function NavbarInner() {
         </div>
       </nav>
       {bSubRow && (
-        <div style={{ display: "flex", justifyContent: "center", marginTop: 8 }}>
-          <div style={{ display: "flex", gap: 14, fontSize: 12, padding: "0 24px", maxWidth: 700, width: "100%" }}>
-            {bSubRow.map(([href, label]) => {
-              const active = pathname === href || pathname.startsWith(href + "/");
-              return (
-                <Link key={href} href={href} className="nav-link" style={{ color: active ? "#c8c8c8" : undefined }}>{label}</Link>
-              );
-            })}
-          </div>
+        <div style={{ display: "flex", gap: 14, fontSize: 12, padding: "0 24px", justifyContent: "flex-end" }}>
+          {bSubRow.map(([href, label]) => {
+            const active = pathname === href || pathname.startsWith(href + "/");
+            return (
+              <Link key={href} href={href} className="nav-link" style={{ color: active ? "#c8c8c8" : undefined }}>{label}</Link>
+            );
+          })}
         </div>
       )}
-    </>
+    </div>
   );
 }

@@ -91,6 +91,19 @@ Memory: `~/.claude/projects/-Users-noahsmile/memory/reference_athion_deploy.md`
   refunds it. Codes expire after 14 days.
 - Signup sets `joinCooldownUntil = now + 30 days`.
 
+### Phase 2.9 — Application + interview polish (2026-04-26)
+- Stepper: 4 steps → 3 (Received / Reviewing / Decision)
+- Approval shows "Create your account →" button + decision note
+- Applicant can withdraw their own application
+- Admin: "Request more info" action (status = needs_more_info, banner on
+  applicant page)
+- Founder-only: "Reopen" closed (denied/withdrawn) applications
+- 30-day re-application cooldown after a denial; withdrawn apps re-apply freely
+- Rate limit on /api/access-requests: 5/IP/hour
+- Admin queue: unread bullet for applications with new applicant messages
+  (Rust service sets last_applicant_message_at, admin detail page sets
+  last_admin_seen_at on view)
+
 ### Phase 2.8 — Interview rooms (2026-04-26)
 - Chat refit: instead of one `#general`, the chat is per-application.
 - `chat_channels.kind` (general/interview), `application_id`, `closed_at`.

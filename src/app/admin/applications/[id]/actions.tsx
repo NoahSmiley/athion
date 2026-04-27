@@ -5,14 +5,29 @@ import { useRouter } from "next/navigation";
 
 const CLOSED = new Set(["approved", "denied", "withdrawn"]);
 
+// "2026-04-28T16:21" — the format <input type="datetime-local"> wants
+function toLocalInputValue(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 export function ApplicationActions({
   id,
   status,
   isFounder,
+  currentInterviewAt,
+  currentInterviewDurationMinutes,
+  currentInterviewNote,
 }: {
   id: string;
   status: string;
   isFounder: boolean;
+  currentInterviewAt: string | null;
+  currentInterviewDurationMinutes: number;
+  currentInterviewNote: string | null;
 }) {
   const router = useRouter();
   const [interviewNote, setInterviewNote] = useState("");
@@ -20,6 +35,11 @@ export function ApplicationActions({
   const [interviewDurationMinutes, setInterviewDurationMinutes] = useState(30);
   const [decisionNote, setDecisionNote] = useState("");
   const [moreInfoNote, setMoreInfoNote] = useState("");
+  // Reschedule fields are seeded from server values; they live in their own
+  // state so editing one doesn't disturb the "Schedule interview" form below.
+  const [rescheduleAt, setRescheduleAt] = useState(() => toLocalInputValue(currentInterviewAt));
+  const [rescheduleDuration, setRescheduleDuration] = useState(currentInterviewDurationMinutes);
+  const [rescheduleNote, setRescheduleNote] = useState(currentInterviewNote ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [flash, setFlash] = useState<string | null>(null);
@@ -117,6 +137,59 @@ export function ApplicationActions({
             style={{ alignSelf: "flex-start", padding: "6px 12px", opacity: interviewNote.trim() && interviewAt && !busy ? 1 : 0.5 }}
           >
             Save & schedule
+          </button>
+        </fieldset>
+      )}
+
+      {!closed && status === "interview_scheduled" && (
+        <fieldset style={{ border: "1px solid #2a2a2a", padding: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+          <legend style={{ fontSize: 12, color: "#828282", padding: "0 6px" }}>Reschedule interview</legend>
+          <div style={{ display: "flex", gap: 8 }}>
+            <input
+              type="datetime-local"
+              value={rescheduleAt}
+              onChange={(e) => setRescheduleAt(e.target.value)}
+              style={{ padding: "6px 8px", flex: 1 }}
+            />
+            <select
+              value={rescheduleDuration}
+              onChange={(e) => setRescheduleDuration(Number(e.target.value))}
+              style={{ padding: "6px 8px" }}
+            >
+              <option value={15}>15 min</option>
+              <option value={30}>30 min</option>
+              <option value={45}>45 min</option>
+              <option value={60}>60 min</option>
+              <option value={90}>90 min</option>
+              <option value={120}>2 hr</option>
+            </select>
+          </div>
+          <textarea
+            placeholder="Note the applicant will see"
+            value={rescheduleNote}
+            onChange={(e) => setRescheduleNote(e.target.value)}
+            rows={3}
+            style={{ padding: "6px 8px", fontFamily: "inherit" }}
+          />
+          <button
+            onClick={async () => {
+              if (!rescheduleNote.trim() || !rescheduleAt) return;
+              const localDate = new Date(rescheduleAt);
+              if (Number.isNaN(localDate.getTime())) return;
+              await act(
+                "schedule_interview",
+                {
+                  interviewAt: localDate.toISOString(),
+                  interviewNote: rescheduleNote,
+                  interviewDurationMinutes: rescheduleDuration,
+                },
+                "Interview rescheduled. Applicant emailed.",
+              );
+            }}
+            disabled={busy || !rescheduleNote.trim() || !rescheduleAt}
+            style={{ alignSelf: "flex-start", padding: "6px 12px", opacity: rescheduleNote.trim() && rescheduleAt && !busy ? 1 : 0.5 }}
+          >
+            Update schedule
           </button>
         </fieldset>
       )}

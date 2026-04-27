@@ -130,7 +130,14 @@ export default async function AdminApplicationDetailPage({ params }: { params: P
       )}
 
       <h2 style={{ marginTop: 24 }}>Actions</h2>
-      <ApplicationActions id={app.id} status={app.status} isFounder={me?.role === "founder"} />
+      <ApplicationActions
+        id={app.id}
+        status={app.status}
+        isFounder={me?.role === "founder"}
+        currentInterviewAt={app.interviewAt ? new Date(app.interviewAt).toISOString() : null}
+        currentInterviewDurationMinutes={app.interviewDurationMinutes}
+        currentInterviewNote={app.interviewNote ?? null}
+      />
 
       <p className="muted" style={{ marginTop: 24, fontSize: 11 }}>
         Public status page: <a href={`/application/${app.id}`} target="_blank">/application/{app.id}</a>

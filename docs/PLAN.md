@@ -91,6 +91,48 @@ Memory: `~/.claude/projects/-Users-noahsmile/memory/reference_athion_deploy.md`
   refunds it. Codes expire after 14 days.
 - Signup sets `joinCooldownUntil = now + 30 days`.
 
+### Phase 2.10 — E2E hardening pass (2026-04-27)
+Found and fixed during a thorough edge-case audit:
+- Rate limit was consuming quota on validation failures, dedup hits, and
+  cooldown rejections. Now consumed only on actual new-application creates.
+- 7 routes returned 500 on bad UUIDs (Postgres throws on non-UUID input):
+  `/application/[id]`, `/application/[id]/interview`,
+  `/admin/applications/[id]`, `/api/access-requests/[id]/withdraw`,
+  `/api/admin/applications/[id]` PATCH, `/api/invites/[id]` DELETE,
+  `/api/admin/users/[id]/role` PATCH. All now return 404.
+- API routes returned HTML redirect to `/request-access` for unauthed
+  callers instead of JSON 401. Now `/api/*` (outside the public allowlist)
+  returns `{"error":"Unauthorized"}` 401.
+- `request_more_info` action accepted empty notes (banner showed nothing
+  useful to applicant). Now requires non-empty trimmed note.
+- Email format validation added to `/api/access-requests` (was accepting
+  arbitrary strings, e.g. `x@y.com'; DROP TABLE...` got stored).
+- GitHub URL length validation (max 200 chars).
+- Vouchers field length capped at 200 chars.
+- Mobile: navbar's inline `height: 24` was overriding the responsive
+  column-flex rule, causing nav links to crowd into a single 24px-tall
+  row. Moved height to a desktop-only CSS rule.
+- Login + signup did `router.push + router.refresh` after success but the
+  navbar's auth state didn't propagate (it's a client component, useEffect
+  only runs once). Replaced with `window.location.href = "/"` for a hard
+  navigation that re-mounts the navbar.
+
+Verified working:
+- Application lifecycle: pending → in_review → interview_scheduled →
+  needs_more_info → approved/denied/withdrawn, with founder reopen.
+- Re-application gating: dedup, withdraw → re-apply allowed,
+  deny → 30-day cooldown, approved → 409.
+- Rate limit: 5 submits/IP/hour, validated paths don't burn quota.
+- WebSocket: applicant + admin connect, broadcast both ways, history
+  on reconnect, idle-keepalive, multi-device, empty/oversized/malformed
+  bodies dropped, closed-channel reads-only with sends ignored.
+- Auth: garbage cookies treated as null, role-based gates correct
+  (founder-only members page, admin queue redirect for members).
+- Validation: SQL injection inputs return 400, XSS payloads escaped by
+  React, profile field length checks.
+- Mobile: navbar wraps to column, content fits 542px viewport, chat
+  textarea + send button stack appropriately.
+
 ### Phase 2.9 — Application + interview polish (2026-04-26)
 - Stepper: 4 steps → 3 (Received / Reviewing / Decision)
 - Approval shows "Create your account →" button + decision note

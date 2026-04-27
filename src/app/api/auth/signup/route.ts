@@ -47,6 +47,7 @@ export async function POST(request: Request) {
     const usernameBase = displayName ? String(displayName) : normalizedEmail.split("@")[0];
     const username = await pickUniqueUsername(usernameBase);
 
+    const cooldownUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
     const inserted = await db
       .insert(users)
       .values({
@@ -55,6 +56,7 @@ export async function POST(request: Request) {
         displayName: displayName || null,
         username,
         invitedBy: code.issuedBy,
+        joinCooldownUntil: cooldownUntil,
       })
       .returning();
     const user = inserted[0];

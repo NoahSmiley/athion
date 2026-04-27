@@ -71,7 +71,10 @@ export async function PATCH(
 
   if (action === "schedule_interview") {
     const interviewAt = body.interviewAt ? new Date(body.interviewAt) : null;
-    const interviewNote = body.interviewNote ? String(body.interviewNote) : null;
+    if (interviewAt && Number.isNaN(interviewAt.getTime())) {
+      return NextResponse.json({ error: "Invalid interview datetime" }, { status: 400 });
+    }
+    const interviewNote = body.interviewNote ? String(body.interviewNote).trim() : "";
     if (!interviewNote) return NextResponse.json({ error: "Interview note required" }, { status: 400 });
     await db.update(accessRequests)
       .set({ status: "interview_scheduled", interviewAt, interviewNote })

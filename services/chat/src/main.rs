@@ -66,7 +66,7 @@ enum InboundMessage {
 struct ChatMessage {
     id: Uuid,
     channel_id: Uuid,
-    author_id: Uuid,
+    author_id: Option<Uuid>,
     author_name: Option<String>,
     author_member_number: i32,
     body: String,
@@ -104,6 +104,7 @@ async fn main() -> anyhow::Result<()> {
     let app = Router::new()
         .route("/healthz", get(health))
         .route("/ws/:channel_slug", get(ws_handler))
+        .route("/ws-app/:application_id", get(applicant_ws_handler))
         .with_state(state);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
@@ -133,8 +134,8 @@ async fn ws_handler(
         .await
         .ok_or((StatusCode::UNAUTHORIZED, "unauthorized"))?;
 
-    let channel_id = sqlx::query_scalar!(
-        r#"SELECT id FROM chat_channels WHERE slug = $1"#,
+    let row = sqlx::query!(
+        r#"SELECT id, closed_at FROM chat_channels WHERE slug = $1"#,
         channel_slug
     )
     .fetch_optional(&state.pool)
@@ -145,8 +146,61 @@ async fn ws_handler(
     })?
     .ok_or((StatusCode::NOT_FOUND, "channel not found"))?;
 
-    info!(user = %user.id, addr = %addr, channel = %channel_slug, "ws upgrade");
-    Ok(ws.on_upgrade(move |socket| handle_socket(socket, state, user, channel_id)))
+    let channel_id = row.id;
+    let closed = row.closed_at.is_some();
+    info!(user = %user.id, addr = %addr, channel = %channel_slug, closed, "ws upgrade");
+    let identity = SocketIdentity::Member(user);
+    Ok(ws.on_upgrade(move |socket| handle_socket(socket, state, identity, channel_id, closed)))
+}
+
+async fn applicant_ws_handler(
+    ws: WebSocketUpgrade,
+    State(state): State<AppState>,
+    Path(application_id_str): Path<String>,
+    ConnectInfo(addr): ConnectInfo<SocketAddr>,
+) -> Result<axum::response::Response, (StatusCode, &'static str)> {
+    let application_id = Uuid::parse_str(&application_id_str)
+        .map_err(|_| (StatusCode::BAD_REQUEST, "bad application id"))?;
+
+    // Look up the channel for this application. The channel is created when
+    // an admin marks the app in_review (or scheduled) — until that happens,
+    // applicants can't connect.
+    let row = sqlx::query!(
+        r#"
+        SELECT c.id AS channel_id, c.closed_at, a.email AS applicant_email
+        FROM chat_channels c
+        JOIN access_requests a ON a.id = c.application_id
+        WHERE c.application_id = $1
+        LIMIT 1
+        "#,
+        application_id
+    )
+    .fetch_optional(&state.pool)
+    .await
+    .map_err(|e| {
+        error!(?e, "applicant channel lookup failed");
+        (StatusCode::INTERNAL_SERVER_ERROR, "db error")
+    })?
+    .ok_or((StatusCode::NOT_FOUND, "no interview channel yet"))?;
+
+    let channel_id = row.channel_id;
+    let closed = row.closed_at.is_some();
+    info!(applicant = %application_id, addr = %addr, "applicant ws upgrade");
+    let identity = SocketIdentity::Applicant {
+        application_id,
+        email: row.applicant_email,
+    };
+    Ok(ws.on_upgrade(move |socket| handle_socket(socket, state, identity, channel_id, closed)))
+}
+
+#[derive(Clone)]
+enum SocketIdentity {
+    Member(AuthedUser),
+    Applicant {
+        #[allow(dead_code)]
+        application_id: Uuid,
+        email: String,
+    },
 }
 
 async fn authenticate(state: &AppState, headers: &HeaderMap) -> Option<AuthedUser> {
@@ -182,7 +236,13 @@ async fn authenticate(state: &AppState, headers: &HeaderMap) -> Option<AuthedUse
     })
 }
 
-async fn handle_socket(socket: WebSocket, state: AppState, user: AuthedUser, channel_id: Uuid) {
+async fn handle_socket(
+    socket: WebSocket,
+    state: AppState,
+    identity: SocketIdentity,
+    channel_id: Uuid,
+    closed: bool,
+) {
     let (mut sink, mut stream) = socket.split();
 
     let mut rx = {
@@ -216,6 +276,9 @@ async fn handle_socket(socket: WebSocket, state: AppState, user: AuthedUser, cha
     while let Some(Ok(msg)) = stream.next().await {
         match msg {
             Message::Text(text) => {
+                if closed {
+                    continue; // read-only after channel close
+                }
                 let inbound: InboundMessage = match serde_json::from_str(&text) {
                     Ok(m) => m,
                     Err(_) => continue,
@@ -226,14 +289,20 @@ async fn handle_socket(socket: WebSocket, state: AppState, user: AuthedUser, cha
                         if body.is_empty() || body.len() > 1000 {
                             continue;
                         }
-                        match insert_message(&state.pool, channel_id, user.id, body).await {
+                        let (author_id_opt, author_name, author_member_number) = match &identity {
+                            SocketIdentity::Member(u) => (Some(u.id), u.display_name.clone(), u.member_number),
+                            // Applicants don't have a user row, so author_id is null
+                            SocketIdentity::Applicant { email, .. } => (None, Some(email.clone()), 0),
+                        };
+
+                        match insert_message(&state.pool, channel_id, author_id_opt, body).await {
                             Ok(saved) => {
                                 let out = ChatMessage {
                                     id: saved.id,
                                     channel_id,
-                                    author_id: user.id,
-                                    author_name: user.display_name.clone(),
-                                    author_member_number: user.member_number,
+                                    author_id: author_id_opt,
+                                    author_name,
+                                    author_member_number,
                                     body: saved.body,
                                     created_at: saved.created_at,
                                 };
@@ -255,7 +324,10 @@ async fn handle_socket(socket: WebSocket, state: AppState, user: AuthedUser, cha
     }
 
     forward.abort();
-    info!(user = %user.id, "ws disconnect");
+    match &identity {
+        SocketIdentity::Member(u) => info!(user = %u.id, "ws disconnect"),
+        SocketIdentity::Applicant { application_id, .. } => info!(applicant = %application_id, "ws disconnect"),
+    }
 }
 
 struct InsertedMessage {
@@ -267,7 +339,7 @@ struct InsertedMessage {
 async fn insert_message(
     pool: &PgPool,
     channel_id: Uuid,
-    author_id: Uuid,
+    author_id: Option<Uuid>,
     body: &str,
 ) -> sqlx::Result<InsertedMessage> {
     let row = sqlx::query!(
@@ -297,9 +369,10 @@ async fn recent_messages(
     let rows = sqlx::query!(
         r#"
         SELECT m.id, m.channel_id, m.author_id, m.body, m.created_at,
-               u.display_name, u.member_number
+               COALESCE(u.display_name, m.author_name) AS author_name,
+               COALESCE(u.member_number, m.author_member_number, 0) AS "member_number!"
         FROM chat_messages m
-        JOIN users u ON u.id = m.author_id
+        LEFT JOIN users u ON u.id = m.author_id
         WHERE m.channel_id = $1
         ORDER BY m.created_at DESC
         LIMIT $2
@@ -316,7 +389,7 @@ async fn recent_messages(
             id: r.id,
             channel_id: r.channel_id,
             author_id: r.author_id,
-            author_name: r.display_name,
+            author_name: r.author_name,
             author_member_number: r.member_number,
             body: r.body,
             created_at: r.created_at,

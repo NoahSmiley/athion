@@ -1,14 +1,16 @@
 import { notFound } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { accessRequests, inviteCodes } from "@/lib/db/schema";
+import { accessRequests, chatChannels, inviteCodes } from "@/lib/db/schema";
 import { ApplicationActions } from "./actions";
-import { Thread } from "@/app/(main)/application/[id]/thread";
+import { InterviewRoom } from "@/app/(main)/application/[id]/interview-room";
+import { getCurrentUser } from "@/lib/auth/roles";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminApplicationDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const me = await getCurrentUser();
   const rows = await db.select().from(accessRequests).where(eq(accessRequests.id, id)).limit(1);
   const app = rows[0];
   if (!app) notFound();
@@ -18,6 +20,13 @@ export default async function AdminApplicationDetailPage({ params }: { params: P
     const codeRows = await db.select({ code: inviteCodes.code }).from(inviteCodes).where(eq(inviteCodes.id, app.inviteCodeId)).limit(1);
     code = codeRows[0]?.code ?? null;
   }
+
+  const channelRows = await db
+    .select({ slug: chatChannels.slug, closedAt: chatChannels.closedAt })
+    .from(chatChannels)
+    .where(eq(chatChannels.applicationId, app.id))
+    .limit(1);
+  const channel = channelRows[0] ?? null;
 
   return (
     <>
@@ -57,8 +66,19 @@ export default async function AdminApplicationDetailPage({ params }: { params: P
         </>
       )}
 
-      <h2 style={{ marginTop: 24 }}>Conversation</h2>
-      <Thread applicationId={app.id} asAdmin closed={app.status === "approved" || app.status === "denied"} />
+      <h2 style={{ marginTop: 24 }}>Interview chat</h2>
+      {channel && me ? (
+        <InterviewRoom
+          wsPath={`/ws/${channel.slug}`}
+          me={{ kind: "member", memberId: me.id }}
+          closed={!!channel.closedAt}
+          emptyHint="Start the conversation. Messages here are visible to the applicant in real time."
+        />
+      ) : (
+        <p className="muted" style={{ fontSize: 12 }}>
+          The interview chat is created when you mark the application In Review. Click the button below to do that.
+        </p>
+      )}
 
       <h2 style={{ marginTop: 24 }}>Actions</h2>
       <ApplicationActions id={app.id} status={app.status} />

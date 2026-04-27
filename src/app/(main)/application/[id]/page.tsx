@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { accessRequests, inviteCodes } from "@/lib/db/schema";
+import { accessRequests, chatChannels, inviteCodes } from "@/lib/db/schema";
 import { Stepper } from "./stepper";
-import { Thread } from "./thread";
+import { InterviewRoom } from "./interview-room";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -43,6 +43,14 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
     code = codeRows[0] ?? null;
   }
 
+  // Interview channel — created by admin when status moves out of pending
+  const channelRows = await db
+    .select({ id: chatChannels.id, closedAt: chatChannels.closedAt })
+    .from(chatChannels)
+    .where(eq(chatChannels.applicationId, app.id))
+    .limit(1);
+  const channel = channelRows[0] ?? null;
+
   const current = stepIndex(app.status);
   const denied = app.status === "denied";
   const approved = app.status === "approved";
@@ -54,11 +62,19 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
 
       <Stepper steps={STEPS} current={current} approved={approved} denied={denied} />
 
-      <h2>Conversation</h2>
-      {!approved && !denied && (
-        <p className="muted" style={{ fontSize: 12, marginBottom: 12 }}>This is where you and Athion exchange messages about your application. We respond within a few days.</p>
+      <h2>Interview</h2>
+      {channel ? (
+        <InterviewRoom
+          wsPath={`/ws-app/${app.id}`}
+          me={{ kind: "applicant" }}
+          closed={!!channel.closedAt}
+          emptyHint="Athion will start the conversation here. We respond within a few days."
+        />
+      ) : (
+        <p className="muted" style={{ fontSize: 12 }}>
+          The interview chat opens here once your application moves into review. Check back, or watch your email for an update.
+        </p>
       )}
-      <Thread applicationId={app.id} closed={approved || denied} />
 
       {approved && code && (
         <>

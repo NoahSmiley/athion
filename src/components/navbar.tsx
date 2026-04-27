@@ -9,7 +9,7 @@ const mainProductLinks = [
   ["/software", "Software"], ["/labs", "Labs"],
 ];
 const mainLinks = [
-  ["/chat", "Chat"], ["/invites", "Invites"], ["/docs", "Docs"], ["/about", "About"], ["/blog", "Blog"],
+  ["/invites", "Invites"], ["/docs", "Docs"], ["/about", "About"], ["/blog", "Blog"],
 ];
 
 const labsLinks = [

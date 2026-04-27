@@ -63,13 +63,21 @@ export const chatChannels = pgTable("chat_channels", {
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
   description: text("description"),
+  kind: text("kind").notNull().default("general"), // general | interview
+  applicationId: uuid("application_id").references(() => accessRequests.id, { onDelete: "cascade" }),
+  closedAt: timestamp("closed_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const chatMessages = pgTable("chat_messages", {
   id: uuid("id").primaryKey().defaultRandom(),
   channelId: uuid("channel_id").notNull().references(() => chatChannels.id, { onDelete: "cascade" }),
-  authorId: uuid("author_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  // Null when posted by an applicant who doesn't have an account yet (interview channels).
+  authorId: uuid("author_id").references(() => users.id, { onDelete: "set null" }),
+  // Snapshot of name + member number at post time. Useful for applicant identity (no users row)
+  // and survives if an account is later deleted.
+  authorName: text("author_name"),
+  authorMemberNumber: integer("author_member_number"),
   body: text("body").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });

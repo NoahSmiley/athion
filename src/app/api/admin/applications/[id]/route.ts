@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import crypto from "node:crypto";
 import { db } from "@/lib/db";
 import { accessRequests, inviteCodes } from "@/lib/db/schema";
-import { getAdminUser } from "@/lib/auth/admin";
+import { getAdminUser } from "@/lib/auth/roles";
 
 const INVITE_CODE_TTL_DAYS = 14;
 

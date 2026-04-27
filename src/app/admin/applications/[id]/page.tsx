@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { accessRequests, inviteCodes } from "@/lib/db/schema";
 import { ApplicationActions } from "./actions";
+import { Thread } from "@/app/(main)/application/[id]/thread";
 
 export const dynamic = "force-dynamic";
 
@@ -55,6 +56,9 @@ export default async function AdminApplicationDetailPage({ params }: { params: P
           <p className="muted" style={{ whiteSpace: "pre-wrap" }}>{app.decisionNote}</p>
         </>
       )}
+
+      <h2 style={{ marginTop: 24 }}>Conversation</h2>
+      <Thread applicationId={app.id} asAdmin closed={app.status === "approved" || app.status === "denied"} />
 
       <h2 style={{ marginTop: 24 }}>Actions</h2>
       <ApplicationActions id={app.id} status={app.status} />

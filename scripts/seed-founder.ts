@@ -31,7 +31,7 @@ async function main() {
     email: email.toLowerCase(),
     passwordHash,
     displayName: "Founder",
-    tier: "founder",
+    role: "founder",
     invitesAvailable: 999,
   }).returning();
 

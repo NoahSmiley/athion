@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { accessRequests, inviteCodes } from "@/lib/db/schema";
 import { Stepper } from "./stepper";
+import { Thread } from "./thread";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -53,17 +54,11 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
 
       <Stepper steps={STEPS} current={current} approved={approved} denied={denied} />
 
-      {app.status === "interview_scheduled" && (
-        <>
-          <h2>Interview details</h2>
-          <p style={{ whiteSpace: "pre-wrap" }}>
-            {app.interviewNote ?? "Interview scheduled. We'll be in touch."}
-          </p>
-          {app.interviewAt && (
-            <p className="muted" style={{ fontSize: 12 }}>When: {new Date(app.interviewAt).toLocaleString()}</p>
-          )}
-        </>
+      <h2>Conversation</h2>
+      {!approved && !denied && (
+        <p className="muted" style={{ fontSize: 12, marginBottom: 12 }}>This is where you and Athion exchange messages about your application. We respond within a few days.</p>
       )}
+      <Thread applicationId={app.id} closed={approved || denied} />
 
       {approved && code && (
         <>

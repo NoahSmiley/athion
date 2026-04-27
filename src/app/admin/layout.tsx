@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { getAdminUser } from "@/lib/auth/admin";
+import { getAdminUser } from "@/lib/auth/roles";
 import { Footer } from "@/components/footer";
 
 const links = [
@@ -20,6 +20,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           {links.map(([href, label]) => <Link key={href} href={href} className="nav-link">{label}</Link>)}
           <span style={{ height: 12 }} />
           <span className="dash-user-name" style={{ color: "#828282", fontSize: 11 }}>{admin.email}</span>
+          <span className="dash-user-email" style={{ color: "#555", fontSize: 11 }}>{admin.role}</span>
         </nav>
       </div>
       <div className="dash-stage">

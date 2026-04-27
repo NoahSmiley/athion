@@ -9,7 +9,7 @@ export const users = pgTable("users", {
   displayName: text("display_name"),
   bio: text("bio"),
   avatarUrl: text("avatar_url"),
-  tier: text("tier").notNull().default("member"), // founder | member | veteran | architect
+  role: text("role").notNull().default("member"), // founder | admin | member (later: veteran, architect)
   invitedBy: uuid("invited_by").references((): AnyPgColumn => users.id),
   invitesAvailable: integer("invites_available").notNull().default(0),
   invitesGrantedAt: timestamp("invites_granted_at", { withTimezone: true }),
@@ -44,6 +44,17 @@ export const accessRequests = pgTable("access_requests", {
   reviewedBy: uuid("reviewed_by").references(() => users.id, { onDelete: "set null" }),
   reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
   inviteCodeId: uuid("invite_code_id").references(() => inviteCodes.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const applicationMessages = pgTable("application_messages", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  applicationId: uuid("application_id").notNull().references(() => accessRequests.id, { onDelete: "cascade" }),
+  // Author: null when posted by the applicant (no account yet); set when posted by an admin/founder.
+  authorId: uuid("author_id").references(() => users.id, { onDelete: "set null" }),
+  authorRole: text("author_role").notNull(), // applicant | admin | founder
+  authorName: text("author_name"), // display name snapshot at post time, for staff messages
+  body: text("body").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

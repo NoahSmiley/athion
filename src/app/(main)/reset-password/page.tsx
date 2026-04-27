@@ -26,25 +26,28 @@ export default function ResetPasswordPage() {
   if (success) {
     return (
       <>
-        <p>Check your email.</p>
-        <p className="muted">If an account exists for <b>{email}</b>, we sent a reset link.</p>
+        <h1>Check your email</h1>
+        <p className="muted" style={{ marginTop: 4 }}>If an account exists for <b>{email}</b>, we sent a reset link.</p>
       </>
     );
   }
 
   return (
-    <form onSubmit={handleReset} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-      {error && <p style={{ color: "#c44", margin: 0 }}>{error}</p>}
-      <div>
-        <label className="muted" style={{ fontSize: 11 }}>Email</label>
-        <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" style={input} />
-      </div>
-      <button type="submit" disabled={loading} style={{ fontFamily: "inherit", fontSize: 13, padding: "6px 12px", cursor: "pointer", marginTop: 4 }}>
-        {loading ? "Sending..." : "Send reset link"}
-      </button>
-      <p className="muted" style={{ margin: 0, fontSize: 11 }}>
-        <Link href="/login">Back to sign in</Link>
-      </p>
-    </form>
+    <>
+      <h1>Reset password</h1>
+      <form onSubmit={handleReset} style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 16 }}>
+        {error && <p style={{ color: "#c44", margin: 0 }}>{error}</p>}
+        <div>
+          <label className="muted" style={{ fontSize: 11 }}>Email</label>
+          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" style={input} />
+        </div>
+        <button type="submit" disabled={loading} style={{ fontFamily: "inherit", fontSize: 13, padding: "6px 12px", cursor: "pointer", marginTop: 4, alignSelf: "flex-start" }}>
+          {loading ? "Sending..." : "Send reset link"}
+        </button>
+        <p className="muted" style={{ margin: 0, fontSize: 11 }}>
+          <Link href="/login">Back to sign in</Link>
+        </p>
+      </form>
+    </>
   );
 }

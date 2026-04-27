@@ -3,6 +3,35 @@ import { jwtVerify } from "jose";
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
+// Routes a logged-out visitor is allowed to see. Everything else redirects to /request-access.
+const PUBLIC_PATHS = new Set<string>([
+  "/",
+  "/about",
+  "/process",
+  "/login",
+  "/signup",
+  "/request-access",
+  "/privacy",
+  "/terms",
+  "/reset-password",
+]);
+
+const PUBLIC_PREFIXES = [
+  "/application/",  // applicants tracking their status (gated by knowing the UUID)
+  "/_next/",
+  "/api/auth/",     // login, logout, signup, me — auth must work without a session
+  "/api/access-requests", // submit application
+  "/fonts/",
+  "/favicon",
+  "/robots",
+  "/sitemap",
+];
+
+function isPublic(pathname: string): boolean {
+  if (PUBLIC_PATHS.has(pathname)) return true;
+  return PUBLIC_PREFIXES.some((p) => pathname.startsWith(p));
+}
+
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("auth_token")?.value;
   let isAuthenticated = false;
@@ -16,28 +45,32 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Protect dashboard routes
-  if (!isAuthenticated && request.nextUrl.pathname.startsWith("/dashboard")) {
+  const { pathname } = request.nextUrl;
+
+  // Protect admin routes — must be logged in (admin role check happens server-side in page)
+  if (!isAuthenticated && pathname.startsWith("/admin")) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  // Protect download routes — require login to download Flux
-  if (!isAuthenticated && request.nextUrl.pathname.startsWith("/download")) {
+  // Protect download routes — preserve redirect for after-login
+  if (!isAuthenticated && pathname.startsWith("/download")) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
-    url.searchParams.set("redirect", request.nextUrl.pathname);
+    url.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(url);
+  }
+
+  // Gate everything except the public allowlist for logged-out visitors
+  if (!isAuthenticated && !isPublic(pathname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/request-access";
     return NextResponse.redirect(url);
   }
 
   // Redirect logged-in users away from auth pages
-  if (
-    isAuthenticated &&
-    (request.nextUrl.pathname === "/login" ||
-      request.nextUrl.pathname === "/signup")
-  ) {
-    // Preserve redirect param — if it's an athion.me subdomain, honor it
+  if (isAuthenticated && (pathname === "/login" || pathname === "/signup" || pathname === "/request-access")) {
     const redirectParam = request.nextUrl.searchParams.get("redirect");
     if (redirectParam) {
       try {
@@ -46,7 +79,6 @@ export async function middleware(request: NextRequest) {
           return NextResponse.redirect(redirectUrl);
         }
       } catch {
-        // Not a full URL — treat as a path
         const url = request.nextUrl.clone();
         url.pathname = redirectParam;
         url.searchParams.delete("redirect");
@@ -54,7 +86,7 @@ export async function middleware(request: NextRequest) {
       }
     }
     const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
+    url.pathname = "/";
     return NextResponse.redirect(url);
   }
 
@@ -62,5 +94,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/download/:path*", "/login", "/signup"],
+  // Run middleware on (almost) everything; let isPublic() decide.
+  // Skip image-optim & static assets to avoid overhead.
+  matcher: ["/((?!_next/static|_next/image|.*\\..*).*)"],
 };

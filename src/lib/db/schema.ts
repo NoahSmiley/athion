@@ -34,8 +34,13 @@ export const inviteCodes = pgTable("invite_codes", {
 export const accessRequests = pgTable("access_requests", {
   id: uuid("id").primaryKey().defaultRandom(),
   email: text("email").notNull(),
-  reason: text("reason").notNull(),
-  status: text("status").notNull().default("pending"), // pending | approved | denied
+  githubUrl: text("github_url"),
+  vouchers: text("vouchers"),
+  // status flow: pending -> in_review -> interview_scheduled -> approved | denied
+  status: text("status").notNull().default("pending"),
+  interviewAt: timestamp("interview_at", { withTimezone: true }),
+  interviewNote: text("interview_note"),
+  decisionNote: text("decision_note"),
   reviewedBy: uuid("reviewed_by").references(() => users.id, { onDelete: "set null" }),
   reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
   inviteCodeId: uuid("invite_code_id").references(() => inviteCodes.id, { onDelete: "set null" }),

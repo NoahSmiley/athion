@@ -23,7 +23,7 @@ function LoginForm() {
       const res = await fetch("/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Login failed"); setLoading(false); return; }
-      const target = redirectTo || "/dashboard";
+      const target = redirectTo || "/";
       try { const url = new URL(target); if (url.hostname.endsWith(".athion.me")) { window.location.href = target; return; } } catch {}
       router.push(target);
       router.refresh();
@@ -31,23 +31,26 @@ function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-      {error && <p style={{ color: "#c44", margin: 0 }}>{error}</p>}
-      <div>
-        <label className="muted" style={{ fontSize: 11 }}>Email</label>
-        <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" style={input} />
-      </div>
-      <div>
-        <label className="muted" style={{ fontSize: 11 }}>Password</label>
-        <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" style={input} />
-      </div>
-      <button type="submit" disabled={loading} style={{ fontFamily: "inherit", fontSize: 13, padding: "6px 12px", cursor: "pointer", marginTop: 4 }}>
-        {loading ? "Signing in..." : "Sign in"}
-      </button>
-      <p className="muted" style={{ margin: 0, fontSize: 11 }}>
-        <Link href="/reset-password">Forgot password?</Link> &middot; <Link href="/signup">Create account</Link>
-      </p>
-    </form>
+    <>
+      <h1>Sign in</h1>
+      <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 16 }}>
+        {error && <p style={{ color: "#c44", margin: 0 }}>{error}</p>}
+        <div>
+          <label className="muted" style={{ fontSize: 11 }}>Email</label>
+          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" style={input} />
+        </div>
+        <div>
+          <label className="muted" style={{ fontSize: 11 }}>Password</label>
+          <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" style={input} />
+        </div>
+        <button type="submit" disabled={loading} style={{ fontFamily: "inherit", fontSize: 13, padding: "6px 12px", cursor: "pointer", marginTop: 4, alignSelf: "flex-start" }}>
+          {loading ? "Signing in..." : "Sign in"}
+        </button>
+        <p className="muted" style={{ margin: 0, fontSize: 11 }}>
+          <Link href="/reset-password">Forgot password?</Link> &middot; <Link href="/request-access">Request access</Link>
+        </p>
+      </form>
+    </>
   );
 }
 

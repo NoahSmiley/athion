@@ -22,7 +22,7 @@ const labsLinks = [
 type Pending = { resolve: () => void } | null;
 
 export function Navbar() {
-  const [user, setUser] = useState<{ id: string } | null>(null);
+  const [user, setUser] = useState<{ id: string; username?: string | null; displayName?: string | null } | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const isLabs = pathname === "/labs" || pathname.startsWith("/labs/");
@@ -154,7 +154,15 @@ export function Navbar() {
             : <Link key={href} href={href} onClick={navigate(href)} className="nav-link" style={linkStyle(href)}>{label}</Link>
         )}
         {user ? (
-          <button onClick={logout} className="nav-link" style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, lineHeight: 1, fontFamily: "inherit", padding: 0 }}>Logout</button>
+          <>
+            {user.username && (
+              <Link href={`/u/${user.username}`} className="nav-link" style={pathname.startsWith("/u/") ? { color: "#c8c8c8" } : undefined}>
+                {user.displayName ?? `@${user.username}`}
+              </Link>
+            )}
+            <Link href="/settings" className="nav-link" style={pathname === "/settings" ? { color: "#c8c8c8" } : undefined}>Settings</Link>
+            <button onClick={logout} className="nav-link" style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, lineHeight: 1, fontFamily: "inherit", padding: 0 }}>Logout</button>
+          </>
         ) : (
           <>
             <Link href="/request-access" className="nav-link">Request access</Link>

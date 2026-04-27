@@ -9,6 +9,7 @@ const COOKIE_NAME = "auth_token";
 export type SessionUser = {
   id: string;
   email: string;
+  username: string | null;
   displayName: string | null;
   avatarUrl: string | null;
   stripeCustomerId: string | null;
@@ -26,6 +27,7 @@ export async function getSession(): Promise<SessionUser | null> {
     .select({
       id: users.id,
       email: users.email,
+      username: users.username,
       displayName: users.displayName,
       avatarUrl: users.avatarUrl,
       stripeCustomerId: users.stripeCustomerId,

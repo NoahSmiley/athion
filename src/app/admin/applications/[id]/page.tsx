@@ -91,7 +91,7 @@ export default async function AdminApplicationDetailPage({ params }: { params: P
 
       <h2 style={{ marginTop: 24 }}>Application messages</h2>
       <p className="muted" style={{ fontSize: 12, marginTop: -4, marginBottom: 8 }}>
-        Always-on async thread for clarifying questions. Visible to the applicant on their status page.
+        Async thread for clarifying questions. Applicants only see this thread when the application is in &ldquo;Needs more info&rdquo;.
       </p>
       {appChannel && me ? (
         <InterviewRoom

@@ -81,6 +81,19 @@ Memory: `~/.claude/projects/-Users-noahsmile/memory/reference_athion_deploy.md`
 - Mail errors never break the user-visible request. To activate: set a real
   `RESEND_API_KEY` on CT 109 + verify athion.me DKIM/SPF in Resend.
 
+### Phase 2.6 — Member profiles (2026-04-26)
+- `/u/[username]` member-only profile pages: member number, role, bio,
+  joined date, invited-by + invitees (linked).
+- `/settings` for self-service editing (username, display name, bio with
+  500-char limit). Username slug rules enforced server-side.
+- `/api/me/profile` PATCH with uniqueness check.
+- `src/lib/username.ts` helpers (`isValidUsername`, `slugify`,
+  `pickUniqueUsername`).
+- Signup re-enabled (was stubbed in phase 2): consumes invite codes,
+  auto-generates a unique username, pre-fills `?code=` from URL.
+- `getSession()` and `/api/auth/me` now expose `username` so the navbar
+  links to `/u/<username>`. Nav cluster: name · Settings · Logout.
+
 ## Next up
 
 For approved members only. Real-time chat.

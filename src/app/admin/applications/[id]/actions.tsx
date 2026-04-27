@@ -65,7 +65,7 @@ export function ApplicationActions({
         </button>
       )}
 
-      {!closed && (
+      {!closed && status !== "interview_scheduled" && (
         <fieldset style={{ border: "1px solid #2a2a2a", padding: 12, display: "flex", flexDirection: "column", gap: 8 }}>
           <legend style={{ fontSize: 12, color: "#828282", padding: "0 6px" }}>Schedule interview</legend>
           <div style={{ display: "flex", gap: 8 }}>
@@ -98,9 +98,15 @@ export function ApplicationActions({
           <button
             onClick={async () => {
               if (!interviewNote.trim() || !interviewAt) return;
+              // datetime-local gives "YYYY-MM-DDTHH:MM" with no timezone — Node
+              // sometimes parses these as UTC, which silently shifts the time
+              // by the admin's offset. Convert to an explicit ISO timestamp
+              // (which is unambiguous UTC) using the browser's local TZ.
+              const localDate = new Date(interviewAt);
+              if (Number.isNaN(localDate.getTime())) return;
               await act(
                 "schedule_interview",
-                { interviewAt, interviewNote, interviewDurationMinutes },
+                { interviewAt: localDate.toISOString(), interviewNote, interviewDurationMinutes },
                 "Interview scheduled. Applicant emailed.",
               );
               setInterviewNote("");
@@ -115,7 +121,7 @@ export function ApplicationActions({
         </fieldset>
       )}
 
-      {!closed && (
+      {!closed && status !== "needs_more_info" && (
         <fieldset style={{ border: "1px solid #2a2a2a", padding: 12, display: "flex", flexDirection: "column", gap: 8 }}>
           <legend style={{ fontSize: 12, color: "#828282", padding: "0 6px" }}>Request more info</legend>
           <textarea

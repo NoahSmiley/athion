@@ -114,18 +114,16 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
         </div>
       )}
 
-      <h2>Messages</h2>
-      {appChannel ? (
-        <InterviewRoom
-          wsPath={`/ws-app/${app.id}/application`}
-          me={{ kind: "applicant" }}
-          closed={!!appChannel.closedAt}
-          emptyHint="Use this thread for any questions about your application. We'll reply here."
-        />
-      ) : (
-        <p className="muted" style={{ fontSize: 12 }}>
-          Messages with the team open up once your application is in review.
-        </p>
+      {app.status === "needs_more_info" && appChannel && (
+        <>
+          <h2>Messages</h2>
+          <InterviewRoom
+            wsPath={`/ws-app/${app.id}/application`}
+            me={{ kind: "applicant" }}
+            closed={!!appChannel.closedAt}
+            emptyHint="Reply here with the info we asked for."
+          />
+        </>
       )}
 
       {approved && code && (

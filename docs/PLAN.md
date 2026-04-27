@@ -81,6 +81,16 @@ Memory: `~/.claude/projects/-Users-noahsmile/memory/reference_athion_deploy.md`
 - Mail errors never break the user-visible request. To activate: set a real
   `RESEND_API_KEY` on CT 109 + verify athion.me DKIM/SPF in Resend.
 
+### Phase 2.7 — Invite budget (2026-04-26)
+- `src/lib/invites.ts` with `refreshInvites()` that brings counters up to
+  date on demand (1 grant per 30 days, capped at 3, paused during the
+  30-day new-member cooldown). Founders/admins are unlimited.
+- `/invites` page: budget, generate button, history with copy-link and
+  revoke actions.
+- POST `/api/invites` decrements budget; DELETE `/api/invites/[id]`
+  refunds it. Codes expire after 14 days.
+- Signup sets `joinCooldownUntil = now + 30 days`.
+
 ### Phase 2.6 — Member profiles (2026-04-26)
 - `/u/[username]` member-only profile pages: member number, role, bio,
   joined date, invited-by + invitees (linked).

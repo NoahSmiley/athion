@@ -91,6 +91,21 @@ Memory: `~/.claude/projects/-Users-noahsmile/memory/reference_athion_deploy.md`
   refunds it. Codes expire after 14 days.
 - Signup sets `joinCooldownUntil = now + 30 days`.
 
+### Phase 2.8 — Interview rooms (2026-04-26)
+- Chat refit: instead of one `#general`, the chat is per-application.
+- `chat_channels.kind` (general/interview), `application_id`, `closed_at`.
+  `chat_messages.author_id` nullable; snapshots `author_name` +
+  `author_member_number` for applicants who don't have a user row.
+- Rust service adds `/ws-app/<application_id>` for unauthenticated
+  applicant connections (UUID is the secret, same trust model as
+  `/application/<id>`).
+- `ensureInterviewChannel()` on `mark_in_review` / `schedule_interview`,
+  `closeInterviewChannel()` on approve/deny.
+- New `InterviewRoom` component on `/application/[id]` (applicant view)
+  and `/admin/applications/[id]` (admin view). Read-only after close.
+- Removed: `Thread` polling component, `/api/access-requests/[id]/messages`
+  endpoint, `Chat` link from navbar.
+
 ### Phase 2.6 — Member profiles (2026-04-26)
 - `/u/[username]` member-only profile pages: member number, role, bio,
   joined date, invited-by + invitees (linked).

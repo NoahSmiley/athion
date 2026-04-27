@@ -128,7 +128,7 @@ export function Navbar() {
   );
 
   return (
-    <nav className="athion-nav-top" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13, lineHeight: 1, padding: "0 24px", height: 24 }}>
+    <nav className="athion-nav-top" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13, lineHeight: 1, padding: "0 24px" }}>
       {wordmark}
       <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
         {user && !isLabs && mainProductLinks.map(([href, label]) => {

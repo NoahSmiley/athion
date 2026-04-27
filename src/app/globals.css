@@ -96,7 +96,7 @@ li { margin-bottom: 4px; }
 .auth-card { width: 260px; pointer-events: auto; }
 
 .main-sidebar { position: fixed; top: 56px; left: 0; right: 0; z-index: 10; display: flex; justify-content: center; pointer-events: none; }
-.main-sidebar nav.athion-nav-top { pointer-events: auto; max-width: 700px; width: 100%; box-sizing: border-box; }
+.main-sidebar nav.athion-nav-top { pointer-events: auto; max-width: 700px; width: 100%; box-sizing: border-box; height: 24px; }
 .main-stage { position: fixed; top: 104px; left: 0; right: 0; bottom: 32px; display: flex; justify-content: center; align-items: center; pointer-events: none; overflow: auto; scrollbar-width: none; -ms-overflow-style: none; }
 .main-stage::-webkit-scrollbar { display: none; }
 .main-stage > main { max-width: 700px; width: 100%; padding: 40px 24px; pointer-events: auto; margin: auto 0; }
@@ -132,6 +132,7 @@ li { margin-bottom: 4px; }
     gap: 10px !important;
     font-size: 13px !important;
     justify-content: flex-start !important;
+    height: auto !important;
   }
   .main-sidebar nav.athion-nav-top > div {
     width: 100%;

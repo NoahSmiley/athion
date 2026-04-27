@@ -55,13 +55,13 @@ export function ApplicationActions({
       {error && <p style={{ color: "#c66", fontSize: 12, margin: 0 }}>{error}</p>}
       {flash && <p style={{ color: "#7c8", fontSize: 12, margin: 0 }}>{flash}</p>}
 
-      {!closed && status === "pending" && (
+      {!closed && (status === "pending" || status === "needs_more_info") && (
         <button
           onClick={() => act("mark_in_review", {}, "Moved to in review. Applicant emailed.")}
           disabled={busy}
           style={{ alignSelf: "flex-start", padding: "6px 12px" }}
         >
-          Move to In Review
+          {status === "needs_more_info" ? "Back to In Review" : "Move to In Review"}
         </button>
       )}
 

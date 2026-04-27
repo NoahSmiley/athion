@@ -17,6 +17,7 @@ export function ApplicationActions({
   const router = useRouter();
   const [interviewNote, setInterviewNote] = useState("");
   const [interviewAt, setInterviewAt] = useState("");
+  const [interviewDurationMinutes, setInterviewDurationMinutes] = useState(30);
   const [decisionNote, setDecisionNote] = useState("");
   const [moreInfoNote, setMoreInfoNote] = useState("");
   const [busy, setBusy] = useState(false);
@@ -67,12 +68,26 @@ export function ApplicationActions({
       {!closed && (
         <fieldset style={{ border: "1px solid #2a2a2a", padding: 12, display: "flex", flexDirection: "column", gap: 8 }}>
           <legend style={{ fontSize: 12, color: "#828282", padding: "0 6px" }}>Schedule interview</legend>
-          <input
-            type="datetime-local"
-            value={interviewAt}
-            onChange={(e) => setInterviewAt(e.target.value)}
-            style={{ padding: "6px 8px" }}
-          />
+          <div style={{ display: "flex", gap: 8 }}>
+            <input
+              type="datetime-local"
+              value={interviewAt}
+              onChange={(e) => setInterviewAt(e.target.value)}
+              style={{ padding: "6px 8px", flex: 1 }}
+            />
+            <select
+              value={interviewDurationMinutes}
+              onChange={(e) => setInterviewDurationMinutes(Number(e.target.value))}
+              style={{ padding: "6px 8px" }}
+            >
+              <option value={15}>15 min</option>
+              <option value={30}>30 min</option>
+              <option value={45}>45 min</option>
+              <option value={60}>60 min</option>
+              <option value={90}>90 min</option>
+              <option value={120}>2 hr</option>
+            </select>
+          </div>
           <textarea
             placeholder="Note the applicant will see"
             value={interviewNote}
@@ -82,17 +97,18 @@ export function ApplicationActions({
           />
           <button
             onClick={async () => {
-              if (!interviewNote.trim()) return;
+              if (!interviewNote.trim() || !interviewAt) return;
               await act(
                 "schedule_interview",
-                { interviewAt: interviewAt || null, interviewNote },
+                { interviewAt, interviewNote, interviewDurationMinutes },
                 "Interview scheduled. Applicant emailed.",
               );
               setInterviewNote("");
               setInterviewAt("");
+              setInterviewDurationMinutes(30);
             }}
-            disabled={busy || !interviewNote.trim()}
-            style={{ alignSelf: "flex-start", padding: "6px 12px", opacity: interviewNote.trim() && !busy ? 1 : 0.5 }}
+            disabled={busy || !interviewNote.trim() || !interviewAt}
+            style={{ alignSelf: "flex-start", padding: "6px 12px", opacity: interviewNote.trim() && interviewAt && !busy ? 1 : 0.5 }}
           >
             Save & schedule
           </button>

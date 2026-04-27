@@ -1,5 +1,6 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { accessRequests, chatChannels, inviteCodes } from "@/lib/db/schema";
 import { Stepper } from "./stepper";
@@ -45,18 +46,26 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
     code = codeRows[0] ?? null;
   }
 
-  // Interview channel — created by admin when status moves out of pending
-  const channelRows = await db
+  // Application channel — always-on async messages with the team.
+  // Interview channel — only relevant when an interview is scheduled.
+  const appChannelRows = await db
     .select({ id: chatChannels.id, closedAt: chatChannels.closedAt })
     .from(chatChannels)
-    .where(eq(chatChannels.applicationId, app.id))
+    .where(and(eq(chatChannels.applicationId, app.id), eq(chatChannels.kind, "application")))
     .limit(1);
-  const channel = channelRows[0] ?? null;
+  const appChannel = appChannelRows[0] ?? null;
 
   const current = stepIndex(app.status);
   const denied = app.status === "denied" || app.status === "withdrawn";
   const approved = app.status === "approved";
   const closed = denied || approved;
+
+  // Interview window times (used to decide what to show)
+  const now = Date.now();
+  const interviewStart = app.interviewAt ? new Date(app.interviewAt).getTime() : null;
+  const interviewEnd = interviewStart ? interviewStart + app.interviewDurationMinutes * 60 * 1000 : null;
+  const interviewLive = !!(interviewStart && interviewEnd && now >= interviewStart && now <= interviewEnd && !closed);
+  const interviewUpcoming = !!(interviewStart && now < interviewStart && !closed);
 
   return (
     <>
@@ -71,37 +80,51 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
           {app.interviewNote && (
             <p style={{ margin: "6px 0 0", whiteSpace: "pre-wrap" }}>{app.interviewNote}</p>
           )}
-          <p className="muted" style={{ margin: "6px 0 0", fontSize: 12 }}>Reply in the chat below — we&apos;ll keep going once you do.</p>
+          <p className="muted" style={{ margin: "6px 0 0", fontSize: 12 }}>Reply in the messages below — we&apos;ll keep going once you do.</p>
         </div>
       )}
 
-      {app.status === "interview_scheduled" && (
-        <div style={{ marginTop: 12, padding: "10px 12px", background: "#0a0a0a", border: "1px solid #2a2a2a", fontSize: 13 }}>
-          <b>Interview scheduled.</b>
-          {app.interviewAt && (
-            <p style={{ margin: "6px 0 0" }}>
-              <span className="muted">When: </span>
-              {new Date(app.interviewAt).toLocaleString(undefined, { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" })}
-            </p>
+      {app.status === "interview_scheduled" && (interviewUpcoming || interviewLive) && (
+        <div style={{ marginTop: 12, padding: "12px 14px", background: "#0a0a0a", border: "1px solid", borderColor: interviewLive ? "#c8c8c8" : "#2a2a2a", fontSize: 13 }}>
+          {interviewLive ? (
+            <>
+              <p style={{ margin: 0, fontSize: 14 }}><b>● Interview is live</b></p>
+              <p className="muted" style={{ margin: "4px 0 8px", fontSize: 12 }}>
+                Until {new Date(interviewEnd!).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit", timeZoneName: "short" })}
+              </p>
+              <p style={{ margin: 0 }}>
+                <Link href={`/application/${app.id}/interview`} style={{ display: "inline-block", padding: "8px 14px", background: "#fff", color: "#060606", fontWeight: 500, textDecoration: "none" }}>
+                  Join interview →
+                </Link>
+              </p>
+            </>
+          ) : (
+            <>
+              <p style={{ margin: 0, fontSize: 14 }}><b>Interview scheduled</b></p>
+              <p style={{ margin: "4px 0 0" }}>
+                {new Date(interviewStart!).toLocaleString(undefined, { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" })}
+                <span className="muted"> · {app.interviewDurationMinutes} min</span>
+              </p>
+              {app.interviewNote && <p className="muted" style={{ margin: "8px 0 8px", whiteSpace: "pre-wrap" }}>{app.interviewNote}</p>}
+              <p className="muted" style={{ margin: 0, fontSize: 12 }}>
+                The interview happens at <Link href={`/application/${app.id}/interview`}>this link</Link> at the scheduled time.
+              </p>
+            </>
           )}
-          {app.interviewNote && (
-            <p style={{ margin: "6px 0 0", whiteSpace: "pre-wrap" }}>{app.interviewNote}</p>
-          )}
-          <p className="muted" style={{ margin: "6px 0 0", fontSize: 12 }}>The interview happens in the chat below.</p>
         </div>
       )}
 
-      <h2>Interview</h2>
-      {channel ? (
+      <h2>Messages</h2>
+      {appChannel ? (
         <InterviewRoom
-          wsPath={`/ws-app/${app.id}`}
+          wsPath={`/ws-app/${app.id}/application`}
           me={{ kind: "applicant" }}
-          closed={!!channel.closedAt}
-          emptyHint="Athion will start the conversation here. We respond within a few days."
+          closed={!!appChannel.closedAt}
+          emptyHint="Use this thread for any questions about your application. We'll reply here."
         />
       ) : (
         <p className="muted" style={{ fontSize: 12 }}>
-          The interview chat opens here once your application moves into review. Check back, or watch your email for an update.
+          Messages with the team open up once your application is in review.
         </p>
       )}
 

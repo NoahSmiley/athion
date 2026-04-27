@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { accessRequests, chatChannels, inviteCodes } from "@/lib/db/schema";
 import { ApplicationActions } from "./actions";
@@ -39,11 +39,17 @@ export default async function AdminApplicationDetailPage({ params }: { params: P
   }
 
   const channelRows = await db
-    .select({ slug: chatChannels.slug, closedAt: chatChannels.closedAt })
+    .select({ slug: chatChannels.slug, kind: chatChannels.kind, closedAt: chatChannels.closedAt })
     .from(chatChannels)
-    .where(eq(chatChannels.applicationId, app.id))
-    .limit(1);
-  const channel = channelRows[0] ?? null;
+    .where(eq(chatChannels.applicationId, app.id));
+  const appChannel = channelRows.find((c) => c.kind === "application") ?? null;
+  const interviewChannel = channelRows.find((c) => c.kind === "interview") ?? null;
+
+  // Interview window for badge rendering
+  const now = Date.now();
+  const startMs = app.interviewAt ? new Date(app.interviewAt).getTime() : null;
+  const endMs = startMs ? startMs + app.interviewDurationMinutes * 60 * 1000 : null;
+  const interviewLive = !!(startMs && endMs && now >= startMs && now <= endMs && interviewChannel && !interviewChannel.closedAt);
 
   return (
     <>
@@ -83,17 +89,43 @@ export default async function AdminApplicationDetailPage({ params }: { params: P
         </>
       )}
 
-      <h2 style={{ marginTop: 24 }}>Interview chat</h2>
-      {channel && me ? (
+      <h2 style={{ marginTop: 24 }}>Application messages</h2>
+      <p className="muted" style={{ fontSize: 12, marginTop: -4, marginBottom: 8 }}>
+        Always-on async thread for clarifying questions. Visible to the applicant on their status page.
+      </p>
+      {appChannel && me ? (
         <InterviewRoom
-          wsPath={`/ws/${channel.slug}`}
+          wsPath={`/ws/${appChannel.slug}`}
           me={{ kind: "member", memberId: me.id }}
-          closed={!!channel.closedAt}
-          emptyHint="Start the conversation. Messages here are visible to the applicant in real time."
+          closed={!!appChannel.closedAt}
+          emptyHint="No messages yet."
         />
       ) : (
         <p className="muted" style={{ fontSize: 12 }}>
-          The interview chat is created when you mark the application In Review. Click the button below to do that.
+          Messages open up when the application moves to In Review.
+        </p>
+      )}
+
+      <h2 style={{ marginTop: 32 }}>
+        Interview {interviewLive && <span style={{ color: "#c8c8c8", fontSize: 11, marginLeft: 8 }}>● live</span>}
+      </h2>
+      {interviewChannel && me && app.interviewAt ? (
+        <>
+          <p className="muted" style={{ fontSize: 12, marginTop: -4, marginBottom: 8 }}>
+            {new Date(app.interviewAt).toLocaleString()} · {app.interviewDurationMinutes} min
+            {!interviewLive && !interviewChannel.closedAt && " · waiting for the scheduled time"}
+            {interviewChannel.closedAt && " · closed"}
+          </p>
+          <InterviewRoom
+            wsPath={`/ws/${interviewChannel.slug}`}
+            me={{ kind: "member", memberId: me.id }}
+            closed={!!interviewChannel.closedAt || !interviewLive}
+            emptyHint={interviewLive ? "The interview is live. Begin." : "The chat opens at the scheduled time."}
+          />
+        </>
+      ) : (
+        <p className="muted" style={{ fontSize: 12 }}>
+          No interview scheduled. Use the Schedule interview action below.
         </p>
       )}
 

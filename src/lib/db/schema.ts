@@ -39,6 +39,7 @@ export const accessRequests = pgTable("access_requests", {
   // status flow: pending -> in_review -> {interview_scheduled, needs_more_info} -> approved | denied | withdrawn
   status: text("status").notNull().default("pending"),
   interviewAt: timestamp("interview_at", { withTimezone: true }),
+  interviewDurationMinutes: integer("interview_duration_minutes").notNull().default(30),
   interviewNote: text("interview_note"),
   decisionNote: text("decision_note"),
   reviewedBy: uuid("reviewed_by").references(() => users.id, { onDelete: "set null" }),

@@ -104,7 +104,7 @@ async fn main() -> anyhow::Result<()> {
     let app = Router::new()
         .route("/healthz", get(health))
         .route("/ws/:channel_slug", get(ws_handler))
-        .route("/ws-app/:application_id", get(applicant_ws_handler))
+        .route("/ws-app/:application_id/:kind", get(applicant_ws_handler))
         .with_state(state);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
@@ -123,6 +123,85 @@ async fn health() -> impl IntoResponse {
     "ok"
 }
 
+// Channel write window: a channel is writable if not closed, AND if it's an
+// interview channel, the current time is within [interview_at, interview_at + duration].
+struct ChannelInfo {
+    id: Uuid,
+    kind: String,
+    writable: bool,
+}
+
+async fn lookup_channel_by_slug(pool: &PgPool, slug: &str) -> sqlx::Result<Option<ChannelInfo>> {
+    let row = sqlx::query!(
+        r#"
+        SELECT c.id, c.kind, c.closed_at, c.application_id,
+               a.interview_at AS "interview_at?", a.interview_duration_minutes AS "interview_duration_minutes?"
+        FROM chat_channels c
+        LEFT JOIN access_requests a ON a.id = c.application_id
+        WHERE c.slug = $1
+        "#,
+        slug
+    )
+    .fetch_optional(pool)
+    .await?;
+    Ok(row.map(|r| ChannelInfo {
+        id: r.id,
+        kind: r.kind.clone(),
+        writable: compute_writable(&r.kind, r.closed_at, r.interview_at, r.interview_duration_minutes),
+    }))
+}
+
+async fn lookup_channel_by_application(
+    pool: &PgPool,
+    application_id: Uuid,
+    kind: &str,
+) -> sqlx::Result<Option<(ChannelInfo, String)>> {
+    let row = sqlx::query!(
+        r#"
+        SELECT c.id, c.kind, c.closed_at,
+               a.email AS applicant_email, a.interview_at, a.interview_duration_minutes
+        FROM chat_channels c
+        JOIN access_requests a ON a.id = c.application_id
+        WHERE c.application_id = $1 AND c.kind = $2
+        "#,
+        application_id,
+        kind
+    )
+    .fetch_optional(pool)
+    .await?;
+    Ok(row.map(|r| {
+        let writable = compute_writable(&r.kind, r.closed_at, r.interview_at, Some(r.interview_duration_minutes));
+        (
+            ChannelInfo {
+                id: r.id,
+                kind: r.kind,
+                writable,
+            },
+            r.applicant_email,
+        )
+    }))
+}
+
+fn compute_writable(
+    kind: &str,
+    closed_at: Option<chrono::DateTime<chrono::Utc>>,
+    interview_at: Option<chrono::DateTime<chrono::Utc>>,
+    duration_minutes: Option<i32>,
+) -> bool {
+    if closed_at.is_some() {
+        return false;
+    }
+    if kind == "interview" {
+        // Interview channels are writable only inside their scheduled window
+        let Some(start) = interview_at else { return false; };
+        let duration = duration_minutes.unwrap_or(30);
+        let end = start + chrono::Duration::minutes(duration as i64);
+        let now = chrono::Utc::now();
+        return now >= start && now <= end;
+    }
+    true
+}
+
 async fn ws_handler(
     ws: WebSocketUpgrade,
     State(state): State<AppState>,
@@ -134,63 +213,45 @@ async fn ws_handler(
         .await
         .ok_or((StatusCode::UNAUTHORIZED, "unauthorized"))?;
 
-    let row = sqlx::query!(
-        r#"SELECT id, closed_at FROM chat_channels WHERE slug = $1"#,
-        channel_slug
-    )
-    .fetch_optional(&state.pool)
-    .await
-    .map_err(|e| {
-        error!(?e, "channel lookup failed");
-        (StatusCode::INTERNAL_SERVER_ERROR, "db error")
-    })?
-    .ok_or((StatusCode::NOT_FOUND, "channel not found"))?;
+    let info = lookup_channel_by_slug(&state.pool, &channel_slug)
+        .await
+        .map_err(|e| {
+            error!(?e, "channel lookup failed");
+            (StatusCode::INTERNAL_SERVER_ERROR, "db error")
+        })?
+        .ok_or((StatusCode::NOT_FOUND, "channel not found"))?;
 
-    let channel_id = row.id;
-    let closed = row.closed_at.is_some();
-    info!(user = %user.id, addr = %addr, channel = %channel_slug, closed, "ws upgrade");
+    info!(user = %user.id, addr = %addr, channel = %channel_slug, kind = %info.kind, writable = info.writable, "ws upgrade");
     let identity = SocketIdentity::Member(user);
-    Ok(ws.on_upgrade(move |socket| handle_socket(socket, state, identity, channel_id, closed)))
+    Ok(ws.on_upgrade(move |socket| handle_socket(socket, state, identity, info.id, !info.writable)))
 }
 
 async fn applicant_ws_handler(
     ws: WebSocketUpgrade,
     State(state): State<AppState>,
-    Path(application_id_str): Path<String>,
+    Path((application_id_str, kind)): Path<(String, String)>,
     ConnectInfo(addr): ConnectInfo<SocketAddr>,
 ) -> Result<axum::response::Response, (StatusCode, &'static str)> {
     let application_id = Uuid::parse_str(&application_id_str)
         .map_err(|_| (StatusCode::BAD_REQUEST, "bad application id"))?;
+    if kind != "application" && kind != "interview" {
+        return Err((StatusCode::BAD_REQUEST, "bad channel kind"));
+    }
 
-    // Look up the channel for this application. The channel is created when
-    // an admin marks the app in_review (or scheduled) — until that happens,
-    // applicants can't connect.
-    let row = sqlx::query!(
-        r#"
-        SELECT c.id AS channel_id, c.closed_at, a.email AS applicant_email
-        FROM chat_channels c
-        JOIN access_requests a ON a.id = c.application_id
-        WHERE c.application_id = $1
-        LIMIT 1
-        "#,
-        application_id
-    )
-    .fetch_optional(&state.pool)
-    .await
-    .map_err(|e| {
-        error!(?e, "applicant channel lookup failed");
-        (StatusCode::INTERNAL_SERVER_ERROR, "db error")
-    })?
-    .ok_or((StatusCode::NOT_FOUND, "no interview channel yet"))?;
+    let (info, email) = lookup_channel_by_application(&state.pool, application_id, &kind)
+        .await
+        .map_err(|e| {
+            error!(?e, "applicant channel lookup failed");
+            (StatusCode::INTERNAL_SERVER_ERROR, "db error")
+        })?
+        .ok_or((StatusCode::NOT_FOUND, "channel not yet open"))?;
 
-    let channel_id = row.channel_id;
-    let closed = row.closed_at.is_some();
-    info!(applicant = %application_id, addr = %addr, "applicant ws upgrade");
+    info!(applicant = %application_id, kind = %kind, addr = %addr, writable = info.writable, "applicant ws upgrade");
     let identity = SocketIdentity::Applicant {
         application_id,
-        email: row.applicant_email,
+        email,
     };
-    Ok(ws.on_upgrade(move |socket| handle_socket(socket, state, identity, channel_id, closed)))
+    Ok(ws.on_upgrade(move |socket| handle_socket(socket, state, identity, info.id, !info.writable)))
 }
 
 #[derive(Clone)]

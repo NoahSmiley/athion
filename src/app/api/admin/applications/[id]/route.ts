@@ -11,7 +11,11 @@ import {
   approvedEmail,
   deniedEmail,
 } from "@/lib/mail";
-import { ensureInterviewChannel, closeInterviewChannel } from "@/lib/interview";
+import {
+  ensureApplicationChannel,
+  ensureInterviewChannel,
+  closeApplicationChannels,
+} from "@/lib/interview";
 
 const INVITE_CODE_TTL_DAYS = 14;
 
@@ -50,8 +54,8 @@ export async function PATCH(
     await db.update(accessRequests)
       .set({ status: "in_review", reviewedAt: null, reviewedBy: null, decisionNote: null })
       .where(eq(accessRequests.id, id));
-    await ensureInterviewChannel(id);
-    // Reopen the channel by clearing closed_at
+    await ensureApplicationChannel(id);
+    // Reopen any existing channels for this application by clearing closed_at
     const { chatChannels } = await import("@/lib/db/schema");
     await db.update(chatChannels).set({ closedAt: null }).where(eq(chatChannels.applicationId, id));
     return NextResponse.json({ ok: true });
@@ -64,21 +68,27 @@ export async function PATCH(
 
   if (action === "mark_in_review") {
     await db.update(accessRequests).set({ status: "in_review" }).where(eq(accessRequests.id, id));
-    await ensureInterviewChannel(id);
+    await ensureApplicationChannel(id);
     await sendMail({ to: app.email, ...applicationInReviewEmail(id) });
     return NextResponse.json({ ok: true });
   }
 
   if (action === "schedule_interview") {
     const interviewAt = body.interviewAt ? new Date(body.interviewAt) : null;
-    if (interviewAt && Number.isNaN(interviewAt.getTime())) {
-      return NextResponse.json({ error: "Invalid interview datetime" }, { status: 400 });
+    if (!interviewAt || Number.isNaN(interviewAt.getTime())) {
+      return NextResponse.json({ error: "Interview must have a scheduled time" }, { status: 400 });
     }
+    const durationRaw = Number(body.interviewDurationMinutes ?? 30);
+    if (!Number.isFinite(durationRaw) || durationRaw < 15 || durationRaw > 240) {
+      return NextResponse.json({ error: "Duration must be between 15 and 240 minutes" }, { status: 400 });
+    }
+    const interviewDurationMinutes = Math.round(durationRaw);
     const interviewNote = body.interviewNote ? String(body.interviewNote).trim() : "";
     if (!interviewNote) return NextResponse.json({ error: "Interview note required" }, { status: 400 });
     await db.update(accessRequests)
-      .set({ status: "interview_scheduled", interviewAt, interviewNote })
+      .set({ status: "interview_scheduled", interviewAt, interviewDurationMinutes, interviewNote })
       .where(eq(accessRequests.id, id));
+    await ensureApplicationChannel(id);
     await ensureInterviewChannel(id);
     await sendMail({ to: app.email, ...interviewScheduledEmail(id, interviewNote, interviewAt) });
     return NextResponse.json({ ok: true });
@@ -92,7 +102,7 @@ export async function PATCH(
     await db.update(accessRequests)
       .set({ status: "needs_more_info", interviewNote: note })
       .where(eq(accessRequests.id, id));
-    await ensureInterviewChannel(id);
+    await ensureApplicationChannel(id);
     return NextResponse.json({ ok: true });
   }
 
@@ -117,7 +127,7 @@ export async function PATCH(
       })
       .where(eq(accessRequests.id, id));
 
-    await closeInterviewChannel(id);
+    await closeApplicationChannels(id);
     await sendMail({ to: app.email, ...approvedEmail(id, code, expiresAt) });
     return NextResponse.json({ ok: true, code });
   }
@@ -132,7 +142,7 @@ export async function PATCH(
         reviewedBy: admin.id,
       })
       .where(eq(accessRequests.id, id));
-    await closeInterviewChannel(id);
+    await closeApplicationChannels(id);
     await sendMail({ to: app.email, ...deniedEmail(id, decisionNote) });
     return NextResponse.json({ ok: true });
   }

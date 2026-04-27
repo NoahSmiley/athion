@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { accessRequests } from "@/lib/db/schema";
-import { closeInterviewChannel } from "@/lib/interview";
+import { closeApplicationChannels } from "@/lib/interview";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -27,7 +27,7 @@ export async function POST(
     .update(accessRequests)
     .set({ status: "withdrawn", reviewedAt: new Date() })
     .where(eq(accessRequests.id, id));
-  await closeInterviewChannel(id);
+  await closeApplicationChannels(id);
 
   return NextResponse.json({ ok: true });
 }

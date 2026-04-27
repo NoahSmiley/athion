@@ -18,7 +18,11 @@
 }
 
 html, body { height: 100%; }
-html, body { overflow-x: hidden; }
+html, body { overflow-x: hidden; overflow-y: hidden; }
+html { scrollbar-width: none; }
+html::-webkit-scrollbar { display: none; }
+body { scrollbar-width: none; }
+body::-webkit-scrollbar { display: none; }
 body { background: #060606; color: #c8c8c8; font-family: var(--font-sans); font-size: 13px; line-height: 1.6; }
 a { color: #c8c8c8; text-decoration: none; transition: color 0.15s; }
 a:visited { color: #828282; }
@@ -30,8 +34,9 @@ a:hover { color: #fff !important; }
 .footer-link:hover { color: #666 !important; }
 ::selection { background: #444; color: #fff; }
 
-input, textarea, select { background: #111; color: #c8c8c8; border: 1px solid #2a2a2a; }
+input, textarea, select { background: #111; color: #c8c8c8; border: 1px solid #2a2a2a; padding: 6px 8px; }
 input::placeholder, textarea::placeholder { color: #555; }
+input:focus, textarea:focus, select:focus { outline: none; border-color: #555; }
 input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 1000px #111 inset !important;
   -webkit-text-fill-color: #c8c8c8 !important;
@@ -41,6 +46,11 @@ input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:foc
 button { background: #111; color: #c8c8c8; border: 1px solid #2a2a2a; }
 
 .muted { color: #828282; }
+
+.docs-h2-anchor { color: inherit; text-decoration: none; position: relative; }
+.docs-h2-anchor::before { content: "#"; position: absolute; left: -1em; color: #444; opacity: 0; transition: opacity 0.1s; }
+.docs-h2:hover .docs-h2-anchor::before { opacity: 1; }
+.docs-h2-anchor:hover { color: #fff !important; }
 @keyframes blink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
 
 /* View Transition for the "Labs" element morphing between nav-link and wordmark pill.
@@ -87,9 +97,13 @@ li { margin-bottom: 4px; }
 
 .main-sidebar { position: fixed; top: 56px; left: 0; right: 0; z-index: 10; display: flex; justify-content: center; pointer-events: none; }
 .main-sidebar nav.athion-nav-top { pointer-events: auto; max-width: 700px; width: 100%; box-sizing: border-box; }
-.main-stage { position: fixed; top: 104px; left: 0; right: 0; bottom: 32px; display: flex; justify-content: center; align-items: center; pointer-events: none; overflow: auto; }
+.main-stage { position: fixed; top: 104px; left: 0; right: 0; bottom: 32px; display: flex; justify-content: center; align-items: center; pointer-events: none; overflow: auto; scrollbar-width: none; -ms-overflow-style: none; }
+.main-stage::-webkit-scrollbar { display: none; }
 .main-stage > main { max-width: 700px; width: 100%; padding: 40px 24px; pointer-events: auto; margin: auto 0; }
 .main-stage:has(.home-page) > main { max-width: none; width: auto; padding: 0; }
+/* Docs anchor to the top — the doc nav stays put as page content shrinks/grows. */
+.main-stage:has(.docs-page) { align-items: flex-start; }
+.main-stage:has(.docs-page) > main { margin-top: 0; }
 .main-footer-wrap { position: fixed; bottom: 0; left: 0; right: 0; }
 
 .dash-sidebar { position: fixed; top: 56px; left: 0; right: 0; z-index: 10; display: flex; justify-content: center; pointer-events: none; }

@@ -9,13 +9,12 @@ const mainProductLinks = [
   ["/software", "Software"], ["/labs", "Labs"],
 ];
 const mainLinks = [
-  ["/pricing", "Pricing"], ["/about", "About"], ["/blog", "Blog"],
+  ["/docs", "Docs"], ["/pricing", "Pricing"], ["/about", "About"], ["/blog", "Blog"],
 ];
 
 const labsLinks = [
   ["/labs/writing", "Writing"],
   ["/labs/demos", "Demos"],
-  ["https://github.com/athion", "GitHub"],
   ["/", "← Athion"],
 ];
 
@@ -132,7 +131,7 @@ export function Navbar() {
     <nav className="athion-nav-top" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13, lineHeight: 1, padding: "0 24px", height: 24 }}>
       {wordmark}
       <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-        {!isLabs && mainProductLinks.map(([href, label]) => {
+        {user && !isLabs && mainProductLinks.map(([href, label]) => {
           const isLabsLink = href === "/labs";
           return (
             <Link
@@ -146,21 +145,21 @@ export function Navbar() {
             </Link>
           );
         })}
-        {!isLabs && mainLinks.map(([href, label]) => (
+        {user && !isLabs && mainLinks.map(([href, label]) => (
           <Link key={href} href={href} onClick={navigate(href)} className="nav-link" style={linkStyle(href)}>{label}</Link>
         ))}
-        {isLabs && labsLinks.map(([href, label]) =>
+        {user && isLabs && labsLinks.map(([href, label]) =>
           href.startsWith("http")
             ? <a key={href} href={href} target="_blank" rel="noopener noreferrer" className="nav-link">{label}</a>
             : <Link key={href} href={href} onClick={navigate(href)} className="nav-link" style={linkStyle(href)}>{label}</Link>
         )}
         {user ? (
-          <>
-            <Link href="/dashboard" onClick={navigate("/dashboard")} className="nav-link" style={pathname.startsWith("/dashboard") ? { color: "#c8c8c8" } : undefined}>Dashboard</Link>
-            <button onClick={logout} className="nav-link" style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, lineHeight: 1, fontFamily: "inherit", padding: 0 }}>Logout</button>
-          </>
+          <button onClick={logout} className="nav-link" style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, lineHeight: 1, fontFamily: "inherit", padding: 0 }}>Logout</button>
         ) : (
-          <Link href="/login" onClick={navigate("/login")} className="nav-link">Login</Link>
+          <>
+            <Link href="/request-access" className="nav-link">Request access</Link>
+            <Link href="/login" className="nav-link">Login</Link>
+          </>
         )}
       </div>
     </nav>

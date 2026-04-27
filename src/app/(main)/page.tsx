@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 
 type VariantKey =
@@ -28,9 +29,14 @@ const ROWS = 50;
 
 export default function HomePage() {
   const [variant, setVariant] = useState<VariantKey>("wave");
+  const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
 
   useEffect(() => {
     setVariant(variants[Math.floor(Math.random() * variants.length)].key);
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((d) => setIsAuthed(!!d.user))
+      .catch(() => setIsAuthed(false));
   }, []);
 
   const shuffle = () => {
@@ -44,6 +50,12 @@ export default function HomePage() {
       <div onClick={shuffle} style={{ width: "100%", maxWidth: 652, aspectRatio: "1 / 1", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden", cursor: "pointer" }}>
         <Visual variant={variant} />
       </div>
+      {isAuthed === false && (
+        <div className="home-corner" style={{ position: "fixed", bottom: 48, right: 24, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, fontSize: 11, pointerEvents: "auto" }}>
+          <Link href="/about" className="footer-link">What is this?</Link>
+          <Link href="/process" className="footer-link">How to join</Link>
+        </div>
+      )}
     </div>
   );
 }

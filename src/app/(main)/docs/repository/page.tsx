@@ -1,14 +1,30 @@
 import type { Metadata } from "next";
+import { Contents, H2 } from "../contents";
 
-export const metadata: Metadata = { title: "Repository Guidelines" };
+export const metadata: Metadata = { title: "Repository" };
+
+const HEADINGS = [
+  { id: "principles", label: "Core principles" },
+  { id: "branches", label: "Branch model" },
+  { id: "naming", label: "Branch naming" },
+  { id: "commits", label: "Commits" },
+  { id: "prs", label: "Pull requests" },
+  { id: "merging", label: "Merging" },
+  { id: "releases", label: "Releases and tags" },
+  { id: "protected", label: "Protected branches" },
+  { id: "secrets", label: "Secrets and sensitive files" },
+  { id: "workflow", label: "Daily workflow" },
+];
 
 export default function RepositoryGuidelinesPage() {
   return (
     <>
-      <h1>Repository Guidelines</h1>
-      <p className="muted">Branching, commits, and Git hygiene across Athion repos. One workflow, every repo.</p>
+      <h1>Repository</h1>
+      <p className="muted">Branching, commits, and Git hygiene across athion repos. One workflow, every repo.</p>
 
-      <h2>Core Principles</h2>
+      <Contents headings={HEADINGS} />
+
+      <H2 id="principles">Core principles</H2>
       <ul>
         <li><b>main is always shippable.</b> If a commit lands on main, it builds, passes checks, and can deploy.</li>
         <li><b>Short-lived branches.</b> Branches exist to land a change, not to live alongside main. Merge within days, not weeks.</li>
@@ -18,7 +34,7 @@ export default function RepositoryGuidelinesPage() {
         <li><b>No force-push to shared branches.</b> Force-push is fine on your own feature branch, never on main.</li>
       </ul>
 
-      <h2>Branch Model</h2>
+      <H2 id="branches">Branch model</H2>
       <p className="muted">Trunk-based development. One long-lived branch, short-lived topic branches.</p>
       <table>
         <thead><tr><th>Branch</th><th>Lives</th><th>Who writes</th><th>Merges from</th></tr></thead>
@@ -32,7 +48,7 @@ export default function RepositoryGuidelinesPage() {
       </table>
       <p className="muted" style={{ marginTop: 8 }}>No develop, staging, or integration branches. No long-lived feature branches. If a feature is not ready, it ships behind a flag or is not merged.</p>
 
-      <h2>Branch Naming</h2>
+      <H2 id="naming">Branch naming</H2>
       <table>
         <thead><tr><th>Prefix</th><th>Purpose</th><th>Example</th></tr></thead>
         <tbody>
@@ -49,7 +65,7 @@ export default function RepositoryGuidelinesPage() {
         <li>Keep it under 50 characters. If the name needs more, the branch does too much.</li>
       </ul>
 
-      <h2>Commits</h2>
+      <H2 id="commits">Commits</H2>
       <p className="muted">Imperative mood. One idea per commit. The message explains the change; the diff shows the change.</p>
       <ul>
         <li><b>Subject line</b> &mdash; 50 characters, imperative (&quot;Add boards drag reorder&quot;, not &quot;Added&quot; or &quot;Adding&quot;).</li>
@@ -73,7 +89,7 @@ updates
 feat: added boards (AT-1234)
 Board drag reorder implementation with pointer events and proper cleanup`}</pre>
 
-      <h2>Pull Requests</h2>
+      <H2 id="prs">Pull requests</H2>
       <p className="muted">Every change to main goes through a PR. No direct pushes.</p>
       <ul>
         <li><b>Title</b> &mdash; same rules as commit subjects. Under 70 characters, imperative.</li>
@@ -84,7 +100,7 @@ Board drag reorder implementation with pointer events and proper cleanup`}</pre>
         <li><b>Self-review first.</b> Read your own diff before requesting review. Catch the obvious stuff yourself.</li>
       </ul>
 
-      <h2>Merging</h2>
+      <H2 id="merging">Merging</H2>
       <p className="muted">Squash and merge. One PR, one commit on main.</p>
       <ul>
         <li><b>Squash-merge</b> is the default. The squashed commit message is the PR title + body summary.</li>
@@ -94,7 +110,7 @@ Board drag reorder implementation with pointer events and proper cleanup`}</pre>
         <li><b>Delete the branch</b> after merge. GitHub does this automatically &mdash; keep that setting on.</li>
       </ul>
 
-      <h2>Releases and Tags</h2>
+      <H2 id="releases">Releases and tags</H2>
       <ul>
         <li><b>SemVer</b> &mdash; <span style={{ fontFamily: "var(--font-mono)" }}>v0.3.1</span> format. Major.Minor.Patch, no pre-release suffixes until GA.</li>
         <li><b>Tag on main only.</b> Tags mark a shipped commit, not a branch state.</li>
@@ -102,7 +118,7 @@ Board drag reorder implementation with pointer events and proper cleanup`}</pre>
         <li><b>Changelog lives in the repo</b> at <span style={{ fontFamily: "var(--font-mono)" }}>CHANGELOG.md</span>. Updated in the release PR, not after the fact.</li>
       </ul>
 
-      <h2>Protected Branches</h2>
+      <H2 id="protected">Protected branches</H2>
       <p className="muted">Every Athion repo configures main with these rules.</p>
       <ul>
         <li>Require pull request before merging.</li>
@@ -113,7 +129,7 @@ Board drag reorder implementation with pointer events and proper cleanup`}</pre>
         <li>Restrict who can push (only merge-bot or repo admins for emergencies).</li>
       </ul>
 
-      <h2>Secrets and Sensitive Files</h2>
+      <H2 id="secrets">Secrets and sensitive files</H2>
       <ul>
         <li><b>Never commit secrets.</b> No <span style={{ fontFamily: "var(--font-mono)" }}>.env</span>, no API keys, no certificates.</li>
         <li><b>Use <span style={{ fontFamily: "var(--font-mono)" }}>.env.example</span></b> with placeholder values. Real values go in <span style={{ fontFamily: "var(--font-mono)" }}>.env.local</span>, gitignored.</li>
@@ -122,7 +138,7 @@ Board drag reorder implementation with pointer events and proper cleanup`}</pre>
         <li><b>Lockfiles are committed.</b> <span style={{ fontFamily: "var(--font-mono)" }}>package-lock.json</span>, <span style={{ fontFamily: "var(--font-mono)" }}>Cargo.lock</span>, <span style={{ fontFamily: "var(--font-mono)" }}>Package.resolved</span> &mdash; all in. No exceptions.</li>
       </ul>
 
-      <h2>Daily Workflow</h2>
+      <H2 id="workflow">Daily workflow</H2>
       <pre style={{ background: "var(--a-bg-input)", padding: 12, fontSize: 12, fontFamily: "var(--font-mono)", overflow: "auto" }}>{`# start work
 git checkout main && git pull
 git checkout -b feat/boards-drag-reorder

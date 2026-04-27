@@ -4,7 +4,7 @@ const links = [
   ["/about", "About"], ["/blog", "Blog"], ["/careers", "Careers"], ["/security", "Security"],
   ["/privacy", "Privacy"], ["/terms", "Terms"], ["/transparency", "Transparency"],
 ];
-const ext = [["https://github.com/athion", "GitHub"], ["https://status.athion.com", "Status"]];
+const ext = [["https://status.athion.com", "Status"]];
 
 export function Footer() {
   return (

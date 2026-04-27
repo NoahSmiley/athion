@@ -154,11 +154,10 @@ li { margin-bottom: 4px; }
   }
   .main-stage:has(.home-page) { align-items: center; }
   .main-stage > main {
-    width: 100%; max-width: 340px; box-sizing: border-box;
+    width: 100%; max-width: none; box-sizing: border-box;
     padding: 20px 18px 12px; margin: 0;
   }
-  /* Home page opts out of the 340px content cap so the ASCII canvas can fill the viewport. */
-  .main-stage:has(.home-page) > main { max-width: none; padding: 16px 0; }
+  .main-stage:has(.home-page) > main { padding: 16px 0; }
   .home-page { padding: 0 8px !important; }
   .home-page > div { aspect-ratio: 1 / 1; max-width: 100% !important; }
 
@@ -177,7 +176,7 @@ li { margin-bottom: 4px; }
   }
   .dash-sidebar nav.athion-nav > span { display: none; }
   .dash-stage { position: static; top: auto; bottom: auto; left: auto; right: auto; display: flex; pointer-events: auto; flex: 1; align-items: flex-start; justify-content: center; }
-  .dash-stage > main { width: 100%; max-width: 340px; box-sizing: border-box; padding: 28px 18px 16px; }
+  .dash-stage > main { width: 100%; max-width: none; box-sizing: border-box; padding: 28px 18px 16px; }
   .dash-user-name, .dash-user-email { font-size: 11px !important; }
 
   .auth-shell { position: static; inset: auto; display: flex; pointer-events: auto; padding: 18px; flex: 1; align-items: center; justify-content: center; }

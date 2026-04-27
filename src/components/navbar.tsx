@@ -15,7 +15,6 @@ const mainLinks = [
 const labsLinks = [
   ["/labs/writing", "Writing"],
   ["/labs/demos", "Demos"],
-  ["/", "← Athion"],
 ];
 
 // Pending transition state — set on click, consumed by useLayoutEffect after pathname changes.
@@ -95,11 +94,11 @@ export function Navbar() {
 
   const wordmark = isLabs ? (
     <Link
-      href="/labs"
-      onClick={navigate("/labs")}
+      href="/"
+      onClick={navigate("/")}
       style={{ textDecoration: "none", color: "#fff", fontWeight: 500, display: "inline-flex", alignItems: "center", gap: 6 }}
     >
-      <span style={{ viewTransitionName: "athion-mark" } as React.CSSProperties}>Athion</span>
+      <span style={{ viewTransitionName: "athion-mark" } as React.CSSProperties}>← Athion</span>
       <span
         className="labs-pill"
         style={{

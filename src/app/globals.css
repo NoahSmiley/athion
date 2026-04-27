@@ -101,9 +101,11 @@ li { margin-bottom: 4px; }
 .main-stage::-webkit-scrollbar { display: none; }
 .main-stage > main { max-width: 700px; width: 100%; padding: 40px 24px; pointer-events: auto; margin: auto 0; }
 .main-stage:has(.home-page) > main { max-width: none; width: auto; padding: 0; }
-/* Docs anchor to the top — the doc nav stays put as page content shrinks/grows. */
-.main-stage:has(.docs-page) { align-items: flex-start; }
-.main-stage:has(.docs-page) > main { margin-top: 0; }
+/* Docs and admin anchor to the top — the section nav stays put as page content shrinks/grows. */
+.main-stage:has(.docs-page),
+.main-stage:has(.admin-page) { align-items: flex-start; }
+.main-stage:has(.docs-page) > main,
+.main-stage:has(.admin-page) > main { margin-top: 0; }
 .main-footer-wrap { position: fixed; bottom: 0; left: 0; right: 0; }
 
 .dash-sidebar { position: fixed; top: 56px; left: 0; right: 0; z-index: 10; display: flex; justify-content: center; pointer-events: none; }

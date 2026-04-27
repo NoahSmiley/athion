@@ -75,6 +75,22 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
         </div>
       )}
 
+      {app.status === "interview_scheduled" && (
+        <div style={{ marginTop: 12, padding: "10px 12px", background: "#0a0a0a", border: "1px solid #2a2a2a", fontSize: 13 }}>
+          <b>Interview scheduled.</b>
+          {app.interviewAt && (
+            <p style={{ margin: "6px 0 0" }}>
+              <span className="muted">When: </span>
+              {new Date(app.interviewAt).toLocaleString(undefined, { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" })}
+            </p>
+          )}
+          {app.interviewNote && (
+            <p style={{ margin: "6px 0 0", whiteSpace: "pre-wrap" }}>{app.interviewNote}</p>
+          )}
+          <p className="muted" style={{ margin: "6px 0 0", fontSize: 12 }}>The interview happens in the chat below.</p>
+        </div>
+      )}
+
       <h2>Interview</h2>
       {channel ? (
         <InterviewRoom

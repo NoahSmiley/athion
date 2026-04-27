@@ -21,10 +21,12 @@ export function ApplicationActions({
   const [moreInfoNote, setMoreInfoNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [flash, setFlash] = useState<string | null>(null);
 
-  const act = async (action: string, body: Record<string, unknown> = {}) => {
+  const act = async (action: string, body: Record<string, unknown> = {}, successMsg?: string) => {
     setBusy(true);
     setError(null);
+    setFlash(null);
     try {
       const r = await fetch(`/api/admin/applications/${id}`, {
         method: "PATCH",
@@ -33,7 +35,11 @@ export function ApplicationActions({
       });
       const data = await r.json();
       if (!r.ok) throw new Error(data.error ?? "Failed");
+      if (successMsg) setFlash(successMsg);
       router.refresh();
+      if (successMsg) {
+        setTimeout(() => setFlash((v) => (v === successMsg ? null : v)), 3000);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -45,10 +51,15 @@ export function ApplicationActions({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      {error && <p style={{ color: "#c66", fontSize: 12 }}>{error}</p>}
+      {error && <p style={{ color: "#c66", fontSize: 12, margin: 0 }}>{error}</p>}
+      {flash && <p style={{ color: "#7c8", fontSize: 12, margin: 0 }}>{flash}</p>}
 
       {!closed && status === "pending" && (
-        <button onClick={() => act("mark_in_review")} disabled={busy} style={{ alignSelf: "flex-start", padding: "6px 12px" }}>
+        <button
+          onClick={() => act("mark_in_review", {}, "Moved to in review. Applicant emailed.")}
+          disabled={busy}
+          style={{ alignSelf: "flex-start", padding: "6px 12px" }}
+        >
           Move to In Review
         </button>
       )}
@@ -70,9 +81,18 @@ export function ApplicationActions({
             style={{ padding: "6px 8px", fontFamily: "inherit" }}
           />
           <button
-            onClick={() => act("schedule_interview", { interviewAt: interviewAt || null, interviewNote })}
-            disabled={busy || !interviewNote}
-            style={{ alignSelf: "flex-start", padding: "6px 12px" }}
+            onClick={async () => {
+              if (!interviewNote.trim()) return;
+              await act(
+                "schedule_interview",
+                { interviewAt: interviewAt || null, interviewNote },
+                "Interview scheduled. Applicant emailed.",
+              );
+              setInterviewNote("");
+              setInterviewAt("");
+            }}
+            disabled={busy || !interviewNote.trim()}
+            style={{ alignSelf: "flex-start", padding: "6px 12px", opacity: interviewNote.trim() && !busy ? 1 : 0.5 }}
           >
             Save & schedule
           </button>
@@ -92,7 +112,7 @@ export function ApplicationActions({
           <button
             onClick={async () => {
               if (!moreInfoNote.trim()) return;
-              await act("request_more_info", { note: moreInfoNote });
+              await act("request_more_info", { note: moreInfoNote }, "Requested. Applicant sees this on their page.");
               setMoreInfoNote("");
             }}
             disabled={busy || !moreInfoNote.trim()}
@@ -114,10 +134,24 @@ export function ApplicationActions({
             style={{ padding: "6px 8px", fontFamily: "inherit" }}
           />
           <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={() => act("approve", { decisionNote })} disabled={busy} style={{ padding: "6px 12px" }}>
+            <button
+              onClick={async () => {
+                await act("approve", { decisionNote }, "Approved. Invite code emailed.");
+                setDecisionNote("");
+              }}
+              disabled={busy}
+              style={{ padding: "6px 12px" }}
+            >
               Approve & generate code
             </button>
-            <button onClick={() => act("deny", { decisionNote })} disabled={busy} style={{ padding: "6px 12px" }}>
+            <button
+              onClick={async () => {
+                await act("deny", { decisionNote }, "Denied. Applicant emailed.");
+                setDecisionNote("");
+              }}
+              disabled={busy}
+              style={{ padding: "6px 12px" }}
+            >
               Deny
             </button>
           </div>
@@ -128,7 +162,7 @@ export function ApplicationActions({
         <div className="muted">
           <p>Application is {status}. No further actions.</p>
           {isFounder && status !== "approved" && (
-            <button onClick={() => act("reopen")} disabled={busy} style={{ marginTop: 8, padding: "6px 12px" }}>
+            <button onClick={() => act("reopen", {}, "Reopened.")} disabled={busy} style={{ marginTop: 8, padding: "6px 12px" }}>
               Reopen (founder)
             </button>
           )}

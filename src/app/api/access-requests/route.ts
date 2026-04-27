@@ -94,7 +94,7 @@ export async function POST(request: Request) {
       .returning({ id: accessRequests.id });
 
     const id = inserted[0].id;
-    void sendMail({ to: normalizedEmail, ...applicationReceivedEmail(id) });
+    await sendMail({ to: normalizedEmail, ...applicationReceivedEmail(id) });
 
     return NextResponse.json({ id }, { status: 201 });
   } catch {

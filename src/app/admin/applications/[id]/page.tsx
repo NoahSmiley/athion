@@ -8,6 +8,16 @@ import { getCurrentUser } from "@/lib/auth/roles";
 
 export const dynamic = "force-dynamic";
 
+const STATUS_LABEL: Record<string, string> = {
+  pending: "Pending",
+  in_review: "In review",
+  interview_scheduled: "Interview scheduled",
+  needs_more_info: "Needs more info",
+  approved: "Approved",
+  denied: "Denied",
+  withdrawn: "Withdrawn",
+};
+
 export default async function AdminApplicationDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) notFound();
@@ -51,7 +61,7 @@ export default async function AdminApplicationDetailPage({ params }: { params: P
             </td>
           </tr>
           <tr><td className="muted">Vouchers</td><td>{app.vouchers ?? "—"}</td></tr>
-          <tr><td className="muted">Status</td><td><b>{app.status}</b></td></tr>
+          <tr><td className="muted">Status</td><td><b>{STATUS_LABEL[app.status] ?? app.status}</b></td></tr>
           <tr><td className="muted">Submitted</td><td>{new Date(app.createdAt).toLocaleString()}</td></tr>
           {app.reviewedAt && <tr><td className="muted">Reviewed</td><td>{new Date(app.reviewedAt).toLocaleString()}</td></tr>}
           {app.interviewAt && <tr><td className="muted">Interview at</td><td>{new Date(app.interviewAt).toLocaleString()}</td></tr>}

@@ -8,6 +8,10 @@ import { checkRateLimit, clientIp } from "@/lib/rate-limit";
 const REAPPLY_COOLDOWN_DAYS = 30;
 const RATE_LIMIT_MAX = 5; // per IP
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+// Conservative email regex: one @, no spaces, no quotes, no semicolons.
+// Not RFC 5321 — deliberately tight. False negatives (rejecting weird-but-valid)
+// are fine for an application form.
+const EMAIL_RE = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 
 export async function POST(request: Request) {
   try {
@@ -22,6 +26,13 @@ export async function POST(request: Request) {
     }
 
     const normalizedEmail = String(email).toLowerCase().trim();
+    if (!EMAIL_RE.test(normalizedEmail)) {
+      return NextResponse.json({ error: "Email format looks wrong" }, { status: 400 });
+    }
+    const githubStr = String(github).trim();
+    if (githubStr.length === 0 || githubStr.length > 200) {
+      return NextResponse.json({ error: "GitHub URL or username required (max 200 chars)" }, { status: 400 });
+    }
 
     // Look at the most recent application from this email
     const recent = await db
@@ -76,8 +87,8 @@ export async function POST(request: Request) {
       .insert(accessRequests)
       .values({
         email: normalizedEmail,
-        githubUrl: String(github).trim(),
-        vouchers: vouchers ? String(vouchers).trim() : null,
+        githubUrl: githubStr,
+        vouchers: vouchers ? String(vouchers).trim().slice(0, 200) : null,
         status: "pending",
       })
       .returning({ id: accessRequests.id });

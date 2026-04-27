@@ -46,14 +46,14 @@ export default async function ApplicationsQueuePage() {
       {pending.length === 0 ? (
         <p className="muted">No open applications.</p>
       ) : (
-        <table>
+        <table className="admin-apps-table">
           <thead>
             <tr>
               <th></th>
               <th>Email</th>
-              <th>GitHub</th>
+              <th className="hide-mobile">GitHub</th>
               <th>Status</th>
-              <th>Submitted</th>
+              <th className="hide-mobile">Submitted</th>
             </tr>
           </thead>
           <tbody>
@@ -62,10 +62,10 @@ export default async function ApplicationsQueuePage() {
               return (
                 <tr key={r.id} style={u ? { fontWeight: 500 } : undefined}>
                   <td style={{ width: 12, color: u ? "#c8c8c8" : "transparent" }}>●</td>
-                  <td><Link href={`/admin/applications/${r.id}`}>{r.email}</Link></td>
-                  <td className="muted">{r.githubUrl ?? "—"}</td>
+                  <td className="email-cell"><Link href={`/admin/applications/${r.id}`}>{r.email}</Link></td>
+                  <td className="muted hide-mobile">{r.githubUrl ?? "—"}</td>
                   <td className="muted">{statusLabel[r.status] ?? r.status}</td>
-                  <td className="muted">{new Date(r.createdAt).toLocaleDateString()}</td>
+                  <td className="muted hide-mobile">{new Date(r.createdAt).toLocaleDateString()}</td>
                 </tr>
               );
             })}
@@ -77,20 +77,20 @@ export default async function ApplicationsQueuePage() {
       {closed.length === 0 ? (
         <p className="muted">No closed applications yet.</p>
       ) : (
-        <table>
+        <table className="admin-apps-table">
           <thead>
             <tr>
               <th>Email</th>
               <th>Outcome</th>
-              <th>Decided</th>
+              <th className="hide-mobile">Decided</th>
             </tr>
           </thead>
           <tbody>
             {closed.map((r) => (
               <tr key={r.id}>
-                <td><Link href={`/admin/applications/${r.id}`}>{r.email}</Link></td>
+                <td className="email-cell"><Link href={`/admin/applications/${r.id}`}>{r.email}</Link></td>
                 <td className="muted">{statusLabel[r.status] ?? r.status}</td>
-                <td className="muted">{r.reviewedAt ? new Date(r.reviewedAt).toLocaleDateString() : "—"}</td>
+                <td className="muted hide-mobile">{r.reviewedAt ? new Date(r.reviewedAt).toLocaleDateString() : "—"}</td>
               </tr>
             ))}
           </tbody>

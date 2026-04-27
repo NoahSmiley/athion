@@ -28,26 +28,26 @@ export default async function AdminMembersPage() {
       <h1>Members</h1>
       <p className="muted">{rows.length} member{rows.length === 1 ? "" : "s"}. Founder-only — change roles below.</p>
 
-      <table style={{ marginTop: 16 }}>
+      <table className="admin-apps-table" style={{ marginTop: 16 }}>
         <thead>
           <tr>
             <th>#</th>
             <th>Email</th>
-            <th>Name</th>
+            <th className="hide-mobile">Name</th>
             <th>Role</th>
-            <th>Joined</th>
+            <th className="hide-mobile">Joined</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((u) => (
             <tr key={u.id}>
               <td className="muted" style={{ fontFamily: "var(--font-mono)" }}>{String(u.memberNumber).padStart(3, "0")}</td>
-              <td>{u.email}</td>
-              <td className="muted">{u.displayName ?? "—"}</td>
+              <td className="email-cell">{u.email}</td>
+              <td className="muted hide-mobile">{u.displayName ?? "—"}</td>
               <td>
                 <RoleSelect userId={u.id} role={u.role} isSelf={u.id === founder.id} />
               </td>
-              <td className="muted" style={{ fontSize: 11 }}>{new Date(u.createdAt).toLocaleDateString()}</td>
+              <td className="muted hide-mobile" style={{ fontSize: 11 }}>{new Date(u.createdAt).toLocaleDateString()}</td>
             </tr>
           ))}
         </tbody>

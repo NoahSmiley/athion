@@ -190,4 +190,12 @@ li { margin-bottom: 4px; }
   .pricing-card { padding: 12px !important; }
   .pricing-card p { margin-bottom: 1px !important; line-height: 1.45 !important; font-size: 13px !important; }
   .pricing-card > div:nth-child(4), .pricing-card > div:nth-child(5), .pricing-card > div:nth-child(6) { margin-top: 10px !important; padding-top: 10px !important; }
+
+  /* Admin tables: hide secondary columns on phone, let email wrap rather
+     than overflow the body (html clips overflow-x, so otherwise the right
+     side of long emails/URLs is invisible). */
+  .hide-mobile { display: none !important; }
+  .admin-apps-table { table-layout: fixed; width: 100%; }
+  .admin-apps-table .email-cell { word-break: break-all; overflow-wrap: anywhere; }
+  .admin-apps-table .email-cell a { word-break: break-all; overflow-wrap: anywhere; }
 }

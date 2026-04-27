@@ -15,6 +15,9 @@ export async function DELETE(
   if (!me) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { id } = await context.params;
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
 
   const rows = await db
     .select({

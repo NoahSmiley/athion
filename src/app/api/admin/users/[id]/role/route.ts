@@ -14,6 +14,9 @@ export async function PATCH(
   if (!founder) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { id } = await context.params;
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
   const body = await request.json().catch(() => null);
   const role = body?.role;
   if (!role || !ALLOWED_ROLES.has(role)) {

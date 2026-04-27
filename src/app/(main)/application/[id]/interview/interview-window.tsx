@@ -13,6 +13,13 @@ function phaseFromTimes(now: number, start: number, end: number, closed: boolean
 
 function formatCountdown(ms: number): string {
   if (ms <= 0) return "0s";
+  // Within the final minute, count down with millisecond precision so the
+  // applicant gets a tactile signal that the interview is about to open.
+  if (ms < 60_000) {
+    const s = Math.floor(ms / 1000);
+    const msPart = String(ms % 1000).padStart(3, "0");
+    return `${s}.${msPart}s`;
+  }
   const totalSec = Math.ceil(ms / 1000);
   const d = Math.floor(totalSec / 86400);
   const h = Math.floor((totalSec % 86400) / 3600);
@@ -20,8 +27,7 @@ function formatCountdown(ms: number): string {
   const s = totalSec % 60;
   if (d > 0) return `${d}d ${h}h`;
   if (h > 0) return `${h}h ${m}m`;
-  if (m > 0) return `${m}m ${s}s`;
-  return `${s}s`;
+  return `${m}m ${s}s`;
 }
 
 export function InterviewWindow({
@@ -30,6 +36,7 @@ export function InterviewWindow({
   durationMinutes,
   note,
   closed,
+  hasTranscript,
   children,
 }: {
   startIso: string;
@@ -37,6 +44,7 @@ export function InterviewWindow({
   durationMinutes: number;
   note: string | null;
   closed: boolean;
+  hasTranscript: boolean;
   children: React.ReactNode;
 }) {
   const start = new Date(startIso).getTime();
@@ -44,9 +52,12 @@ export function InterviewWindow({
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
-    const t = setInterval(() => setNow(Date.now()), 1000);
+    // Tick at 16ms (~60fps) when we're in the last minute before start so the
+    // ms-precision countdown actually animates. Otherwise 1s is plenty.
+    const tickFast = start - Date.now() < 60_000 && start - Date.now() > 0;
+    const t = setInterval(() => setNow(Date.now()), tickFast ? 50 : 1000);
     return () => clearInterval(t);
-  }, []);
+  }, [start, now]);
 
   const phase = phaseFromTimes(now, start, end, closed);
 
@@ -86,17 +97,13 @@ export function InterviewWindow({
         )}
       </div>
 
-      {/* Pre-window: chat exists but is not writable. */}
-      {phase === "before" && (
-        <p className="muted" style={{ fontSize: 12 }}>
-          The interview hasn&apos;t started yet. The chat opens automatically at {new Date(start).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}.
-          Bookmark this page and come back at the scheduled time.
-        </p>
-      )}
+      {/* Pre-window: just the header above. The chat itself is hidden until
+          the window opens — no point rendering an empty room with a
+          disabled input. */}
 
       {phase === "live" && children}
 
-      {phase === "ended" && (
+      {phase === "ended" && hasTranscript && (
         <>
           <p className="muted" style={{ fontSize: 12, marginBottom: 8 }}>The interview window has closed. Transcript below.</p>
           {children}

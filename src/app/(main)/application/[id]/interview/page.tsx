@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { accessRequests, chatChannels } from "@/lib/db/schema";
+import { accessRequests, chatChannels, chatMessages } from "@/lib/db/schema";
 import { InterviewRoom } from "../interview-room";
 import { InterviewWindow } from "./interview-window";
 import type { Metadata } from "next";
@@ -34,11 +34,20 @@ export default async function InterviewPage({ params }: { params: Promise<{ id: 
   if (!app) notFound();
 
   const channelRows = await db
-    .select({ closedAt: chatChannels.closedAt })
+    .select({ id: chatChannels.id, closedAt: chatChannels.closedAt })
     .from(chatChannels)
     .where(and(eq(chatChannels.applicationId, app.id), eq(chatChannels.kind, "interview")))
     .limit(1);
   const channel = channelRows[0] ?? null;
+
+  let messageCount = 0;
+  if (channel) {
+    const counts = await db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(chatMessages)
+      .where(eq(chatMessages.channelId, channel.id));
+    messageCount = counts[0]?.n ?? 0;
+  }
 
   if (!app.interviewAt || !channel) {
     return (
@@ -67,6 +76,7 @@ export default async function InterviewPage({ params }: { params: Promise<{ id: 
         durationMinutes={app.interviewDurationMinutes}
         note={app.interviewNote}
         closed={closed}
+        hasTranscript={messageCount > 0}
       >
         <InterviewRoom
           wsPath={`/ws-app/${app.id}/interview`}

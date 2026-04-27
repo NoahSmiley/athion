@@ -4,6 +4,13 @@ import crypto from "node:crypto";
 import { db } from "@/lib/db";
 import { accessRequests, inviteCodes } from "@/lib/db/schema";
 import { getAdminUser } from "@/lib/auth/roles";
+import {
+  sendMail,
+  applicationInReviewEmail,
+  interviewScheduledEmail,
+  approvedEmail,
+  deniedEmail,
+} from "@/lib/mail";
 
 const INVITE_CODE_TTL_DAYS = 14;
 
@@ -32,6 +39,7 @@ export async function PATCH(
 
   if (action === "mark_in_review") {
     await db.update(accessRequests).set({ status: "in_review" }).where(eq(accessRequests.id, id));
+    void sendMail({ to: app.email, ...applicationInReviewEmail(id) });
     return NextResponse.json({ ok: true });
   }
 
@@ -42,6 +50,7 @@ export async function PATCH(
     await db.update(accessRequests)
       .set({ status: "interview_scheduled", interviewAt, interviewNote })
       .where(eq(accessRequests.id, id));
+    void sendMail({ to: app.email, ...interviewScheduledEmail(id, interviewNote, interviewAt) });
     return NextResponse.json({ ok: true });
   }
 
@@ -66,6 +75,7 @@ export async function PATCH(
       })
       .where(eq(accessRequests.id, id));
 
+    void sendMail({ to: app.email, ...approvedEmail(id, code, expiresAt) });
     return NextResponse.json({ ok: true, code });
   }
 
@@ -79,6 +89,7 @@ export async function PATCH(
         reviewedBy: admin.id,
       })
       .where(eq(accessRequests.id, id));
+    void sendMail({ to: app.email, ...deniedEmail(id, decisionNote) });
     return NextResponse.json({ ok: true });
   }
 

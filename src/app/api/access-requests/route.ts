@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { accessRequests } from "@/lib/db/schema";
+import { sendMail, applicationReceivedEmail } from "@/lib/mail";
 
 export async function POST(request: Request) {
   try {
@@ -34,7 +35,11 @@ export async function POST(request: Request) {
       })
       .returning({ id: accessRequests.id });
 
-    return NextResponse.json({ id: inserted[0].id }, { status: 201 });
+    const id = inserted[0].id;
+    const tpl = applicationReceivedEmail(id);
+    void sendMail({ to: normalizedEmail, ...tpl });
+
+    return NextResponse.json({ id }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

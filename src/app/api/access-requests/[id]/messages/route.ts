@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { and, asc, eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { accessRequests, applicationMessages } from "@/lib/db/schema";
 import { getAdminUser } from "@/lib/auth/roles";
+import { sendMail, newMessageEmail } from "@/lib/mail";
 
 const MAX_BODY = 4000;
 const MIN_BODY = 1;
@@ -51,7 +52,7 @@ export async function POST(
   }
 
   const apps = await db
-    .select({ id: accessRequests.id, status: accessRequests.status })
+    .select({ id: accessRequests.id, status: accessRequests.status, email: accessRequests.email })
     .from(accessRequests)
     .where(eq(accessRequests.id, id))
     .limit(1);
@@ -61,7 +62,6 @@ export async function POST(
     return NextResponse.json({ error: "Application is closed" }, { status: 409 });
   }
 
-  // If the caller is an admin, record their identity. Otherwise treat as applicant.
   const admin = await getAdminUser();
   const inserted = await db
     .insert(applicationMessages)
@@ -74,11 +74,11 @@ export async function POST(
     })
     .returning({ id: applicationMessages.id });
 
-  // Side effect: when a non-staff applicant replies, bump the status from
-  // interview_scheduled back to interview-active so admin sees there's something to read.
-  // (We don't change `pending` -> something; that's the admin's call.)
-  if (!admin && app.status === "pending") {
-    // applicant replied before any review — still pending, no change
+  // Notify the applicant when staff posts. (Don't notify staff when applicant
+  // posts — they'll see it in the admin queue.)
+  if (admin) {
+    const fromName = admin.displayName ?? "Athion";
+    void sendMail({ to: app.email, ...newMessageEmail(id, fromName, text) });
   }
 
   return NextResponse.json({ id: inserted[0].id }, { status: 201 });

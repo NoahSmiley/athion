@@ -25,8 +25,8 @@ function LoginForm() {
       if (!res.ok) { setError(data.error || "Login failed"); setLoading(false); return; }
       const target = redirectTo || "/";
       try { const url = new URL(target); if (url.hostname.endsWith(".athion.me")) { window.location.href = target; return; } } catch {}
-      router.push(target);
-      router.refresh();
+      // Hard navigate so the navbar (client component) re-fetches /api/auth/me.
+      window.location.href = target;
     } catch { setError("Something went wrong"); setLoading(false); }
   };
 

@@ -33,8 +33,10 @@ function SignupForm() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Signup failed"); setLoading(false); return; }
-      router.push("/");
-      router.refresh();
+      // Hard navigate so the navbar re-fetches /api/auth/me. router.push + refresh
+      // doesn't re-mount the navbar's client useEffect, so the logged-in state
+      // doesn't propagate to it.
+      window.location.href = "/";
     } catch { setError("Something went wrong"); setLoading(false); }
   };
 

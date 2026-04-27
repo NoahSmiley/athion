@@ -84,7 +84,7 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
         </div>
       )}
 
-      {app.status === "interview_scheduled" && (interviewUpcoming || interviewLive) && (
+      {app.status === "interview_scheduled" && interviewStart && (
         <div style={{ marginTop: 12, padding: "12px 14px", background: "#0a0a0a", border: "1px solid", borderColor: interviewLive ? "#c8c8c8" : "#2a2a2a", fontSize: 13 }}>
           {interviewLive ? (
             <>
@@ -98,16 +98,24 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
                 </Link>
               </p>
             </>
-          ) : (
+          ) : interviewUpcoming ? (
             <>
               <p style={{ margin: 0, fontSize: 14 }}><b>Interview scheduled</b></p>
               <p style={{ margin: "4px 0 0" }}>
-                {new Date(interviewStart!).toLocaleString(undefined, { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" })}
+                {new Date(interviewStart).toLocaleString(undefined, { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" })}
                 <span className="muted"> · {app.interviewDurationMinutes} min</span>
               </p>
               {app.interviewNote && <p className="muted" style={{ margin: "8px 0 8px", whiteSpace: "pre-wrap" }}>{app.interviewNote}</p>}
               <p className="muted" style={{ margin: 0, fontSize: 12 }}>
                 The interview happens at <Link href={`/application/${app.id}/interview`}>this link</Link> at the scheduled time.
+              </p>
+            </>
+          ) : (
+            <>
+              <p style={{ margin: 0, fontSize: 14 }}><b>Interview complete</b></p>
+              <p className="muted" style={{ margin: "4px 0 0", fontSize: 12 }}>
+                {new Date(interviewStart).toLocaleString(undefined, { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" })}
+                <span> · awaiting decision</span>
               </p>
             </>
           )}

@@ -11,6 +11,7 @@ export type SessionUser = {
   email: string;
   username: string | null;
   displayName: string | null;
+  role: string;
   avatarUrl: string | null;
   stripeCustomerId: string | null;
 };
@@ -29,6 +30,7 @@ export async function getSession(): Promise<SessionUser | null> {
       email: users.email,
       username: users.username,
       displayName: users.displayName,
+      role: users.role,
       avatarUrl: users.avatarUrl,
       stripeCustomerId: users.stripeCustomerId,
     })

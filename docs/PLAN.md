@@ -91,6 +91,56 @@ Memory: `~/.claude/projects/-Users-noahsmile/memory/reference_athion_deploy.md`
   refunds it. Codes expire after 14 days.
 - Signup sets `joinCooldownUntil = now + 30 days`.
 
+### Phase 2.11 — Second E2E pass (2026-04-27)
+Browser-driven walkthrough as visitor → applicant → approved member, plus
+admin sweep covering every action button. Found and fixed:
+- Footer leaked members-only links (About, Blog, Careers, Security,
+  Transparency) to logged-out visitors. Made footer a client component
+  that filters MEMBERS_ONLY based on /api/auth/me + BroadcastChannel.
+- `schedule_interview` action accepted whitespace-only notes (truthiness
+  check missed `"   "`) and didn't validate `interviewAt` was a real Date.
+  Now mirrors the pattern already used by `request_more_info`.
+- Member could rename themselves to `admin`, `root`, `support`, or any
+  app route segment (`docs`, `invites`, etc.). Added a RESERVED set in
+  `isValidUsername`. Existing accounts that already hold a now-reserved
+  name (founder `noah`) are grandfathered via a `current` parameter so
+  they can still update their bio without forced rename.
+- Username regex was `{1,30}` (max 31 chars total) but error message
+  documented "2-32". Bumped to `{1,31}` so 32 actually passes.
+- `PATCH /api/admin/users/<random-uuid>/role` returned `ok:true` even
+  when target didn't exist (Drizzle update is no-op on miss). Now
+  pre-checks existence and returns 404.
+- `/admin/*` redirected non-admin logged-in members to `/login`, where
+  middleware then bounced them away (because they ARE authenticated) —
+  tight loop. Now redirects to `/`.
+
+Verified working:
+- Lookup flow: invalid UUID shows error, well-formed nonexistent UUID
+  hits 404, valid UUID navigates to status page.
+- Invite-code toggle: button disabled on empty/whitespace, valid code
+  redirects to /signup with code prefilled, fake code rejected at signup.
+- WebSocket body-size boundary: 1 char ✓, 1000 chars ✓ (inclusive),
+  1001 chars dropped silently.
+- Member invite quota: 30-day cooldown enforced server-side too (not
+  just UI button-disabled), `cap: 3` for members, founder shows
+  `unlimited: true`.
+- Profile page renders member number, username, role, joined date,
+  invited-by lineage, and invitees-issued list.
+- Settings: username uniqueness (409), reserved names rejected (400),
+  display-name >64 (400), bio >500 (400), bio saves and displays
+  correctly. SQL-injection / XSS / path-traversal inputs all 400.
+- Last-founder-demote guard: blocks `Can't demote the only founder`,
+  but allows self-demote when a second founder exists. Demoted self
+  immediately loses founder API access.
+- Admin UI button → API mapping: every button (`Move to In Review`,
+  `Save & schedule`, `Request more info`, `Approve & generate code`,
+  `Deny`, `Reopen (founder)`) hits `/api/admin/applications/<id>` PATCH
+  with the correct action body. UI debounces via `busy` state — single
+  click → single PATCH → single invite code.
+- Visitor route gates: 12 routes correctly redirect to `/request-access`,
+  admin routes to `/login`. Member: 6 free routes 200, admin routes
+  redirect to `/`. Founder: admin routes 200, bad UUID 404.
+
 ### Phase 2.10 — E2E hardening pass (2026-04-27)
 Found and fixed during a thorough edge-case audit:
 - Rate limit was consuming quota on validation failures, dedup hits, and

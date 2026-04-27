@@ -192,12 +192,16 @@ li { margin-bottom: 4px; }
 
   /* Card-list pattern: rows stack into vertical cards on mobile. Apply via
      <table className="mobile-cards"> when a table has too many actions or
-     long-text columns to scroll horizontally without feeling broken. */
-  .mobile-cards, .mobile-cards thead, .mobile-cards tbody { display: block; overflow: visible; }
+     long-text columns to scroll horizontally without feeling broken.
+     Each cell's data-label renders as a small muted line above the value
+     so multi-line values don't get awkwardly wrapped under a label column. */
+  .mobile-cards, .mobile-cards thead, .mobile-cards tbody { display: block; overflow: visible; width: 100%; }
   .mobile-cards thead { display: none; }
-  .mobile-cards tr { display: block; padding: 12px 0; border-bottom: 1px solid #2a2a2a; }
-  .mobile-cards td { display: block; padding: 2px 0; white-space: normal; }
-  .mobile-cards td::before { content: attr(data-label); display: inline-block; width: 90px; color: #828282; font-size: 11px; }
+  .mobile-cards tr { display: block; padding: 10px 0; border-bottom: 1px solid #2a2a2a; }
+  .mobile-cards tr:last-child { border-bottom: none; }
+  .mobile-cards td { display: block; padding: 4px 0; white-space: normal; }
+  .mobile-cards td::before { content: attr(data-label); display: block; color: #828282; font-size: 11px; margin-bottom: 2px; }
+  .mobile-cards td:not([data-label])::before { display: none; }
   .mobile-cards td.cell-actions { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px; }
   .mobile-cards td.cell-actions::before { display: none; }
   .mobile-cards td.cell-actions button { font-size: 13px !important; padding: 6px 12px !important; }

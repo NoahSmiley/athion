@@ -52,14 +52,14 @@ export default function DocsPage() {
       />
 
       <H2 id="sections">Sections</H2>
-      <table style={{ marginBottom: 16 }}>
+      <table className="mobile-cards" style={{ marginBottom: 16 }}>
         <tbody>
           {SECTIONS.map((s) => (
             <tr key={s.href}>
-              <td style={{ width: 120, verticalAlign: "top" }}>
+              <td data-label="Section" style={{ width: 120, verticalAlign: "top" }}>
                 <Link href={s.href}>{s.title}</Link>
               </td>
-              <td className="muted" style={{ verticalAlign: "top" }}>{s.body}</td>
+              <td data-label="About" className="muted" style={{ verticalAlign: "top" }}>{s.body}</td>
             </tr>
           ))}
         </tbody>
@@ -77,7 +77,7 @@ export default function DocsPage() {
       </ul>
 
       <H2 id="colors">Colors</H2>
-      <table>
+      <table className="mobile-cards">
         <thead>
           <tr>
             <th>Token</th>
@@ -88,12 +88,12 @@ export default function DocsPage() {
         <tbody>
           {colors.map(([token, value, use]) => (
             <tr key={token}>
-              <td style={{ fontFamily: "var(--font-mono)" }}>{token}</td>
-              <td style={{ fontFamily: "var(--font-mono)" }}>
+              <td data-label="Token" style={{ fontFamily: "var(--font-mono)" }}>{token}</td>
+              <td data-label="Value" style={{ fontFamily: "var(--font-mono)" }}>
                 <span style={{ display: "inline-block", width: 12, height: 12, background: value, border: "1px solid #2a2a2a", verticalAlign: "middle", marginRight: 6 }} />
                 {value}
               </td>
-              <td className="muted">{use}</td>
+              <td data-label="Use" className="muted">{use}</td>
             </tr>
           ))}
         </tbody>

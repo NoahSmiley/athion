@@ -33,13 +33,13 @@ export default function ArchitectureOverviewPage() {
 
       <H2 id="layers">Layer model</H2>
       <p className="muted">Every athion product has four layers. Dependencies flow downward only.</p>
-      <table>
+      <table className="mobile-cards">
         <thead><tr><th>Layer</th><th>Responsibility</th><th>React</th><th>SwiftUI</th><th>Rust API</th></tr></thead>
         <tbody>
-          <tr><td><b>View / Handler</b></td><td>Render UI / serve HTTP</td><td>components/</td><td>*View.swift</td><td>routes/</td></tr>
-          <tr><td><b>Store / DB</b></td><td>State or persistence</td><td>stores/</td><td>*Store.swift</td><td>db/</td></tr>
-          <tr><td><b>Lib</b></td><td>Pure helpers, formatters, parsers</td><td>lib/</td><td>*Util.swift</td><td>in-module</td></tr>
-          <tr><td><b>API / DTO</b></td><td>Network shapes, external services</td><td>api/</td><td>*API.swift</td><td>dto/</td></tr>
+          <tr><td data-label="Layer"><b>View / Handler</b></td><td data-label="Responsibility">Render UI / serve HTTP</td><td data-label="React">components/</td><td data-label="SwiftUI">*View.swift</td><td data-label="Rust API">routes/</td></tr>
+          <tr><td data-label="Layer"><b>Store / DB</b></td><td data-label="Responsibility">State or persistence</td><td data-label="React">stores/</td><td data-label="SwiftUI">*Store.swift</td><td data-label="Rust API">db/</td></tr>
+          <tr><td data-label="Layer"><b>Lib</b></td><td data-label="Responsibility">Pure helpers, formatters, parsers</td><td data-label="React">lib/</td><td data-label="SwiftUI">*Util.swift</td><td data-label="Rust API">in-module</td></tr>
+          <tr><td data-label="Layer"><b>API / DTO</b></td><td data-label="Responsibility">Network shapes, external services</td><td data-label="React">api/</td><td data-label="SwiftUI">*API.swift</td><td data-label="Rust API">dto/</td></tr>
         </tbody>
       </table>
       <p className="muted" style={{ marginTop: 8 }}>Views import Stores, Lib, or API types. Stores import Lib and API. Lib imports nothing app-specific. API imports nothing app-specific. On Rust: routes import db + dto, db imports dto, dto imports nothing app-specific.</p>
@@ -56,25 +56,25 @@ export default function ArchitectureOverviewPage() {
       </ul>
 
       <H2 id="naming">Naming</H2>
-      <table>
+      <table className="mobile-cards">
         <thead><tr><th>Type</th><th>React</th><th>SwiftUI</th><th>Rust</th></tr></thead>
         <tbody>
-          <tr><td>Views / components</td><td>PascalCase.tsx</td><td>PascalCase.swift</td><td>module.rs (snake)</td></tr>
-          <tr><td>Stores / handlers</td><td>camelCase.ts</td><td>PascalCase.swift</td><td>db/note.rs</td></tr>
-          <tr><td>Styles</td><td>single styles.css</td><td>Theme.swift</td><td>&mdash;</td></tr>
-          <tr><td>Hooks</td><td>useCamelCase.ts</td><td>n/a</td><td>n/a</td></tr>
-          <tr><td>Props / params</td><td>ComponentNameProps</td><td>let name: Type</td><td>fn name(arg: T)</td></tr>
+          <tr><td data-label="Type">Views / components</td><td data-label="React">PascalCase.tsx</td><td data-label="SwiftUI">PascalCase.swift</td><td data-label="Rust">module.rs (snake)</td></tr>
+          <tr><td data-label="Type">Stores / handlers</td><td data-label="React">camelCase.ts</td><td data-label="SwiftUI">PascalCase.swift</td><td data-label="Rust">db/note.rs</td></tr>
+          <tr><td data-label="Type">Styles</td><td data-label="React">single styles.css</td><td data-label="SwiftUI">Theme.swift</td><td data-label="Rust">&mdash;</td></tr>
+          <tr><td data-label="Type">Hooks</td><td data-label="React">useCamelCase.ts</td><td data-label="SwiftUI">n/a</td><td data-label="Rust">n/a</td></tr>
+          <tr><td data-label="Type">Props / params</td><td data-label="React">ComponentNameProps</td><td data-label="SwiftUI">let name: Type</td><td data-label="Rust">fn name(arg: T)</td></tr>
         </tbody>
       </table>
 
       <H2 id="persistence">Persistence</H2>
       <p className="muted">Each platform uses its native primitive. One JSON blob per store, loaded at init.</p>
-      <table>
+      <table className="mobile-cards">
         <thead><tr><th>Platform</th><th>Primitive</th><th>Key format</th><th>Write pattern</th></tr></thead>
         <tbody>
-          <tr><td>React / Tauri</td><td>localStorage</td><td>opendock-notes</td><td>Debounced JSON.stringify</td></tr>
-          <tr><td>SwiftUI</td><td>UserDefaults</td><td>opendock-notes</td><td>JSONEncoder on mutation</td></tr>
-          <tr><td>Rust API</td><td>Postgres</td><td>&mdash;</td><td>sqlx + migrations</td></tr>
+          <tr><td data-label="Platform">React / Tauri</td><td data-label="Primitive">localStorage</td><td data-label="Key format">opendock-notes</td><td data-label="Write pattern">Debounced JSON.stringify</td></tr>
+          <tr><td data-label="Platform">SwiftUI</td><td data-label="Primitive">UserDefaults</td><td data-label="Key format">opendock-notes</td><td data-label="Write pattern">JSONEncoder on mutation</td></tr>
+          <tr><td data-label="Platform">Rust API</td><td data-label="Primitive">Postgres</td><td data-label="Key format">&mdash;</td><td data-label="Write pattern">sqlx + migrations</td></tr>
         </tbody>
       </table>
       <ul style={{ marginTop: 8 }}>

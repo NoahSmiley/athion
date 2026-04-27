@@ -29,7 +29,7 @@ export default function LabsPage() {
       <p className="muted">Experiments, prototypes, and open-source work. Things we&apos;re building or have built that don&apos;t fit neatly into the product list.</p>
 
       <h2>Projects</h2>
-      <table>
+      <table className="mobile-cards">
         <thead>
           <tr>
             <th>Name</th>
@@ -40,12 +40,12 @@ export default function LabsPage() {
         <tbody>
           {projects.map((p) => (
             <tr key={p.name}>
-              <td>
+              <td data-label="Name">
                 {p.href ? <a href={p.href}>{p.name}</a> : <b>{p.name}</b>}
                 {p.repo && <> &middot; <a href={p.repo} target="_blank" rel="noopener noreferrer">repo</a></>}
               </td>
-              <td className="muted">{p.status}</td>
-              <td>{p.description}</td>
+              <td data-label="Status" className="muted">{p.status}</td>
+              <td data-label="Description">{p.description}</td>
             </tr>
           ))}
         </tbody>

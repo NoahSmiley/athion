@@ -36,27 +36,27 @@ export default function RepositoryGuidelinesPage() {
 
       <H2 id="branches">Branch model</H2>
       <p className="muted">Trunk-based development. One long-lived branch, short-lived topic branches.</p>
-      <table>
+      <table className="mobile-cards">
         <thead><tr><th>Branch</th><th>Lives</th><th>Who writes</th><th>Merges from</th></tr></thead>
         <tbody>
-          <tr><td><b>main</b></td><td>Forever</td><td>No one directly</td><td>Topic branches via PR</td></tr>
-          <tr><td><b>feat/*</b></td><td>Hours to days</td><td>One author</td><td>&mdash;</td></tr>
-          <tr><td><b>fix/*</b></td><td>Hours</td><td>One author</td><td>&mdash;</td></tr>
-          <tr><td><b>chore/*</b></td><td>Hours</td><td>One author</td><td>&mdash;</td></tr>
-          <tr><td><b>release/*</b></td><td>Until tagged</td><td>Release owner</td><td>main only</td></tr>
+          <tr><td data-label="Branch"><b>main</b></td><td data-label="Lives">Forever</td><td data-label="Who writes">No one directly</td><td data-label="Merges from">Topic branches via PR</td></tr>
+          <tr><td data-label="Branch"><b>feat/*</b></td><td data-label="Lives">Hours to days</td><td data-label="Who writes">One author</td><td data-label="Merges from">&mdash;</td></tr>
+          <tr><td data-label="Branch"><b>fix/*</b></td><td data-label="Lives">Hours</td><td data-label="Who writes">One author</td><td data-label="Merges from">&mdash;</td></tr>
+          <tr><td data-label="Branch"><b>chore/*</b></td><td data-label="Lives">Hours</td><td data-label="Who writes">One author</td><td data-label="Merges from">&mdash;</td></tr>
+          <tr><td data-label="Branch"><b>release/*</b></td><td data-label="Lives">Until tagged</td><td data-label="Who writes">Release owner</td><td data-label="Merges from">main only</td></tr>
         </tbody>
       </table>
       <p className="muted" style={{ marginTop: 8 }}>No develop, staging, or integration branches. No long-lived feature branches. If a feature is not ready, it ships behind a flag or is not merged.</p>
 
       <H2 id="naming">Branch naming</H2>
-      <table>
+      <table className="mobile-cards">
         <thead><tr><th>Prefix</th><th>Purpose</th><th>Example</th></tr></thead>
         <tbody>
-          <tr><td><span style={{ fontFamily: "var(--font-mono)" }}>feat/</span></td><td>New feature or capability</td><td>feat/boards-drag-reorder</td></tr>
-          <tr><td><span style={{ fontFamily: "var(--font-mono)" }}>fix/</span></td><td>Bug fix</td><td>fix/editor-cursor-color</td></tr>
-          <tr><td><span style={{ fontFamily: "var(--font-mono)" }}>chore/</span></td><td>Tooling, deps, refactors with no behavior change</td><td>chore/bump-tauri-2.2</td></tr>
-          <tr><td><span style={{ fontFamily: "var(--font-mono)" }}>docs/</span></td><td>Documentation only</td><td>docs/repository-guide</td></tr>
-          <tr><td><span style={{ fontFamily: "var(--font-mono)" }}>release/</span></td><td>Release prep, version bump</td><td>release/0.3.0</td></tr>
+          <tr><td data-label="Prefix"><span style={{ fontFamily: "var(--font-mono)" }}>feat/</span></td><td data-label="Purpose">New feature or capability</td><td data-label="Example">feat/boards-drag-reorder</td></tr>
+          <tr><td data-label="Prefix"><span style={{ fontFamily: "var(--font-mono)" }}>fix/</span></td><td data-label="Purpose">Bug fix</td><td data-label="Example">fix/editor-cursor-color</td></tr>
+          <tr><td data-label="Prefix"><span style={{ fontFamily: "var(--font-mono)" }}>chore/</span></td><td data-label="Purpose">Tooling, deps, refactors with no behavior change</td><td data-label="Example">chore/bump-tauri-2.2</td></tr>
+          <tr><td data-label="Prefix"><span style={{ fontFamily: "var(--font-mono)" }}>docs/</span></td><td data-label="Purpose">Documentation only</td><td data-label="Example">docs/repository-guide</td></tr>
+          <tr><td data-label="Prefix"><span style={{ fontFamily: "var(--font-mono)" }}>release/</span></td><td data-label="Purpose">Release prep, version bump</td><td data-label="Example">release/0.3.0</td></tr>
         </tbody>
       </table>
       <ul style={{ marginTop: 8 }}>

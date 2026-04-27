@@ -22,7 +22,7 @@ export default function SoftwarePage() {
       <p className="muted">Products we build and ship. Local-first, lean, and crafted for the long term.</p>
 
       <h2>Products</h2>
-      <table>
+      <table className="mobile-cards">
         <thead>
           <tr>
             <th>Name</th>
@@ -33,9 +33,9 @@ export default function SoftwarePage() {
         <tbody>
           {products.map((p) => (
             <tr key={p.name}>
-              <td><Link href={p.href}>{p.name}</Link></td>
-              <td className="muted">{p.status}</td>
-              <td>{p.tagline}</td>
+              <td data-label="Name"><Link href={p.href}>{p.name}</Link></td>
+              <td data-label="Status" className="muted">{p.status}</td>
+              <td data-label="Description">{p.tagline}</td>
             </tr>
           ))}
         </tbody>

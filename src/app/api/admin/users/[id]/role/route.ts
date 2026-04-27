@@ -23,6 +23,13 @@ export async function PATCH(
     return NextResponse.json({ error: "Invalid role" }, { status: 400 });
   }
 
+  // Verify the target user exists — Drizzle update is a no-op on missing rows,
+  // so without this check we'd return ok for any random UUID.
+  const existing = await db.select({ id: users.id }).from(users).where(eq(users.id, id)).limit(1);
+  if (existing.length === 0) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
   // Don't let the last founder demote themselves
   if (founder.id === id && role !== "founder") {
     const founderCount = await db

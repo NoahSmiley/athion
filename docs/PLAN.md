@@ -62,9 +62,18 @@ Memory: `~/.claude/projects/-Users-noahsmile/memory/reference_athion_deploy.md`
 - Closed applications reject new messages (409).
 - Thread component on `/application/[id]` and `/admin/applications/[id]` with chat-style bubbles, 8s polling, auto-scroll to bottom, perspective-flipping `asAdmin` flag.
 
-## Next up
+### Phase 2.4 — Member chat (in-house, Rust) (2026-04-26)
+- `chat_channels` + `chat_messages` tables. Migration 0004. Seeded with `#general`.
+- `services/chat/` — standalone Rust binary (axum + tokio + sqlx + jsonwebtoken).
+  WebSocket endpoint `/ws/<channel_slug>`. Reads athion's `auth_token` cookie,
+  verifies HS256 with the same `JWT_SECRET`, looks up the user from Postgres.
+  Per-channel `tokio::broadcast` for fan-out.
+- `/chat` page on athion.me, opens `wss://athion.me/ws/general`. Caddy proxies
+  `/ws/*` → `localhost:3001`. Auto-reconnect, last 100 messages on connect,
+  member-number badges, Enter to send.
+- `athion-chat.service` systemd unit on CT 109. Builds with `cargo build --release`.
 
-### Phase 2.4 — Member chat room
+## Next up
 
 For approved members only. Real-time chat.
 

@@ -182,11 +182,25 @@ li { margin-bottom: 4px; }
   .auth-shell { position: static; inset: auto; display: flex; pointer-events: auto; padding: 18px; flex: 1; align-items: center; justify-content: center; }
   .auth-card { width: 100%; max-width: 340px; margin: 0 auto; }
 
-  table { font-size: 13px; }
-  th, td { padding: 4px 8px 4px 0; }
+  table { font-size: 13px; display: block; overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; }
+  table thead, table tbody { display: table; width: 100%; }
+  th, td { padding: 4px 8px 4px 0; white-space: nowrap; }
+  .blog-list, .blog-list thead, .blog-list tbody { display: block; }
   .blog-list tr { display: block; padding: 8px 0; }
   .blog-list td { display: block; padding: 0; white-space: normal !important; }
   .blog-list td:first-child { font-size: 11px; margin-bottom: 2px; }
+
+  /* Card-list pattern: rows stack into vertical cards on mobile. Apply via
+     <table className="mobile-cards"> when a table has too many actions or
+     long-text columns to scroll horizontally without feeling broken. */
+  .mobile-cards, .mobile-cards thead, .mobile-cards tbody { display: block; overflow: visible; }
+  .mobile-cards thead { display: none; }
+  .mobile-cards tr { display: block; padding: 12px 0; border-bottom: 1px solid #2a2a2a; }
+  .mobile-cards td { display: block; padding: 2px 0; white-space: normal; }
+  .mobile-cards td::before { content: attr(data-label); display: inline-block; width: 90px; color: #828282; font-size: 11px; }
+  .mobile-cards td.cell-actions { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .mobile-cards td.cell-actions::before { display: none; }
+  .mobile-cards td.cell-actions button { font-size: 13px !important; padding: 6px 12px !important; }
   input, textarea, select, button { font-size: 16px !important; padding: 8px 10px !important; }
   form label { font-size: 12px !important; }
   form button { padding: 9px 18px !important; }

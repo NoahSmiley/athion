@@ -119,7 +119,7 @@ export function InvitesPanel({ initialState, initialCodes }: { initialState: Sta
       {codes.length === 0 ? (
         <p className="muted">None yet.</p>
       ) : (
-        <table>
+        <table className="mobile-cards">
           <thead>
             <tr>
               <th>Code</th>
@@ -135,9 +135,9 @@ export function InvitesPanel({ initialState, initialCodes }: { initialState: Sta
               const expired = label === "expired";
               return (
                 <tr key={c.id}>
-                  <td style={{ fontFamily: "var(--font-mono)" }}>{c.code}</td>
-                  <td className="muted">{label}</td>
-                  <td className="muted">
+                  <td data-label="Code" style={{ fontFamily: "var(--font-mono)" }}>{c.code}</td>
+                  <td data-label="Status" className="muted">{label}</td>
+                  <td data-label="Used by" className="muted">
                     {c.usedByUser ? (
                       <a href={c.usedByUser.username ? `/u/${c.usedByUser.username}` : "#"}>
                         <span style={{ fontFamily: "var(--font-mono)" }}>#{String(c.usedByUser.memberNumber).padStart(3, "0")}</span>{" "}
@@ -147,15 +147,15 @@ export function InvitesPanel({ initialState, initialCodes }: { initialState: Sta
                       "—"
                     )}
                   </td>
-                  <td className="muted" style={{ fontSize: 11 }}>{new Date(c.expiresAt).toLocaleDateString()}</td>
-                  <td>
+                  <td data-label="Expires" className="muted" style={{ fontSize: 11 }}>{new Date(c.expiresAt).toLocaleDateString()}</td>
+                  <td className="cell-actions">
                     {label === "active" && (
-                      <span style={{ display: "inline-flex", gap: 6 }}>
+                      <>
                         <button onClick={() => copy(c)} style={{ padding: "2px 8px", fontSize: 11 }}>
                           {copiedId === c.id ? "copied" : "copy link"}
                         </button>
                         <button onClick={() => revoke(c.id)} style={{ padding: "2px 8px", fontSize: 11 }}>revoke</button>
-                      </span>
+                      </>
                     )}
                     {expired && <span className="muted" style={{ fontSize: 11 }}>—</span>}
                   </td>

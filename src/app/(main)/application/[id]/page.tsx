@@ -65,7 +65,10 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
       {app.status === "needs_more_info" && (
         <div style={{ marginTop: 12, padding: "10px 12px", background: "#0a0a0a", border: "1px solid #2a2a2a", fontSize: 13 }}>
           <b>We need a bit more info.</b>
-          <p className="muted" style={{ margin: "4px 0 0", fontSize: 12 }}>Reply in the chat below — we&apos;ll keep going once you do.</p>
+          {app.interviewNote && (
+            <p style={{ margin: "6px 0 0", whiteSpace: "pre-wrap" }}>{app.interviewNote}</p>
+          )}
+          <p className="muted" style={{ margin: "6px 0 0", fontSize: 12 }}>Reply in the chat below — we&apos;ll keep going once you do.</p>
         </div>
       )}
 

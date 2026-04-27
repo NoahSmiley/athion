@@ -90,9 +90,13 @@ export function ApplicationActions({
             style={{ padding: "6px 8px", fontFamily: "inherit" }}
           />
           <button
-            onClick={() => act("request_more_info", { note: moreInfoNote })}
-            disabled={busy}
-            style={{ alignSelf: "flex-start", padding: "6px 12px" }}
+            onClick={async () => {
+              if (!moreInfoNote.trim()) return;
+              await act("request_more_info", { note: moreInfoNote });
+              setMoreInfoNote("");
+            }}
+            disabled={busy || !moreInfoNote.trim()}
+            style={{ alignSelf: "flex-start", padding: "6px 12px", opacity: moreInfoNote.trim() && !busy ? 1 : 0.5 }}
           >
             Request more info
           </button>

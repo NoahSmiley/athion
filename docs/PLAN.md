@@ -48,57 +48,21 @@ Memory: `~/.claude/projects/-Users-noahsmile/memory/reference_athion_deploy.md`
 
 ---
 
+## Done (cont.)
+
+### Phase 2.2 — Roles (2026-04-26)
+- `users.tier` → `users.role`. Migration 0002.
+- `src/lib/auth/admin.ts` → `src/lib/auth/roles.ts` with helpers (`getCurrentUser`, `getAdminUser`, `getFounderUser`, `isAdmin`, `isFounder`).
+- Admin sidebar shows current user's role.
+- `/admin/members` (founder-only): lists all users with role dropdown to change roles. PATCH `/api/admin/users/[id]/role` with last-founder protection.
+
+### Phase 2.3 — Application messaging (2026-04-26)
+- `application_messages` table. Migration 0003.
+- GET/POST `/api/access-requests/[id]/messages` — same endpoint for applicant (unauth, UUID-gated) and admin (auth, identity recorded from session).
+- Closed applications reject new messages (409).
+- Thread component on `/application/[id]` and `/admin/applications/[id]` with chat-style bubbles, 8s polling, auto-scroll to bottom, perspective-flipping `asAdmin` flag.
+
 ## Next up
-
-### Phase 2.2 — Roles (smallest, unblocks downstream work)
-
-Right now `tier === "founder"` is the only admin gate. Need a role system.
-
-**Schema change**
-- Rename `users.tier` → `users.role` (clearer naming).
-- Allowed values: `founder | admin | member` (and later: `veteran`, `architect` as visible badges).
-- Founder = full power (manage roles, ban, edit any data). Admin = review applications, schedule interviews, approve/deny. Member = regular access.
-
-**Code change**
-- `src/lib/auth/admin.ts` becomes `src/lib/auth/roles.ts` with helpers:
-  `getCurrentUser()`, `requireRole('admin' | 'founder')`, `isFounder()`, `isAdmin()`.
-- Update `/admin/*` pages to allow `role IN ('admin', 'founder')`, not just founder.
-- Founder-only operations (changing roles, banning) get a separate `requireRole('founder')` guard.
-
-**UI**
-- Admin sidebar shows current user's role next to email.
-- Future: founder-only `/admin/members` page to list all members and edit their roles.
-
-**Estimate:** ~30 min of focused work. Schema migration + ~5 file edits.
-
-### Phase 2.3 — Application messaging (text interview)
-
-Async text-thread on each application. Replaces the "schedule interview" placeholder.
-
-**Schema**
-- New table `application_messages`:
-  - `id` uuid pk
-  - `application_id` uuid fk → access_requests
-  - `author_id` uuid fk → users (nullable for applicant messages — they don't have an account yet)
-  - `author_role` text (`applicant` | `admin` | `founder`)
-  - `body` text
-  - `created_at` timestamp
-
-**Routes**
-- `GET /api/access-requests/[id]/messages` — fetch thread (no auth needed; gated by knowing the application UUID)
-- `POST /api/access-requests/[id]/messages` — applicant posts. No auth (UUID is the auth).
-- `POST /api/admin/applications/[id]/messages` — admin posts. Requires admin role.
-
-**UI**
-- Applicant view (`/application/[id]`): when status is `interview_scheduled`, show a chat thread. Applicant can post replies. Auto-scroll to bottom.
-- Admin view (`/admin/applications/[id]`): same thread, plus admin controls (approve/deny stays at the bottom).
-- Multiple admins can post; their messages tagged with display name.
-
-**Approval flow refinement**
-- Drop the rigid `interview_scheduled` step in favor of "interview can start any time, decision can come any time". The stepper still shows progress, but "Interview" is just "are messages being exchanged."
-- Add `needs_more_info` as a status — admin can request more info, applicant replies, status flips back to `in_review`.
-
-**Estimate:** ~2 hours.
 
 ### Phase 2.4 — Member chat room
 

@@ -10,6 +10,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminApplicationDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) notFound();
   const me = await getCurrentUser();
   const rows = await db.select().from(accessRequests).where(eq(accessRequests.id, id)).limit(1);
   const app = rows[0];

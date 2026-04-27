@@ -11,18 +11,11 @@ const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 
 export async function POST(request: Request) {
   try {
-    // Rate limit
-    const ip = clientIp(request);
-    const rl = checkRateLimit(`apply:${ip}`, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS);
-    if (!rl.ok) {
-      const retryMin = Math.ceil(rl.retryAfterMs / 60000);
-      return NextResponse.json(
-        { error: `Too many applications from your network. Try again in ${retryMin} minutes.` },
-        { status: 429, headers: { "Retry-After": String(Math.ceil(rl.retryAfterMs / 1000)) } },
-      );
-    }
-
-    const { email, github, vouchers } = await request.json();
+    // Validate body before any side-effecting work
+    const body = await request.json().catch(() => null);
+    const email = body?.email;
+    const github = body?.github;
+    const vouchers = body?.vouchers;
 
     if (!email || !github) {
       return NextResponse.json({ error: "Email and GitHub are required" }, { status: 400 });
@@ -44,7 +37,8 @@ export async function POST(request: Request) {
     const last = recent[0];
 
     if (last) {
-      // Open-state — return their existing application instead of creating a duplicate
+      // Open-state — return their existing application instead of creating a duplicate.
+      // Don't count this against the rate limit (it's not a new submission).
       const open = ["pending", "in_review", "interview_scheduled", "needs_more_info"];
       if (open.includes(last.status)) {
         return NextResponse.json({ id: last.id }, { status: 200 });
@@ -64,6 +58,18 @@ export async function POST(request: Request) {
         }
       }
       // withdrawn or denied past cooldown: allow new submission below
+    }
+
+    // Rate limit only when we're actually about to create a new application.
+    // (Validation failures, dedup hits, and cooldown rejections don't burn quota.)
+    const ip = clientIp(request);
+    const rl = checkRateLimit(`apply:${ip}`, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS);
+    if (!rl.ok) {
+      const retryMin = Math.ceil(rl.retryAfterMs / 60000);
+      return NextResponse.json(
+        { error: `Too many applications from your network. Try again in ${retryMin} minutes.` },
+        { status: 429, headers: { "Retry-After": String(Math.ceil(rl.retryAfterMs / 1000)) } },
+      );
     }
 
     const inserted = await db

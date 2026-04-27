@@ -25,8 +25,11 @@ function stepIndex(status: string): number {
   return 0;
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export default async function ApplicationPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  if (!UUID_RE.test(id)) notFound();
 
   const rows = await db.select().from(accessRequests).where(eq(accessRequests.id, id)).limit(1);
   const app = rows[0];

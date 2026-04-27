@@ -82,9 +82,12 @@ export async function PATCH(
   }
 
   if (action === "request_more_info") {
-    const note = body.note ? String(body.note) : null;
+    const note = body.note ? String(body.note).trim() : "";
+    if (!note) {
+      return NextResponse.json({ error: "Note required — tell the applicant what info you need" }, { status: 400 });
+    }
     await db.update(accessRequests)
-      .set({ status: "needs_more_info", interviewNote: note ?? app.interviewNote })
+      .set({ status: "needs_more_info", interviewNote: note })
       .where(eq(accessRequests.id, id));
     await ensureInterviewChannel(id);
     return NextResponse.json({ ok: true });

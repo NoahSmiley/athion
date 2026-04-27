@@ -47,6 +47,12 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
+  // API routes: never redirect to HTML pages. Return JSON 401 if unauthenticated
+  // and the path isn't in the public API allowlist.
+  if (pathname.startsWith("/api/") && !isAuthenticated && !isPublic(pathname)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   // Protect admin routes — must be logged in (admin role check happens server-side in page)
   if (!isAuthenticated && pathname.startsWith("/admin")) {
     const url = request.nextUrl.clone();

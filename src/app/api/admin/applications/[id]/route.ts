@@ -78,6 +78,11 @@ export async function PATCH(
     if (!interviewAt || Number.isNaN(interviewAt.getTime())) {
       return NextResponse.json({ error: "Interview must have a scheduled time" }, { status: 400 });
     }
+    // Reject times in the past — easy AM/PM mistake on datetime-local inputs.
+    // 1-minute slack so a reschedule for "right now" doesn't bounce on round-trip.
+    if (interviewAt.getTime() < Date.now() - 60_000) {
+      return NextResponse.json({ error: "Interview time is in the past — double-check AM vs PM" }, { status: 400 });
+    }
     const durationRaw = Number(body.interviewDurationMinutes ?? 30);
     if (!Number.isFinite(durationRaw) || durationRaw < 15 || durationRaw > 240) {
       return NextResponse.json({ error: "Duration must be between 15 and 240 minutes" }, { status: 400 });

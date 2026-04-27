@@ -14,6 +14,26 @@ function toLocalInputValue(iso: string | null): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+// Render a friendly "Tuesday, April 28 at 4:21 PM CDT" preview from a
+// datetime-local string ("YYYY-MM-DDTHH:MM"). Returns { label, isPast }
+// for inline UI feedback.
+function previewDatetime(value: string): { label: string; isPast: boolean } | null {
+  if (!value) return null;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return null;
+  return {
+    label: d.toLocaleString(undefined, {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      timeZoneName: "short",
+    }),
+    isPast: d.getTime() < Date.now() - 60_000,
+  };
+}
+
 export function ApplicationActions({
   id,
   status,
@@ -108,6 +128,15 @@ export function ApplicationActions({
               <option value={120}>2 hr</option>
             </select>
           </div>
+          {(() => {
+            const p = previewDatetime(interviewAt);
+            if (!p) return null;
+            return (
+              <p style={{ margin: 0, fontSize: 12, color: p.isPast ? "#c66" : "#828282" }}>
+                → {p.label}{p.isPast && " · in the past"}
+              </p>
+            );
+          })()}
           <textarea
             placeholder="Note the applicant will see"
             value={interviewNote}
@@ -164,6 +193,15 @@ export function ApplicationActions({
               <option value={120}>2 hr</option>
             </select>
           </div>
+          {(() => {
+            const p = previewDatetime(rescheduleAt);
+            if (!p) return null;
+            return (
+              <p style={{ margin: 0, fontSize: 12, color: p.isPast ? "#c66" : "#828282" }}>
+                → {p.label}{p.isPast && " · in the past"}
+              </p>
+            );
+          })()}
           <textarea
             placeholder="Note the applicant will see"
             value={rescheduleNote}

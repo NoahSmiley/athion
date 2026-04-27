@@ -34,7 +34,28 @@ export async function PATCH(
   const rows = await db.select().from(accessRequests).where(eq(accessRequests.id, id)).limit(1);
   const app = rows[0];
   if (!app) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  if (app.status === "approved" || app.status === "denied") {
+
+  // Founder-only reopen of closed applications. Resets status to in_review and
+  // re-opens the interview channel if it exists.
+  if (action === "reopen") {
+    if (admin.role !== "founder") {
+      return NextResponse.json({ error: "Founder only" }, { status: 403 });
+    }
+    if (app.status === "approved") {
+      return NextResponse.json({ error: "Approved applications can't be reopened" }, { status: 409 });
+    }
+    await db.update(accessRequests)
+      .set({ status: "in_review", reviewedAt: null, reviewedBy: null, decisionNote: null })
+      .where(eq(accessRequests.id, id));
+    await ensureInterviewChannel(id);
+    // Reopen the channel by clearing closed_at
+    const { chatChannels } = await import("@/lib/db/schema");
+    await db.update(chatChannels).set({ closedAt: null }).where(eq(chatChannels.applicationId, id));
+    return NextResponse.json({ ok: true });
+  }
+
+  const closedStatuses = new Set(["approved", "denied", "withdrawn"]);
+  if (closedStatuses.has(app.status)) {
     return NextResponse.json({ error: "Application already closed" }, { status: 409 });
   }
 
@@ -54,6 +75,15 @@ export async function PATCH(
       .where(eq(accessRequests.id, id));
     await ensureInterviewChannel(id);
     void sendMail({ to: app.email, ...interviewScheduledEmail(id, interviewNote, interviewAt) });
+    return NextResponse.json({ ok: true });
+  }
+
+  if (action === "request_more_info") {
+    const note = body.note ? String(body.note) : null;
+    await db.update(accessRequests)
+      .set({ status: "needs_more_info", interviewNote: note ?? app.interviewNote })
+      .where(eq(accessRequests.id, id));
+    await ensureInterviewChannel(id);
     return NextResponse.json({ ok: true });
   }
 

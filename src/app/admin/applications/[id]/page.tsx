@@ -15,6 +15,12 @@ export default async function AdminApplicationDetailPage({ params }: { params: P
   const app = rows[0];
   if (!app) notFound();
 
+  // Mark this conversation as seen by the admin viewing it.
+  await db
+    .update(accessRequests)
+    .set({ lastAdminSeenAt: new Date() })
+    .where(eq(accessRequests.id, app.id));
+
   let code: string | null = null;
   if (app.inviteCodeId) {
     const codeRows = await db.select({ code: inviteCodes.code }).from(inviteCodes).where(eq(inviteCodes.id, app.inviteCodeId)).limit(1);
@@ -81,7 +87,7 @@ export default async function AdminApplicationDetailPage({ params }: { params: P
       )}
 
       <h2 style={{ marginTop: 24 }}>Actions</h2>
-      <ApplicationActions id={app.id} status={app.status} />
+      <ApplicationActions id={app.id} status={app.status} isFounder={me?.role === "founder"} />
 
       <p className="muted" style={{ marginTop: 24, fontSize: 11 }}>
         Public status page: <a href={`/application/${app.id}`} target="_blank">/application/{app.id}</a>

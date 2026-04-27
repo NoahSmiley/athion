@@ -36,7 +36,7 @@ export const accessRequests = pgTable("access_requests", {
   email: text("email").notNull(),
   githubUrl: text("github_url"),
   vouchers: text("vouchers"),
-  // status flow: pending -> in_review -> interview_scheduled -> approved | denied
+  // status flow: pending -> in_review -> {interview_scheduled, needs_more_info} -> approved | denied | withdrawn
   status: text("status").notNull().default("pending"),
   interviewAt: timestamp("interview_at", { withTimezone: true }),
   interviewNote: text("interview_note"),
@@ -44,6 +44,8 @@ export const accessRequests = pgTable("access_requests", {
   reviewedBy: uuid("reviewed_by").references(() => users.id, { onDelete: "set null" }),
   reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
   inviteCodeId: uuid("invite_code_id").references(() => inviteCodes.id, { onDelete: "set null" }),
+  lastApplicantMessageAt: timestamp("last_applicant_message_at", { withTimezone: true }),
+  lastAdminSeenAt: timestamp("last_admin_seen_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { accessRequests, chatChannels, inviteCodes } from "@/lib/db/schema";
 import { Stepper } from "./stepper";
 import { InterviewRoom } from "./interview-room";
+import { WithdrawForm } from "./withdraw-form";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -13,16 +14,14 @@ export const metadata: Metadata = {
 
 const STEPS = [
   { key: "received", label: "Received" },
-  { key: "in_review", label: "In review" },
-  { key: "interview", label: "Interview" },
+  { key: "reviewing", label: "Reviewing" },
   { key: "decision", label: "Decision" },
 ];
 
 function stepIndex(status: string): number {
   if (status === "pending") return 0;
-  if (status === "in_review") return 1;
-  if (status === "interview_scheduled") return 2;
-  if (status === "approved" || status === "denied") return 3;
+  if (status === "in_review" || status === "interview_scheduled" || status === "needs_more_info") return 1;
+  if (status === "approved" || status === "denied" || status === "withdrawn") return 2;
   return 0;
 }
 
@@ -52,8 +51,9 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
   const channel = channelRows[0] ?? null;
 
   const current = stepIndex(app.status);
-  const denied = app.status === "denied";
+  const denied = app.status === "denied" || app.status === "withdrawn";
   const approved = app.status === "approved";
+  const closed = denied || approved;
 
   return (
     <>
@@ -61,6 +61,13 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
       <p className="muted">Submitted {new Date(app.createdAt).toLocaleDateString()} for {app.email}</p>
 
       <Stepper steps={STEPS} current={current} approved={approved} denied={denied} />
+
+      {app.status === "needs_more_info" && (
+        <div style={{ marginTop: 12, padding: "10px 12px", background: "#0a0a0a", border: "1px solid #2a2a2a", fontSize: 13 }}>
+          <b>We need a bit more info.</b>
+          <p className="muted" style={{ margin: "4px 0 0", fontSize: 12 }}>Reply in the chat below — we&apos;ll keep going once you do.</p>
+        </div>
+      )}
 
       <h2>Interview</h2>
       {channel ? (
@@ -78,22 +85,40 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
 
       {approved && code && (
         <>
-          <h2>Welcome to Athion</h2>
-          <p>Your invite code:</p>
+          <h2>You&apos;re in</h2>
+          <p>Welcome. Your invite code:</p>
           <p style={{ fontFamily: "var(--font-mono)", fontSize: 14, padding: "8px 12px", background: "#111", border: "1px solid #2a2a2a", display: "inline-block" }}>
             {code.code}
           </p>
-          <p className="muted" style={{ fontSize: 12 }}>
-            Use it at <a href={`/signup?code=${code.code}`}>/signup</a>{code.expiresAt ? `. Expires ${new Date(code.expiresAt).toLocaleDateString()}.` : "."}
+          <p style={{ marginTop: 8 }}>
+            <a href={`/signup?code=${code.code}`} style={{ display: "inline-block", padding: "8px 14px", background: "#fff", color: "#060606", fontWeight: 500, textDecoration: "none" }}>
+              Create your account →
+            </a>
           </p>
+          {app.decisionNote && (
+            <p className="muted" style={{ whiteSpace: "pre-wrap", marginTop: 12, fontSize: 12 }}>{app.decisionNote}</p>
+          )}
+          {code.expiresAt && (
+            <p className="muted" style={{ fontSize: 11, marginTop: 8 }}>Code expires {new Date(code.expiresAt).toLocaleDateString()}.</p>
+          )}
         </>
       )}
 
-      {denied && app.decisionNote && (
+      {app.status === "denied" && app.decisionNote && (
         <>
           <h2>Note</h2>
           <p style={{ whiteSpace: "pre-wrap" }}>{app.decisionNote}</p>
         </>
+      )}
+
+      {app.status === "withdrawn" && (
+        <p className="muted" style={{ marginTop: 16, fontSize: 12 }}>You withdrew this application.</p>
+      )}
+
+      {!closed && app.status !== "pending" && (
+        <p style={{ marginTop: 24, fontSize: 12 }}>
+          <WithdrawForm applicationId={app.id} />
+        </p>
       )}
 
       <p className="muted" style={{ marginTop: 24, fontSize: 11 }}>

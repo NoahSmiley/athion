@@ -196,11 +196,7 @@ async fn applicant_ws_handler(
 #[derive(Clone)]
 enum SocketIdentity {
     Member(AuthedUser),
-    Applicant {
-        #[allow(dead_code)]
-        application_id: Uuid,
-        email: String,
-    },
+    Applicant { application_id: Uuid, email: String },
 }
 
 async fn authenticate(state: &AppState, headers: &HeaderMap) -> Option<AuthedUser> {
@@ -289,14 +285,27 @@ async fn handle_socket(
                         if body.is_empty() || body.len() > 1000 {
                             continue;
                         }
-                        let (author_id_opt, author_name, author_member_number) = match &identity {
-                            SocketIdentity::Member(u) => (Some(u.id), u.display_name.clone(), u.member_number),
+                        let (author_id_opt, author_name, author_member_number, applicant_app_id) = match &identity {
+                            SocketIdentity::Member(u) => (Some(u.id), u.display_name.clone(), u.member_number, None),
                             // Applicants don't have a user row, so author_id is null
-                            SocketIdentity::Applicant { email, .. } => (None, Some(email.clone()), 0),
+                            SocketIdentity::Applicant { email, application_id } => {
+                                (None, Some(email.clone()), 0, Some(*application_id))
+                            }
                         };
 
                         match insert_message(&state.pool, channel_id, author_id_opt, body).await {
                             Ok(saved) => {
+                                // Update last_applicant_message_at on the application so admins
+                                // see an unread badge in the queue.
+                                if let Some(app_id) = applicant_app_id {
+                                    let _ = sqlx::query!(
+                                        r#"UPDATE access_requests SET last_applicant_message_at = $1 WHERE id = $2"#,
+                                        saved.created_at,
+                                        app_id
+                                    )
+                                    .execute(&state.pool)
+                                    .await;
+                                }
                                 let out = ChatMessage {
                                     id: saved.id,
                                     channel_id,

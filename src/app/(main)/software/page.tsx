@@ -14,7 +14,7 @@ export default function SoftwarePage() {
 
       <div style={{ marginTop: 24, border: "1px solid #2a2a2a", padding: "20px 22px" }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 12, flexWrap: "wrap" }}>
-          <h2 style={{ margin: 0, fontSize: 18 }}>OpenDock</h2>
+          <h2 style={{ margin: 0, fontSize: 18 }}>Opendock</h2>
           <span className="muted" style={{ fontSize: 11, letterSpacing: 0.5, textTransform: "uppercase" }}>Active · v0.4</span>
         </div>
         <p style={{ marginTop: 8, marginBottom: 0, fontSize: 14, lineHeight: 1.55 }}>

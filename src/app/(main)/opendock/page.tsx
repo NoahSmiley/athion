@@ -21,13 +21,13 @@ const benchmarks = [
 export default function OpenDockPage() {
   return (
     <>
-      <h1>OpenDock</h1>
+      <h1>Opendock</h1>
       <p className="muted">Kanban boards, rich notes, calendar, and AI in a single native desktop app. Local-first SQLite, no cloud dependency, no Electron bloat.</p>
       <h2>Features</h2>
       <ul>{features.map((f) => <li key={f}>{f}</li>)}</ul>
       <h2>Benchmarks vs Notion</h2>
       <table>
-        <thead><tr><th>Metric</th><th>OpenDock</th><th>Notion</th></tr></thead>
+        <thead><tr><th>Metric</th><th>Opendock</th><th>Notion</th></tr></thead>
         <tbody>{benchmarks.map(([m, o, n]) => <tr key={m}><td>{m}</td><td><b>{o}</b></td><td className="muted">{n}</td></tr>)}</tbody>
       </table>
       <p style={{ marginTop: 16 }}><Link href="/pricing">Subscribe</Link> to get access.</p>

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 const projects: { name: string; status: string; description: string; href?: string; repo?: string }[] = [
   {
-    name: "OpenDock",
+    name: "Opendock",
     status: "Active",
     description: "Local-first kanban, notes, calendar, and AI in a 30MB native desktop app. Tauri + Rust + SQLite.",
     href: "/opendock",

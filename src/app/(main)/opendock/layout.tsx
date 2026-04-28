@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "OpenDock",
+  title: "Opendock",
   description:
     "Productivity suite with kanban boards, notes, calendar, and AI — built with Tauri for native performance.",
 };

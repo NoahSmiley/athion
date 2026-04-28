@@ -25,7 +25,7 @@ export function ConcentricPageContent() {
           <b>Minecraft</b> &mdash; a private server everyone&apos;s on. <span className="muted">live</span>
         </li>
         <li>
-          <b>OpenDock</b> &mdash; local-first kanban, notes, calendar, AI in
+          <b>Opendock</b> &mdash; local-first kanban, notes, calendar, AI in
           one native app. <span className="muted">in development</span>
         </li>
         <li>

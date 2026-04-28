@@ -6,49 +6,41 @@ export const metadata: Metadata = {
   description: "Software products from Athion.",
 };
 
-const products: { name: string; href: string; tagline: string; status: string }[] = [
-  {
-    name: "OpenDock",
-    href: "/opendock",
-    tagline: "Local-first kanban, notes, calendar, and AI in a 30MB native desktop app.",
-    status: "Active",
-  },
-];
-
 export default function SoftwarePage() {
   return (
     <>
       <h1>Software</h1>
       <p className="muted">Products we build and ship. Local-first, lean, and crafted for the long term.</p>
 
-      <h2>Products</h2>
-      <table className="mobile-cards">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Status</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((p) => (
-            <tr key={p.name}>
-              <td data-label="Name"><Link href={p.href}>{p.name}</Link></td>
-              <td data-label="Status" className="muted">{p.status}</td>
-              <td data-label="Description">{p.tagline}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div style={{ marginTop: 24, border: "1px solid #2a2a2a", padding: "20px 22px" }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 12, flexWrap: "wrap" }}>
+          <h2 style={{ margin: 0, fontSize: 18 }}>OpenDock</h2>
+          <span className="muted" style={{ fontSize: 11, letterSpacing: 0.5, textTransform: "uppercase" }}>Active · v0.4</span>
+        </div>
+        <p style={{ marginTop: 8, marginBottom: 0, fontSize: 14, lineHeight: 1.55 }}>
+          Kanban boards, rich notes, calendar, and Claude AI in a single native desktop app.
+          SQLite on your machine. No cloud, no Electron, no telemetry.
+        </p>
 
-      <p className="muted" style={{ marginTop: 16 }}>More coming. See <Link href="/labs">Labs</Link> for experiments and prototypes.</p>
+        <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 18px", fontSize: 12 }}>
+          <span className="muted">Boards</span><span>kanban with sprints, epics, drag-and-drop</span>
+          <span className="muted">Notes</span><span>markdown editor, collections, tags</span>
+          <span className="muted">Calendar</span><span>events linked to tickets and sprints</span>
+          <span className="muted">AI</span><span>Claude assistant aware of your data</span>
+          <span className="muted">Footprint</span><span>30 MB RAM idle, 18 MB binary</span>
+          <span className="muted">Offline</span><span>100% — works without a network</span>
+        </div>
 
-      <p className="muted" style={{ marginTop: 24, fontSize: 11, borderTop: "1px solid #1a1a1a", paddingTop: 12 }}>
-        Mockups for review:{" "}
-        <Link href="/software/v1">v1 — Hero card</Link>{" · "}
-        <Link href="/software/v2">v2 — Manifesto</Link>{" · "}
-        <Link href="/software/v3">v3 — Benchmarks</Link>{" · "}
-        <Link href="/software/v4">v4 — Roadmap</Link>
+        <div style={{ marginTop: 18, display: "flex", gap: 14, alignItems: "center", fontSize: 13 }}>
+          <Link href="/opendock" style={{ background: "#fff", color: "#060606", padding: "6px 14px", textDecoration: "none", fontWeight: 500 }}>
+            Open page →
+          </Link>
+          <Link href="/pricing" className="muted">Pricing</Link>
+        </div>
+      </div>
+
+      <p className="muted" style={{ marginTop: 32, fontSize: 12 }}>
+        More coming. See <Link href="/labs">Labs</Link> for experiments and prototypes.
       </p>
     </>
   );

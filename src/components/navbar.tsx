@@ -83,16 +83,17 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
       router.push(href);
       return;
     }
-    // Snapshot the current state, optimistically flip isBlog so React
-    // re-renders the pill at its new position, then resolve. The browser
-    // takes its "new" snapshot from that re-render and animates between
-    // the two — all before Next has finished committing the route.
+    // Optimistically flip isBlog so React re-renders the pill at its new
+    // position, then wait for that re-render to commit before resolving.
+    // The view-transition takes its "new" snapshot once we resolve, so
+    // we have to wait until React has actually painted the new state.
     const transition = doc.startViewTransition(() => {
-      setOptimisticBlog(targetIsBlog);
-      router.push(href);
-      // One microtask is enough — React commits the optimistic state
-      // synchronously after setState, the snapshot fires next frame.
-      return Promise.resolve();
+      return new Promise<void>((resolve) => {
+        setOptimisticBlog(targetIsBlog);
+        router.push(href);
+        // Two rAFs: first commits React state, second guarantees paint.
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      });
     });
     transition.finished?.catch(() => {});
   };

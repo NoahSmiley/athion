@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect, useRef, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
 
 const MAIN_LINKS = [
   ["/software", "Software"],
@@ -22,8 +22,6 @@ type NavUser = {
   role?: string | null;
 };
 
-type Pending = { resolve: () => void } | null;
-
 function shortName(u: NavUser): string {
   const raw = u.displayName ?? (u.username ? `@${u.username}` : "Account");
   return raw.length <= NAV_NAME_MAX ? raw : raw.slice(0, NAV_NAME_MAX - 1) + "…";
@@ -34,8 +32,18 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const isBlog = pathname === "/blog" || pathname.startsWith("/blog/");
-  const pendingRef = useRef<Pending>(null);
+  // optimisticBlog lets us flip the pill morph state immediately on click,
+  // before Next has actually committed the new route. Without this the
+  // animation visibly waits for the route fetch + render.
+  const [optimisticBlog, setOptimisticBlog] = useState<boolean | null>(null);
+  const realIsBlog = pathname === "/blog" || pathname.startsWith("/blog/");
+  const isBlog = optimisticBlog ?? realIsBlog;
+  // When the real route catches up to our optimistic guess, drop the override.
+  useEffect(() => {
+    if (optimisticBlog !== null && optimisticBlog === realIsBlog) {
+      setOptimisticBlog(null);
+    }
+  }, [optimisticBlog, realIsBlog]);
 
   useEffect(() => {
     const bc = new BroadcastChannel("auth");
@@ -60,14 +68,6 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
     return () => document.removeEventListener("click", onDoc);
   }, [menuOpen]);
 
-  useLayoutEffect(() => {
-    if (pendingRef.current) {
-      const { resolve } = pendingRef.current;
-      pendingRef.current = null;
-      resolve();
-    }
-  }, [pathname]);
-
   const navigate = (href: string) => (e: React.MouseEvent) => {
     if (href.startsWith("http")) return;
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
@@ -83,18 +83,18 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
       router.push(href);
       return;
     }
-    // Start the navigation immediately so the snapshot reflects the click,
-    // but resolve the transition only once Next has actually committed the
-    // new pathname (tracked by pendingRef + the useLayoutEffect on pathname).
+    // Snapshot the current state, optimistically flip isBlog so React
+    // re-renders the pill at its new position, then resolve. The browser
+    // takes its "new" snapshot from that re-render and animates between
+    // the two — all before Next has finished committing the route.
     const transition = doc.startViewTransition(() => {
-      return new Promise<void>((resolve) => {
-        pendingRef.current = { resolve };
-        router.push(href);
-      });
+      setOptimisticBlog(targetIsBlog);
+      router.push(href);
+      // One microtask is enough — React commits the optimistic state
+      // synchronously after setState, the snapshot fires next frame.
+      return Promise.resolve();
     });
-    transition.finished?.catch(() => {
-      pendingRef.current = null;
-    });
+    transition.finished?.catch(() => {});
   };
 
   const logout = async () => {

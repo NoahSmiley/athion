@@ -42,6 +42,14 @@ export default function SoftwarePage() {
       </table>
 
       <p className="muted" style={{ marginTop: 16 }}>More coming. See <Link href="/labs">Labs</Link> for experiments and prototypes.</p>
+
+      <p className="muted" style={{ marginTop: 24, fontSize: 11, borderTop: "1px solid #1a1a1a", paddingTop: 12 }}>
+        Mockups for review:{" "}
+        <Link href="/software/v1">v1 — Hero card</Link>{" · "}
+        <Link href="/software/v2">v2 — Manifesto</Link>{" · "}
+        <Link href="/software/v3">v3 — Benchmarks</Link>{" · "}
+        <Link href="/software/v4">v4 — Roadmap</Link>
+      </p>
     </>
   );
 }

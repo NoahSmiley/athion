@@ -11,10 +11,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   // send them home rather than to /login (which would bounce them right back).
   if (!admin) redirect("/");
 
+  const initialUser = {
+    id: admin.id,
+    username: admin.username,
+    displayName: admin.displayName,
+    role: admin.role,
+  };
+
   return (
     <>
       <div className="main-sidebar">
-        <Navbar />
+        <Navbar initialUser={initialUser} />
       </div>
       <div className="main-stage">
         <main>
@@ -25,7 +32,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </main>
       </div>
       <div className="main-footer-wrap">
-        <Footer />
+        <Footer initialAuthed={true} />
       </div>
     </>
   );

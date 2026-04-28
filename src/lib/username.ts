@@ -10,7 +10,7 @@ const RESERVED = new Set([
   "admin", "administrator", "root", "system", "support", "help", "moderator", "mod",
   "athion", "official", "staff", "team", "owner", "founder", "noah",
   "api", "auth", "login", "signup", "logout", "settings", "invites", "docs", "blog",
-  "labs", "software", "members", "about", "process", "request-access", "reset-password",
+  "software", "infra", "members", "about", "process", "request-access", "reset-password",
   "privacy", "terms", "security", "transparency", "careers", "u", "me", "you",
   "null", "undefined", "anonymous", "guest", "test",
 ]);

@@ -15,14 +15,10 @@ const MEMBERS_ONLY = [
 ];
 const EXTERNAL = [["https://status.athion.com", "Status"]];
 
-export function Footer() {
-  const [authed, setAuthed] = useState<boolean | null>(null);
+export function Footer({ initialAuthed = false }: { initialAuthed?: boolean } = {}) {
+  const [authed, setAuthed] = useState<boolean>(initialAuthed);
 
   useEffect(() => {
-    fetch("/api/auth/me")
-      .then((r) => r.json())
-      .then((d) => setAuthed(!!d.user))
-      .catch(() => setAuthed(false));
     const bc = new BroadcastChannel("auth");
     bc.onmessage = (e) => {
       if (e.data === "logout") setAuthed(false);

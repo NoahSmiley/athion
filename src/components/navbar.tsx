@@ -8,14 +8,8 @@ import { flushSync } from "react-dom";
 const MAIN_LINKS = [
   ["/software", "Software"],
   ["/infra", "Infra"],
-  ["/labs", "Labs"],
   ["/docs", "Docs"],
   ["/blog", "Blog"],
-];
-
-const LABS_LINKS = [
-  ["/labs/writing", "Writing"],
-  ["/labs/demos", "Demos"],
 ];
 
 // Cap the display name in the nav button so a 32-char username can't push the
@@ -36,19 +30,15 @@ function shortName(u: NavUser): string {
   return raw.length <= NAV_NAME_MAX ? raw : raw.slice(0, NAV_NAME_MAX - 1) + "…";
 }
 
-export function Navbar() {
-  const [user, setUser] = useState<NavUser | null>(null);
+export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } = {}) {
+  const [user, setUser] = useState<NavUser | null>(initialUser);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const isLabs = pathname === "/labs" || pathname.startsWith("/labs/");
+  const isBlog = pathname === "/blog" || pathname.startsWith("/blog/");
   const pendingRef = useRef<Pending>(null);
 
   useEffect(() => {
-    fetch("/api/auth/me")
-      .then((r) => r.json())
-      .then((d) => setUser(d.user ?? null))
-      .catch(() => {});
     const bc = new BroadcastChannel("auth");
     bc.onmessage = (e) => {
       if (e.data === "logout") setUser(null);
@@ -82,9 +72,9 @@ export function Navbar() {
   const navigate = (href: string) => (e: React.MouseEvent) => {
     if (href.startsWith("http")) return;
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-    const targetIsLabs = href === "/labs" || href.startsWith("/labs/");
-    const crossesLabsBoundary = isLabs !== targetIsLabs;
-    if (!crossesLabsBoundary) return;
+    const targetIsBlog = href === "/blog" || href.startsWith("/blog/");
+    const crossesBlogBoundary = isBlog !== targetIsBlog;
+    if (!crossesBlogBoundary) return;
     e.preventDefault();
 
     const doc = document as Document & {
@@ -117,13 +107,13 @@ export function Navbar() {
 
   const linkStyle = (href: string) => {
     if (href === "/") return undefined;
-    if (href === "/labs") return pathname === "/labs" ? { color: "#c8c8c8" } : undefined;
+    if (href === "/blog") return pathname === "/blog" ? { color: "#c8c8c8" } : undefined;
     return pathname === href || pathname.startsWith(href + "/") ? { color: "#c8c8c8" } : undefined;
   };
 
-  const labsMorphStyle = { viewTransitionName: "labs-morph" } as React.CSSProperties;
+  const blogMorphStyle = { viewTransitionName: "blog-morph" } as React.CSSProperties;
 
-  const wordmark = isLabs ? (
+  const wordmark = isBlog ? (
     <Link
       href="/"
       onClick={navigate("/")}
@@ -132,9 +122,9 @@ export function Navbar() {
       <span aria-hidden="true" style={{ color: "#828282" }}>←</span>
       <span style={{ viewTransitionName: "athion-mark" } as React.CSSProperties}>Athion</span>
       <span
-        className="labs-pill"
+        className="blog-pill"
         style={{
-          ...labsMorphStyle,
+          ...blogMorphStyle,
           background: "#fff",
           color: "#060606",
           padding: "2px 6px",
@@ -145,7 +135,7 @@ export function Navbar() {
           display: "inline-block",
         }}
       >
-        Labs
+        Blog
       </span>
     </Link>
   ) : (
@@ -264,19 +254,14 @@ export function Navbar() {
     >
       {wordmark}
       <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-        {user && !isLabs && MAIN_LINKS.map(([href, label]) => (
+        {user && !isBlog && MAIN_LINKS.map(([href, label]) => (
           <Link
             key={href}
             href={href}
             onClick={navigate(href)}
             className="nav-link"
-            style={{ ...linkStyle(href), ...(href === "/labs" ? labsMorphStyle : {}) }}
+            style={{ ...linkStyle(href), ...(href === "/blog" ? blogMorphStyle : {}) }}
           >
-            {label}
-          </Link>
-        ))}
-        {user && isLabs && LABS_LINKS.map(([href, label]) => (
-          <Link key={href} href={href} onClick={navigate(href)} className="nav-link" style={linkStyle(href)}>
             {label}
           </Link>
         ))}

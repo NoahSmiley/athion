@@ -40,7 +40,7 @@ export default function SoftwarePage() {
       </div>
 
       <p className="muted" style={{ marginTop: 32, fontSize: 12 }}>
-        More coming. See <Link href="/labs">Labs</Link> for experiments and prototypes.
+        More coming.
       </p>
     </>
   );

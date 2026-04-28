@@ -53,16 +53,16 @@ button { background: #111; color: #c8c8c8; border: 1px solid #2a2a2a; }
 .docs-h2-anchor:hover { color: #fff !important; }
 @keyframes blink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
 
-/* View Transition for the "Labs" element morphing between nav-link and wordmark pill.
+/* View Transition for the "Blog" element morphing between nav-link and wordmark pill.
    The browser captures both states (using view-transition-name), then interpolates
    position, size, and opacity between them. We slow the morph to make it feel deliberate
    and ease the cross-fade so the pill background appears smoothly. */
-::view-transition-group(labs-morph) {
+::view-transition-group(blog-morph) {
   animation-duration: 260ms;
   animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
 }
-::view-transition-old(labs-morph),
-::view-transition-new(labs-morph) {
+::view-transition-old(blog-morph),
+::view-transition-new(blog-morph) {
   animation-duration: 260ms;
   animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
 }

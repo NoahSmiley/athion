@@ -32,7 +32,7 @@ export default function SoftwarePage() {
         </div>
 
         <div style={{ marginTop: 18, display: "flex", gap: 14, alignItems: "center", fontSize: 13 }}>
-          <Link href="/opendock" style={{ background: "#fff", color: "#060606", padding: "6px 14px", textDecoration: "none", fontWeight: 500 }}>
+          <Link href="/opendock" className="cta-light" style={{ padding: "6px 14px", textDecoration: "none", fontWeight: 500 }}>
             Open page →
           </Link>
           <Link href="/pricing" className="muted">Pricing</Link>

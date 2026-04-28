@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
-import { flushSync } from "react-dom";
 
 const MAIN_LINKS = [
   ["/software", "Software"],
@@ -84,12 +83,13 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
       router.push(href);
       return;
     }
+    // Start the navigation immediately so the snapshot reflects the click,
+    // but resolve the transition only once Next has actually committed the
+    // new pathname (tracked by pendingRef + the useLayoutEffect on pathname).
     const transition = doc.startViewTransition(() => {
       return new Promise<void>((resolve) => {
         pendingRef.current = { resolve };
-        flushSync(() => {
-          router.push(href);
-        });
+        router.push(href);
       });
     });
     transition.finished?.catch(() => {

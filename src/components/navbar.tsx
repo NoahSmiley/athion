@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
+import { flushSync } from "react-dom";
 
 const MAIN_LINKS = [
   ["/software", "Software"],
@@ -27,23 +28,25 @@ function shortName(u: NavUser): string {
   return raw.length <= NAV_NAME_MAX ? raw : raw.slice(0, NAV_NAME_MAX - 1) + "…";
 }
 
+type Pending = { resolve: () => void } | null;
+
 export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } = {}) {
   const [user, setUser] = useState<NavUser | null>(initialUser);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  // optimisticBlog lets us flip the pill morph state immediately on click,
-  // before Next has actually committed the new route. Without this the
-  // animation visibly waits for the route fetch + render.
-  const [optimisticBlog, setOptimisticBlog] = useState<boolean | null>(null);
-  const realIsBlog = pathname === "/blog" || pathname.startsWith("/blog/");
-  const isBlog = optimisticBlog ?? realIsBlog;
-  // When the real route catches up to our optimistic guess, drop the override.
-  useEffect(() => {
-    if (optimisticBlog !== null && optimisticBlog === realIsBlog) {
-      setOptimisticBlog(null);
+  const isBlog = pathname === "/blog" || pathname.startsWith("/blog/");
+  const pendingRef = useRef<Pending>(null);
+
+  // The view-transition callback resolves only once the new pathname has
+  // actually committed (so the new pill rect is real, not optimistic).
+  useLayoutEffect(() => {
+    if (pendingRef.current) {
+      const { resolve } = pendingRef.current;
+      pendingRef.current = null;
+      resolve();
     }
-  }, [optimisticBlog, realIsBlog]);
+  }, [pathname]);
 
   useEffect(() => {
     const bc = new BroadcastChannel("auth");
@@ -83,19 +86,21 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
       router.push(href);
       return;
     }
-    // Optimistically flip isBlog so React re-renders the pill at its new
-    // position, then wait for that re-render to commit before resolving.
-    // The view-transition takes its "new" snapshot once we resolve, so
-    // we have to wait until React has actually painted the new state.
+    // Run the navigation inside startViewTransition. flushSync forces React
+    // to commit the route change synchronously, then the useLayoutEffect on
+    // pathname resolves the pending promise — which lets the browser take
+    // its "new" snapshot and animate.
     const transition = doc.startViewTransition(() => {
       return new Promise<void>((resolve) => {
-        setOptimisticBlog(targetIsBlog);
-        router.push(href);
-        // Two rAFs: first commits React state, second guarantees paint.
-        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+        pendingRef.current = { resolve };
+        flushSync(() => {
+          router.push(href);
+        });
       });
     });
-    transition.finished?.catch(() => {});
+    transition.finished?.catch(() => {
+      pendingRef.current = null;
+    });
   };
 
   const logout = async () => {

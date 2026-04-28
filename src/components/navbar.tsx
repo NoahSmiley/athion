@@ -118,6 +118,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
     <Link
       href="/"
       onClick={navigate("/")}
+      prefetch={true}
       style={{ textDecoration: "none", color: "#fff", fontWeight: 500, display: "inline-flex", alignItems: "center", gap: 6 }}
     >
       <span aria-hidden="true" style={{ color: "#828282" }}>←</span>
@@ -140,7 +141,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
       </span>
     </Link>
   ) : (
-    <Link href="/" onClick={navigate("/")} style={{ textDecoration: "none", color: "#fff", fontWeight: 500 }}>
+    <Link href="/" onClick={navigate("/")} prefetch={true} style={{ textDecoration: "none", color: "#fff", fontWeight: 500 }}>
       <span style={{ viewTransitionName: "athion-mark" } as React.CSSProperties}>Athion</span>
     </Link>
   );
@@ -260,6 +261,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
             key={href}
             href={href}
             onClick={navigate(href)}
+            prefetch={true}
             className="nav-link"
             style={{ ...linkStyle(href), ...(href === "/blog" ? blogMorphStyle : {}) }}
           >

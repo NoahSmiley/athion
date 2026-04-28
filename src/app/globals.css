@@ -70,12 +70,11 @@ button { background: #111; color: #c8c8c8; border: 1px solid #2a2a2a; }
   animation-duration: 220ms;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
-/* Suppress the default page cross-fade so it doesn't compete with the
-   pill morph. Just snap the rest of the page; the pill itself slides. */
+/* Make the page cross-fade essentially instantaneous so it doesn't blur
+   the rest of the page during the pill slide — the pill is the focal point. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
+  animation-duration: 1ms;
 }
 
 /* ASCII canvas — sized to keep all 84 columns visible at any viewport.

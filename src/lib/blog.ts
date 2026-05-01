@@ -23,6 +23,12 @@ const _bySlug = new Map<string, BlogPost>();
 export function getAllPosts(): BlogPost[] {
   if (_all) return _all;
 
+  // Empty/missing dir is valid (no posts yet). Without this, generateStaticParams
+  // throws ENOENT during prod build when the dir hasn't been seeded.
+  if (!fs.existsSync(BLOG_DIR)) {
+    _all = [];
+    return _all;
+  }
   const files = fs.readdirSync(BLOG_DIR).filter((f) => f.endsWith(".mdx"));
 
   const posts = files.map((filename) => {

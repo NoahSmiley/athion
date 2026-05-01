@@ -108,9 +108,6 @@ export default function DocsPage() {
         <li>11px &mdash; metadata, captions</li>
       </ul>
 
-      <p className="muted" style={{ marginTop: 32, fontSize: 12 }}>
-        Shared CSS package: <code>import &quot;@athion/style&quot;;</code> &mdash; provides fonts, tokens, and reset for web and Tauri apps.
-      </p>
     </>
   );
 }

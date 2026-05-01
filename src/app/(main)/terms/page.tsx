@@ -14,14 +14,14 @@ export default function TermsPage() {
   return (
     <>
       <h1>Terms of Service</h1>
-      <p className="muted">Last updated: March 1, 2026.</p>
+      <p className="muted">Last updated: April 29, 2026.</p>
       {sections.map(([title, content], i) => (
         <div key={title} style={{ marginBottom: 12 }}>
           <h2 style={{ margin: "0 0 4px" }}>{i + 1}. {title}</h2>
           <p className="muted" style={{ margin: 0 }}>{content}</p>
         </div>
       ))}
-      <p>Contact: <a href="mailto:legal@athion.com">legal@athion.com</a></p>
+      <p>Contact: <a href="mailto:legal@athion.me">legal@athion.me</a></p>
     </>
   );
 }

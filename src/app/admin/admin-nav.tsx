@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const SECTIONS = [
   { href: "/admin/applications", label: "Applications" },
   { href: "/admin/members", label: "Members" },
+  { href: "/admin/opendock/releases", label: "Opendock Releases" },
 ];
 
 export function AdminNav() {

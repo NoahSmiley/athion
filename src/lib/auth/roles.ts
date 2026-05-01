@@ -42,11 +42,3 @@ export async function getFounderUser(): Promise<CurrentUser | null> {
   if (u.role !== "founder") return null;
   return u;
 }
-
-export function isAdmin(role: Role | string): boolean {
-  return role === "founder" || role === "admin";
-}
-
-export function isFounder(role: Role | string): boolean {
-  return role === "founder";
-}

@@ -4,16 +4,15 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 // Always-visible: Privacy, Terms (legal must be public), Status (external).
-// Members-only: About, Blog, Careers, Security, Transparency.
+// Members-only: About, Blog, Security, Transparency.
 const ALWAYS = [["/privacy", "Privacy"], ["/terms", "Terms"]];
 const MEMBERS_ONLY = [
   ["/about", "About"],
   ["/blog", "Blog"],
-  ["/careers", "Careers"],
   ["/security", "Security"],
   ["/transparency", "Transparency"],
 ];
-const EXTERNAL = [["https://status.athion.com", "Status"]];
+const EXTERNAL = [["https://status.athion.me", "Status"]];
 
 export function Footer({ initialAuthed = false }: { initialAuthed?: boolean } = {}) {
   const [authed, setAuthed] = useState<boolean>(initialAuthed);

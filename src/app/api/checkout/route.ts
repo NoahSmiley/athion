@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     });
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
-    return NextResponse.json({ url: `${siteUrl}/dashboard/billing?success=true` });
+    return NextResponse.json({ url: `${siteUrl}/pricing?success=true` });
   } catch (err) {
     console.error("Checkout error:", err);
     return NextResponse.json(

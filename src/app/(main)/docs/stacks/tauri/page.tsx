@@ -28,7 +28,7 @@ export default function TauriStackPage() {
         <li>Vite + React for the renderer. Functional components only.</li>
         <li>Zustand for state. No Redux, MobX, Recoil.</li>
         <li>Native primitives via Tauri commands when crossing the JS/Rust boundary.</li>
-        <li>Single CSS file with <span style={m}>--a-*</span> tokens (from <span style={m}>@athion/style</span>).</li>
+        <li>Single CSS file with <span style={m}>--a-*</span> tokens defined locally.</li>
       </ul>
 
       <H2 id="store">Store shape</H2>

@@ -50,17 +50,6 @@ export const accessRequests = pgTable("access_requests", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
-export const applicationMessages = pgTable("application_messages", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  applicationId: uuid("application_id").notNull().references(() => accessRequests.id, { onDelete: "cascade" }),
-  // Author: null when posted by the applicant (no account yet); set when posted by an admin/founder.
-  authorId: uuid("author_id").references(() => users.id, { onDelete: "set null" }),
-  authorRole: text("author_role").notNull(), // applicant | admin | founder
-  authorName: text("author_name"), // display name snapshot at post time, for staff messages
-  body: text("body").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-});
-
 export const chatChannels = pgTable("chat_channels", {
   id: uuid("id").primaryKey().defaultRandom(),
   slug: text("slug").notNull().unique(),
@@ -97,12 +86,6 @@ export const subscriptions = pgTable("subscriptions", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
-export const ideWaitlist = pgTable("ide_waitlist", {
-  id: serial("id").primaryKey(),
-  email: text("email").notNull().unique(),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-});
-
 export const contactSubmissions = pgTable("contact_submissions", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -111,22 +94,48 @@ export const contactSubmissions = pgTable("contact_submissions", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
-export const apiKeys = pgTable("api_keys", {
+// Opendock desktop app releases. Each row is a published version on a channel
+// (stable | beta). Artifacts (per-platform binaries + Tauri update signatures)
+// live in opendock_release_artifacts. yanked=true hides the row from the
+// updater endpoint and download pages without deleting it.
+export const opendockReleases = pgTable("opendock_releases", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  provider: text("provider").notNull(),
-  encryptedKey: text("encrypted_key").notNull(),
-  keyHint: text("key_hint"),
+  version: text("version").notNull(),
+  channel: text("channel").notNull().default("stable"),
+  notes: text("notes").notNull().default(""),
+  pubDate: timestamp("pub_date", { withTimezone: true }).notNull().defaultNow(),
+  yanked: boolean("yanked").notNull().default(false),
+  createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
-export const ideAuthCodes = pgTable("ide_auth_codes", {
+// One row per (release, target). target uses Tauri's `<os>-<arch>` form, e.g.
+// `darwin-aarch64`, `darwin-x86_64`, `windows-x86_64`, `linux-x86_64`.
+// `url` is what the updater downloads (the .tar.gz/.zip Tauri-update artifact).
+// `installerUrl` is the user-installable .dmg/.nsis (download page links here).
+// `signature` is the contents of the .sig file Tauri produces — required for
+// the updater to accept the artifact.
+export const opendockReleaseArtifacts = pgTable("opendock_release_artifacts", {
   id: uuid("id").primaryKey().defaultRandom(),
-  code: text("code").notNull().unique(),
-  userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
-  token: text("token"),
+  releaseId: uuid("release_id").notNull().references(() => opendockReleases.id, { onDelete: "cascade" }),
+  target: text("target").notNull(),
+  url: text("url").notNull(),
+  installerUrl: text("installer_url"),
+  signature: text("signature").notNull(),
+  sha256: text("sha256").notNull(),
+  sizeBytes: integer("size_bytes").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// Stores SHA-256 hashes of reset tokens (never raw tokens) so a database leak
+// can't be used to take over accounts. Tokens are single-use; usedAt is set
+// when redeemed and the row is kept so replays return the same "expired" path.
+export const passwordResetTokens = pgTable("password_reset_tokens", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  tokenHash: text("token_hash").notNull().unique(),
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   usedAt: timestamp("used_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+

@@ -50,7 +50,7 @@ export async function setSessionCookie(token: string) {
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 30, // 30 days
-    ...(isProduction && { domain: ".athion.me" }), // share across subdomains (labs.athion.me)
+    ...(isProduction && { domain: ".athion.me" }), // share across athion.me subdomains
   });
 }
 

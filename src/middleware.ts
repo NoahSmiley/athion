@@ -21,6 +21,9 @@ const PUBLIC_PREFIXES = [
   "/_next/",
   "/api/auth/",     // login, logout, signup, me — auth must work without a session
   "/api/access-requests", // submit application
+  "/api/opendock/updates/",  // Tauri auto-updater — called by the app, no cookie
+  "/api/opendock/releases",  // public release feed (covers /api/opendock/releases and /latest)
+  "/opendock",      // /opendock landing + /opendock/download + /opendock/releases
   "/fonts/",
   "/favicon",
   "/robots",
@@ -57,14 +60,6 @@ export async function middleware(request: NextRequest) {
   if (!isAuthenticated && pathname.startsWith("/admin")) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
-    return NextResponse.redirect(url);
-  }
-
-  // Protect download routes — preserve redirect for after-login
-  if (!isAuthenticated && pathname.startsWith("/download")) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    url.searchParams.set("redirect", pathname);
     return NextResponse.redirect(url);
   }
 

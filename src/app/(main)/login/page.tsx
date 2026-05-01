@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const input = { width: "100%", fontFamily: "inherit", fontSize: 13, padding: "6px 8px", marginTop: 4, boxSizing: "border-box" as const };
 
@@ -11,9 +11,9 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect");
+  const justReset = searchParams.get("reset") === "1";
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +34,7 @@ function LoginForm() {
     <>
       <h1>Sign in</h1>
       <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 16 }}>
+        {justReset && !error && <p className="muted" style={{ margin: 0 }}>Password updated. Sign in with your new password.</p>}
         {error && <p style={{ color: "#c44", margin: 0 }}>{error}</p>}
         <div>
           <label className="muted" style={{ fontSize: 11 }}>Email</label>

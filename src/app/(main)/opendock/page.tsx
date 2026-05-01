@@ -30,7 +30,13 @@ export default function OpenDockPage() {
         <thead><tr><th>Metric</th><th>Opendock</th><th>Notion</th></tr></thead>
         <tbody>{benchmarks.map(([m, o, n]) => <tr key={m}><td>{m}</td><td><b>{o}</b></td><td className="muted">{n}</td></tr>)}</tbody>
       </table>
-      <p style={{ marginTop: 16 }}><Link href="/pricing">Subscribe</Link> to get access.</p>
+      <p style={{ marginTop: 16 }}>
+        <Link href="/opendock/download">Download</Link>
+        {" · "}
+        <Link href="/opendock/releases">Releases</Link>
+        {" · "}
+        <Link href="/pricing">Subscribe</Link>
+      </p>
     </>
   );
 }

@@ -60,17 +60,9 @@ export default function PricingPage() {
 
         <div style={{ borderTop: "1px solid #1a1a1a", marginTop: 20, paddingTop: 16 }}>
           <p style={{ margin: "0 0 8px", fontSize: 11, color: "#555", textTransform: "uppercase", letterSpacing: 1 }}>Included</p>
-          <p style={{ margin: "0 0 4px" }}>Flux &mdash; voice chat, E2EE, lossless screen share</p>
-          <p style={{ margin: "0 0 4px" }}>Liminal IDE &mdash; AI-native code editor, Rust core</p>
+          <p style={{ margin: "0 0 4px" }}>Opendock &mdash; native kanban, notes, calendar, and Claude AI</p>
+          <p style={{ margin: "0 0 4px" }}>Minecraft &mdash; private members-only survival server</p>
           <p style={{ margin: "0 0 0" }}>Priority support</p>
-        </div>
-
-        <div style={{ borderTop: "1px solid #1a1a1a", marginTop: 16, paddingTop: 16 }}>
-          <p style={{ margin: "0 0 8px", fontSize: 11, color: "#555", textTransform: "uppercase", letterSpacing: 1 }}>Coming soon</p>
-          <p className="muted" style={{ margin: "0 0 4px" }}>Hosting &mdash; web apps, APIs, static sites</p>
-          <p className="muted" style={{ margin: "0 0 4px" }}>Game Servers &mdash; Minecraft, modpacks, always online</p>
-          <p className="muted" style={{ margin: "0 0 4px" }}>VPS &mdash; full root access, 2 vCPU, 4 GB RAM</p>
-          <p className="muted" style={{ margin: 0 }}>Consulting &mdash; custom development and advisory</p>
         </div>
 
         <div style={{ marginTop: 20 }}>

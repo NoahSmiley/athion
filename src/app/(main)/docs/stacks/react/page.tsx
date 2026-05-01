@@ -48,7 +48,7 @@ export default function ReactStackPage() {
 
       <H2 id="css">CSS approach</H2>
       <ul>
-        <li>Single CSS file per app with <span style={m}>--a-*</span> tokens (from <span style={m}>@athion/style</span>).</li>
+        <li>Single CSS file per app with <span style={m}>--a-*</span> tokens defined locally.</li>
         <li>Inline styles only for dynamic values (transforms, positions, computed colors).</li>
         <li>No CSS-in-JS libraries. No styled-components, emotion.</li>
         <li>Class names: kebab-case, scoped by component prefix.</li>

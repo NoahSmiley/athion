@@ -111,14 +111,14 @@ export function interviewScheduledEmail(applicationId: string, note: string | nu
   };
 }
 
-export function newMessageEmail(applicationId: string, from: string, body: string) {
-  const preview = body.length > 240 ? body.slice(0, 240) + "…" : body;
+export function passwordResetEmail(token: string) {
+  const url = `${SITE}/reset-password?token=${encodeURIComponent(token)}`;
   return {
-    subject: "New message about your application",
+    subject: "Reset your Athion password",
     text:
-      `${from} replied on your Athion application:\n\n` +
-      `> ${preview.replace(/\n/g, "\n> ")}\n\n` +
-      `Read the full thread and reply:\n${SITE}/application/${applicationId}\n\n` +
+      `Someone (probably you) asked to reset your Athion password.\n\n` +
+      `Open this link to set a new password — it expires in 1 hour:\n${url}\n\n` +
+      `If it wasn't you, you can ignore this email. Your password won't change unless you open the link.\n\n` +
       `— Athion`,
   };
 }

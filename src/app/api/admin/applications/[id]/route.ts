@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import crypto from "node:crypto";
 import { db } from "@/lib/db";
 import { accessRequests, inviteCodes } from "@/lib/db/schema";
 import { getAdminUser } from "@/lib/auth/roles";
@@ -16,13 +15,7 @@ import {
   ensureInterviewChannel,
   closeApplicationChannels,
 } from "@/lib/interview";
-
-const INVITE_CODE_TTL_DAYS = 14;
-
-function generateCode() {
-  // 12-char URL-safe code
-  return crypto.randomBytes(9).toString("base64url");
-}
+import { INVITE_CODE_TTL_DAYS, generateCode } from "@/lib/invites";
 
 export async function PATCH(
   request: Request,

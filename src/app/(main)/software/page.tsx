@@ -22,7 +22,7 @@ export default async function SoftwarePage() {
   }));
 
   return (
-    <div className="tall-page">
+    <>
       <h1>Software</h1>
       <p className="muted">Products we build and ship. Local-first, lean, and crafted for the long term.</p>
 
@@ -61,6 +61,6 @@ export default async function SoftwarePage() {
       <p className="muted" style={{ marginTop: 32, fontSize: 12 }}>
         More coming.
       </p>
-    </div>
+    </>
   );
 }

@@ -42,7 +42,7 @@ export async function getZomboidStatus(): Promise<ServiceStatus> {
   return withCache("zomboid", async () => {
     const checkedAt = Date.now();
     const [a2s, probe] = await Promise.allSettled([
-      queryA2S("192.168.0.59", 27015),
+      queryA2S("192.168.0.59", 27045),
       fetchProbe("192.168.0.59"),
     ]);
     if (a2s.status === "rejected") {

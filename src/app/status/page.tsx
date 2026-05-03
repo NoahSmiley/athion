@@ -73,11 +73,11 @@ export default async function StatusPage() {
           style={{
             background: headerBg,
             color: "#fff",
-            padding: "26px 28px",
+            padding: "12px 16px",
             borderRadius: 4,
-            fontSize: 20,
-            fontWeight: 600,
-            letterSpacing: -0.1,
+            fontSize: 14,
+            fontWeight: 500,
+            letterSpacing: -0.05,
           }}
         >
           {headerLabel}

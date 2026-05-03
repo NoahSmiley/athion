@@ -45,7 +45,7 @@ export default async function StatusPage() {
       <LiveRefresh intervalSeconds={30} />
 
       <main style={{ maxWidth: 700, margin: "0 auto", padding: "56px 24px 80px" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 40 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 40, height: 24, lineHeight: 1 }}>
           <Link href="https://athion.me" style={{ color: "#fff", textDecoration: "none", fontWeight: 500, fontSize: 13 }}>
             <span>Athion</span>
             <span style={{ fontWeight: 400, color: "#828282", marginLeft: 6 }}>Status</span>

@@ -5,6 +5,7 @@ import { VariantSwitcher } from "./variant-switcher";
 import { VariantCurrent } from "./variants/variant-current";
 import { VariantApple } from "./variants/variant-apple";
 import { VariantPalantir } from "./variants/variant-palantir";
+import { VariantPalantir2 } from "./variants/variant-palantir2";
 import { VariantClaude } from "./variants/variant-claude";
 import { VariantIBM } from "./variants/variant-ibm";
 import type { ProductData } from "./variants/shared";
@@ -18,7 +19,7 @@ export const dynamic = "force-dynamic";
 
 type Props = { searchParams: Promise<{ v?: string }> };
 
-const valid = new Set(["apple", "palantir", "claude", "ibm"]);
+const valid = new Set(["apple", "palantir", "palantir2", "claude", "ibm"]);
 
 export default async function SoftwarePage({ searchParams }: Props) {
   const params = await searchParams;
@@ -77,12 +78,13 @@ export default async function SoftwarePage({ searchParams }: Props) {
 
   return (
     <>
-      <VariantSwitcher active={variant} />
       {variant === "current" && <VariantCurrent products={products} />}
       {variant === "apple" && <VariantApple products={products} />}
       {variant === "palantir" && <VariantPalantir products={products} />}
+      {variant === "palantir2" && <VariantPalantir2 products={products} />}
       {variant === "claude" && <VariantClaude products={products} />}
       {variant === "ibm" && <VariantIBM products={products} />}
+      <VariantSwitcher active={variant} />
     </>
   );
 }

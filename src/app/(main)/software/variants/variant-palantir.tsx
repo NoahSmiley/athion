@@ -11,7 +11,7 @@ const statusColor = (s: ProductData["status"]) =>
 export function VariantPalantir({ products }: { products: ProductData[] }) {
   const today = new Date().toISOString().slice(0, 10);
   return (
-    <div style={{ fontFamily: "var(--font-mono)" }}>
+    <div>
       {/* Document header */}
       <div style={{ paddingBottom: 12, borderBottom: "1px solid #1f1f1f", marginBottom: 24 }}>
         <div style={{ fontSize: 10, letterSpacing: 1.4, color: "#555" }}>ATHION / SOFTWARE ASSET REGISTRY</div>
@@ -66,7 +66,7 @@ export function VariantPalantir({ products }: { products: ProductData[] }) {
               </span>
             </div>
 
-            <div style={{ marginTop: 12, paddingLeft: 58, fontSize: 12, color: "#c8c8c8", fontFamily: "var(--font-sans)", lineHeight: 1.55 }}>
+            <div style={{ marginTop: 12, paddingLeft: 58, fontSize: 12, color: "#c8c8c8", lineHeight: 1.55 }}>
               {p.tagline}
             </div>
 

@@ -5,6 +5,10 @@ export default function StatusLayout({ children }: { children: React.ReactNode }
     <>
       <style>{`
         html, body { overflow-y: auto !important; height: auto !important; }
+        html { scrollbar-width: none; }
+        html::-webkit-scrollbar { display: none; }
+        body { scrollbar-width: none; }
+        body::-webkit-scrollbar { display: none; }
       `}</style>
       {children}
     </>

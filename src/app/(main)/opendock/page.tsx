@@ -43,26 +43,7 @@ export default async function OpenDockPage() {
   return (
     <div className="tall-page">
       {/* Hero */}
-      <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 6 }}>
-        <span
-          aria-hidden
-          style={{
-            width: 28,
-            height: 28,
-            border: "1px solid #3a3a3a",
-            borderRadius: 5,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontFamily: "var(--font-mono)",
-            fontSize: 16,
-            fontWeight: 600,
-            color: "#c8c8c8",
-            lineHeight: 1,
-          }}
-        >
-          O
-        </span>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 8 }}>
         <h1 style={{ margin: 0, fontSize: 26, fontWeight: 600, letterSpacing: -0.3 }}>Opendock</h1>
         {latest && (
           <span style={{ fontSize: 11, color: "#828282", fontFamily: "var(--font-mono)" }}>
@@ -71,8 +52,7 @@ export default async function OpenDockPage() {
         )}
       </div>
       <p className="muted" style={{ fontSize: 14, marginTop: 0, marginBottom: 24 }}>
-        Kanban boards, rich notes, calendar, and AI in a single native desktop app.
-        Local-first SQLite, no cloud dependency, no Electron bloat.
+        A native desktop workspace. Kanban, notes, calendar, and Claude — local-first SQLite, no cloud, no Electron.
       </p>
 
       {/* Hero stat row */}
@@ -127,16 +107,6 @@ export default async function OpenDockPage() {
         </tbody>
       </table>
 
-      {/* Footer CTA */}
-      {downloadOptions.length > 0 && (
-        <div style={{ marginTop: 40, padding: "20px 22px", border: "1px solid #2a2a2a", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-          <div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>Ready to try it?</div>
-            <div className="muted" style={{ fontSize: 12, marginTop: 2 }}>Free to download. Your data stays on your machine.</div>
-          </div>
-          <DownloadPrimary options={downloadOptions} />
-        </div>
-      )}
     </div>
   );
 }

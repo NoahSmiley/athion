@@ -24,6 +24,9 @@ const PUBLIC_PREFIXES = [
   "/api/opendock/updates/",  // Tauri auto-updater — called by the app, no cookie
   "/api/opendock/releases",  // public release feed (covers /api/opendock/releases and /latest)
   "/opendock",      // /opendock landing + /opendock/download + /opendock/releases
+  "/status",        // public status page (status.athion.me + /status)
+  "/api/infra/status", // status data feed
+  "/api/health",    // liveness probe
   "/fonts/",
   "/favicon",
   "/robots",

@@ -36,15 +36,15 @@ export function DownloadPrimary({ options }: Props) {
     <div style={{ margin: "12px 0 20px" }}>
       <a
         href={primary.url}
+        className="cta-light"
         style={{
           display: "inline-block",
           padding: "10px 18px",
-          background: "#fff",
-          color: "#000",
           borderRadius: 6,
           fontWeight: 600,
           fontSize: 13,
           textDecoration: "none",
+          transition: "background 0.15s",
         }}
       >
         Download for {primary.label}

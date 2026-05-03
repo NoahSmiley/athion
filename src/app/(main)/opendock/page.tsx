@@ -43,28 +43,28 @@ export default async function OpenDockPage() {
   return (
     <div className="tall-page">
       {/* Hero */}
-      <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 8 }}>
-        <h1 style={{ margin: 0, fontSize: 26, fontWeight: 600, letterSpacing: -0.3 }}>Opendock</h1>
+      <h1 style={{ margin: 0, fontSize: 22, fontWeight: 600, letterSpacing: -0.2 }}>
+        Opendock
         {latest && (
-          <span style={{ fontSize: 11, color: "#828282", fontFamily: "var(--font-mono)" }}>
+          <span style={{ fontSize: 11, color: "#828282", fontFamily: "var(--font-mono)", fontWeight: 400, marginLeft: 10, verticalAlign: "middle" }}>
             v{latest.version}
           </span>
         )}
-      </div>
-      <p className="muted" style={{ fontSize: 14, marginTop: 0, marginBottom: 24 }}>
+      </h1>
+      <p className="muted" style={{ fontSize: 13, marginTop: 6, marginBottom: 22 }}>
         A native desktop workspace. Kanban, notes, calendar, and Claude — local-first SQLite, no cloud, no Electron.
       </p>
 
       {/* Hero stat row */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 22 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 22 }}>
         {heroStats.map((s) => (
-          <div key={s.label} style={{ border: "1px solid #2a2a2a", padding: "14px 16px" }}>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: 24, fontWeight: 600, color: "#fff", letterSpacing: -0.3, lineHeight: 1 }}>{s.value}</span>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "#828282" }}>{s.unit}</span>
+          <div key={s.label} style={{ border: "1px solid #2a2a2a", padding: "14px 16px", textAlign: "center" }}>
+            <div style={{ display: "inline-flex", alignItems: "baseline", gap: 3 }}>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 22, fontWeight: 600, color: "#fff", letterSpacing: -0.3, lineHeight: 1 }}>{s.value}</span>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#828282" }}>{s.unit}</span>
             </div>
             <div style={{ fontSize: 11, color: "#c8c8c8", marginTop: 6 }}>{s.label}</div>
-            <div style={{ fontSize: 10, color: "#555", marginTop: 4 }}>{s.compare}</div>
+            <div style={{ fontSize: 10, color: "#555", marginTop: 3 }}>{s.compare}</div>
           </div>
         ))}
       </div>

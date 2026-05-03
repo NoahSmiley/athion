@@ -4,6 +4,7 @@ const variants = [
   { id: "a", label: "A · Index list" },
   { id: "b", label: "B · Sidebar mirror" },
   { id: "c", label: "C · Manifest table" },
+  { id: "d", label: "D · Per-product manifests" },
 ];
 
 export function VariantSwitcher({ active }: { active: string }) {

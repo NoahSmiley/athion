@@ -24,49 +24,38 @@ export default async function SoftwarePage() {
   }));
 
   return (
-    <>
+    <div className="tall-page">
       <h1>Software</h1>
       <p className="muted">Products we build and ship. Local-first, lean, and crafted for the long term.</p>
 
       <div style={{ marginTop: 24, border: "1px solid #2a2a2a", padding: "24px 26px" }}>
         {/* Header row: mark + title left, status pill right */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 14 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span
-              aria-hidden
-              style={{
-                width: 22,
-                height: 22,
-                border: "1px solid #3a3a3a",
-                borderRadius: 4,
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontFamily: "var(--font-mono)",
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#c8c8c8",
-                lineHeight: 1,
-              }}
-            >
-              O
-            </span>
-            <h2 style={{ margin: 0, fontSize: 22, fontWeight: 600, letterSpacing: -0.2 }}>Opendock</h2>
-          </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
           <span
+            aria-hidden
             style={{
-              fontSize: 10,
-              letterSpacing: 1.2,
-              textTransform: "uppercase",
-              color: "#4caf50",
-              border: "1px solid #2a4a2a",
-              padding: "3px 8px",
-              borderRadius: 3,
-              background: "#0e1a0e",
+              width: 22,
+              height: 22,
+              border: "1px solid #3a3a3a",
+              borderRadius: 4,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontFamily: "var(--font-mono)",
+              fontSize: 13,
+              fontWeight: 600,
+              color: "#c8c8c8",
+              lineHeight: 1,
             }}
           >
-            ● Active{latest ? ` · v${latest.version}` : ""}
+            O
           </span>
+          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 600, letterSpacing: -0.2 }}>Opendock</h2>
+          {latest && (
+            <span style={{ fontSize: 11, color: "#828282", fontFamily: "var(--font-mono)" }}>
+              v{latest.version}
+            </span>
+          )}
         </div>
 
         <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: "#c8c8c8" }}>
@@ -122,6 +111,6 @@ export default async function SoftwarePage() {
       <p className="muted" style={{ marginTop: 32, fontSize: 12 }}>
         More coming.
       </p>
-    </>
+    </div>
   );
 }

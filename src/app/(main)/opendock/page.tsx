@@ -23,10 +23,10 @@ const benchmarks = [
   ["Offline support", "100%", "20%"],
 ];
 
-const heroStats: [string, string, string][] = [
-  ["30 MB", "RAM idle", "vs 450 MB Notion"],
-  ["0.4s", "startup", "vs 3.2s Notion"],
-  ["100%", "offline", "vs 20% Notion"],
+const heroStats: { value: string; unit: string; label: string; compare: string }[] = [
+  { value: "30", unit: "MB", label: "RAM idle", compare: "vs 450 MB Notion" },
+  { value: "0.4", unit: "s", label: "startup", compare: "vs 3.2s Notion" },
+  { value: "100", unit: "%", label: "offline", compare: "vs 20% Notion" },
 ];
 
 export default async function OpenDockPage() {
@@ -41,7 +41,7 @@ export default async function OpenDockPage() {
   }));
 
   return (
-    <>
+    <div className="tall-page">
       {/* Hero */}
       <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 6 }}>
         <span
@@ -77,11 +77,14 @@ export default async function OpenDockPage() {
 
       {/* Hero stat row */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 22 }}>
-        {heroStats.map(([n, l, c]) => (
-          <div key={l} style={{ border: "1px solid #2a2a2a", padding: "14px 16px" }}>
-            <div style={{ fontFamily: "var(--font-mono)", fontSize: 22, fontWeight: 600, color: "#fff", letterSpacing: -0.3 }}>{n}</div>
-            <div style={{ fontSize: 11, color: "#c8c8c8", marginTop: 2 }}>{l}</div>
-            <div style={{ fontSize: 10, color: "#555", marginTop: 4 }}>{c}</div>
+        {heroStats.map((s) => (
+          <div key={s.label} style={{ border: "1px solid #2a2a2a", padding: "14px 16px" }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 24, fontWeight: 600, color: "#fff", letterSpacing: -0.3, lineHeight: 1 }}>{s.value}</span>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "#828282" }}>{s.unit}</span>
+            </div>
+            <div style={{ fontSize: 11, color: "#c8c8c8", marginTop: 6 }}>{s.label}</div>
+            <div style={{ fontSize: 10, color: "#555", marginTop: 4 }}>{s.compare}</div>
           </div>
         ))}
       </div>
@@ -134,6 +137,6 @@ export default async function OpenDockPage() {
           <DownloadPrimary options={downloadOptions} />
         </div>
       )}
-    </>
+    </div>
   );
 }

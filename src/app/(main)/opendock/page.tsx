@@ -1,112 +1,49 @@
-import Link from "next/link";
 import { getArtifactsForRelease, listChannelReleases } from "@/lib/opendock/releases";
 import { TARGET_LABELS, type TargetId } from "@/lib/opendock/targets";
-import { DownloadPrimary } from "./download/download-primary";
+import { VariantSwitcher } from "./variant-switcher";
+import { VariantA } from "./variants/variant-a";
+import { VariantB } from "./variants/variant-b";
+import { VariantC } from "./variants/variant-c";
+import type { VariantData, DownloadOption } from "./variants/shared";
 
 export const dynamic = "force-dynamic";
 
-const features: [string, string][] = [
-  ["Boards", "Kanban with sprints, epics, labels, and drag-and-drop ticket organization."],
-  ["Notes", "Markdown editor with collections, folders, and tags. Full-text search."],
-  ["Calendar", "Event scheduling linked to tickets, deadlines, sprints, and meetings."],
-  ["Claude AI", "Built-in assistant that understands your boards, notes, and calendar."],
-  ["Native Desktop", "Tauri-powered. ~30 MB RAM, no Electron, no browser engine."],
-  ["Local-First", "SQLite on your machine. Works fully offline. Your data never leaves."],
-];
+function detectFromOptions(opts: DownloadOption[]): DownloadOption | null {
+  if (opts.length === 0) return null;
+  // Server-side default: pick darwin-aarch64 if present, else first option.
+  // Client-side platform detection lives in DownloadPrimary, but here we just
+  // pre-render a sensible default for SSR.
+  return opts.find((o) => o.target === "darwin-aarch64") ?? opts[0];
+}
 
-const benchmarks = [
-  ["Memory (idle)", "30 MB", "450 MB"],
-  ["Memory (active)", "65 MB", "680 MB"],
-  ["Binary size", "18 MB", "380 MB"],
-  ["Startup time", "0.4s", "3.2s"],
-  ["CPU (idle)", "0.3%", "4.5%"],
-  ["Offline support", "100%", "20%"],
-];
+type Props = { searchParams: Promise<{ v?: string }> };
 
-const heroStats: { value: string; unit: string; label: string; compare: string }[] = [
-  { value: "30", unit: "MB", label: "RAM idle", compare: "vs 450 MB Notion" },
-  { value: "0.4", unit: "s", label: "startup", compare: "vs 3.2s Notion" },
-  { value: "100", unit: "%", label: "offline", compare: "vs 20% Notion" },
-];
+export default async function OpenDockPage({ searchParams }: Props) {
+  const params = await searchParams;
+  const variant = params.v === "b" || params.v === "c" ? params.v : "a";
 
-export default async function OpenDockPage() {
   const [latest] = await listChannelReleases("stable", 1);
   const artifacts = latest ? await getArtifactsForRelease(latest.id) : [];
 
-  const downloadOptions = artifacts.map((a) => ({
+  const downloadOptions: DownloadOption[] = artifacts.map((a) => ({
     target: a.target,
     label: TARGET_LABELS[a.target as TargetId],
     url: a.installerUrl ?? a.url,
     size: a.sizeBytes,
   }));
 
+  const data: VariantData = {
+    version: latest?.version,
+    releasedAt: latest?.pubDate,
+    download: detectFromOptions(downloadOptions),
+  };
+
   return (
     <div className="tall-page">
-      {/* Hero */}
-      <h1 style={{ margin: 0, fontSize: 22, fontWeight: 600, letterSpacing: -0.2 }}>
-        Opendock
-        {latest && (
-          <span style={{ fontSize: 11, color: "#828282", fontFamily: "var(--font-mono)", fontWeight: 400, marginLeft: 10, verticalAlign: "middle" }}>
-            v{latest.version}
-          </span>
-        )}
-      </h1>
-      <p className="muted" style={{ fontSize: 13, marginTop: 6, marginBottom: 22 }}>
-        A native desktop workspace. Kanban, notes, calendar, and Claude — local-first SQLite, no cloud, no Electron.
-      </p>
-
-      {/* Hero stat row */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 22 }}>
-        {heroStats.map((s) => (
-          <div key={s.label} style={{ border: "1px solid #2a2a2a", padding: "14px 16px", textAlign: "center" }}>
-            <div style={{ display: "inline-flex", alignItems: "baseline", gap: 3 }}>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: 22, fontWeight: 600, color: "#fff", letterSpacing: -0.3, lineHeight: 1 }}>{s.value}</span>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#828282" }}>{s.unit}</span>
-            </div>
-            <div style={{ fontSize: 11, color: "#c8c8c8", marginTop: 6 }}>{s.label}</div>
-            <div style={{ fontSize: 10, color: "#555", marginTop: 3 }}>{s.compare}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* CTA */}
-      {downloadOptions.length > 0 ? (
-        <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 36, fontSize: 12 }}>
-          <DownloadPrimary options={downloadOptions} />
-          {latest && (
-            <span className="muted" style={{ fontSize: 11 }}>
-              released {latest.pubDate.toLocaleDateString()}
-            </span>
-          )}
-          <Link href="/opendock/download" className="muted" style={{ fontSize: 12 }}>All platforms</Link>
-          <Link href="/opendock/releases" className="muted" style={{ fontSize: 12 }}>Release notes</Link>
-        </div>
-      ) : (
-        <p className="muted" style={{ marginBottom: 32 }}>No releases yet. Check back soon.</p>
-      )}
-
-      {/* Features grid */}
-      <h2 style={{ marginBottom: 12 }}>Features</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 1, background: "#1f1f1f", border: "1px solid #1f1f1f" }}>
-        {features.map(([title, desc]) => (
-          <div key={title} style={{ background: "#060606", padding: "16px 18px" }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#fff", marginBottom: 4 }}>{title}</div>
-            <div style={{ fontSize: 12, color: "#c8c8c8", lineHeight: 1.5 }}>{desc}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Benchmarks */}
-      <h2 style={{ marginTop: 32 }}>Benchmarks vs Notion</h2>
-      <table>
-        <thead><tr><th>Metric</th><th>Opendock</th><th>Notion</th></tr></thead>
-        <tbody>
-          {benchmarks.map(([m, o, n]) => (
-            <tr key={m}><td>{m}</td><td><b>{o}</b></td><td className="muted">{n}</td></tr>
-          ))}
-        </tbody>
-      </table>
-
+      <VariantSwitcher active={variant} />
+      {variant === "a" && <VariantA data={data} />}
+      {variant === "b" && <VariantB data={data} />}
+      {variant === "c" && <VariantC data={data} />}
     </div>
   );
 }

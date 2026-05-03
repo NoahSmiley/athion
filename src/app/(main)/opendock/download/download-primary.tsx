@@ -33,7 +33,7 @@ export function DownloadPrimary({ options }: Props) {
   const primary = options.find((o) => o.target === detected) ?? options[0];
 
   return (
-    <div style={{ margin: "12px 0 20px" }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
       <a
         href={primary.url}
         className="cta-light"
@@ -49,9 +49,9 @@ export function DownloadPrimary({ options }: Props) {
       >
         Download for {primary.label}
       </a>
-      <span className="muted" style={{ marginLeft: 10, fontSize: 12 }}>
+      <span className="muted" style={{ fontSize: 12 }}>
         {formatBytes(primary.size)}
       </span>
-    </div>
+    </span>
   );
 }

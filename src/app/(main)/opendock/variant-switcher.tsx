@@ -4,6 +4,7 @@ const variants = [
   { id: "a", label: "A · Spec sheet" },
   { id: "b", label: "B · Sidebar" },
   { id: "c", label: "C · Hero panel" },
+  { id: "d", label: "D · Hero + sections" },
 ];
 
 export function VariantSwitcher({ active }: { active: string }) {

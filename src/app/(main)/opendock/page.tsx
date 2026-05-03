@@ -4,6 +4,7 @@ import { VariantSwitcher } from "./variant-switcher";
 import { VariantA } from "./variants/variant-a";
 import { VariantB } from "./variants/variant-b";
 import { VariantC } from "./variants/variant-c";
+import { VariantD } from "./variants/variant-d";
 import type { VariantData, DownloadOption } from "./variants/shared";
 
 export const dynamic = "force-dynamic";
@@ -20,7 +21,7 @@ type Props = { searchParams: Promise<{ v?: string }> };
 
 export default async function OpenDockPage({ searchParams }: Props) {
   const params = await searchParams;
-  const variant = params.v === "b" || params.v === "c" ? params.v : "a";
+  const variant = params.v === "b" || params.v === "c" || params.v === "d" ? params.v : "a";
 
   const [latest] = await listChannelReleases("stable", 1);
   const artifacts = latest ? await getArtifactsForRelease(latest.id) : [];
@@ -44,6 +45,7 @@ export default async function OpenDockPage({ searchParams }: Props) {
       {variant === "a" && <VariantA data={data} />}
       {variant === "b" && <VariantB data={data} />}
       {variant === "c" && <VariantC data={data} />}
+      {variant === "d" && <VariantD data={data} />}
     </div>
   );
 }

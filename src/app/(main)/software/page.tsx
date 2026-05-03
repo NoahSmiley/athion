@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getArtifactsForRelease, listChannelReleases } from "@/lib/opendock/releases";
 import { TARGET_LABELS, type TargetId } from "@/lib/opendock/targets";
-import { VariantSwitcher } from "./variant-switcher";
-import { VariantCurrent } from "./variants/variant-current";
-import { VariantApple } from "./variants/variant-apple";
-import { VariantPalantir } from "./variants/variant-palantir";
-import { VariantPalantir2 } from "./variants/variant-palantir2";
-import { VariantClaude } from "./variants/variant-claude";
-import { VariantIBM } from "./variants/variant-ibm";
-import type { ProductData } from "./variants/shared";
 
 export const metadata: Metadata = {
   title: "Software",
@@ -17,14 +10,30 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-type Props = { searchParams: Promise<{ v?: string }> };
+type ProductData = {
+  slug: string;
+  name: string;
+  version?: string;
+  tagline: string;
+  capabilities: string[];
+  footprint: string;
+  status: "active" | "beta" | "planned";
+  downloadUrl?: string;
+  downloadLabel?: string;
+  downloadSize?: number;
+  detailHref: string;
+  pricingHref?: string;
+};
 
-const valid = new Set(["apple", "palantir", "palantir2", "claude", "ibm"]);
+function formatBytes(bytes: number): string {
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}
 
-export default async function SoftwarePage({ searchParams }: Props) {
-  const params = await searchParams;
-  const variant = params.v && valid.has(params.v) ? params.v : "current";
+const statusColor = (s: ProductData["status"]) =>
+  s === "active" ? "#4caf50" : s === "beta" ? "#d4a017" : "#555";
 
+export default async function SoftwarePage() {
   const [latest] = await listChannelReleases("stable", 1);
   const artifacts = latest ? await getArtifactsForRelease(latest.id) : [];
   const dl = artifacts.find((a) => a.target === "darwin-aarch64") ?? artifacts[0] ?? null;
@@ -78,13 +87,79 @@ export default async function SoftwarePage({ searchParams }: Props) {
 
   return (
     <>
-      {variant === "current" && <VariantCurrent products={products} />}
-      {variant === "apple" && <VariantApple products={products} />}
-      {variant === "palantir" && <VariantPalantir products={products} />}
-      {variant === "palantir2" && <VariantPalantir2 products={products} />}
-      {variant === "claude" && <VariantClaude products={products} />}
-      {variant === "ibm" && <VariantIBM products={products} />}
-      <VariantSwitcher active={variant} />
+      <h1>Software</h1>
+      <p className="muted">Products we build and ship. Local-first, lean, and crafted for the long term.</p>
+
+      <div style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 22 }}>
+        {products.map((p) => (
+          <Link
+            key={p.slug}
+            href={p.detailHref}
+            className="software-card"
+            style={{ display: "block", border: "1px solid #1f1f1f", textDecoration: "none", color: "inherit" }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+                padding: "14px 18px",
+                background: "#0a0a0a",
+                borderBottom: "1px solid #1f1f1f",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "baseline", gap: 12, minWidth: 0 }}>
+                <span style={{ color: "#fff", fontSize: 16, fontWeight: 600, letterSpacing: -0.2 }}>{p.name}</span>
+                {p.version && (
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#828282" }}>
+                    v{p.version}
+                  </span>
+                )}
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11 }}>
+                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: statusColor(p.status) }} />
+                  <span style={{ color: statusColor(p.status), textTransform: "capitalize" }}>{p.status}</span>
+                </span>
+              </div>
+              <span className="software-card-arrow muted" style={{ fontSize: 12 }}>→</span>
+            </div>
+
+            <p style={{ margin: 0, padding: "16px 18px 4px", fontSize: 13, color: "#c8c8c8", lineHeight: 1.55 }}>
+              {p.tagline}
+            </p>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "max-content 1fr",
+                rowGap: 6,
+                columnGap: 18,
+                padding: "10px 18px 16px",
+                fontFamily: "var(--font-mono)",
+                fontSize: 12,
+              }}
+            >
+              <span style={{ color: "#555" }}>Capabilities</span>
+              <span style={{ color: "#c8c8c8" }}>{p.capabilities.join(" · ")}</span>
+
+              <span style={{ color: "#555" }}>Footprint</span>
+              <span style={{ color: "#c8c8c8" }}>{p.footprint}</span>
+
+              {p.downloadSize != null && (
+                <>
+                  <span style={{ color: "#555" }}>Download</span>
+                  <span style={{ color: "#c8c8c8" }}>
+                    {formatBytes(p.downloadSize)}
+                    {p.downloadLabel ? ` · ${p.downloadLabel}` : ""}
+                  </span>
+                </>
+              )}
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      <p className="muted" style={{ marginTop: 32, fontSize: 12 }}>More coming.</p>
     </>
   );
 }

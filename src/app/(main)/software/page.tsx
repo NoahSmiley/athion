@@ -119,7 +119,6 @@ export default async function SoftwarePage() {
         ))}
       </div>
 
-      <p className="muted" style={{ marginTop: 32, fontSize: 12 }}>More coming.</p>
     </>
   );
 }

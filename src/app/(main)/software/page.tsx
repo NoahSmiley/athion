@@ -48,15 +48,6 @@ export default async function SoftwarePage() {
       detailHref: "/opendock",
       pricingHref: "/pricing",
     },
-    {
-      slug: "prime",
-      name: "Athion Prime",
-      version: "0.1.0",
-      tagline: "Invite-only streaming for friends and family. Movies, shows, and live TV from athion hardware.",
-      capabilities: ["Movies", "TV Shows", "Live TV", "Continue Watching"],
-      footprint: "Apple TV · members-only",
-      detailHref: "/prime",
-    },
   ];
 
   return (

@@ -121,9 +121,6 @@ export default function InfraPage() {
         ))}
       </div>
 
-      <p className="muted" style={{ marginTop: 16, fontSize: 11 }}>
-        polling every 30s · click connect to copy address
-      </p>
     </>
   );
 }

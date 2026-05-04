@@ -17,7 +17,6 @@ type ProductData = {
   tagline: string;
   capabilities: string[];
   footprint: string;
-  status: "active" | "beta" | "planned";
   downloadUrl?: string;
   downloadLabel?: string;
   downloadSize?: number;
@@ -29,9 +28,6 @@ function formatBytes(bytes: number): string {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
-
-const statusColor = (s: ProductData["status"]) =>
-  s === "active" ? "#4caf50" : s === "beta" ? "#d4a017" : "#555";
 
 export default async function SoftwarePage() {
   const [latest] = await listChannelReleases("stable", 1);
@@ -46,7 +42,6 @@ export default async function SoftwarePage() {
       tagline: "Native desktop workspace — kanban, notes, calendar, AI. Local-first, no Electron.",
       capabilities: ["Boards", "Notes", "Calendar", "Claude AI"],
       footprint: "30 MB RAM · 18 MB binary · 0.4s startup",
-      status: "active",
       downloadUrl: dl ? (dl.installerUrl ?? dl.url) : undefined,
       downloadLabel: dl ? TARGET_LABELS[dl.target as TargetId] : undefined,
       downloadSize: dl?.sizeBytes,
@@ -60,7 +55,6 @@ export default async function SoftwarePage() {
       tagline: "Self-hosted release pipeline. Tag a commit, get a signed binary on every platform.",
       capabilities: ["Tauri builds", "Code signing", "Updater feeds", "GitHub triggers"],
       footprint: "Single static binary · ~12 MB · runs as systemd unit",
-      status: "beta",
       detailHref: "/shipway",
       pricingHref: "/pricing",
     },
@@ -71,7 +65,6 @@ export default async function SoftwarePage() {
       tagline: "Personal homelab dashboard. Live status, logs, and one-click actions across your CTs/VMs.",
       capabilities: ["Proxmox", "Caddy", "Cloudflared", "Systemd"],
       footprint: "Rust + HTMX · 8 MB binary · 25 MB RAM",
-      status: "beta",
       detailHref: "/athlas",
     },
     {
@@ -80,7 +73,6 @@ export default async function SoftwarePage() {
       tagline: "Encrypted, local-first port-forward manager. SSH tunnels with the UX of Tailscale.",
       capabilities: ["SSH multiplexing", "Wireguard fallback", "macOS menubar"],
       footprint: "TBD",
-      status: "planned",
       detailHref: "/porthole",
     },
   ];
@@ -116,10 +108,6 @@ export default async function SoftwarePage() {
                     v{p.version}
                   </span>
                 )}
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11 }}>
-                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: statusColor(p.status) }} />
-                  <span style={{ color: statusColor(p.status), textTransform: "capitalize" }}>{p.status}</span>
-                </span>
               </div>
               <span className="software-card-arrow muted" style={{ fontSize: 12 }}>→</span>
             </div>

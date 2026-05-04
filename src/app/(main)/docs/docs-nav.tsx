@@ -20,6 +20,7 @@ const ARCH_SUB = [
 const STACKS_SUB = [
   { href: "/docs/stacks/tauri", label: "Tauri" },
   { href: "/docs/stacks/swiftui", label: "SwiftUI" },
+  { href: "/docs/stacks/tvos", label: "tvOS" },
   { href: "/docs/stacks/react", label: "React" },
   { href: "/docs/stacks/typescript", label: "TypeScript" },
   { href: "/docs/stacks/rust", label: "Rust" },

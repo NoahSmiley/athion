@@ -15,7 +15,7 @@ type Payload = {
   minecraft?: Status;
 };
 
-export function LiveStatus({ service }: { service: "zomboid" | "minecraft" }) {
+export function LiveStatus({ service, dotless = false }: { service: "zomboid" | "minecraft"; dotless?: boolean }) {
   const [data, setData] = useState<Status | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -41,7 +41,7 @@ export function LiveStatus({ service }: { service: "zomboid" | "minecraft" }) {
   if (!data || !data.online) {
     return (
       <span style={{ fontSize: 11, display: "inline-flex", alignItems: "center", gap: 6 }}>
-        <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#c44" }} />
+        {!dotless && <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#c44" }} />}
         Offline
       </span>
     );
@@ -49,7 +49,7 @@ export function LiveStatus({ service }: { service: "zomboid" | "minecraft" }) {
   const players = data.maxPlayers != null ? `${data.players}/${data.maxPlayers}` : `${data.players}`;
   return (
     <span style={{ fontSize: 11, display: "inline-flex", alignItems: "center", gap: 8 }}>
-      <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#4caf50", boxShadow: "0 0 6px #4caf5066" }} />
+      {!dotless && <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#4caf50", boxShadow: "0 0 6px #4caf5066" }} />}
       <span>Online · {players} players</span>
     </span>
   );

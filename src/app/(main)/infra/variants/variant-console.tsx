@@ -115,7 +115,7 @@ export function VariantConsole({ services }: { services: ServiceData[] }) {
                   <span style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: 1 }}>{labelOf(s.status)}</span>
                 </div>
                 <div style={{ marginTop: 4, fontSize: 11 }}>
-                  {s.liveProbe ? <LiveStatus service={s.liveProbe} /> : <span className="muted">no live probe</span>}
+                  {s.liveProbe ? <LiveStatus service={s.liveProbe} dotless /> : <span className="muted">no live probe</span>}
                 </div>
               </div>
 

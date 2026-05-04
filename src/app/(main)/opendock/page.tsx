@@ -42,7 +42,7 @@ export default async function OpenDockPage() {
     : null;
 
   return (
-    <div className="tall-page" style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 36, alignItems: "start" }}>
+    <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 36, alignItems: "start" }}>
       {/* Sidebar */}
       <aside style={{ position: "sticky", top: 56, fontSize: 12 }}>
         <h1 style={{ margin: 0, fontSize: 20, fontWeight: 600, letterSpacing: -0.2 }}>Opendock</h1>

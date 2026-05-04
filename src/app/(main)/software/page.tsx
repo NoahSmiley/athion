@@ -52,9 +52,9 @@ export default async function SoftwarePage() {
       slug: "prime",
       name: "Athion Prime",
       version: "0.1.0",
-      tagline: "Native Apple TV client for Jellyfin and IPTV. Browse libraries, watch live TV with EPG.",
-      capabilities: ["Jellyfin", "IPTV (M3U + Xtream)", "Live TV + EPG", "AVPlayer (HLS, MKV remux)"],
-      footprint: "tvOS 17+ · UIKit · ~7K lines of Swift",
+      tagline: "Invite-only streaming for friends and family. Movies, shows, and live TV from athion hardware.",
+      capabilities: ["Movies", "TV Shows", "Live TV", "Continue Watching"],
+      footprint: "Apple TV · members-only",
       detailHref: "/prime",
     },
   ];

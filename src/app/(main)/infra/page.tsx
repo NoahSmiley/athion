@@ -48,12 +48,11 @@ export default function InfraPage() {
   return (
     <>
       <h1>Infra</h1>
-      <p className="muted">Live operations panel. Self-hosted on athion hardware.</p>
 
       {/* Aggregate header */}
       <div
         style={{
-          marginTop: 24,
+          marginTop: 16,
           padding: "12px 16px",
           border: "1px solid #1f1f1f",
           background: "#0a0a0a",

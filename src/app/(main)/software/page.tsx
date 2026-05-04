@@ -53,9 +53,8 @@ export default async function SoftwarePage() {
   return (
     <>
       <h1>Software</h1>
-      <p className="muted">Products we build and ship. Local-first, lean, and crafted for the long term.</p>
 
-      <div style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 22 }}>
+      <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 22 }}>
         {products.map((p) => (
           <Link
             key={p.slug}

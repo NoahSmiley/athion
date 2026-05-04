@@ -104,7 +104,7 @@ export default async function SoftwarePage() {
               <div style={{ display: "flex", alignItems: "baseline", gap: 12, minWidth: 0 }}>
                 <span style={{ color: "#fff", fontSize: 16, fontWeight: 600, letterSpacing: -0.2 }}>{p.name}</span>
                 {p.version && (
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#828282" }}>
+                  <span style={{ fontSize: 11, color: "#828282" }}>
                     v{p.version}
                   </span>
                 )}
@@ -123,7 +123,6 @@ export default async function SoftwarePage() {
                 rowGap: 6,
                 columnGap: 18,
                 padding: "10px 18px 16px",
-                fontFamily: "var(--font-mono)",
                 fontSize: 12,
               }}
             >

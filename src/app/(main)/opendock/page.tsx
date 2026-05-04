@@ -5,21 +5,19 @@ import { TARGET_LABELS, type TargetId } from "@/lib/opendock/targets";
 export const dynamic = "force-dynamic";
 
 const features: [string, string][] = [
-  ["Boards", "Kanban with sprints, epics, labels, and drag-and-drop ticket organization."],
-  ["Notes", "Markdown editor with collections, folders, and tags. Full-text search."],
-  ["Calendar", "Event scheduling linked to tickets, deadlines, sprints, and meetings."],
-  ["Claude AI", "Built-in assistant that understands your boards, notes, and calendar."],
-  ["Native Desktop", "Tauri-powered. ~30 MB RAM, no Electron, no browser engine."],
-  ["Local-First", "SQLite on your machine. Works fully offline. Your data never leaves."],
+  ["Boards", "Kanban boards with columns, cards, and drag-and-drop. Card detail view with rich content."],
+  ["Notes", "Per-card markdown notes with a built-in editor."],
+  ["Links", "Saved links attached to cards or boards."],
+  ["Sharing", "Multi-member boards. Invite others via the members panel."],
+  ["Native shell", "Tauri 2 + Rust. Single signed binary. macOS Apple Silicon today; Windows + Linux planned."],
+  ["SSO", "Single sign-on via athion.me — same login as the rest of the site."],
 ];
 
 const benchmarks: [string, string, string][] = [
-  ["Memory (idle)", "30 MB", "450 MB"],
-  ["Memory (active)", "65 MB", "680 MB"],
-  ["Binary size", "18 MB", "380 MB"],
-  ["Startup time", "0.4s", "3.2s"],
-  ["CPU (idle)", "0.3%", "4.5%"],
-  ["Offline support", "100%", "20%"],
+  ["Binary size", "16 MB", "380 MB"],
+  ["Memory (idle)", "~200 MB", "~450 MB"],
+  ["Auto-update", "Signed Tauri updater", "Electron + custom"],
+  ["Auth", "Athion SSO", "Email/password"],
 ];
 
 function formatBytes(bytes: number): string {
@@ -30,8 +28,6 @@ function formatBytes(bytes: number): string {
 export default async function OpenDockPage() {
   const [latest] = await listChannelReleases("stable", 1);
   const artifacts = latest ? await getArtifactsForRelease(latest.id) : [];
-
-  // SSR default: pick darwin-aarch64 if present, else first.
   const dl = artifacts.find((a) => a.target === "darwin-aarch64") ?? artifacts[0] ?? null;
   const dlOption = dl
     ? {
@@ -47,7 +43,7 @@ export default async function OpenDockPage() {
       <aside style={{ position: "sticky", top: 56, fontSize: 12 }}>
         <h1 style={{ margin: 0, fontSize: 20, fontWeight: 600, letterSpacing: -0.2 }}>Opendock</h1>
         {latest && (
-          <div style={{ fontFamily: "var(--font-mono)", color: "#828282", marginTop: 4 }}>v{latest.version}</div>
+          <div style={{ color: "#828282", marginTop: 4 }}>v{latest.version}</div>
         )}
         {latest && (
           <div style={{ color: "#555", marginTop: 4 }}>
@@ -82,19 +78,18 @@ export default async function OpenDockPage() {
           </>
         )}
 
-        <div style={{ marginTop: 22, paddingTop: 16, borderTop: "1px solid #1f1f1f", fontFamily: "var(--font-mono)", color: "#828282", display: "grid", gridTemplateColumns: "max-content 1fr", gap: "4px 12px" }}>
-          <span>RAM</span><span style={{ color: "#fff" }}>30 MB</span>
-          <span>Bin</span><span style={{ color: "#fff" }}>18 MB</span>
-          <span>Boot</span><span style={{ color: "#fff" }}>0.4s</span>
-          <span>Off</span><span style={{ color: "#fff" }}>100%</span>
+        <div style={{ marginTop: 22, paddingTop: 16, borderTop: "1px solid #1f1f1f", color: "#828282", display: "grid", gridTemplateColumns: "max-content 1fr", gap: "4px 12px" }}>
+          <span>Binary</span><span style={{ color: "#fff" }}>16 MB</span>
+          <span>RAM</span><span style={{ color: "#fff" }}>~200 MB</span>
+          <span>Auth</span><span style={{ color: "#fff" }}>SSO</span>
         </div>
       </aside>
 
       {/* Content */}
       <main style={{ minWidth: 0 }}>
         <p style={{ fontSize: 14, margin: 0, color: "#c8c8c8", lineHeight: 1.55 }}>
-          A native desktop workspace. Kanban, notes, calendar, and Claude — local-first SQLite,
-          no cloud, no Electron, no telemetry.
+          A native desktop client for Athion. Kanban boards, per-card notes, and saved links —
+          a Tauri shell over the Athion API. Single sign-on with the rest of the site.
         </p>
 
         {features.map(([name, desc]) => (
@@ -104,7 +99,10 @@ export default async function OpenDockPage() {
           </div>
         ))}
 
-        <h2 style={{ marginTop: 32, fontSize: 14, fontWeight: 600, color: "#fff" }}>Benchmarks vs Notion</h2>
+        <h2 style={{ marginTop: 32, fontSize: 14, fontWeight: 600, color: "#fff" }}>Compared to Notion</h2>
+        <p className="muted" style={{ fontSize: 12, marginTop: 4 }}>
+          Notion numbers are approximate, observed on macOS at the time of writing.
+        </p>
         <table style={{ marginTop: 8 }}>
           <thead><tr><th>Metric</th><th>Opendock</th><th>Notion</th></tr></thead>
           <tbody>

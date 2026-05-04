@@ -25,7 +25,6 @@ function ConnectButton({ address }: { address?: string }) {
         color: copied ? "#4caf50" : "#c8c8c8",
         padding: "6px 12px",
         fontSize: 11,
-        fontFamily: "var(--font-mono)",
         cursor: "pointer",
         borderRadius: 3,
         transition: "all 0.15s",
@@ -66,8 +65,7 @@ export function VariantConsole({ services }: { services: ServiceData[] }) {
           justifyContent: "space-between",
           gap: 16,
           flexWrap: "wrap",
-          fontFamily: "var(--font-mono)",
-          fontSize: 11,
+            fontSize: 11,
         }}
       >
         <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
@@ -113,7 +111,7 @@ export function VariantConsole({ services }: { services: ServiceData[] }) {
               <div style={{ minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
                   <span style={{ fontSize: 14, color: "#fff", fontWeight: 600 }}>{s.name}</span>
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#828282" }}>{s.shortSpec}</span>
+                  <span style={{ fontSize: 11, color: "#828282" }}>{s.shortSpec}</span>
                   <span style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: 1 }}>{labelOf(s.status)}</span>
                 </div>
                 <div style={{ marginTop: 4, fontSize: 11 }}>
@@ -127,7 +125,7 @@ export function VariantConsole({ services }: { services: ServiceData[] }) {
         })}
       </div>
 
-      <p className="muted" style={{ marginTop: 16, fontSize: 11, fontFamily: "var(--font-mono)" }}>
+      <p className="muted" style={{ marginTop: 16, fontSize: 11 }}>
         polling every 30s · click connect to copy address
       </p>
     </>

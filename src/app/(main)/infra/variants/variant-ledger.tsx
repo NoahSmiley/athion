@@ -40,10 +40,10 @@ export function VariantLedger({ services }: { services: ServiceData[] }) {
                       {v.slice(0, COLLAPSE_LEN).replace(/[,(].*$/, "").trim()}
                       <span className="muted" style={{ fontSize: 11, marginLeft: 6 }}>show all →</span>
                     </summary>
-                    <div style={{ marginTop: 4, color: "#c8c8c8", fontFamily: k === "Address" ? "var(--font-mono)" : undefined }}>{v}</div>
+                    <div style={{ marginTop: 4, color: "#c8c8c8" }}>{v}</div>
                   </details>
                 ) : (
-                  <span style={{ fontFamily: k === "Address" ? "var(--font-mono)" : undefined, color: "#c8c8c8" }}>{v}</span>
+                  <span style={{ color: "#c8c8c8" }}>{v}</span>
                 )}
               </span>
             ))}

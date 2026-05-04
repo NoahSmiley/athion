@@ -30,7 +30,7 @@ export function VariantCurrent({ services }: { services: ServiceData[] }) {
             {s.details.map(([k, v]) => (
               <span key={k} style={{ display: "contents" }}>
                 <span className="muted">{k}</span>
-                <span style={{ fontFamily: k === "Address" ? "var(--font-mono)" : undefined }}>{v}</span>
+                <span>{v}</span>
               </span>
             ))}
           </div>

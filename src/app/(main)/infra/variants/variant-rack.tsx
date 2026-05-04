@@ -24,7 +24,6 @@ export function VariantRack({ services }: { services: ServiceData[] }) {
             gridTemplateColumns: "60px 1fr max-content",
             gap: 14,
             padding: "8px 16px",
-            fontFamily: "var(--font-mono)",
             fontSize: 10,
             letterSpacing: 1.4,
             color: "#444",
@@ -55,7 +54,7 @@ export function VariantRack({ services }: { services: ServiceData[] }) {
                 listStyle: "none",
               }}
             >
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#828282", letterSpacing: 0.5 }}>
+              <span style={{ fontSize: 11, color: "#828282", letterSpacing: 0.5 }}>
                 {s.id}
               </span>
               <div style={{ display: "flex", alignItems: "baseline", gap: 12, minWidth: 0, flexWrap: "wrap" }}>
@@ -78,7 +77,7 @@ export function VariantRack({ services }: { services: ServiceData[] }) {
                 {s.details.map(([k, v]) => (
                   <span key={k} style={{ display: "contents" }}>
                     <span className="muted">{k}</span>
-                    <span style={{ fontFamily: k === "Address" ? "var(--font-mono)" : undefined, color: "#c8c8c8" }}>{v}</span>
+                    <span style={{ color: "#c8c8c8" }}>{v}</span>
                   </span>
                 ))}
               </div>

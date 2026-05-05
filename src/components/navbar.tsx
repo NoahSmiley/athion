@@ -63,7 +63,8 @@ type Pending = { resolve: () => void } | null;
 export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } = {}) {
   const [user, setUser] = useState<NavUser | null>(initialUser);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [hoveredSection, setHoveredSection] = useState<string | null>(null);
+  const [openSectionKey, setOpenSectionKey] = useState<string | null>(null);
+  const [sectionLocked, setSectionLocked] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const isBlog = pathname === "/blog" || pathname.startsWith("/blog/");
@@ -72,11 +73,22 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
 
   const openSection = (key: string) => {
     if (hoverCloseTimer.current) clearTimeout(hoverCloseTimer.current);
-    setHoveredSection(key);
+    setOpenSectionKey(key);
   };
   const scheduleClose = () => {
+    if (sectionLocked) return;
     if (hoverCloseTimer.current) clearTimeout(hoverCloseTimer.current);
-    hoverCloseTimer.current = setTimeout(() => setHoveredSection(null), 120);
+    hoverCloseTimer.current = setTimeout(() => setOpenSectionKey(null), 350);
+  };
+  const toggleLock = (key: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (sectionLocked && openSectionKey === key) {
+      setSectionLocked(false);
+      setOpenSectionKey(null);
+    } else {
+      setSectionLocked(true);
+      setOpenSectionKey(key);
+    }
   };
 
   // The view-transition callback resolves only once the new pathname has
@@ -100,6 +112,8 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
 
   useEffect(() => {
     setMenuOpen(false);
+    setOpenSectionKey(null);
+    setSectionLocked(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -111,6 +125,19 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
     document.addEventListener("click", onDoc);
     return () => document.removeEventListener("click", onDoc);
   }, [menuOpen]);
+
+  useEffect(() => {
+    if (!sectionLocked) return;
+    const onDoc = (e: MouseEvent) => {
+      const t = e.target as HTMLElement;
+      if (!t.closest?.(".athion-nav-wrap")) {
+        setSectionLocked(false);
+        setOpenSectionKey(null);
+      }
+    };
+    document.addEventListener("click", onDoc);
+    return () => document.removeEventListener("click", onDoc);
+  }, [sectionLocked]);
 
   const navigate = (href: string) => (e: React.MouseEvent) => {
     if (href.startsWith("http")) return;
@@ -316,7 +343,12 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
     </div>
   ) : null;
 
-  const activeSection = hoveredSection ? SECTIONS.find((s) => s.key === hoveredSection) : null;
+  const activeSection = openSectionKey ? SECTIONS.find((s) => s.key === openSectionKey) : null;
+  const closeNonSection = () => {
+    if (sectionLocked) return;
+    if (hoverCloseTimer.current) clearTimeout(hoverCloseTimer.current);
+    setOpenSectionKey(null);
+  };
 
   return (
     <div className="athion-nav-wrap" onMouseLeave={scheduleClose}>
@@ -341,7 +373,9 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               className="nav-link"
               onMouseEnter={() => openSection(s.key)}
               onFocus={() => openSection(s.key)}
-              style={hoveredSection === s.key ? { color: "#fff" } : undefined}
+              onClick={toggleLock(s.key)}
+              style={openSectionKey === s.key ? { color: "#fff" } : undefined}
+              aria-expanded={openSectionKey === s.key}
             >
               {s.label}
             </Link>
@@ -353,7 +387,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               onClick={navigate(href)}
               prefetch={true}
               className="nav-link"
-              onMouseEnter={() => setHoveredSection(null)}
+              onMouseEnter={closeNonSection}
               style={{ ...linkStyle(href), ...(href === "/blog" ? blogMorphStyle : {}) }}
             >
               {label}
@@ -363,10 +397,10 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
             userMenu
           ) : (
             <>
-              <Link href="/request-access" className="nav-link" onMouseEnter={() => setHoveredSection(null)}>
+              <Link href="/request-access" className="nav-link" onMouseEnter={closeNonSection}>
                 Request access
               </Link>
-              <Link href="/login" className="nav-link" onMouseEnter={() => setHoveredSection(null)}>
+              <Link href="/login" className="nav-link" onMouseEnter={closeNonSection}>
                 Login
               </Link>
             </>
@@ -384,21 +418,20 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
             gap: 18,
             fontSize: 12,
             lineHeight: 1,
-            padding: "8px 24px 0",
-            minHeight: 20,
+            // Negative margin pulls the hit-area up to overlap the gap with the
+            // top nav so the cursor can't fall into a dead zone between rows.
+            margin: "-8px 0 0",
+            padding: "16px 24px 0",
+            minHeight: 28,
           }}
         >
           {activeSection?.items.map((item) => (
             item.href ? (
               <Link key={item.label} href={item.href} prefetch={true} className="nav-link">
                 {item.label}
-                {item.meta && <span className="muted" style={{ marginLeft: 6 }}>· {item.meta}</span>}
               </Link>
             ) : (
-              <span key={item.label} className="muted">
-                {item.label}
-                {item.meta && <span style={{ marginLeft: 6 }}>· {item.meta}</span>}
-              </span>
+              <span key={item.label} className="muted">{item.label}</span>
             )
           ))}
         </nav>

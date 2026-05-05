@@ -144,7 +144,12 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
       </span>
     </Link>
   ) : (
-    <Link href="/" onClick={navigate("/")} prefetch={true} style={{ textDecoration: "none", color: "#fff", fontWeight: 500 }}>
+    <Link
+      href="/"
+      onClick={navigate("/")}
+      prefetch={true}
+      style={{ textDecoration: "none", color: "#fff", fontWeight: 500, display: "inline-flex", alignItems: "center", lineHeight: 1 }}
+    >
       <span style={{ viewTransitionName: "athion-mark" } as React.CSSProperties}>Athion</span>
     </Link>
   );
@@ -250,16 +255,15 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
       className="athion-nav-top"
       style={{
         display: "flex",
-        alignItems: "baseline",
+        alignItems: "center",
         justifyContent: "space-between",
         fontSize: 13,
         lineHeight: 1,
         padding: "0 24px",
-        borderBottom: "2px solid red", // DIAGNOSTIC — full-width baseline indicator
       }}
     >
       {wordmark}
-      <div style={{ display: "flex", alignItems: "baseline", gap: 18 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
         {user && !isBlog && MAIN_LINKS.map(([href, label]) => (
           <Link
             key={href}

@@ -47,17 +47,14 @@ export default function HomePage() {
 
   return (
     <div className="home-page" style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", padding: "48px 24px 56px", boxSizing: "border-box", gap: 40 }}>
-      {/* Hero — text-led, animation as accent */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 40, alignItems: "center", width: "100%", maxWidth: 760 }} className="home-hero">
+      {/* Hero — institutional voice, product-led */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 240px", gap: 40, alignItems: "center", width: "100%", maxWidth: 760 }} className="home-hero">
         <div>
           <h1 style={{ margin: 0, fontSize: 32, fontWeight: 600, letterSpacing: -0.6, color: "#fff", lineHeight: 1.15 }}>
-            I build software and run servers.
+            Software and infrastructure, by hand.
           </h1>
-          <p style={{ margin: "16px 0 0", fontSize: 15, color: "#c8c8c8", lineHeight: 1.6 }}>
-            Athion is what I call the things I make and run. Native apps, a homelab full of services, a private streaming setup for the people I care about. All by hand. No clouds.
-          </p>
-          <p style={{ margin: "12px 0 0", fontSize: 13, color: "#828282", lineHeight: 1.6 }}>
-            — Noah
+          <p style={{ margin: "18px 0 0", fontSize: 14, color: "#c8c8c8", lineHeight: 1.6, maxWidth: 460 }}>
+            Athion makes desktop apps, runs a self-hosted services stack, and operates an invite-only streaming platform.
           </p>
         </div>
         <div onClick={shuffle} style={{ aspectRatio: "1 / 1", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden", cursor: "pointer" }} className="home-visual">
@@ -65,25 +62,25 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Three tiles — actual products, named */}
+      {/* Product cards — name owns the headline, category as metadata */}
       <div className="home-tiles">
         <Tile
           href="/opendock"
           title="Opendock"
           kind="App"
-          desc="Native desktop workspace — kanban, notes, calendar. Built in Tauri."
+          desc="Native desktop workspace. Kanban, notes, calendar."
         />
         <Tile
           href="/prime"
           title="Athion Prime"
           kind="Service"
-          desc="Invite-only streaming for friends and family. Movies, shows, live TV on Apple TV."
+          desc="Private streaming. Movies, shows, live TV on Apple TV."
         />
         <Tile
           href="/infra"
           title="Homelab"
-          kind="Infra"
-          desc="Game servers, media, password manager, file sync. All self-hosted."
+          kind="Infrastructure"
+          desc="Game servers, media, password manager, file sync."
         />
       </div>
 

@@ -14,8 +14,8 @@ const SECTIONS: Section[] = [
     label: "Tools",
     href: "/tools",
     items: [
-      { label: "Opendock", href: "/opendock", meta: "download" },
-      { label: "athctl", meta: "coming soon" },
+      { label: "Opendock", href: "/opendock" },
+      { label: "athctl" },
     ],
   },
   {
@@ -23,8 +23,8 @@ const SECTIONS: Section[] = [
     label: "Services",
     href: "/services",
     items: [
-      { label: "Athion Prime", href: "/prime", meta: "invite-only" },
-      { label: "Athion Mail", meta: "coming soon" },
+      { label: "Athion Prime", href: "/prime" },
+      { label: "Athion Mail" },
     ],
   },
   {
@@ -32,8 +32,8 @@ const SECTIONS: Section[] = [
     label: "Servers",
     href: "/servers",
     items: [
-      { label: "Homelab", href: "/infra", meta: "status →" },
-      { label: "Game servers", meta: "expanding" },
+      { label: "Homelab", href: "/infra" },
+      { label: "Game servers" },
     ],
   },
 ];

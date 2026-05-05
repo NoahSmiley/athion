@@ -255,6 +255,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
         fontSize: 13,
         lineHeight: 1,
         padding: "0 24px",
+        borderBottom: "2px solid red", // DIAGNOSTIC — full-width baseline indicator
       }}
     >
       {wordmark}

@@ -27,9 +27,25 @@ const variants: { key: VariantKey; name: string }[] = [
 const COLS = 84;
 const ROWS = 50;
 
+type DownloadInfo = { url: string; size: number; label: string };
+
+function detectPlatformLabel(): string {
+  if (typeof navigator === "undefined") return "macOS";
+  const platform = navigator.platform;
+  if (/Mac/i.test(platform)) return "macOS (Apple Silicon)";
+  if (/Win/i.test(platform)) return "Windows";
+  if (/Linux/i.test(platform)) return "Linux";
+  return "macOS (Apple Silicon)";
+}
+
+function formatBytes(bytes: number): string {
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}
+
 export default function HomePage() {
   const [variant, setVariant] = useState<VariantKey>("wave");
   const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
+  const [download, setDownload] = useState<DownloadInfo | null>(null);
 
   useEffect(() => {
     setVariant(variants[Math.floor(Math.random() * variants.length)].key);
@@ -37,6 +53,21 @@ export default function HomePage() {
       .then((r) => r.json())
       .then((d) => setIsAuthed(!!d.user))
       .catch(() => setIsAuthed(false));
+
+    // Fetch latest Opendock release for the hero CTA. Falls back to the download
+    // page link if the API is unreachable.
+    fetch("/api/opendock/releases/latest")
+      .then((r) => r.ok ? r.json() : null)
+      .then((release: { artifacts?: { target: string; url: string; installer_url?: string; size_bytes: number }[] } | null) => {
+        if (!release?.artifacts?.length) return;
+        const artifact = release.artifacts.find((a) => a.target === "darwin-aarch64") ?? release.artifacts[0];
+        setDownload({
+          url: artifact.installer_url ?? artifact.url,
+          size: artifact.size_bytes,
+          label: detectPlatformLabel(),
+        });
+      })
+      .catch(() => {});
   }, []);
 
   const shuffle = () => {
@@ -46,73 +77,106 @@ export default function HomePage() {
   };
 
   return (
-    <div className="home-page" style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", padding: "48px 24px 56px", boxSizing: "border-box", gap: 40 }}>
-      {/* Hero — institutional voice, product-led */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 240px", gap: 40, alignItems: "center", width: "100%", maxWidth: 760 }} className="home-hero">
-        <div>
-          <h1 style={{ margin: 0, fontSize: 32, fontWeight: 600, letterSpacing: -0.6, color: "#fff", lineHeight: 1.15 }}>
-            Software and infrastructure, by hand.
-          </h1>
-          <p style={{ margin: "18px 0 0", fontSize: 14, color: "#c8c8c8", lineHeight: 1.6, maxWidth: 460 }}>
-            Athion makes desktop apps, runs a self-hosted services stack, and operates an invite-only streaming platform.
-          </p>
-        </div>
-        <div onClick={shuffle} style={{ aspectRatio: "1 / 1", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden", cursor: "pointer" }} className="home-visual">
+    <div className="home-page" style={{ display: "flex", flexDirection: "column", alignItems: "stretch", width: "100%", maxWidth: 720, padding: "48px 24px 56px", boxSizing: "border-box", gap: 56 }}>
+      {/* Hero — Opendock is the front door. Animation as a small corner mark. */}
+      <section style={{ position: "relative" }}>
+        <div onClick={shuffle} className="home-corner-mark" style={{ position: "absolute", top: 0, right: 0, width: 96, height: 96, opacity: 0.55, cursor: "pointer", overflow: "hidden", pointerEvents: "auto" }}>
           <Visual variant={variant} />
         </div>
-      </div>
 
-      {/* Product cards — name owns the headline, category as metadata */}
-      <div className="home-tiles">
-        <Tile
-          href="/opendock"
-          title="Opendock"
-          kind="App"
-          desc="Native desktop workspace. Kanban, notes, calendar."
-        />
-        <Tile
-          href="/prime"
-          title="Athion Prime"
-          kind="Service"
-          desc="Private streaming. Movies, shows, live TV on Apple TV."
-        />
-        <Tile
-          href="/infra"
-          title="Homelab"
-          kind="Infrastructure"
-          desc="Game servers, media, password manager, file sync."
-        />
-      </div>
+        <div style={{ paddingRight: 120 }}>
+          <div style={{ fontSize: 11, letterSpacing: 1.4, color: "#555", textTransform: "uppercase" }}>Opendock</div>
+          <h1 style={{ margin: "10px 0 0", fontSize: 30, fontWeight: 600, letterSpacing: -0.5, color: "#fff", lineHeight: 1.15 }}>
+            Lightweight project tracking. From quick notes to full sprints.
+          </h1>
+          <p style={{ margin: "16px 0 0", fontSize: 14, color: "#c8c8c8", lineHeight: 1.6, maxWidth: 540 }}>
+            A native desktop app that scales with the work. Capture a thought, organize a day, ship a project — without the bloat of Notion or the overhead of Jira.
+          </p>
+        </div>
 
-      {/* Quiet writing links */}
-      <div style={{ display: "flex", gap: 20, fontSize: 12 }}>
-        <Link href="/docs" className="muted">Docs →</Link>
-        <Link href="/blog" className="muted">Blog →</Link>
-        {isAuthed === false && <Link href="/process" className="muted">How to join →</Link>}
-      </div>
+        <div style={{ marginTop: 24, display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+          {download ? (
+            <>
+              <a href={download.url} className="cta-light" style={{ padding: "10px 18px", borderRadius: 6, fontWeight: 600, fontSize: 13, textDecoration: "none" }}>
+                Download for {download.label}
+              </a>
+              <span className="muted" style={{ fontSize: 12 }}>Free · {formatBytes(download.size)}</span>
+              <Link href="/opendock" className="muted" style={{ fontSize: 12 }}>Learn more →</Link>
+            </>
+          ) : (
+            <>
+              <Link href="/opendock/download" className="cta-light" style={{ padding: "10px 18px", borderRadius: 6, fontWeight: 600, fontSize: 13, textDecoration: "none" }}>
+                Download Opendock
+              </Link>
+              <span className="muted" style={{ fontSize: 12 }}>Free</span>
+              <Link href="/opendock" className="muted" style={{ fontSize: 12 }}>Learn more →</Link>
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* Quiet directory of the rest */}
+      <section>
+        <div style={{ fontSize: 10, letterSpacing: 1.6, color: "#555", textTransform: "uppercase", marginBottom: 14 }}>
+          Also by Athion
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <DirectoryRow
+            href="/prime"
+            name="Athion Prime"
+            kind="Streaming"
+            desc="One service for all your streaming. Invite-only."
+          />
+          <DirectoryRow
+            href="/infra"
+            name="Homelab"
+            kind="Infrastructure"
+            desc="Game servers, media, password manager, file sync. Behind the scenes."
+          />
+          <DirectoryRow
+            href="/docs"
+            name="Docs"
+            kind="Reading"
+            desc="How athion software is built — architecture, stacks, conventions."
+          />
+          <DirectoryRow
+            href="/blog"
+            name="Blog"
+            kind="Reading"
+            desc="Notes from the workbench."
+          />
+        </div>
+      </section>
+
+      {isAuthed === false && (
+        <div style={{ fontSize: 12 }}>
+          <Link href="/process" className="muted">How to join →</Link>
+        </div>
+      )}
     </div>
   );
 }
 
-function Tile({ href, title, kind, desc }: { href: string; title: string; kind: string; desc: string }) {
+function DirectoryRow({ href, name, kind, desc }: { href: string; name: string; kind: string; desc: string }) {
   return (
     <Link
       href={href}
-      className="home-tile"
+      className="home-row"
       style={{
-        display: "block",
-        padding: "20px 22px",
-        border: "1px solid #1f1f1f",
-        background: "#0a0a0a",
+        display: "grid",
+        gridTemplateColumns: "max-content 1fr max-content",
+        gap: 16,
+        alignItems: "baseline",
+        padding: "10px 0",
+        borderBottom: "1px solid #161616",
         textDecoration: "none",
         color: "inherit",
       }}
     >
-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
-        <div style={{ fontSize: 17, fontWeight: 600, color: "#fff", letterSpacing: -0.2 }}>{title}</div>
-        <div style={{ fontSize: 10, letterSpacing: 1.4, color: "#555", textTransform: "uppercase" }}>{kind}</div>
-      </div>
-      <p style={{ fontSize: 12, color: "#c8c8c8", lineHeight: 1.5, marginTop: 10, marginBottom: 0 }}>{desc}</p>
+      <span style={{ fontSize: 14, fontWeight: 600, color: "#fff", letterSpacing: -0.1 }}>{name}</span>
+      <span style={{ fontSize: 12, color: "#828282", lineHeight: 1.5 }}>{desc}</span>
+      <span style={{ fontSize: 10, letterSpacing: 1.4, color: "#555", textTransform: "uppercase" }}>{kind}</span>
     </Link>
   );
 }

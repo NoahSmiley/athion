@@ -42,12 +42,9 @@ a:hover { color: #fff !important; }
 .software-card .software-card-arrow { transition: transform 0.15s, color 0.15s; }
 .software-card:hover .software-card-arrow { transform: translateX(2px); color: #fff !important; }
 
-/* Homepage directory rows */
-.home-row { transition: border-color 0.15s, background 0.15s; }
-.home-row:hover { border-color: #2a2a2a !important; background: #0a0a0a; }
-.home-row:hover > span:first-child { color: #fff; }
-.home-corner-mark { transition: opacity 0.15s; }
-.home-corner-mark:hover { opacity: 0.85; }
+/* Homepage product rows with inline ASCII previews */
+.home-product-row { transition: border-color 0.15s, background 0.15s; }
+.home-product-row:hover { border-color: #2a2a2a !important; background: #0e0e0e !important; }
 .footer-link { color: #333 !important; }
 .footer-link:hover { color: #666 !important; }
 ::selection { background: #444; color: #fff; }
@@ -178,14 +175,11 @@ li { margin-bottom: 4px; }
     padding: 20px 18px 12px; margin: 0;
   }
   .main-stage:has(.home-page) > main { padding: 16px 0; }
-  .home-page { padding: 32px 16px 36px !important; gap: 36px !important; }
-  /* Hero on mobile: corner mark moves below the heading instead of overlapping */
-  .home-corner-mark { position: relative !important; top: auto !important; right: auto !important; width: 80px !important; height: 80px !important; margin: 12px 0 0 !important; }
+  .home-page { padding: 24px 16px 36px !important; gap: 36px !important; }
   .home-page section h1 { font-size: 22px !important; }
-  .home-page section > div[style*="padding-right"] { padding-right: 0 !important; }
-  /* Directory rows: keep grid but allow desc to wrap */
-  .home-row { grid-template-columns: 1fr max-content !important; row-gap: 4px !important; }
-  .home-row > span:nth-child(2) { grid-column: 1 / -1 !important; }
+  /* Product rows: stack preview below the text on phones */
+  .home-product-row { grid-template-columns: 1fr !important; gap: 12px !important; }
+  /* Kanban preview: still scrolls horizontally on phones to preserve the 3-column shape */
 
   .main-footer-wrap { position: static; bottom: auto; left: auto; right: auto; margin-top: auto; border-top: 1px solid #1a1a1a; }
   .main-footer-wrap footer { justify-content: center; gap: 4px 12px !important; font-size: 10.5px !important; padding: 6px 16px !important; }

@@ -7,7 +7,6 @@ import { flushSync } from "react-dom";
 
 const MAIN_LINKS = [
   ["/software", "Apps"],
-  ["/infra", "Infra"],
   ["/docs", "Docs"],
   ["/blog", "Blog"],
 ];

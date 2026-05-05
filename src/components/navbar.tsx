@@ -6,10 +6,13 @@ import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { flushSync } from "react-dom";
 
 const MAIN_LINKS = [
+  ["/blog", "Press"],
+];
+
+const SECTION_LINKS = [
   ["/#tools", "Tools"],
   ["/#services", "Services"],
   ["/#servers", "Servers"],
-  ["/blog", "Press"],
 ];
 
 // Cap the display name in the nav button so a 32-char username can't push the
@@ -276,44 +279,71 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
   ) : null;
 
   return (
-    <nav
-      className="athion-nav-top"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        fontSize: 13,
-        lineHeight: 1,
-        padding: "0 24px",
-      }}
-    >
-      {wordmark}
-      <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-        {!isBlog && MAIN_LINKS.map(([href, label]) => (
-          <Link
-            key={href}
-            href={href}
-            onClick={navigate(href)}
-            prefetch={true}
-            className="nav-link"
-            style={{ ...linkStyle(href), ...(href === "/blog" ? blogMorphStyle : {}) }}
-          >
-            {label}
-          </Link>
-        ))}
-        {user ? (
-          userMenu
-        ) : (
-          <>
-            <Link href="/request-access" className="nav-link">
-              Request access
+    <div className="athion-nav-wrap">
+      <nav
+        className="athion-nav-top"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          fontSize: 13,
+          lineHeight: 1,
+          padding: "0 24px",
+        }}
+      >
+        {wordmark}
+        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+          {!isBlog && MAIN_LINKS.map(([href, label]) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={navigate(href)}
+              prefetch={true}
+              className="nav-link"
+              style={{ ...linkStyle(href), ...(href === "/blog" ? blogMorphStyle : {}) }}
+            >
+              {label}
             </Link>
-            <Link href="/login" className="nav-link">
-              Login
+          ))}
+          {user ? (
+            userMenu
+          ) : (
+            <>
+              <Link href="/request-access" className="nav-link">
+                Request access
+              </Link>
+              <Link href="/login" className="nav-link">
+                Login
+              </Link>
+            </>
+          )}
+        </div>
+      </nav>
+      {!isBlog && (
+        <nav
+          className="athion-nav-sub"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 18,
+            fontSize: 12,
+            lineHeight: 1,
+            padding: "8px 24px 0",
+          }}
+        >
+          {SECTION_LINKS.map(([href, label]) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={navigate(href)}
+              prefetch={true}
+              className="nav-link"
+            >
+              {label}
             </Link>
-          </>
-        )}
-      </div>
-    </nav>
+          ))}
+        </nav>
+      )}
+    </div>
   );
 }

@@ -42,8 +42,8 @@ a:hover { color: #fff !important; }
 .software-card .software-card-arrow { transition: transform 0.15s, color 0.15s; }
 .software-card:hover .software-card-arrow { transform: translateX(2px); color: #fff !important; }
 
-/* Section anchors clear the fixed nav (.main-sidebar top: 56px + 24px nav + slack). */
-.home-page h2[id] { scroll-margin-top: 96px; }
+/* Section anchors clear the fixed two-row nav (top: 56 + 24 + sub + slack). */
+.home-page h2[id] { scroll-margin-top: 140px; }
 
 /* Homepage directory tables — terse rows, two text columns + optional metadata */
 .home-directory { font-size: 13px; margin-bottom: 8px; }
@@ -118,8 +118,10 @@ li { margin-bottom: 4px; }
 .auth-card { width: 260px; pointer-events: auto; }
 
 .main-sidebar { position: fixed; top: 56px; left: 0; right: 0; z-index: 10; display: flex; justify-content: center; pointer-events: none; }
-.main-sidebar nav.athion-nav-top { pointer-events: auto; max-width: 700px; width: 100%; box-sizing: border-box; height: 24px; }
-.main-stage { position: fixed; top: 104px; left: 0; right: 0; bottom: 32px; display: flex; justify-content: center; align-items: center; pointer-events: none; overflow: auto; scrollbar-width: none; -ms-overflow-style: none; }
+.main-sidebar .athion-nav-wrap { pointer-events: auto; max-width: 700px; width: 100%; box-sizing: border-box; }
+.main-sidebar nav.athion-nav-top { box-sizing: border-box; height: 24px; }
+.main-sidebar nav.athion-nav-sub { box-sizing: border-box; }
+.main-stage { position: fixed; top: 132px; left: 0; right: 0; bottom: 32px; display: flex; justify-content: center; align-items: center; pointer-events: none; overflow: auto; scrollbar-width: none; -ms-overflow-style: none; }
 .main-stage::-webkit-scrollbar { display: none; }
 .main-stage > main { max-width: 700px; width: 100%; padding: 40px 24px; pointer-events: auto; margin: auto 0; }
 /* Home page now uses the standard 700px column (default rule above already sets max-width: 700) */
@@ -170,6 +172,14 @@ li { margin-bottom: 4px; }
   }
   .main-sidebar nav.athion-nav-top a, .main-sidebar nav.athion-nav-top button { font-size: 12px !important; }
   .main-sidebar nav.athion-nav-top svg { height: 14px !important; }
+  .main-sidebar nav.athion-nav-sub {
+    width: 100%; box-sizing: border-box; padding: 6px 12px 0 !important;
+    flex-direction: row; flex-wrap: wrap;
+    gap: 8px 14px !important;
+    font-size: 11px !important;
+    justify-content: center !important;
+  }
+  .main-sidebar nav.athion-nav-sub a { font-size: 11px !important; }
 
   .main-stage {
     position: static; top: auto; bottom: auto; inset: auto;

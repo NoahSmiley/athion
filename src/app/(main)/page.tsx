@@ -69,12 +69,7 @@ export default function HomePage() {
         <Visual variant={variant} />
       </div>
 
-      <h1>Athion</h1>
-      <p className="muted">
-        Tools and services, made by hand.
-      </p>
-
-      <h2>Products</h2>
+      <h2>Tools</h2>
       <table className="home-directory">
         <tbody>
           <tr>
@@ -90,16 +85,46 @@ export default function HomePage() {
             </td>
           </tr>
           <tr>
+            <td className="muted">athctl</td>
+            <td>Command-line tool for managing your Athion services.</td>
+            <td className="muted"></td>
+            <td className="muted">coming soon</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Services</h2>
+      <table className="home-directory">
+        <tbody>
+          <tr>
             <td><Link href="/prime">Athion Prime</Link></td>
             <td>Private streaming. All your channels in one place.</td>
             <td className="muted"></td>
             <td className="muted">invite-only</td>
           </tr>
           <tr>
+            <td className="muted">Athion Mail</td>
+            <td>Self-hosted email on your own domain.</td>
+            <td className="muted"></td>
+            <td className="muted">coming soon</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Servers</h2>
+      <table className="home-directory">
+        <tbody>
+          <tr>
             <td><Link href="/infra">Homelab</Link></td>
             <td>Game servers, media, file sync. Behind the scenes.</td>
             <td className="muted"></td>
             <td><a href="https://status.athion.me" className="muted">status →</a></td>
+          </tr>
+          <tr>
+            <td className="muted">Game servers</td>
+            <td>Project Zomboid live. Minecraft, Valheim coming.</td>
+            <td className="muted"></td>
+            <td className="muted">expanding</td>
           </tr>
         </tbody>
       </table>

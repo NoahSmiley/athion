@@ -250,7 +250,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
       className="athion-nav-top"
       style={{
         display: "flex",
-        alignItems: "center",
+        alignItems: "baseline",
         justifyContent: "space-between",
         fontSize: 13,
         lineHeight: 1,
@@ -258,7 +258,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
       }}
     >
       {wordmark}
-      <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 18 }}>
         {user && !isBlog && MAIN_LINKS.map(([href, label]) => (
           <Link
             key={href}

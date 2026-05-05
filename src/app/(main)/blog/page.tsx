@@ -7,8 +7,8 @@ export default function BlogPage() {
   const posts = getAllPosts();
   return (
     <>
-      <h1>Blog</h1>
-      <p className="muted">Engineering decisions, product updates, and the ideas behind what we build.</p>
+      <h1>Athion Press</h1>
+      <p className="muted">Notes, decisions, and the thinking behind what gets built.</p>
       {posts.length === 0 ? <p className="muted">No posts yet.</p> : (
         <table className="blog-list">
           <tbody>{posts.map((p) => (

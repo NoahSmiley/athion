@@ -64,16 +64,12 @@ export default function HomePage() {
         </tbody>
       </table>
 
-      <h2>Writing</h2>
+      <h2>Press</h2>
       <table className="home-directory">
         <tbody>
           <tr>
-            <td><Link href="/docs">Docs</Link></td>
-            <td>Architecture, conventions, stack guides.</td>
-          </tr>
-          <tr>
-            <td><Link href="/blog">Blog</Link></td>
-            <td>Notes from the workbench.</td>
+            <td><Link href="/blog">Athion Press</Link></td>
+            <td>Notes, decisions, and the thinking behind what gets built.</td>
           </tr>
         </tbody>
       </table>

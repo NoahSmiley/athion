@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Blog",
-  description: "Updates, insights, and technical deep-dives from the Athion team.",
+  title: "Press",
+  description: "Notes, decisions, and the thinking behind what athion builds.",
 };
 
 export default function BlogLayout({ children }: { children: React.ReactNode }) {

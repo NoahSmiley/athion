@@ -7,8 +7,7 @@ import { flushSync } from "react-dom";
 
 const MAIN_LINKS = [
   ["/software", "Apps"],
-  ["/docs", "Docs"],
-  ["/blog", "Blog"],
+  ["/blog", "Press"],
 ];
 
 // Cap the display name in the nav button so a 32-char username can't push the
@@ -141,7 +140,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
           display: "inline-block",
         }}
       >
-        Blog
+        Press
       </span>
     </Link>
   ) : (

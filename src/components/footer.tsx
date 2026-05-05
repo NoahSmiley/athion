@@ -8,7 +8,8 @@ import { useEffect, useState } from "react";
 const ALWAYS = [["/privacy", "Privacy"], ["/terms", "Terms"]];
 const MEMBERS_ONLY = [
   ["/about", "About"],
-  ["/blog", "Blog"],
+  ["/blog", "Press"],
+  ["/docs", "Docs"],
   ["/security", "Security"],
   ["/transparency", "Transparency"],
 ];

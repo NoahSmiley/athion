@@ -5,14 +5,41 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { flushSync } from "react-dom";
 
-const MAIN_LINKS = [
-  ["/blog", "Press"],
+type SubItem = { label: string; href?: string; meta?: string };
+type Section = { key: string; label: string; href: string; items: SubItem[] };
+
+const SECTIONS: Section[] = [
+  {
+    key: "tools",
+    label: "Tools",
+    href: "/tools",
+    items: [
+      { label: "Opendock", href: "/opendock", meta: "download" },
+      { label: "athctl", meta: "coming soon" },
+    ],
+  },
+  {
+    key: "services",
+    label: "Services",
+    href: "/services",
+    items: [
+      { label: "Athion Prime", href: "/prime", meta: "invite-only" },
+      { label: "Athion Mail", meta: "coming soon" },
+    ],
+  },
+  {
+    key: "servers",
+    label: "Servers",
+    href: "/servers",
+    items: [
+      { label: "Homelab", href: "/infra", meta: "status →" },
+      { label: "Game servers", meta: "expanding" },
+    ],
+  },
 ];
 
-const SECTION_LINKS = [
-  ["/#tools", "Tools"],
-  ["/#services", "Services"],
-  ["/#servers", "Servers"],
+const MAIN_LINKS = [
+  ["/blog", "Press"],
 ];
 
 // Cap the display name in the nav button so a 32-char username can't push the
@@ -36,10 +63,21 @@ type Pending = { resolve: () => void } | null;
 export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } = {}) {
   const [user, setUser] = useState<NavUser | null>(initialUser);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hoveredSection, setHoveredSection] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const isBlog = pathname === "/blog" || pathname.startsWith("/blog/");
   const pendingRef = useRef<Pending>(null);
+  const hoverCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const openSection = (key: string) => {
+    if (hoverCloseTimer.current) clearTimeout(hoverCloseTimer.current);
+    setHoveredSection(key);
+  };
+  const scheduleClose = () => {
+    if (hoverCloseTimer.current) clearTimeout(hoverCloseTimer.current);
+    hoverCloseTimer.current = setTimeout(() => setHoveredSection(null), 120);
+  };
 
   // The view-transition callback resolves only once the new pathname has
   // actually committed (so the new pill rect is real, not optimistic).
@@ -278,8 +316,10 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
     </div>
   ) : null;
 
+  const activeSection = hoveredSection ? SECTIONS.find((s) => s.key === hoveredSection) : null;
+
   return (
-    <div className="athion-nav-wrap">
+    <div className="athion-nav-wrap" onMouseLeave={scheduleClose}>
       <nav
         className="athion-nav-top"
         style={{
@@ -293,6 +333,19 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
       >
         {wordmark}
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+          {!isBlog && SECTIONS.map((s) => (
+            <Link
+              key={s.key}
+              href={s.href}
+              prefetch={true}
+              className="nav-link"
+              onMouseEnter={() => openSection(s.key)}
+              onFocus={() => openSection(s.key)}
+              style={hoveredSection === s.key ? { color: "#fff" } : undefined}
+            >
+              {s.label}
+            </Link>
+          ))}
           {!isBlog && MAIN_LINKS.map(([href, label]) => (
             <Link
               key={href}
@@ -300,6 +353,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               onClick={navigate(href)}
               prefetch={true}
               className="nav-link"
+              onMouseEnter={() => setHoveredSection(null)}
               style={{ ...linkStyle(href), ...(href === "/blog" ? blogMorphStyle : {}) }}
             >
               {label}
@@ -309,10 +363,10 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
             userMenu
           ) : (
             <>
-              <Link href="/request-access" className="nav-link">
+              <Link href="/request-access" className="nav-link" onMouseEnter={() => setHoveredSection(null)}>
                 Request access
               </Link>
-              <Link href="/login" className="nav-link">
+              <Link href="/login" className="nav-link" onMouseEnter={() => setHoveredSection(null)}>
                 Login
               </Link>
             </>
@@ -322,25 +376,30 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
       {!isBlog && (
         <nav
           className="athion-nav-sub"
+          onMouseEnter={() => activeSection && openSection(activeSection.key)}
           style={{
             display: "flex",
             alignItems: "center",
+            justifyContent: "flex-end",
             gap: 18,
             fontSize: 12,
             lineHeight: 1,
             padding: "8px 24px 0",
+            minHeight: 20,
           }}
         >
-          {SECTION_LINKS.map(([href, label]) => (
-            <Link
-              key={href}
-              href={href}
-              onClick={navigate(href)}
-              prefetch={true}
-              className="nav-link"
-            >
-              {label}
-            </Link>
+          {activeSection?.items.map((item) => (
+            item.href ? (
+              <Link key={item.label} href={item.href} prefetch={true} className="nav-link">
+                {item.label}
+                {item.meta && <span className="muted" style={{ marginLeft: 6 }}>· {item.meta}</span>}
+              </Link>
+            ) : (
+              <span key={item.label} className="muted">
+                {item.label}
+                {item.meta && <span style={{ marginLeft: 6 }}>· {item.meta}</span>}
+              </span>
+            )
           ))}
         </nav>
       )}

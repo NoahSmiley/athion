@@ -42,9 +42,13 @@ a:hover { color: #fff !important; }
 .software-card .software-card-arrow { transition: transform 0.15s, color 0.15s; }
 .software-card:hover .software-card-arrow { transform: translateX(2px); color: #fff !important; }
 
-/* Homepage product rows with inline ASCII previews */
-.home-product-row { transition: border-color 0.15s, background 0.15s; }
-.home-product-row:hover { border-color: #2a2a2a !important; background: #0e0e0e !important; }
+/* Homepage directory tables — terse rows, two text columns + optional metadata */
+.home-directory { font-size: 13px; margin-bottom: 8px; }
+.home-directory td { padding: 6px 16px 6px 0; vertical-align: top; }
+.home-directory td:first-child { white-space: nowrap; font-weight: 500; }
+.home-directory td:nth-child(2) { color: #828282; width: 100%; }
+.home-directory td:nth-child(3),
+.home-directory td:nth-child(4) { white-space: nowrap; font-size: 11px; }
 .footer-link { color: #333 !important; }
 .footer-link:hover { color: #666 !important; }
 ::selection { background: #444; color: #fff; }
@@ -115,7 +119,7 @@ li { margin-bottom: 4px; }
 .main-stage { position: fixed; top: 104px; left: 0; right: 0; bottom: 32px; display: flex; justify-content: center; align-items: center; pointer-events: none; overflow: auto; scrollbar-width: none; -ms-overflow-style: none; }
 .main-stage::-webkit-scrollbar { display: none; }
 .main-stage > main { max-width: 700px; width: 100%; padding: 40px 24px; pointer-events: auto; margin: auto 0; }
-.main-stage:has(.home-page) > main { max-width: none; width: auto; padding: 0; }
+/* Home page now uses the standard 700px column (default rule above already sets max-width: 700) */
 /* Docs and admin anchor to the top — the section nav stays put as page content shrinks/grows. */
 .main-stage:has(.docs-page),
 .main-stage:has(.admin-page),
@@ -175,11 +179,10 @@ li { margin-bottom: 4px; }
     padding: 20px 18px 12px; margin: 0;
   }
   .main-stage:has(.home-page) > main { padding: 16px 0; }
-  .home-page { padding: 24px 16px 36px !important; gap: 36px !important; }
-  .home-page section h1 { font-size: 22px !important; }
-  /* Product rows: stack preview below the text on phones */
-  .home-product-row { grid-template-columns: 1fr !important; gap: 12px !important; }
-  /* Kanban preview: still scrolls horizontally on phones to preserve the 3-column shape */
+  /* Home directory: collapse the metadata columns into the row on phones */
+  .home-directory td { padding: 5px 10px 5px 0; }
+  .home-directory td:nth-child(3),
+  .home-directory td:nth-child(4) { font-size: 10px; }
 
   .main-footer-wrap { position: static; bottom: auto; left: auto; right: auto; margin-top: auto; border-top: 1px solid #1a1a1a; }
   .main-footer-wrap footer { justify-content: center; gap: 4px 12px !important; font-size: 10.5px !important; padding: 6px 16px !important; }

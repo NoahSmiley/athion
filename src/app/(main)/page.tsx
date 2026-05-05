@@ -46,44 +46,49 @@ export default function HomePage() {
   };
 
   return (
-    <div className="home-page" style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", padding: "32px 24px 48px", boxSizing: "border-box", gap: 32 }}>
-      {/* Hero: animation + tagline */}
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 18, width: "100%", maxWidth: 720 }}>
-        <div onClick={shuffle} style={{ width: "100%", maxWidth: 420, aspectRatio: "1 / 1", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden", cursor: "pointer" }}>
-          <Visual variant={variant} />
-        </div>
-        <div style={{ textAlign: "center" }}>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 600, letterSpacing: -0.3, color: "#fff" }}>Athion</h1>
-          <p style={{ margin: "8px 0 0", fontSize: 14, color: "#c8c8c8", lineHeight: 1.55, maxWidth: 480 }}>
-            A one-person tech outfit. I build software, run servers, and share both with the people I want to.
+    <div className="home-page" style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", padding: "48px 24px 56px", boxSizing: "border-box", gap: 40 }}>
+      {/* Hero — text-led, animation as accent */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 40, alignItems: "center", width: "100%", maxWidth: 760 }} className="home-hero">
+        <div>
+          <h1 style={{ margin: 0, fontSize: 32, fontWeight: 600, letterSpacing: -0.6, color: "#fff", lineHeight: 1.15 }}>
+            I build software and run servers.
+          </h1>
+          <p style={{ margin: "16px 0 0", fontSize: 15, color: "#c8c8c8", lineHeight: 1.6 }}>
+            Athion is what I call the things I make and run. Native apps, a homelab full of services, a private streaming setup for the people I care about. All by hand. No clouds.
           </p>
+          <p style={{ margin: "12px 0 0", fontSize: 13, color: "#828282", lineHeight: 1.6 }}>
+            — Noah
+          </p>
+        </div>
+        <div onClick={shuffle} style={{ aspectRatio: "1 / 1", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden", cursor: "pointer" }} className="home-visual">
+          <Visual variant={variant} />
         </div>
       </div>
 
-      {/* Three tiles — what I do */}
+      {/* Three tiles — actual products, named */}
       <div className="home-tiles">
         <Tile
-          href="/software"
-          eyebrow="I make"
-          title="Apps"
-          desc="Native, local-first software. Opendock today; more in progress."
-        />
-        <Tile
-          href="/infra"
-          eyebrow="I host"
-          title="Servers"
-          desc="A homelab running game servers, media, and tools — self-hosted, no cloud."
+          href="/opendock"
+          title="Opendock"
+          kind="App"
+          desc="Native desktop workspace — kanban, notes, calendar. Built in Tauri."
         />
         <Tile
           href="/prime"
-          eyebrow="I share"
-          title="Prime"
-          desc="Invite-only streaming for friends and family. Movies, shows, live TV."
+          title="Athion Prime"
+          kind="Service"
+          desc="Invite-only streaming for friends and family. Movies, shows, live TV on Apple TV."
+        />
+        <Tile
+          href="/infra"
+          title="Homelab"
+          kind="Infra"
+          desc="Game servers, media, password manager, file sync. All self-hosted."
         />
       </div>
 
       {/* Quiet writing links */}
-      <div style={{ display: "flex", gap: 18, fontSize: 12 }}>
+      <div style={{ display: "flex", gap: 20, fontSize: 12 }}>
         <Link href="/docs" className="muted">Docs →</Link>
         <Link href="/blog" className="muted">Blog →</Link>
         {isAuthed === false && <Link href="/process" className="muted">How to join →</Link>}
@@ -92,24 +97,25 @@ export default function HomePage() {
   );
 }
 
-function Tile({ href, eyebrow, title, desc }: { href: string; eyebrow: string; title: string; desc: string }) {
+function Tile({ href, title, kind, desc }: { href: string; title: string; kind: string; desc: string }) {
   return (
     <Link
       href={href}
+      className="home-tile"
       style={{
         display: "block",
-        padding: "18px 20px",
+        padding: "20px 22px",
         border: "1px solid #1f1f1f",
         background: "#0a0a0a",
         textDecoration: "none",
         color: "inherit",
-        transition: "border-color 0.15s, background 0.15s",
       }}
-      className="home-tile"
     >
-      <div style={{ fontSize: 10, letterSpacing: 1.4, color: "#555", textTransform: "uppercase" }}>{eyebrow}</div>
-      <div style={{ fontSize: 18, fontWeight: 600, color: "#fff", marginTop: 4, letterSpacing: -0.2 }}>{title}</div>
-      <p style={{ fontSize: 12, color: "#c8c8c8", lineHeight: 1.5, marginTop: 8, marginBottom: 0 }}>{desc}</p>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
+        <div style={{ fontSize: 17, fontWeight: 600, color: "#fff", letterSpacing: -0.2 }}>{title}</div>
+        <div style={{ fontSize: 10, letterSpacing: 1.4, color: "#555", textTransform: "uppercase" }}>{kind}</div>
+      </div>
+      <p style={{ fontSize: 12, color: "#c8c8c8", lineHeight: 1.5, marginTop: 10, marginBottom: 0 }}>{desc}</p>
     </Link>
   );
 }

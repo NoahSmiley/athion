@@ -179,6 +179,10 @@ li { margin-bottom: 4px; }
   .home-page { padding: 24px 16px 36px !important; gap: 24px !important; }
   /* Stack the 3 product tiles vertically on phones */
   .home-tiles { grid-template-columns: 1fr !important; }
+  /* Stack hero text + visual on phones */
+  .home-hero { grid-template-columns: 1fr !important; gap: 24px !important; }
+  .home-hero h1 { font-size: 24px !important; }
+  .home-visual { max-width: 320px; margin: 0 auto; }
 
   .main-footer-wrap { position: static; bottom: auto; left: auto; right: auto; margin-top: auto; border-top: 1px solid #1a1a1a; }
   .main-footer-wrap footer { justify-content: center; gap: 4px 12px !important; font-size: 10.5px !important; padding: 6px 16px !important; }

@@ -6,8 +6,7 @@ import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { flushSync } from "react-dom";
 
 const MAIN_LINKS = [
-  ["/software", "Software"],
-  ["/prime", "Prime"],
+  ["/software", "Apps"],
   ["/infra", "Infra"],
   ["/docs", "Docs"],
   ["/blog", "Blog"],

@@ -42,13 +42,8 @@ a:hover { color: #fff !important; }
 .software-card .software-card-arrow { transition: transform 0.15s, color 0.15s; }
 .software-card:hover .software-card-arrow { transform: translateX(2px); color: #fff !important; }
 
-/* Homepage hero animation panel — full-width band above the directory */
-.home-hero-anim {
-  width: 100%; max-width: 520px; aspect-ratio: 1 / 1;
-  margin: 0 auto 32px;
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden; cursor: pointer;
-}
+/* Section anchors clear the fixed nav (.main-sidebar top: 56px + 24px nav + slack). */
+.home-page h2[id] { scroll-margin-top: 96px; }
 
 /* Homepage directory tables — terse rows, two text columns + optional metadata */
 .home-directory { font-size: 13px; margin-bottom: 8px; }

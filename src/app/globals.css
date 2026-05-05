@@ -41,6 +41,11 @@ a:hover { color: #fff !important; }
 .software-card:hover { border-color: #3a3a3a !important; }
 .software-card .software-card-arrow { transition: transform 0.15s, color 0.15s; }
 .software-card:hover .software-card-arrow { transform: translateX(2px); color: #fff !important; }
+
+/* Homepage product tiles */
+.home-tile { transition: border-color 0.15s, background 0.15s; }
+.home-tile:hover { border-color: #3a3a3a !important; background: #0e0e0e !important; }
+.home-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; max-width: 720px; }
 .footer-link { color: #333 !important; }
 .footer-link:hover { color: #666 !important; }
 ::selection { background: #444; color: #fff; }
@@ -171,8 +176,9 @@ li { margin-bottom: 4px; }
     padding: 20px 18px 12px; margin: 0;
   }
   .main-stage:has(.home-page) > main { padding: 16px 0; }
-  .home-page { padding: 0 8px !important; }
-  .home-page > div { aspect-ratio: 1 / 1; max-width: 100% !important; }
+  .home-page { padding: 24px 16px 36px !important; gap: 24px !important; }
+  /* Stack the 3 product tiles vertically on phones */
+  .home-tiles { grid-template-columns: 1fr !important; }
 
   .main-footer-wrap { position: static; bottom: auto; left: auto; right: auto; margin-top: auto; border-top: 1px solid #1a1a1a; }
   .main-footer-wrap footer { justify-content: center; gap: 4px 12px !important; font-size: 10.5px !important; padding: 6px 16px !important; }

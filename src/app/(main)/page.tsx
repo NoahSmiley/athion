@@ -46,17 +46,71 @@ export default function HomePage() {
   };
 
   return (
-    <div className="home-page" style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", padding: "0 24px", boxSizing: "border-box" }}>
-      <div onClick={shuffle} style={{ width: "100%", maxWidth: 652, aspectRatio: "1 / 1", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden", cursor: "pointer" }}>
-        <Visual variant={variant} />
-      </div>
-      {isAuthed === false && (
-        <div className="home-corner" style={{ position: "fixed", bottom: 48, right: 24, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, fontSize: 11, pointerEvents: "auto" }}>
-          <Link href="/about" className="footer-link">What is this?</Link>
-          <Link href="/process" className="footer-link">How to join</Link>
+    <div className="home-page" style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", padding: "32px 24px 48px", boxSizing: "border-box", gap: 32 }}>
+      {/* Hero: animation + tagline */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 18, width: "100%", maxWidth: 720 }}>
+        <div onClick={shuffle} style={{ width: "100%", maxWidth: 420, aspectRatio: "1 / 1", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden", cursor: "pointer" }}>
+          <Visual variant={variant} />
         </div>
-      )}
+        <div style={{ textAlign: "center" }}>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 600, letterSpacing: -0.3, color: "#fff" }}>Athion</h1>
+          <p style={{ margin: "8px 0 0", fontSize: 14, color: "#c8c8c8", lineHeight: 1.55, maxWidth: 480 }}>
+            A one-person tech outfit. I build software, run servers, and share both with the people I want to.
+          </p>
+        </div>
+      </div>
+
+      {/* Three tiles — what I do */}
+      <div className="home-tiles">
+        <Tile
+          href="/software"
+          eyebrow="I make"
+          title="Apps"
+          desc="Native, local-first software. Opendock today; more in progress."
+        />
+        <Tile
+          href="/infra"
+          eyebrow="I host"
+          title="Servers"
+          desc="A homelab running game servers, media, and tools — self-hosted, no cloud."
+        />
+        <Tile
+          href="/prime"
+          eyebrow="I share"
+          title="Prime"
+          desc="Invite-only streaming for friends and family. Movies, shows, live TV."
+        />
+      </div>
+
+      {/* Quiet writing links */}
+      <div style={{ display: "flex", gap: 18, fontSize: 12 }}>
+        <Link href="/docs" className="muted">Docs →</Link>
+        <Link href="/blog" className="muted">Blog →</Link>
+        {isAuthed === false && <Link href="/process" className="muted">How to join →</Link>}
+      </div>
     </div>
+  );
+}
+
+function Tile({ href, eyebrow, title, desc }: { href: string; eyebrow: string; title: string; desc: string }) {
+  return (
+    <Link
+      href={href}
+      style={{
+        display: "block",
+        padding: "18px 20px",
+        border: "1px solid #1f1f1f",
+        background: "#0a0a0a",
+        textDecoration: "none",
+        color: "inherit",
+        transition: "border-color 0.15s, background 0.15s",
+      }}
+      className="home-tile"
+    >
+      <div style={{ fontSize: 10, letterSpacing: 1.4, color: "#555", textTransform: "uppercase" }}>{eyebrow}</div>
+      <div style={{ fontSize: 18, fontWeight: 600, color: "#fff", marginTop: 4, letterSpacing: -0.2 }}>{title}</div>
+      <p style={{ fontSize: 12, color: "#c8c8c8", lineHeight: 1.5, marginTop: 8, marginBottom: 0 }}>{desc}</p>
+    </Link>
   );
 }
 

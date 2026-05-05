@@ -74,6 +74,29 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
   const navigate = (href: string) => (e: React.MouseEvent) => {
     if (href.startsWith("http")) return;
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+
+    // Hash anchors like "/#tools" — handle scroll ourselves so it works
+    // whether or not we're already on the home page (Next App Router
+    // doesn't reliably scroll to hash on same-route navigation).
+    const hashIdx = href.indexOf("#");
+    if (hashIdx >= 0) {
+      const path = href.slice(0, hashIdx) || "/";
+      const id = href.slice(hashIdx + 1);
+      e.preventDefault();
+      const scroll = () => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+      if (pathname === path) {
+        scroll();
+      } else {
+        router.push(path);
+        // Wait for the new page to render before scrolling.
+        setTimeout(scroll, 100);
+      }
+      return;
+    }
+
     const targetIsBlog = href === "/blog" || href.startsWith("/blog/");
     const crossesBlogBoundary = isBlog !== targetIsBlog;
     if (!crossesBlogBoundary) return;
@@ -266,7 +289,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
     >
       {wordmark}
       <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-        {user && !isBlog && MAIN_LINKS.map(([href, label]) => (
+        {!isBlog && MAIN_LINKS.map(([href, label]) => (
           <Link
             key={href}
             href={href}

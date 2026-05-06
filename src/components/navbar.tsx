@@ -65,11 +65,14 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSectionKey, setOpenSectionKey] = useState<string | null>(null);
   const [sectionLocked, setSectionLocked] = useState(false);
+  const [subLeft, setSubLeft] = useState(24);
   const pathname = usePathname();
   const router = useRouter();
   const isBlog = pathname === "/blog" || pathname.startsWith("/blog/");
   const pendingRef = useRef<Pending>(null);
   const hoverCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const sectionRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
 
   const openSection = (key: string) => {
     if (hoverCloseTimer.current) clearTimeout(hoverCloseTimer.current);
@@ -100,6 +103,16 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
       resolve();
     }
   }, [pathname]);
+
+  useLayoutEffect(() => {
+    if (!openSectionKey) return;
+    const btn = sectionRefs.current.get(openSectionKey);
+    const wrap = wrapRef.current;
+    if (!btn || !wrap) return;
+    const btnRect = btn.getBoundingClientRect();
+    const wrapRect = wrap.getBoundingClientRect();
+    setSubLeft(btnRect.left - wrapRect.left);
+  }, [openSectionKey]);
 
   useEffect(() => {
     const bc = new BroadcastChannel("auth");
@@ -351,7 +364,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
   };
 
   return (
-    <div className="athion-nav-wrap" onMouseLeave={scheduleClose}>
+    <div ref={wrapRef} className="athion-nav-wrap" onMouseLeave={scheduleClose}>
       <nav
         className="athion-nav-top"
         style={{
@@ -371,6 +384,10 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               href={s.href}
               prefetch={true}
               className="nav-link"
+              ref={(el: HTMLAnchorElement | null) => {
+                if (el) sectionRefs.current.set(s.key, el);
+                else sectionRefs.current.delete(s.key);
+              }}
               onMouseEnter={() => openSection(s.key)}
               onFocus={() => openSection(s.key)}
               onClick={toggleLock(s.key)}
@@ -414,15 +431,19 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "flex-end",
+            justifyContent: "flex-start",
             gap: 18,
             fontSize: 12,
             lineHeight: 1,
             // Negative margin pulls the hit-area up to overlap the gap with the
             // top nav so the cursor can't fall into a dead zone between rows.
             margin: "-8px 0 0",
-            padding: "16px 24px 0",
+            padding: `16px 24px 0 ${subLeft}px`,
             minHeight: 28,
+            opacity: activeSection ? 1 : 0,
+            transform: activeSection ? "translateY(0)" : "translateY(-4px)",
+            transition: "opacity 0.18s ease, transform 0.18s ease, padding-left 0.22s ease",
+            pointerEvents: activeSection ? "auto" : "none",
           }}
         >
           {activeSection?.items.map((item) => (

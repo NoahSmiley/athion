@@ -96,12 +96,20 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
     }
   }, [pathname]);
 
+  // Section the visitor is currently on, derived from pathname. Used to
+  // highlight the active top-level nav item even when no dropdown is open.
+  const currentSectionKey =
+    SECTIONS.find((s) => pathname === s.href || pathname.startsWith(s.href + "/"))?.key ?? null;
+  // What the underline should track: hovered section first, otherwise the
+  // current page's section.
+  const underlineSectionKey = openSectionKey ?? currentSectionKey;
+
   useLayoutEffect(() => {
-    if (!openSectionKey) {
+    if (!underlineSectionKey) {
       setUnderlineVisible(false);
       return;
     }
-    const btn = sectionRefs.current.get(openSectionKey);
+    const btn = sectionRefs.current.get(underlineSectionKey);
     const wrap = wrapRef.current;
     if (!btn || !wrap) return;
     const btnRect = btn.getBoundingClientRect();
@@ -114,7 +122,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
     // into one paint and there's no fade.
     const raf = requestAnimationFrame(() => setUnderlineVisible(true));
     return () => cancelAnimationFrame(raf);
-  }, [openSectionKey]);
+  }, [underlineSectionKey]);
 
   useEffect(() => {
     const bc = new BroadcastChannel("auth");
@@ -377,8 +385,9 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               }}
               onMouseEnter={() => openSection(s.key)}
               onFocus={() => openSection(s.key)}
-              style={openSectionKey === s.key ? { color: "#fff" } : undefined}
+              style={underlineSectionKey === s.key ? { color: "#fff" } : undefined}
               aria-expanded={openSectionKey === s.key}
+              aria-current={currentSectionKey === s.key ? "page" : undefined}
             >
               {s.label}
             </Link>

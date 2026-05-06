@@ -4,17 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { flushSync } from "react-dom";
-import {
-  OpendockLogo,
-  AthctlLogo,
-  PrimeLogo,
-  MailLogo,
-  ZomboidLogo,
-  SiteLogo,
-  StatusLogo,
-} from "./nav-icons";
-
-type SubItem = { label: string; href?: string; meta?: string; icon?: React.ReactNode };
+type SubItem = { label: string; href?: string; meta?: string };
 type Section = { key: string; label: string; href: string; items: SubItem[] };
 
 const SECTIONS: Section[] = [
@@ -23,8 +13,8 @@ const SECTIONS: Section[] = [
     label: "Tools",
     href: "/tools",
     items: [
-      { label: "Opendock", href: "/opendock", icon: <OpendockLogo /> },
-      { label: "athctl", icon: <AthctlLogo /> },
+      { label: "Opendock", href: "/opendock" },
+      { label: "athctl" },
     ],
   },
   {
@@ -32,8 +22,8 @@ const SECTIONS: Section[] = [
     label: "Services",
     href: "/services",
     items: [
-      { label: "Athion Prime", href: "/prime", icon: <PrimeLogo /> },
-      { label: "Athion Mail", icon: <MailLogo /> },
+      { label: "Athion Prime", href: "/prime" },
+      { label: "Athion Mail" },
     ],
   },
   {
@@ -41,9 +31,9 @@ const SECTIONS: Section[] = [
     label: "Servers",
     href: "/servers",
     items: [
-      { label: "Project Zomboid", href: "/infra", icon: <ZomboidLogo /> },
-      { label: "athion.me", href: "/infra", icon: <SiteLogo /> },
-      { label: "Status", href: "https://status.athion.me", icon: <StatusLogo /> },
+      { label: "Project Zomboid", href: "/infra" },
+      { label: "athion.me", href: "/infra" },
+      { label: "Status", href: "https://status.athion.me" },
     ],
   },
 ];
@@ -501,12 +491,12 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               const href = item.href!;
               const external = href.startsWith("http");
               return external ? (
-                <a key={item.label} href={href} className="nav-link" target="_blank" rel="noopener noreferrer" aria-label={item.label} title={item.label}>
-                  {item.icon}
+                <a key={item.label} href={href} className="nav-link" target="_blank" rel="noopener noreferrer">
+                  {item.label}
                 </a>
               ) : (
-                <Link key={item.label} href={href} prefetch={true} className="nav-link" aria-label={item.label} title={item.label}>
-                  {item.icon}
+                <Link key={item.label} href={href} prefetch={true} className="nav-link">
+                  {item.label}
                 </Link>
               );
             })}

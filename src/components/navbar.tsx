@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { flushSync } from "react-dom";
+import { AthionMark, JellyfinIcon, VaultwardenIcon, AudiobookshelfIcon } from "./nav-icons";
 
-type SubItem = { label: string; href?: string; meta?: string };
+type SubItem = { label: string; href?: string; meta?: string; icon?: React.ReactNode };
 type Section = { key: string; label: string; href: string; items: SubItem[] };
 
 const SECTIONS: Section[] = [
@@ -14,8 +15,8 @@ const SECTIONS: Section[] = [
     label: "Tools",
     href: "/tools",
     items: [
-      { label: "Opendock", href: "/opendock" },
-      { label: "athctl" },
+      { label: "Opendock", href: "/opendock", icon: <AthionMark letter="O" /> },
+      { label: "athctl", icon: <AthionMark letter="A" /> },
     ],
   },
   {
@@ -23,8 +24,8 @@ const SECTIONS: Section[] = [
     label: "Services",
     href: "/services",
     items: [
-      { label: "Athion Prime", href: "/prime" },
-      { label: "Athion Mail" },
+      { label: "Athion Prime", href: "/prime", icon: <AthionMark letter="P" /> },
+      { label: "Athion Mail", icon: <AthionMark letter="M" /> },
     ],
   },
   {
@@ -32,10 +33,10 @@ const SECTIONS: Section[] = [
     label: "Servers",
     href: "/servers",
     items: [
-      { label: "Jellyfin", href: "https://jellyfin.athion.me" },
-      { label: "Vaultwarden", href: "https://vault.athion.me" },
-      { label: "Audiobookshelf", href: "https://audiobooks.athion.me" },
-      { label: "Project Zomboid", href: "/infra" },
+      { label: "Jellyfin", href: "https://jellyfin.athion.me", icon: <JellyfinIcon /> },
+      { label: "Vaultwarden", href: "https://vault.athion.me", icon: <VaultwardenIcon /> },
+      { label: "Audiobookshelf", href: "https://audiobooks.athion.me", icon: <AudiobookshelfIcon /> },
+      { label: "Project Zomboid", href: "/infra", icon: <AthionMark letter="Z" /> },
     ],
   },
 ];
@@ -492,13 +493,19 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
             {activeSection?.items.filter((item) => item.href).map((item) => {
               const href = item.href!;
               const external = href.startsWith("http");
+              const inner = (
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                  {item.icon}
+                  <span>{item.label}</span>
+                </span>
+              );
               return external ? (
                 <a key={item.label} href={href} className="nav-link" target="_blank" rel="noopener noreferrer">
-                  {item.label}
+                  {inner}
                 </a>
               ) : (
                 <Link key={item.label} href={href} prefetch={true} className="nav-link">
-                  {item.label}
+                  {inner}
                 </Link>
               );
             })}

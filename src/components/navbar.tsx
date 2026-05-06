@@ -4,7 +4,15 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { flushSync } from "react-dom";
-import { AthionMark } from "./nav-icons";
+import {
+  OpendockIcon,
+  AthctlIcon,
+  PrimeIcon,
+  MailIcon,
+  ZomboidIcon,
+  SiteIcon,
+  StatusIcon,
+} from "./nav-icons";
 
 type SubItem = { label: string; href?: string; meta?: string; icon?: React.ReactNode };
 type Section = { key: string; label: string; href: string; items: SubItem[] };
@@ -15,8 +23,8 @@ const SECTIONS: Section[] = [
     label: "Tools",
     href: "/tools",
     items: [
-      { label: "Opendock", href: "/opendock", icon: <AthionMark letter="O" /> },
-      { label: "athctl", icon: <AthionMark letter="A" /> },
+      { label: "Opendock", href: "/opendock", icon: <OpendockIcon /> },
+      { label: "athctl", icon: <AthctlIcon /> },
     ],
   },
   {
@@ -24,8 +32,8 @@ const SECTIONS: Section[] = [
     label: "Services",
     href: "/services",
     items: [
-      { label: "Athion Prime", href: "/prime", icon: <AthionMark letter="P" /> },
-      { label: "Athion Mail", icon: <AthionMark letter="M" /> },
+      { label: "Athion Prime", href: "/prime", icon: <PrimeIcon /> },
+      { label: "Athion Mail", icon: <MailIcon /> },
     ],
   },
   {
@@ -33,9 +41,9 @@ const SECTIONS: Section[] = [
     label: "Servers",
     href: "/servers",
     items: [
-      { label: "Project Zomboid", href: "/infra", icon: <AthionMark letter="Z" /> },
-      { label: "athion.me", href: "/infra", icon: <AthionMark letter="A" /> },
-      { label: "Status", href: "https://status.athion.me", icon: <AthionMark letter="S" /> },
+      { label: "Project Zomboid", href: "/infra", icon: <ZomboidIcon /> },
+      { label: "athion.me", href: "/infra", icon: <SiteIcon /> },
+      { label: "Status", href: "https://status.athion.me", icon: <StatusIcon /> },
     ],
   },
 ];

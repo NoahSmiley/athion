@@ -480,7 +480,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               lineHeight: 1,
               // Top padding bridges the gap to the top nav so the hit-area
               // covers the dead zone between the two rows.
-              padding: "16px 0 8px",
+              padding: "10px 0 8px",
               opacity: activeSection ? 1 : 0,
               transition: "opacity 0.18s ease, transform 0.22s ease, left 0.22s ease",
               pointerEvents: activeSection ? "auto" : "none",

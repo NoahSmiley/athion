@@ -378,7 +378,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
       >
         {wordmark}
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          {!isBlog && SECTIONS.map((s) => (
+          {!isBlog && user && SECTIONS.map((s) => (
             <Link
               key={s.key}
               href={s.href}
@@ -397,7 +397,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               {s.label}
             </Link>
           ))}
-          {!isBlog && MAIN_LINKS.map(([href, label]) => (
+          {!isBlog && user && MAIN_LINKS.map(([href, label]) => (
             <Link
               key={href}
               href={href}
@@ -424,7 +424,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
           )}
         </div>
       </nav>
-      {!isBlog && (
+      {!isBlog && user && (
         <nav
           className="athion-nav-sub"
           onMouseEnter={() => activeSection && openSection(activeSection.key)}

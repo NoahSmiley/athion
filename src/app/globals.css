@@ -182,8 +182,12 @@ li { margin-bottom: 4px; }
   .main-sidebar nav.athion-nav-top a, .main-sidebar nav.athion-nav-top button { font-size: 12px !important; }
   .main-sidebar nav.athion-nav-top svg { height: 14px !important; }
   .main-sidebar nav.athion-nav-sub {
+    position: static !important;
+    transform: none !important;
+    left: auto !important;
+    top: auto !important;
     width: 100%; box-sizing: border-box; padding: 6px 12px 0 !important;
-    flex-direction: row; flex-wrap: wrap;
+    flex-direction: row !important; flex-wrap: wrap;
     gap: 8px 14px !important;
     font-size: 11px !important;
     justify-content: center !important;

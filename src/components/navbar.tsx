@@ -65,7 +65,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSectionKey, setOpenSectionKey] = useState<string | null>(null);
   const [sectionLocked, setSectionLocked] = useState(false);
-  const [subLeft, setSubLeft] = useState(24);
+  const [subCenter, setSubCenter] = useState(24);
   const pathname = usePathname();
   const router = useRouter();
   const isBlog = pathname === "/blog" || pathname.startsWith("/blog/");
@@ -111,7 +111,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
     if (!btn || !wrap) return;
     const btnRect = btn.getBoundingClientRect();
     const wrapRect = wrap.getBoundingClientRect();
-    setSubLeft(btnRect.left - wrapRect.left);
+    setSubCenter(btnRect.left - wrapRect.left + btnRect.width / 2);
   }, [openSectionKey]);
 
   useEffect(() => {
@@ -378,7 +378,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
       >
         {wordmark}
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          {!isBlog && user && SECTIONS.map((s) => (
+          {!isBlog && user && SECTIONS.map((s, i) => (
             <Link
               key={s.key}
               href={s.href}
@@ -391,7 +391,13 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               onMouseEnter={() => openSection(s.key)}
               onFocus={() => openSection(s.key)}
               onClick={toggleLock(s.key)}
-              style={openSectionKey === s.key ? { color: "#fff" } : undefined}
+              style={{
+                ...(openSectionKey === s.key ? { color: "#fff" } : undefined),
+                // Extra room between sections so the dropdown items below
+                // visually own their own column. Last section keeps the
+                // default gap so it doesn't drift away from Press.
+                ...(i < SECTIONS.length - 1 ? { marginRight: 22 } : undefined),
+              }}
               aria-expanded={openSectionKey === s.key}
             >
               {s.label}
@@ -434,7 +440,8 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
             style={{
               position: "absolute",
               top: 22,
-              left: subLeft + 2,
+              left: subCenter,
+              transform: "translateX(-50%)",
               fontSize: 9,
               lineHeight: 1,
               color: "#828282",
@@ -449,20 +456,25 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
             className="athion-nav-sub"
             onMouseEnter={() => activeSection && openSection(activeSection.key)}
             style={{
+              position: "absolute",
+              top: 24,
+              left: subCenter,
+              transform: activeSection
+                ? "translate(-50%, 0)"
+                : "translate(-50%, -4px)",
               display: "flex",
               flexDirection: "column",
-              alignItems: "flex-start",
+              alignItems: "center",
               gap: 6,
               fontSize: 12,
               lineHeight: 1,
-              // Negative margin pulls the hit-area up to overlap the gap with the
-              // top nav so the cursor can't fall into a dead zone between rows.
-              margin: "-8px 0 0",
-              padding: `16px 24px 8px ${subLeft}px`,
+              // Top padding bridges the gap to the top nav so the hit-area
+              // covers the dead zone between the two rows.
+              padding: "16px 0 8px",
               opacity: activeSection ? 1 : 0,
-              transform: activeSection ? "translateY(0)" : "translateY(-4px)",
-              transition: "opacity 0.18s ease, transform 0.18s ease, padding-left 0.22s ease",
+              transition: "opacity 0.18s ease, transform 0.22s ease, left 0.22s ease",
               pointerEvents: activeSection ? "auto" : "none",
+              whiteSpace: "nowrap",
             }}
           >
             {activeSection?.items.filter((item) => item.href).map((item) => (

@@ -30,6 +30,7 @@ a:hover { color: #fff !important; }
 
 .nav-link { color: #828282 !important; transition: color 0.15s; }
 .nav-link:hover { color: #fff !important; }
+.nav-link-active { color: #fff !important; }
 
 /* Light-on-dark CTA (white pill, dark text). The global a:hover rule
    forces text to white, which would make this CTA white-on-white on hover —

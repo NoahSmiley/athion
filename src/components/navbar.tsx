@@ -213,8 +213,8 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
 
   const linkStyle = (href: string) => {
     if (href === "/") return undefined;
-    if (href === "/blog") return pathname === "/blog" ? { color: "#c8c8c8" } : undefined;
-    return pathname === href || pathname.startsWith(href + "/") ? { color: "#c8c8c8" } : undefined;
+    if (href === "/blog") return pathname === "/blog" ? { color: "#fff" } : undefined;
+    return pathname === href || pathname.startsWith(href + "/") ? { color: "#fff" } : undefined;
   };
 
   const blogMorphStyle = { viewTransitionName: "blog-morph" } as React.CSSProperties;
@@ -378,14 +378,13 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               key={s.key}
               href={s.href}
               prefetch={true}
-              className="nav-link"
+              className={`nav-link${underlineSectionKey === s.key ? " nav-link-active" : ""}`}
               ref={(el: HTMLAnchorElement | null) => {
                 if (el) sectionRefs.current.set(s.key, el);
                 else sectionRefs.current.delete(s.key);
               }}
               onMouseEnter={() => openSection(s.key)}
               onFocus={() => openSection(s.key)}
-              style={underlineSectionKey === s.key ? { color: "#fff" } : undefined}
               aria-expanded={openSectionKey === s.key}
               aria-current={currentSectionKey === s.key ? "page" : undefined}
             >
@@ -398,9 +397,9 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               href={href}
               onClick={navigate(href)}
               prefetch={true}
-              className="nav-link"
+              className={`nav-link${linkStyle(href) ? " nav-link-active" : ""}`}
               onMouseEnter={closeNonSection}
-              style={{ ...linkStyle(href), ...(href === "/blog" ? blogMorphStyle : {}) }}
+              style={href === "/blog" ? blogMorphStyle : undefined}
             >
               {label}
             </Link>

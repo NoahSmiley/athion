@@ -377,8 +377,8 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
         }}
       >
         {wordmark}
-        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          {!isBlog && user && SECTIONS.map((s, i) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 40 }}>
+          {!isBlog && user && SECTIONS.map((s) => (
             <Link
               key={s.key}
               href={s.href}
@@ -391,13 +391,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               onMouseEnter={() => openSection(s.key)}
               onFocus={() => openSection(s.key)}
               onClick={toggleLock(s.key)}
-              style={{
-                ...(openSectionKey === s.key ? { color: "#fff" } : undefined),
-                // Extra room between sections so the dropdown items below
-                // visually own their own column. Last section keeps the
-                // default gap so it doesn't drift away from Press.
-                ...(i < SECTIONS.length - 1 ? { marginRight: 22 } : undefined),
-              }}
+              style={openSectionKey === s.key ? { color: "#fff" } : undefined}
               aria-expanded={openSectionKey === s.key}
             >
               {s.label}
@@ -432,26 +426,6 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
       </nav>
       {!isBlog && user && (
         <>
-          {/* Caret tying the sub-row to its parent section label. Animates with
-              the same transition as the sub-nav padding so it tracks the active
-              section as you move between Tools / Services / Servers. */}
-          <span
-            aria-hidden="true"
-            style={{
-              position: "absolute",
-              top: 22,
-              left: subCenter,
-              transform: "translateX(-50%)",
-              fontSize: 9,
-              lineHeight: 1,
-              color: "#828282",
-              opacity: activeSection ? 1 : 0,
-              transition: "opacity 0.18s ease, left 0.22s ease",
-              pointerEvents: "none",
-            }}
-          >
-            ▾
-          </span>
           <nav
             className="athion-nav-sub"
             onMouseEnter={() => activeSection && openSection(activeSection.key)}

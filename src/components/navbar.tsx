@@ -377,7 +377,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
         }}
       >
         {wordmark}
-        <div style={{ display: "flex", alignItems: "center", gap: 40 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
           {!isBlog && user && SECTIONS.map((s) => (
             <Link
               key={s.key}
@@ -391,7 +391,16 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               onMouseEnter={() => openSection(s.key)}
               onFocus={() => openSection(s.key)}
               onClick={toggleLock(s.key)}
-              style={openSectionKey === s.key ? { color: "#fff" } : undefined}
+              style={
+                openSectionKey === s.key
+                  ? {
+                      color: "#fff",
+                      borderBottom: "1px solid #fff",
+                      paddingBottom: 4,
+                      marginBottom: -5,
+                    }
+                  : { paddingBottom: 4, marginBottom: -5 }
+              }
               aria-expanded={openSectionKey === s.key}
             >
               {s.label}

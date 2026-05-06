@@ -31,8 +31,8 @@ const SECTIONS: Section[] = [
     label: "Servers",
     href: "/servers",
     items: [
-      { label: "Zomboid", href: "/infra" },
-      { label: "Minecraft", href: "/infra" },
+      { label: "Zomboid", href: "/servers/zomboid" },
+      { label: "Minecraft", href: "/servers/minecraft" },
     ],
   },
 ];

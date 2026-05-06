@@ -8,14 +8,14 @@ export default function ServersPage() {
       <table className="home-directory">
         <tbody>
           <tr>
-            <td><Link href="/infra">Zomboid</Link></td>
+            <td><Link href="/servers/zomboid">Zomboid</Link></td>
             <td>Project Zomboid. 22-map stack, 98 mods.</td>
-            <td><a href="https://status.athion.me" className="muted">status →</a></td>
+            <td><Link href="/servers/zomboid" className="muted">details →</Link></td>
           </tr>
           <tr>
-            <td><Link href="/infra">Minecraft</Link></td>
+            <td><Link href="/servers/minecraft">Minecraft</Link></td>
             <td>NeoForge server.</td>
-            <td><a href="https://status.athion.me" className="muted">status →</a></td>
+            <td><Link href="/servers/minecraft" className="muted">details →</Link></td>
           </tr>
         </tbody>
       </table>

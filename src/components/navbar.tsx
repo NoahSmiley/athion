@@ -66,6 +66,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
   const [openSectionKey, setOpenSectionKey] = useState<string | null>(null);
   const [sectionLocked, setSectionLocked] = useState(false);
   const [subCenter, setSubCenter] = useState(24);
+  const [underline, setUnderline] = useState<{ left: number; width: number } | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const isBlog = pathname === "/blog" || pathname.startsWith("/blog/");
@@ -105,13 +106,17 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
   }, [pathname]);
 
   useLayoutEffect(() => {
-    if (!openSectionKey) return;
+    if (!openSectionKey) {
+      setUnderline(null);
+      return;
+    }
     const btn = sectionRefs.current.get(openSectionKey);
     const wrap = wrapRef.current;
     if (!btn || !wrap) return;
     const btnRect = btn.getBoundingClientRect();
     const wrapRect = wrap.getBoundingClientRect();
     setSubCenter(btnRect.left - wrapRect.left + btnRect.width / 2);
+    setUnderline({ left: btnRect.left - wrapRect.left, width: btnRect.width });
   }, [openSectionKey]);
 
   useEffect(() => {
@@ -391,16 +396,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               onMouseEnter={() => openSection(s.key)}
               onFocus={() => openSection(s.key)}
               onClick={toggleLock(s.key)}
-              style={
-                openSectionKey === s.key
-                  ? {
-                      color: "#fff",
-                      borderBottom: "1px solid #fff",
-                      paddingBottom: 4,
-                      marginBottom: -5,
-                    }
-                  : { paddingBottom: 4, marginBottom: -5 }
-              }
+              style={openSectionKey === s.key ? { color: "#fff" } : undefined}
               aria-expanded={openSectionKey === s.key}
             >
               {s.label}
@@ -433,6 +429,22 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
           )}
         </div>
       </nav>
+      {/* Sliding underline that tracks the active section. Sits just below
+          the 24px top nav and animates left+width between section labels. */}
+      <span
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          top: 24,
+          left: underline?.left ?? 0,
+          width: underline?.width ?? 0,
+          height: 1,
+          background: "#fff",
+          opacity: underline ? 1 : 0,
+          transition: "left 0.18s ease, width 0.18s ease, opacity 0.18s ease",
+          pointerEvents: "none",
+        }}
+      />
       {!isBlog && user && (
         <>
           <nav

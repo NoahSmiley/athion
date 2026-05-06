@@ -127,7 +127,7 @@ li { margin-bottom: 4px; }
 .auth-card { width: 260px; pointer-events: auto; }
 
 .main-sidebar { position: fixed; top: 56px; left: 0; right: 0; z-index: 10; display: flex; justify-content: center; pointer-events: none; }
-.main-sidebar .athion-nav-wrap { pointer-events: auto; max-width: 700px; width: 100%; box-sizing: border-box; }
+.main-sidebar .athion-nav-wrap { pointer-events: auto; max-width: 700px; width: 100%; box-sizing: border-box; position: relative; }
 .main-sidebar nav.athion-nav-top { box-sizing: border-box; height: 24px; }
 .main-sidebar nav.athion-nav-sub { box-sizing: border-box; }
 .main-stage { position: fixed; top: 132px; left: 0; right: 0; bottom: 32px; display: flex; justify-content: center; align-items: center; pointer-events: none; overflow: auto; scrollbar-width: none; -ms-overflow-style: none; }

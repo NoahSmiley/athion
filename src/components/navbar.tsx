@@ -425,32 +425,53 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
         </div>
       </nav>
       {!isBlog && user && (
-        <nav
-          className="athion-nav-sub"
-          onMouseEnter={() => activeSection && openSection(activeSection.key)}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            gap: 6,
-            fontSize: 12,
-            lineHeight: 1,
-            // Negative margin pulls the hit-area up to overlap the gap with the
-            // top nav so the cursor can't fall into a dead zone between rows.
-            margin: "-8px 0 0",
-            padding: `16px 24px 8px ${subLeft}px`,
-            opacity: activeSection ? 1 : 0,
-            transform: activeSection ? "translateY(0)" : "translateY(-4px)",
-            transition: "opacity 0.18s ease, transform 0.18s ease, padding-left 0.22s ease",
-            pointerEvents: activeSection ? "auto" : "none",
-          }}
-        >
-          {activeSection?.items.filter((item) => item.href).map((item) => (
-            <Link key={item.label} href={item.href!} prefetch={true} className="nav-link">
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        <>
+          {/* Caret tying the sub-row to its parent section label. Animates with
+              the same transition as the sub-nav padding so it tracks the active
+              section as you move between Tools / Services / Servers. */}
+          <span
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              top: 22,
+              left: subLeft + 2,
+              fontSize: 9,
+              lineHeight: 1,
+              color: "#828282",
+              opacity: activeSection ? 1 : 0,
+              transition: "opacity 0.18s ease, left 0.22s ease",
+              pointerEvents: "none",
+            }}
+          >
+            ▾
+          </span>
+          <nav
+            className="athion-nav-sub"
+            onMouseEnter={() => activeSection && openSection(activeSection.key)}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              gap: 6,
+              fontSize: 12,
+              lineHeight: 1,
+              // Negative margin pulls the hit-area up to overlap the gap with the
+              // top nav so the cursor can't fall into a dead zone between rows.
+              margin: "-8px 0 0",
+              padding: `16px 24px 8px ${subLeft}px`,
+              opacity: activeSection ? 1 : 0,
+              transform: activeSection ? "translateY(0)" : "translateY(-4px)",
+              transition: "opacity 0.18s ease, transform 0.18s ease, padding-left 0.22s ease",
+              pointerEvents: activeSection ? "auto" : "none",
+            }}
+          >
+            {activeSection?.items.filter((item) => item.href).map((item) => (
+              <Link key={item.label} href={item.href!} prefetch={true} className="nav-link">
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </>
       )}
     </div>
   );

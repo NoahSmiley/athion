@@ -45,9 +45,10 @@ a:hover { color: #fff !important; }
 /* Section anchors clear the fixed two-row nav (top: 56 + 24 + sub + slack). */
 .home-page h2[id] { scroll-margin-top: 140px; }
 
-/* Homepage hero animation panel — full-width band, used on the logged-out landing */
+/* Homepage hero animation panel — full-width band, used on the logged-out landing.
+   Matches the main column's content width (same as the nav) so visual edges line up. */
 .home-hero-anim {
-  width: 100%; max-width: 520px; aspect-ratio: 1 / 1;
+  width: 100%; aspect-ratio: 1 / 1;
   margin: 0 auto;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden; cursor: pointer;

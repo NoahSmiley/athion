@@ -31,9 +31,8 @@ const SECTIONS: Section[] = [
     label: "Servers",
     href: "/servers",
     items: [
-      { label: "Project Zomboid", href: "/infra" },
-      { label: "athion.me", href: "/infra" },
-      { label: "Status", href: "https://status.athion.me" },
+      { label: "Zomboid", href: "/infra" },
+      { label: "Minecraft", href: "/infra" },
     ],
   },
 ];

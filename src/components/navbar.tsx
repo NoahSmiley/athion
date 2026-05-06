@@ -32,8 +32,10 @@ const SECTIONS: Section[] = [
     label: "Servers",
     href: "/servers",
     items: [
-      { label: "Homelab", href: "/infra" },
-      { label: "Game servers" },
+      { label: "Jellyfin", href: "https://jellyfin.athion.me" },
+      { label: "Vaultwarden", href: "https://vault.athion.me" },
+      { label: "Audiobookshelf", href: "https://audiobooks.athion.me" },
+      { label: "Project Zomboid", href: "/infra" },
     ],
   },
 ];
@@ -487,11 +489,19 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               whiteSpace: "nowrap",
             }}
           >
-            {activeSection?.items.filter((item) => item.href).map((item) => (
-              <Link key={item.label} href={item.href!} prefetch={true} className="nav-link">
-                {item.label}
-              </Link>
-            ))}
+            {activeSection?.items.filter((item) => item.href).map((item) => {
+              const href = item.href!;
+              const external = href.startsWith("http");
+              return external ? (
+                <a key={item.label} href={href} className="nav-link" target="_blank" rel="noopener noreferrer">
+                  {item.label}
+                </a>
+              ) : (
+                <Link key={item.label} href={href} prefetch={true} className="nav-link">
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
         </>
       )}

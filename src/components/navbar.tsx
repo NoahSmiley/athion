@@ -67,6 +67,10 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
   const [sectionLocked, setSectionLocked] = useState(false);
   const [subCenter, setSubCenter] = useState(24);
   const [underline, setUnderline] = useState<{ left: number; width: number } | null>(null);
+  // Tracks whether the underline is mid-show. Used to suppress the slide-in
+  // from {0,0} when the bar first appears — we only want left/width to animate
+  // between section-to-section transitions, not from origin.
+  const [underlineVisible, setUnderlineVisible] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const isBlog = pathname === "/blog" || pathname.startsWith("/blog/");
@@ -107,7 +111,7 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
 
   useLayoutEffect(() => {
     if (!openSectionKey) {
-      setUnderline(null);
+      setUnderlineVisible(false);
       return;
     }
     const btn = sectionRefs.current.get(openSectionKey);
@@ -117,6 +121,12 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
     const wrapRect = wrap.getBoundingClientRect();
     setSubCenter(btnRect.left - wrapRect.left + btnRect.width / 2);
     setUnderline({ left: btnRect.left - wrapRect.left, width: btnRect.width });
+    // Schedule the opacity flip on a separate frame so the browser
+    // commits the bar at its target position with opacity:0 first,
+    // then transitions opacity to 1. Without this, both updates batch
+    // into one paint and there's no fade.
+    const raf = requestAnimationFrame(() => setUnderlineVisible(true));
+    return () => cancelAnimationFrame(raf);
   }, [openSectionKey]);
 
   useEffect(() => {
@@ -429,22 +439,27 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
           )}
         </div>
       </nav>
-      {/* Sliding underline that tracks the active section. Sits just below
-          the 24px top nav and animates left+width between section labels. */}
-      <span
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          top: 24,
-          left: underline?.left ?? 0,
-          width: underline?.width ?? 0,
-          height: 1,
-          background: "#fff",
-          opacity: underline ? 1 : 0,
-          transition: "left 0.18s ease, width 0.18s ease, opacity 0.18s ease",
-          pointerEvents: "none",
-        }}
-      />
+      {/* Sliding underline tracking the active section. We mount the bar
+          only once `underline` exists, so the very first appearance has no
+          prior position to interpolate from — the bar simply fades in at
+          its target. Subsequent section switches keep the same element
+          mounted, so left/width animate smoothly between sections. */}
+      {underline && (
+        <span
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: 24,
+            left: underline.left,
+            width: underline.width,
+            height: 1,
+            background: "#fff",
+            opacity: underlineVisible ? 1 : 0,
+            transition: "left 0.18s ease, width 0.18s ease, opacity 0.18s ease",
+            pointerEvents: "none",
+          }}
+        />
+      )}
       {!isBlog && user && (
         <>
           <nav

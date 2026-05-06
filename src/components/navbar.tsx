@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { flushSync } from "react-dom";
-import { AthionMark, JellyfinIcon, VaultwardenIcon, AudiobookshelfIcon } from "./nav-icons";
+import { AthionMark } from "./nav-icons";
 
 type SubItem = { label: string; href?: string; meta?: string; icon?: React.ReactNode };
 type Section = { key: string; label: string; href: string; items: SubItem[] };
@@ -33,10 +33,9 @@ const SECTIONS: Section[] = [
     label: "Servers",
     href: "/servers",
     items: [
-      { label: "Jellyfin", href: "https://jellyfin.athion.me", icon: <JellyfinIcon /> },
-      { label: "Vaultwarden", href: "https://vault.athion.me", icon: <VaultwardenIcon /> },
-      { label: "Audiobookshelf", href: "https://audiobooks.athion.me", icon: <AudiobookshelfIcon /> },
       { label: "Project Zomboid", href: "/infra", icon: <AthionMark letter="Z" /> },
+      { label: "athion.me", href: "/infra", icon: <AthionMark letter="A" /> },
+      { label: "Status", href: "https://status.athion.me", icon: <AthionMark letter="S" /> },
     ],
   },
 ];

@@ -63,7 +63,6 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
   const [user, setUser] = useState<NavUser | null>(initialUser);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSectionKey, setOpenSectionKey] = useState<string | null>(null);
-  const [sectionLocked, setSectionLocked] = useState(false);
   const [subCenter, setSubCenter] = useState(24);
   const [underline, setUnderline] = useState<{ left: number; width: number } | null>(null);
   // Tracks whether the underline is mid-show. Used to suppress the slide-in
@@ -83,19 +82,8 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
     setOpenSectionKey(key);
   };
   const scheduleClose = () => {
-    if (sectionLocked) return;
     if (hoverCloseTimer.current) clearTimeout(hoverCloseTimer.current);
     hoverCloseTimer.current = setTimeout(() => setOpenSectionKey(null), 350);
-  };
-  const toggleLock = (key: string) => (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (sectionLocked && openSectionKey === key) {
-      setSectionLocked(false);
-      setOpenSectionKey(null);
-    } else {
-      setSectionLocked(true);
-      setOpenSectionKey(key);
-    }
   };
 
   // The view-transition callback resolves only once the new pathname has
@@ -140,7 +128,6 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
   useEffect(() => {
     setMenuOpen(false);
     setOpenSectionKey(null);
-    setSectionLocked(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -152,19 +139,6 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
     document.addEventListener("click", onDoc);
     return () => document.removeEventListener("click", onDoc);
   }, [menuOpen]);
-
-  useEffect(() => {
-    if (!sectionLocked) return;
-    const onDoc = (e: MouseEvent) => {
-      const t = e.target as HTMLElement;
-      if (!t.closest?.(".athion-nav-wrap")) {
-        setSectionLocked(false);
-        setOpenSectionKey(null);
-      }
-    };
-    document.addEventListener("click", onDoc);
-    return () => document.removeEventListener("click", onDoc);
-  }, [sectionLocked]);
 
   const navigate = (href: string) => (e: React.MouseEvent) => {
     if (href.startsWith("http")) return;
@@ -372,7 +346,6 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
 
   const activeSection = openSectionKey ? SECTIONS.find((s) => s.key === openSectionKey) : null;
   const closeNonSection = () => {
-    if (sectionLocked) return;
     if (hoverCloseTimer.current) clearTimeout(hoverCloseTimer.current);
     setOpenSectionKey(null);
   };
@@ -404,7 +377,6 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               }}
               onMouseEnter={() => openSection(s.key)}
               onFocus={() => openSection(s.key)}
-              onClick={toggleLock(s.key)}
               style={openSectionKey === s.key ? { color: "#fff" } : undefined}
               aria-expanded={openSectionKey === s.key}
             >

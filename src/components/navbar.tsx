@@ -445,14 +445,10 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
             pointerEvents: activeSection ? "auto" : "none",
           }}
         >
-          {activeSection?.items.map((item) => (
-            item.href ? (
-              <Link key={item.label} href={item.href} prefetch={true} className="nav-link">
-                {item.label}
-              </Link>
-            ) : (
-              <span key={item.label} className="muted">{item.label}</span>
-            )
+          {activeSection?.items.filter((item) => item.href).map((item) => (
+            <Link key={item.label} href={item.href!} prefetch={true} className="nav-link">
+              {item.label}
+            </Link>
           ))}
         </nav>
       )}

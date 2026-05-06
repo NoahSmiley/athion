@@ -96,10 +96,19 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
     }
   }, [pathname]);
 
-  // Section the visitor is currently on, derived from pathname. Used to
-  // highlight the active top-level nav item even when no dropdown is open.
+  // Section the visitor is currently on, derived from pathname. Matches
+  // either the section's own page (/tools, /services, /servers) or any
+  // sub-item belonging to that section (/opendock under Tools, etc.) so
+  // visiting a sub-item still highlights its parent.
   const currentSectionKey =
-    SECTIONS.find((s) => pathname === s.href || pathname.startsWith(s.href + "/"))?.key ?? null;
+    SECTIONS.find((s) => {
+      if (pathname === s.href || pathname.startsWith(s.href + "/")) return true;
+      return s.items.some((item) => {
+        if (!item.href) return false;
+        if (item.href.startsWith("http")) return false;
+        return pathname === item.href || pathname.startsWith(item.href + "/");
+      });
+    })?.key ?? null;
   // What the underline should track: hovered section first, otherwise the
   // current page's section.
   const underlineSectionKey = openSectionKey ?? currentSectionKey;

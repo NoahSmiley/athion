@@ -1,82 +1,117 @@
-// Inline SVG icons for sub-nav items. Each icon is a unique mark inside
-// a uniform 14px bordered square — same outer shape across the set so the
-// nav reads as a coherent group, but each item has its own glyph.
+// Sub-nav logos. Each is a complete typographic unit inside a uniform 92x20
+// bordered rectangle — not an icon + label, but a wordmark designed as a
+// single visual treatment. Same outer box across the set so the nav reads
+// as a coherent series of plates while each mark stays distinctive.
 
-const SIZE = 14;
+const W = 92;
+const H = 20;
 
-function Frame({ children }: { children: React.ReactNode }) {
+function Plate({ children }: { children: React.ReactNode }) {
   return (
-    <svg width={SIZE} height={SIZE} viewBox="0 0 14 14" aria-hidden="true">
-      <rect x="0.5" y="0.5" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1" />
+    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden="true" style={{ display: "block" }}>
+      <rect x="0.5" y="0.5" width={W - 1} height={H - 1} fill="none" stroke="currentColor" strokeWidth="1" />
       {children}
     </svg>
   );
 }
 
-// Opendock — stacked kanban columns (project tracking).
-export function OpendockIcon() {
+function Word({ x, weight, letterSpacing, children }: { x: number; weight: number; letterSpacing?: number; children: string }) {
   return (
-    <Frame>
-      <rect x="3" y="3" width="2" height="6" fill="currentColor" />
-      <rect x="6.5" y="3" width="2" height="4" fill="currentColor" />
-      <rect x="10" y="3" width="2" height="2" fill="currentColor" />
-    </Frame>
+    <text
+      x={x}
+      y="14"
+      fontSize="11"
+      fontFamily="OpenAI Sans, sans-serif"
+      fontWeight={weight}
+      fill="currentColor"
+      letterSpacing={letterSpacing ?? 0}
+    >
+      {children}
+    </text>
   );
 }
 
-// athctl — terminal prompt chevron.
-export function AthctlIcon() {
+// Opendock — kanban bars built into the lockup at the left.
+export function OpendockLogo() {
   return (
-    <Frame>
-      <path d="M3.5 4.5 L6 7 L3.5 9.5" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <line x1="7" y1="10" x2="11" y2="10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-    </Frame>
+    <Plate>
+      <rect x="6" y="6" width="2" height="8" fill="currentColor" />
+      <rect x="9" y="6" width="2" height="6" fill="currentColor" />
+      <rect x="12" y="6" width="2" height="4" fill="currentColor" />
+      <Word x={18} weight={600}>Opendock</Word>
+    </Plate>
   );
 }
 
-// Athion Prime — play triangle (streaming).
-export function PrimeIcon() {
+// athctl — terminal prompt as part of the lockup, lowercase mono-feel.
+export function AthctlLogo() {
   return (
-    <Frame>
-      <path d="M5 4 L11 7 L5 10 Z" fill="currentColor" />
-    </Frame>
+    <Plate>
+      <text x="6" y="14" fontSize="11" fontFamily="Courier New, monospace" fontWeight={700} fill="currentColor">
+        &gt;_
+      </text>
+      <text x="22" y="14" fontSize="11" fontFamily="Courier New, monospace" fontWeight={500} fill="currentColor" letterSpacing={0.5}>
+        athctl
+      </text>
+    </Plate>
   );
 }
 
-// Athion Mail — envelope.
-export function MailIcon() {
+// Athion Prime — play-triangle integrated into a tracked-out wordmark.
+export function PrimeLogo() {
   return (
-    <Frame>
-      <rect x="3" y="4.5" width="8" height="5" fill="none" stroke="currentColor" strokeWidth="1" />
-      <path d="M3 4.5 L7 7.5 L11 4.5" fill="none" stroke="currentColor" strokeWidth="1" strokeLinejoin="round" />
-    </Frame>
+    <Plate>
+      <path d="M5 6 L13 10 L5 14 Z" fill="currentColor" />
+      <text x="17" y="14" fontSize="10" fontFamily="OpenAI Sans, sans-serif" fontWeight={600} fill="currentColor" letterSpacing={1.2}>
+        PRIME
+      </text>
+      <line x1="55" y1="10" x2="83" y2="10" stroke="currentColor" strokeWidth="0.8" opacity="0.5" />
+    </Plate>
   );
 }
 
-// Project Zomboid — bold Z (game server marker).
-export function ZomboidIcon() {
+// Athion Mail — envelope flap drawn as the M.
+export function MailLogo() {
   return (
-    <Frame>
-      <path d="M4 4 H10 L4 10 H10" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-    </Frame>
+    <Plate>
+      <rect x="5" y="6" width="11" height="8" fill="none" stroke="currentColor" strokeWidth="1" />
+      <path d="M5 6 L10.5 10.5 L16 6" fill="none" stroke="currentColor" strokeWidth="1" />
+      <Word x={20} weight={500}>Athion Mail</Word>
+    </Plate>
   );
 }
 
-// athion.me — concentric squares (the site within the network).
-export function SiteIcon() {
+// Project Zomboid — bold lightning Z as the integrated mark.
+export function ZomboidLogo() {
   return (
-    <Frame>
-      <rect x="3.5" y="3.5" width="7" height="7" fill="none" stroke="currentColor" strokeWidth="1" />
-      <rect x="6" y="6" width="2" height="2" fill="currentColor" />
-    </Frame>
+    <Plate>
+      <path d="M5 6 H12 L5 14 H12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <Word x={17} weight={500}>Zomboid</Word>
+    </Plate>
   );
 }
 
-// Status — heartbeat / pulse line.
-export function StatusIcon() {
+// athion.me — the dot in the wordmark IS the mark, oversized for emphasis.
+export function SiteLogo() {
   return (
-    <Frame>
-      <path d="M3 7 H5 L6 4.5 L8 9.5 L9 7 H11" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </Frame>
+    <Plate>
+      <text x="6" y="14" fontSize="11" fontFamily="OpenAI Sans, sans-serif" fontWeight={500} fill="currentColor">
+        athion
+      </text>
+      <circle cx="38" cy="13" r="1.6" fill="currentColor" />
+      <text x="42" y="14" fontSize="11" fontFamily="OpenAI Sans, sans-serif" fontWeight={500} fill="currentColor">
+        me
+      </text>
+    </Plate>
+  );
+}
+
+// Status — pulse line built directly into the wordmark.
+export function StatusLogo() {
+  return (
+    <Plate>
+      <Word x={6} weight={500}>Status</Word>
+      <path d="M44 10 L48 10 L51 6 L55 14 L57 10 L86 10" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+    </Plate>
   );
 }

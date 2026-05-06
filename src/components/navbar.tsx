@@ -5,13 +5,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { flushSync } from "react-dom";
 import {
-  OpendockIcon,
-  AthctlIcon,
-  PrimeIcon,
-  MailIcon,
-  ZomboidIcon,
-  SiteIcon,
-  StatusIcon,
+  OpendockLogo,
+  AthctlLogo,
+  PrimeLogo,
+  MailLogo,
+  ZomboidLogo,
+  SiteLogo,
+  StatusLogo,
 } from "./nav-icons";
 
 type SubItem = { label: string; href?: string; meta?: string; icon?: React.ReactNode };
@@ -23,8 +23,8 @@ const SECTIONS: Section[] = [
     label: "Tools",
     href: "/tools",
     items: [
-      { label: "Opendock", href: "/opendock", icon: <OpendockIcon /> },
-      { label: "athctl", icon: <AthctlIcon /> },
+      { label: "Opendock", href: "/opendock", icon: <OpendockLogo /> },
+      { label: "athctl", icon: <AthctlLogo /> },
     ],
   },
   {
@@ -32,8 +32,8 @@ const SECTIONS: Section[] = [
     label: "Services",
     href: "/services",
     items: [
-      { label: "Athion Prime", href: "/prime", icon: <PrimeIcon /> },
-      { label: "Athion Mail", icon: <MailIcon /> },
+      { label: "Athion Prime", href: "/prime", icon: <PrimeLogo /> },
+      { label: "Athion Mail", icon: <MailLogo /> },
     ],
   },
   {
@@ -41,9 +41,9 @@ const SECTIONS: Section[] = [
     label: "Servers",
     href: "/servers",
     items: [
-      { label: "Project Zomboid", href: "/infra", icon: <ZomboidIcon /> },
-      { label: "athion.me", href: "/infra", icon: <SiteIcon /> },
-      { label: "Status", href: "https://status.athion.me", icon: <StatusIcon /> },
+      { label: "Project Zomboid", href: "/infra", icon: <ZomboidLogo /> },
+      { label: "athion.me", href: "/infra", icon: <SiteLogo /> },
+      { label: "Status", href: "https://status.athion.me", icon: <StatusLogo /> },
     ],
   },
 ];
@@ -500,19 +500,13 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
             {activeSection?.items.filter((item) => item.href).map((item) => {
               const href = item.href!;
               const external = href.startsWith("http");
-              const inner = (
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                  {item.icon}
-                  <span>{item.label}</span>
-                </span>
-              );
               return external ? (
-                <a key={item.label} href={href} className="nav-link" target="_blank" rel="noopener noreferrer">
-                  {inner}
+                <a key={item.label} href={href} className="nav-link" target="_blank" rel="noopener noreferrer" aria-label={item.label} title={item.label}>
+                  {item.icon}
                 </a>
               ) : (
-                <Link key={item.label} href={href} prefetch={true} className="nav-link">
-                  {inner}
+                <Link key={item.label} href={href} prefetch={true} className="nav-link" aria-label={item.label} title={item.label}>
+                  {item.icon}
                 </Link>
               );
             })}

@@ -430,16 +430,15 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
           onMouseEnter={() => activeSection && openSection(activeSection.key)}
           style={{
             display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            gap: 18,
+            flexDirection: "column",
+            alignItems: "flex-start",
+            gap: 6,
             fontSize: 12,
             lineHeight: 1,
             // Negative margin pulls the hit-area up to overlap the gap with the
             // top nav so the cursor can't fall into a dead zone between rows.
             margin: "-8px 0 0",
-            padding: `16px 24px 0 ${subLeft}px`,
-            minHeight: 28,
+            padding: `16px 24px 8px ${subLeft}px`,
             opacity: activeSection ? 1 : 0,
             transform: activeSection ? "translateY(0)" : "translateY(-4px)",
             transition: "opacity 0.18s ease, transform 0.18s ease, padding-left 0.22s ease",

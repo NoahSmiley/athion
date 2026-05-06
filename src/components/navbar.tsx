@@ -478,12 +478,14 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
             {activeSection?.items.filter((item) => item.href).map((item) => {
               const href = item.href!;
               const external = href.startsWith("http");
+              const isCurrent = !external && (pathname === href || pathname.startsWith(href + "/"));
+              const className = `nav-link${isCurrent ? " nav-link-active" : ""}`;
               return external ? (
-                <a key={item.label} href={href} className="nav-link" target="_blank" rel="noopener noreferrer">
+                <a key={item.label} href={href} className={className} target="_blank" rel="noopener noreferrer">
                   {item.label}
                 </a>
               ) : (
-                <Link key={item.label} href={href} prefetch={true} className="nav-link">
+                <Link key={item.label} href={href} prefetch={true} className={className}>
                   {item.label}
                 </Link>
               );

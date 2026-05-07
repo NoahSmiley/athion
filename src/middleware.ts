@@ -27,6 +27,7 @@ const PUBLIC_PREFIXES = [
   "/status",        // public status page (status.athion.me + /status)
   "/api/infra/status", // status data feed
   "/api/health",    // liveness probe
+  "/api/prime/",  // Athion Prime web client — handles its own auth/CORS
   "/fonts/",
   "/favicon",
   "/robots",

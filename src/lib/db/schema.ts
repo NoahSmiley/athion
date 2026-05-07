@@ -139,3 +139,17 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+
+
+// Per-user Jellyfin identity. One row per athion user that has used Athion Prime.
+// Created lazily on first /api/prime/jellyfin-token request. The Jellyfin password
+// is NOT stored — it's deterministically derived server-side from the athion user
+// id + JELLYFIN_USER_PASSWORD_SECRET so it can be reproduced when issuing tokens.
+export const jellyfinUsers = pgTable("jellyfin_users", {
+  athionUserId: uuid("athion_user_id")
+    .primaryKey()
+    .references((): AnyPgColumn => users.id, { onDelete: "cascade" }),
+  jellyfinUserId: text("jellyfin_user_id").notNull().unique(),
+  jellyfinUsername: text("jellyfin_username").notNull().unique(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});

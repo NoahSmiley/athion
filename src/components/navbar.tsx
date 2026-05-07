@@ -480,13 +480,41 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               const external = href.startsWith("http");
               const isCurrent = !external && (pathname === href || pathname.startsWith(href + "/"));
               const className = `nav-link${isCurrent ? " nav-link-active" : ""}`;
+              // Athion Prime gets the same cyan pill treatment as the
+              // wordmark inside the Prime web app — "Athion" plain, "PRIME"
+              // as a small uppercase cyan pill, so it visually matches
+              // prime.athion.me's nav.
+              const isPrime = item.label === "Athion Prime";
+              const label = isPrime ? (
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                  <span>Athion</span>
+                  <span
+                    style={{
+                      background: "#06b6d4",
+                      color: "#fff",
+                      padding: "2px 6px",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      lineHeight: 1,
+                      letterSpacing: 0.6,
+                      textTransform: "uppercase",
+                      borderRadius: 2,
+                      display: "inline-block",
+                    }}
+                  >
+                    Prime
+                  </span>
+                </span>
+              ) : (
+                item.label
+              );
               return external ? (
                 <a key={item.label} href={href} className={className} target="_blank" rel="noopener noreferrer">
-                  {item.label}
+                  {label}
                 </a>
               ) : (
                 <Link key={item.label} href={href} prefetch={true} className={className}>
-                  {item.label}
+                  {label}
                 </Link>
               );
             })}

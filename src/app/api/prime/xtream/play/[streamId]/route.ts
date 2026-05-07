@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { streamUrl } from "@/lib/xtream/client";
-import { corsHeaders, preflight } from "@/lib/xtream/route-helpers";
-import { getSession } from "@/lib/auth/session";
+import { corsHeaders, preflight, resolveSession } from "@/lib/xtream/route-helpers";
 
 export async function OPTIONS(req: Request) {
   return preflight(req);
@@ -15,7 +14,7 @@ export async function OPTIONS(req: Request) {
  */
 export async function GET(req: Request, ctx: { params: Promise<{ streamId: string }> }) {
   const headers = corsHeaders(req.headers.get("origin"));
-  const me = await getSession();
+  const me = await resolveSession(req);
   if (!me) return NextResponse.json({ error: "unauthorized" }, { status: 401, headers });
 
   const { streamId } = await ctx.params;

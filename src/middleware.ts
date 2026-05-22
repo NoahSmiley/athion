@@ -28,6 +28,8 @@ const PUBLIC_PREFIXES = [
   "/api/infra/status", // status data feed
   "/api/health",    // liveness probe
   "/api/prime/",  // Athion Prime web client — handles its own auth/CORS
+  "/ledger/plaid-redirect",  // Ledger iOS app — Plaid Link OAuth bank callback (Universal Link target)
+  "/.well-known/",           // apple-app-site-association, etc — must be public for iOS to fetch
   "/fonts/",
   "/favicon",
   "/robots",

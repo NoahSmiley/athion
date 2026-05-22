@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["NZKYY4Q34C.me.athion.Ledger"],
+        "components": [
+          { "/": "/ledger/plaid-redirect*", "comment": "Plaid Link OAuth callback for Capital One and other OAuth banks" }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["NZKYY4Q34C.me.athion.Ledger"]
+  }
+}

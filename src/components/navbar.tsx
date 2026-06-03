@@ -337,6 +337,10 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
                   Members
                 </Link>
               )}
+              {/* Lead pipeline lives on the demos.athion.me subdomain (SSO admits admins). */}
+              <a href="https://demos.athion.me/" target="_blank" rel="noopener noreferrer" className="nav-link" style={{ padding: "6px 10px" }}>
+                Leads
+              </a>
             </>
           )}
           <div style={{ borderTop: "1px solid #1a1a1a", margin: "4px 0" }} />

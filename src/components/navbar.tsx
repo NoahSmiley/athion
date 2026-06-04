@@ -417,6 +417,19 @@ export function Navbar({ initialUser = null }: { initialUser?: NavUser | null } 
               {label}
             </Link>
           ))}
+          {/* Leads pipeline (demos.athion.me) — top-level link, founder/admin only.
+              External, opens in a new tab; SSO admits admins straight in. */}
+          {!isBlog && isAdmin && (
+            <a
+              href="https://demos.athion.me/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link"
+              onMouseEnter={closeNonSection}
+            >
+              Leads
+            </a>
+          )}
           {user ? (
             userMenu
           ) : (

@@ -14,6 +14,9 @@ function corsHeaders(origin: string | null): Record<string, string> {
     "Access-Control-Allow-Credentials": "true",
     "Access-Control-Allow-Methods": "GET, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
+    // Token responses must never be cached — browsers heuristically cache
+    // GETs that lack a Cache-Control header, serving stale tokens/URLs.
+    "Cache-Control": "no-store",
     Vary: "Origin",
   };
 }

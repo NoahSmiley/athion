@@ -4,6 +4,10 @@ import { db } from "@/lib/db";
 import { jellyfinUsers } from "@/lib/db/schema";
 
 const JELLYFIN_URL = process.env.JELLYFIN_URL?.replace(/\/$/, "");
+// Browser-reachable URL handed to Prime clients. The server keeps using JELLYFIN_URL
+// (LAN) for admin calls; browsers need the HTTPS tunnel hostname or fetches get
+// blocked as mixed content / are unreachable off-LAN.
+const JELLYFIN_PUBLIC_URL = process.env.JELLYFIN_PUBLIC_URL?.replace(/\/$/, "");
 const JELLYFIN_ADMIN_TOKEN = process.env.JELLYFIN_ADMIN_TOKEN;
 const JELLYFIN_USER_PASSWORD_SECRET = process.env.JELLYFIN_USER_PASSWORD_SECRET;
 const PRIME_DEVICE_ID_NAMESPACE = "athion-prime";
@@ -153,5 +157,5 @@ export async function issueUserToken(
 
 export function jellyfinPublicUrl(): string {
   const { url } = requireConfig();
-  return url;
+  return JELLYFIN_PUBLIC_URL ?? url;
 }

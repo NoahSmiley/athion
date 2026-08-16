@@ -15,7 +15,6 @@ export async function GET() {
       username: user.username,
       displayName: user.displayName,
       role: user.role,
-      avatarUrl: user.avatarUrl,
     },
   });
 }

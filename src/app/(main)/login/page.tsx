@@ -23,8 +23,15 @@ function LoginForm() {
       const res = await fetch("/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Login failed"); setLoading(false); return; }
-      const target = redirectTo || "/";
-      try { const url = new URL(target); if (url.hostname.endsWith(".athion.me")) { window.location.href = target; return; } } catch {}
+      let target = "/";
+      if (redirectTo) {
+        try {
+          const url = new URL(redirectTo);
+          if (url.protocol === "https:" && (url.hostname === "prime.athion.me" || url.hostname === "labs.athion.me")) target = redirectTo;
+        } catch {
+          if (redirectTo.startsWith("/") && !redirectTo.startsWith("//")) target = redirectTo;
+        }
+      }
       // Hard navigate so the navbar (client component) re-fetches /api/auth/me.
       window.location.href = target;
     } catch { setError("Something went wrong"); setLoading(false); }
@@ -48,7 +55,7 @@ function LoginForm() {
           {loading ? "Signing in..." : "Sign in"}
         </button>
         <p className="muted" style={{ margin: 0, fontSize: 11 }}>
-          <Link href="/reset-password">Forgot password?</Link> &middot; <Link href="/request-access">Request access</Link>
+          <Link href="/reset-password">Forgot password?</Link>
         </p>
       </form>
     </>

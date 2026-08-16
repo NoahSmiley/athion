@@ -7,47 +7,42 @@ import { RoleSelect } from "./role-select";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminMembersPage() {
+export default async function AdminAccountsPage() {
   const founder = await getFounderUser();
-  if (!founder) redirect("/admin/applications");
+  if (!founder) redirect("/");
 
   const rows = await db
     .select({
       id: users.id,
-      memberNumber: users.memberNumber,
       email: users.email,
       displayName: users.displayName,
       role: users.role,
       createdAt: users.createdAt,
     })
     .from(users)
-    .orderBy(asc(users.memberNumber));
+    .orderBy(asc(users.createdAt));
 
   return (
     <>
-      <h1>Members</h1>
-      <p className="muted">{rows.length} member{rows.length === 1 ? "" : "s"}. Founder-only — change roles below.</p>
+      <h1>Accounts</h1>
+      <p className="muted">{rows.length} active account{rows.length === 1 ? "" : "s"}.</p>
 
-      <table className="admin-apps-table" style={{ marginTop: 16 }}>
+      <table className="admin-apps-table">
         <thead>
           <tr>
-            <th>#</th>
             <th>Email</th>
             <th className="hide-mobile">Name</th>
             <th>Role</th>
-            <th className="hide-mobile">Joined</th>
+            <th className="hide-mobile">Created</th>
           </tr>
         </thead>
         <tbody>
-          {rows.map((u) => (
-            <tr key={u.id}>
-              <td className="muted" style={{ fontFamily: "var(--font-mono)" }}>{String(u.memberNumber).padStart(3, "0")}</td>
-              <td className="email-cell">{u.email}</td>
-              <td className="muted hide-mobile">{u.displayName ?? "—"}</td>
-              <td>
-                <RoleSelect userId={u.id} role={u.role} isSelf={u.id === founder.id} />
-              </td>
-              <td className="muted hide-mobile" style={{ fontSize: 11 }}>{new Date(u.createdAt).toLocaleDateString()}</td>
+          {rows.map((user) => (
+            <tr key={user.id}>
+              <td className="email-cell">{user.email}</td>
+              <td className="muted hide-mobile">{user.displayName ?? "—"}</td>
+              <td><RoleSelect userId={user.id} role={user.role} isSelf={user.id === founder.id} /></td>
+              <td className="muted hide-mobile">{new Date(user.createdAt).toLocaleDateString()}</td>
             </tr>
           ))}
         </tbody>

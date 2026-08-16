@@ -15,13 +15,13 @@ async function main() {
     process.exit(1);
   }
 
-  const existing = await db.select({ id: users.id, memberNumber: users.memberNumber })
+  const existing = await db.select({ id: users.id })
     .from(users)
     .where(eq(users.email, email.toLowerCase()))
     .limit(1);
 
   if (existing.length > 0) {
-    console.log(`User already exists: ${email} (member #${existing[0].memberNumber})`);
+    console.log(`User already exists: ${email}`);
     process.exit(0);
   }
 
@@ -32,10 +32,9 @@ async function main() {
     passwordHash,
     displayName: "Founder",
     role: "founder",
-    invitesAvailable: 999,
   }).returning();
 
-  console.log(`Founder created: ${inserted[0].email} as member #${inserted[0].memberNumber}`);
+  console.log(`Founder created: ${inserted[0].email}`);
   process.exit(0);
 }
 

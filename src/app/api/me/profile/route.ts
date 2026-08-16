@@ -6,7 +6,6 @@ import { getCurrentUser } from "@/lib/auth/roles";
 import { isValidUsername } from "@/lib/username";
 
 const MAX_DISPLAY_NAME = 64;
-const MAX_BIO = 500;
 
 export async function PATCH(request: Request) {
   const me = await getCurrentUser();
@@ -15,16 +14,12 @@ export async function PATCH(request: Request) {
   const body = await request.json().catch(() => null);
   const username = typeof body?.username === "string" ? body.username.trim().toLowerCase() : null;
   const displayNameRaw = typeof body?.displayName === "string" ? body.displayName.trim() : "";
-  const bioRaw = typeof body?.bio === "string" ? body.bio : "";
 
   if (!username || !isValidUsername(username, me.username)) {
     return NextResponse.json({ error: "Username must be lowercase letters/numbers with optional hyphens or underscores, 2–32 chars" }, { status: 400 });
   }
   if (displayNameRaw.length > MAX_DISPLAY_NAME) {
     return NextResponse.json({ error: `Display name max ${MAX_DISPLAY_NAME} characters` }, { status: 400 });
-  }
-  if (bioRaw.length > MAX_BIO) {
-    return NextResponse.json({ error: `Bio max ${MAX_BIO} characters` }, { status: 400 });
   }
 
   // Username uniqueness
@@ -42,7 +37,6 @@ export async function PATCH(request: Request) {
     .set({
       username,
       displayName: displayNameRaw || null,
-      bio: bioRaw || null,
       updatedAt: new Date(),
     })
     .where(eq(users.id, me.id));

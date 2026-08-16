@@ -1,14 +1,24 @@
 import type { NextConfig } from "next";
 
+const securityHeaders = [
+  { key: "Strict-Transport-Security", value: "max-age=31536000" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+  },
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+];
+
 const nextConfig: NextConfig = {
-  // Apple requires apple-app-site-association to be served as application/json
-  // with no extension. Files in public/.well-known/ are served raw by Next,
-  // but without the right Content-Type Apple's CDN rejects them.
+  poweredByHeader: false,
   async headers() {
     return [
       {
-        source: "/.well-known/apple-app-site-association",
-        headers: [{ key: "Content-Type", value: "application/json" }],
+        source: "/:path*",
+        headers: securityHeaders,
       },
     ];
   },

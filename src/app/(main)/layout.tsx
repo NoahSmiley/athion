@@ -23,7 +23,7 @@ export default async function MainLayout({
         <main>{children}</main>
       </div>
       <div className="main-footer-wrap">
-        <Footer initialAuthed={!!me} />
+      <Footer />
       </div>
     </>
   );

@@ -6,9 +6,7 @@ import { AdminNav } from "./admin-nav";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const admin = await getAdminUser();
-  // Logged-out users are bounced by middleware. If we get here without an admin
-  // it means the viewer is a logged-in member who just doesn't have admin role —
-  // send them home rather than to /login (which would bounce them right back).
+  // Authentication is handled by the proxy; authorization remains server-side.
   if (!admin) redirect("/");
 
   const initialUser = {
@@ -32,7 +30,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </main>
       </div>
       <div className="main-footer-wrap">
-        <Footer initialAuthed={true} />
+        <Footer />
       </div>
     </>
   );

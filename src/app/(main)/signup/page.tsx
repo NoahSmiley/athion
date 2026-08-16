@@ -43,7 +43,7 @@ function SignupForm() {
   return (
     <>
       <h1>Create account</h1>
-      <p className="muted" style={{ marginTop: 4 }}>You need an invite code to sign up. <Link href="/request-access">Don&apos;t have one?</Link></p>
+      <p className="muted" style={{ marginTop: 4 }}>An access code is required.</p>
       <form onSubmit={handleSignup} style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 16 }}>
         {error && <p style={{ color: "#c44", margin: 0 }}>{error}</p>}
         <div>

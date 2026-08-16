@@ -1,23 +1,27 @@
-const sections = [
-  { title: "Information We Collect", items: ["Account information: email address, username, and display name.", "Usage data: basic analytics, crash reports, performance metrics. Aggregated and anonymized.", "Application data: anything you submit when applying for membership.", "Payment information: processed through third-party providers. We do not store credit card numbers."] },
-  { title: "How We Use Your Information", items: ["To provide and maintain our services.", "To communicate about updates, security notices, and support.", "To improve products through anonymized usage analytics.", "To detect and prevent fraud or abuse."] },
-  { title: "Data Storage & Security", items: ["All data encrypted in transit using TLS 1.3.", "Account data stored on secured servers with regular audits."] },
-  { title: "Data Sharing", items: ["We do not sell your personal information.", "We do not share data with third parties for advertising.", "We may share anonymized, aggregated data for analytics.", "We will comply with valid legal requests, notifying you when permitted."] },
-  { title: "Your Rights", items: ["Access: request a copy of your data.", "Deletion: delete your account and all data.", "Portability: export data in a standard format.", "Correction: update info through account settings."] },
-];
-
 export default function PrivacyPage() {
   return (
     <>
-      <h1>Privacy Policy</h1>
-      <p className="muted">Last updated: April 29, 2026. We collect as little as possible and encrypt everything we can.</p>
-      {sections.map((s) => (
-        <div key={s.title}>
-          <h2>{s.title}</h2>
-          <ul>{s.items.map((item, i) => <li key={i} className="muted">{item}</li>)}</ul>
-        </div>
-      ))}
-      <p>Contact: <a href="mailto:privacy@athion.me">privacy@athion.me</a></p>
+      <h1>Privacy</h1>
+      <p className="muted">Last updated: August 16, 2026.</p>
+
+      <h2>Data stored</h2>
+      <ul>
+        <li>Account email, username, display name, password hash, role, and invite metadata.</li>
+        <li>A mapping between an Athion account and its Prime/Jellyfin account.</li>
+        <li>Short-lived authentication, password-reset, security, and operational logs.</li>
+      </ul>
+
+      <h2>Use</h2>
+      <p>Data is used to authenticate accounts, operate private services, recover accounts, and investigate abuse or outages.</p>
+
+      <h2>Processors</h2>
+      <p>Cloudflare carries public traffic, Resend delivers account email, and Jellyfin provides Prime&apos;s media sessions. Athion does not sell account data or use it for advertising.</p>
+
+      <h2>Retention</h2>
+      <p>Account records remain while an account is active. Reset tokens expire after one hour. Operational logs and backups are retained only as needed to run and recover the services.</p>
+
+      <h2>Requests</h2>
+      <p>For access, correction, or deletion requests, email <a href="mailto:privacy@athion.me">privacy@athion.me</a>.</p>
     </>
   );
 }

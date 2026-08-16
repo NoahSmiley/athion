@@ -56,8 +56,6 @@ export async function resolveSession(req: Request) {
           username: users.username,
           displayName: users.displayName,
           role: users.role,
-          avatarUrl: users.avatarUrl,
-          stripeCustomerId: users.stripeCustomerId,
         })
         .from(users)
         .where(eq(users.id, payload.sub))

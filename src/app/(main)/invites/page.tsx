@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/roles";
-import { refreshInvites } from "@/lib/invites";
+import { getAdminUser } from "@/lib/auth/roles";
 import { InvitesPanel } from "./panel";
 import { db } from "@/lib/db";
 import { inviteCodes, users } from "@/lib/db/schema";
@@ -9,10 +8,8 @@ import { desc, eq, inArray } from "drizzle-orm";
 export const dynamic = "force-dynamic";
 
 export default async function InvitesPage() {
-  const me = await getCurrentUser();
-  if (!me) redirect("/login");
-
-  const state = await refreshInvites(me.id);
+  const me = await getAdminUser();
+  if (!me) redirect("/");
 
   const myCodes = await db
     .select({
@@ -34,7 +31,7 @@ export default async function InvitesPage() {
     usedByIds.length === 0
       ? []
       : await db
-          .select({ id: users.id, username: users.username, memberNumber: users.memberNumber, displayName: users.displayName })
+          .select({ id: users.id, username: users.username, displayName: users.displayName })
           .from(users)
           .where(inArray(users.id, usedByIds));
   const usersById = new Map(usedByUsers.map((u) => [u.id, u]));
@@ -50,7 +47,6 @@ export default async function InvitesPage() {
       ? (usersById.get(c.usedBy)
           ? {
               username: usersById.get(c.usedBy)!.username,
-              memberNumber: usersById.get(c.usedBy)!.memberNumber,
               displayName: usersById.get(c.usedBy)!.displayName,
             }
           : null)
@@ -59,20 +55,10 @@ export default async function InvitesPage() {
 
   return (
     <>
-      <h1>Invites</h1>
-      <p className="muted">Members get one invite per month, capped at three. Cooldown for new members is 30 days from joining.</p>
+      <h1>Access codes</h1>
+      <p className="muted">Create a one-time code for a trusted user. Codes expire after 14 days.</p>
 
-      <InvitesPanel
-        initialState={{
-          available: state.available,
-          cap: state.cap,
-          cooldownActive: state.cooldownActive,
-          cooldownUntil: state.cooldownUntil ? state.cooldownUntil.toISOString() : null,
-          nextGrantAt: state.nextGrantAt ? state.nextGrantAt.toISOString() : null,
-          unlimited: state.unlimited,
-        }}
-        initialCodes={codes}
-      />
+      <InvitesPanel initialCodes={codes} />
     </>
   );
 }

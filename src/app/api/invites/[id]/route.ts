@@ -1,17 +1,14 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { inviteCodes, users } from "@/lib/db/schema";
-import { getCurrentUser } from "@/lib/auth/roles";
-import { isUnlimited } from "@/lib/invites";
+import { inviteCodes } from "@/lib/db/schema";
+import { getAdminUser } from "@/lib/auth/roles";
 
-// DELETE /api/invites/[id] — revoke an unused code. Refunds the issuer's budget
-// (unless they're unlimited, in which case there's nothing to refund).
 export async function DELETE(
   _request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
-  const me = await getCurrentUser();
+  const me = await getAdminUser();
   if (!me) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { id } = await context.params;
@@ -39,20 +36,6 @@ export async function DELETE(
     .update(inviteCodes)
     .set({ revokedAt: new Date() })
     .where(eq(inviteCodes.id, id));
-
-  // Refund the budget if they're not unlimited
-  if (!isUnlimited(me.role)) {
-    const u = await db
-      .select({ invitesAvailable: users.invitesAvailable })
-      .from(users)
-      .where(eq(users.id, me.id))
-      .limit(1);
-    const cur = u[0]?.invitesAvailable ?? 0;
-    await db
-      .update(users)
-      .set({ invitesAvailable: cur + 1 })
-      .where(eq(users.id, me.id));
-  }
 
   return NextResponse.json({ ok: true });
 }

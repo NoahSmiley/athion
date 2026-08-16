@@ -1,273 +1,103 @@
-@import "tailwindcss";
-@plugin "@tailwindcss/typography";
-
-@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-Light.woff2") format("woff2"); font-weight: 300; font-style: normal; font-display: swap; }
-@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-LightItalic.woff2") format("woff2"); font-weight: 300; font-style: italic; font-display: swap; }
 @font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-RegularItalic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
 @font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-Medium.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-MediumItalic.woff2") format("woff2"); font-weight: 500; font-style: italic; font-display: swap; }
 @font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-Semibold.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
-@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-SemiboldItalic.woff2") format("woff2"); font-weight: 600; font-style: italic; font-display: swap; }
 @font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-Bold.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "OpenAI Sans"; src: url("/fonts/OpenAISans-BoldItalic.woff2") format("woff2"); font-weight: 700; font-style: italic; font-display: swap; }
 
-@theme {
+:root {
+  --background: #060606;
+  --surface: #0b0b0b;
+  --border: #242424;
+  --text: #c8c8c8;
+  --muted: #7f7f7f;
   --font-sans: "OpenAI Sans", sans-serif;
   --font-mono: "Courier New", Courier, monospace;
 }
 
-html, body { height: 100%; }
-html, body { overflow-x: hidden; overflow-y: hidden; }
-html { scrollbar-width: none; }
-html::-webkit-scrollbar { display: none; }
-body { scrollbar-width: none; }
-body::-webkit-scrollbar { display: none; }
-body { background: #060606; color: #c8c8c8; font-family: var(--font-sans); font-size: 13px; line-height: 1.6; }
-a { color: #c8c8c8; text-decoration: none; transition: color 0.15s; }
-a:visited { color: #828282; }
-a:hover { color: #fff !important; }
-
-.nav-link { color: #828282 !important; transition: color 0.15s; }
-.nav-link:hover { color: #fff !important; }
-.nav-link-active { color: #fff !important; }
-
-/* Light-on-dark CTA (white pill, dark text). The global a:hover rule
-   forces text to white, which would make this CTA white-on-white on hover —
-   override with an explicit hover that keeps the dark text and dims the pill. */
-.cta-light { background: #fff !important; color: #060606 !important; }
-.cta-light:hover { background: #e6e6e6 !important; color: #060606 !important; }
-
-.software-card { transition: border-color 0.15s, background 0.15s; }
-.software-card:hover { border-color: #3a3a3a !important; }
-.software-card .software-card-arrow { transition: transform 0.15s, color 0.15s; }
-.software-card:hover .software-card-arrow { transform: translateX(2px); color: #fff !important; }
-
-/* Section anchors clear the fixed two-row nav (top: 56 + 24 + sub + slack). */
-.home-page h2[id] { scroll-margin-top: 140px; }
-
-/* Homepage hero animation panel — full-width band, used on the logged-out landing.
-   Matches the main column's content width (same as the nav) so visual edges line up. */
-.home-hero-anim {
-  width: 100%; aspect-ratio: 1 / 1;
-  margin: 0 auto;
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden; cursor: pointer;
-}
-
-/* Homepage directory tables — terse rows, two text columns + optional metadata */
-.home-directory { font-size: 13px; margin-bottom: 8px; }
-.home-directory td { padding: 6px 16px 6px 0; vertical-align: top; }
-.home-directory td:first-child { white-space: nowrap; font-weight: 500; }
-.home-directory td:nth-child(2) { color: #828282; width: 100%; }
-.home-directory td:nth-child(3),
-.home-directory td:nth-child(4) { white-space: nowrap; font-size: 11px; }
-.footer-link { color: #333 !important; }
-.footer-link:hover { color: #666 !important; }
+* { box-sizing: border-box; }
+html { min-height: 100%; background: var(--background); }
+body { min-height: 100vh; margin: 0; background: var(--background); color: var(--text); font-family: var(--font-sans); font-size: 13px; line-height: 1.6; }
 ::selection { background: #444; color: #fff; }
 
-input, textarea, select { background: #111; color: #c8c8c8; border: 1px solid #2a2a2a; padding: 6px 8px; }
+a { color: var(--text); text-decoration: none; }
+a:hover { color: #fff; }
+.muted { color: var(--muted); }
+.wordmark { color: #fff; font-weight: 600; }
+.nav-link, .nav-button { color: var(--muted); }
+.nav-link:hover, .nav-button:hover { color: #fff; }
+
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: default; opacity: 0.6; }
+input, textarea, select, button {
+  background: #111;
+  color: var(--text);
+  border: 1px solid #2a2a2a;
+  padding: 7px 9px;
+}
 input::placeholder, textarea::placeholder { color: #555; }
-input:focus, textarea:focus, select:focus { outline: none; border-color: #555; }
-input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px #111 inset !important;
-  -webkit-text-fill-color: #c8c8c8 !important;
-  border: 1px solid #2a2a2a !important;
-  transition: background-color 5000s ease-in-out 0s;
-}
-button { background: #111; color: #c8c8c8; border: 1px solid #2a2a2a; }
+input:focus, textarea:focus, select:focus { outline: none; border-color: #666; }
+.nav-button { border: 0; background: transparent; padding: 0; }
 
-.muted { color: #828282; }
-
-.docs-h2-anchor { color: inherit; text-decoration: none; position: relative; }
-.docs-h2-anchor::before { content: "#"; position: absolute; left: -1em; color: #444; opacity: 0; transition: opacity 0.1s; }
-.docs-h2:hover .docs-h2-anchor::before { opacity: 1; }
-.docs-h2-anchor:hover { color: #fff !important; }
-@keyframes blink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
-
-/* View Transition for the "Blog" element morphing between nav-link and wordmark pill.
-   The browser captures both states (using view-transition-name), then interpolates
-   position, size, and opacity between them. We slow the morph to make it feel deliberate
-   and ease the cross-fade so the pill background appears smoothly. */
-::view-transition-group(blog-morph) {
-  animation-duration: 260ms;
-  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
-}
-::view-transition-old(blog-morph),
-::view-transition-new(blog-morph) {
-  animation-duration: 260ms;
-  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
-}
-::view-transition-group(athion-mark) {
-  animation-duration: 260ms;
-  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-/* ASCII canvas — sized to keep all 84 columns visible at any viewport.
-   Uses clamp so font-size shrinks proportionally on narrow screens. */
-.ascii-frame {
-  font-family: var(--font-mono);
-  font-size: clamp(6px, 1.65vw, 13px);
-  line-height: 1;
-  letter-spacing: 0;
-  color: #c8c8c8;
-  margin: 0;
-  white-space: pre;
-}
-h1 { font-size: 15px; margin: 0 0 4px; font-weight: 600; }
-h2 { font-size: 13px; margin: 16px 0 8px; }
-table { border-collapse: collapse; width: 100%; }
-th { padding: 4px 8px 4px 0; font-weight: bold; text-align: left; }
-td { padding: 4px 8px 4px 0; }
-thead tr { border-bottom: 1px solid #333; }
-tbody tr { border-bottom: 1px solid #2a2a2a; }
+h1 { margin: 0 0 4px; color: #fff; font-size: 17px; font-weight: 600; }
+h2 { margin: 24px 0 6px; color: #fff; font-size: 13px; font-weight: 600; }
+p { margin: 0 0 12px; }
 ul { margin: 0; padding-left: 20px; }
-li { margin-bottom: 4px; }
+li { margin-bottom: 5px; }
+code { font-family: var(--font-mono); }
 
-.auth-shell { position: fixed; inset: 0; display: flex; justify-content: center; align-items: center; pointer-events: none; }
-.auth-card { width: 260px; pointer-events: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 7px 10px 7px 0; text-align: left; vertical-align: top; }
+th { color: #fff; font-weight: 600; }
+tr { border-bottom: 1px solid var(--border); }
 
-.main-sidebar { position: fixed; top: 56px; left: 0; right: 0; z-index: 10; display: flex; justify-content: center; pointer-events: none; }
-.main-sidebar .athion-nav-wrap { pointer-events: auto; max-width: 700px; width: 100%; box-sizing: border-box; position: relative; }
-.main-sidebar nav.athion-nav-top { box-sizing: border-box; height: 24px; }
-.main-sidebar nav.athion-nav-sub { box-sizing: border-box; }
-.main-stage { position: fixed; top: 132px; left: 0; right: 0; bottom: 32px; display: flex; justify-content: center; align-items: center; pointer-events: none; overflow: auto; scrollbar-width: none; -ms-overflow-style: none; }
-.main-stage::-webkit-scrollbar { display: none; }
-.main-stage > main { max-width: 700px; width: 100%; padding: 40px 24px; pointer-events: auto; margin: auto 0; }
-/* Home page now uses the standard 700px column (default rule above already sets max-width: 700) */
-/* Docs and admin anchor to the top — the section nav stays put as page content shrinks/grows. */
-.main-stage:has(.docs-page),
-.main-stage:has(.admin-page),
-.main-stage:has(.tall-page) { align-items: flex-start; }
-.main-stage:has(.docs-page) > main,
-.main-stage:has(.admin-page) > main,
-.main-stage:has(.tall-page) > main { margin-top: 0; }
-.main-footer-wrap { position: fixed; bottom: 0; left: 0; right: 0; }
+.main-sidebar { max-width: 748px; margin: 0 auto; padding: 42px 24px 0; }
+.athion-nav-top { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.nav-links { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 16px; }
+.main-stage { min-height: calc(100vh - 145px); display: flex; align-items: center; }
+.main-stage > main { width: 100%; max-width: 748px; margin: 0 auto; padding: 48px 24px; }
+.main-footer-wrap { max-width: 748px; margin: 0 auto; padding: 0 24px 20px; }
+footer { display: flex; justify-content: center; gap: 14px; font-size: 11px; }
+.footer-link { color: #444; }
+.footer-link:hover { color: var(--muted); }
 
-.dash-sidebar { position: fixed; top: 56px; left: 0; right: 0; z-index: 10; display: flex; justify-content: center; pointer-events: none; }
-.dash-sidebar nav.athion-nav { pointer-events: auto; max-width: 700px; width: 100%; box-sizing: border-box; flex-direction: row !important; align-items: center !important; gap: 16px !important; padding: 0 24px !important; }
-.dash-sidebar nav.athion-nav > a:first-child { margin-bottom: 0 !important; }
-.dash-sidebar nav.athion-nav > span { display: none; }
-.dash-stage { position: fixed; top: 104px; left: 0; right: 0; bottom: 32px; display: flex; justify-content: center; align-items: center; pointer-events: none; }
-.dash-stage > main { max-width: 700px; width: 100%; padding: 0 24px; pointer-events: auto; }
+.home-page { width: 100%; }
+.home-page > .muted { margin-bottom: 28px; }
+.home-directory td:first-child { width: 110px; font-weight: 500; white-space: nowrap; }
+.home-directory td:nth-child(2) { color: var(--muted); }
+.home-directory td:last-child { width: 70px; text-align: right; white-space: nowrap; font-size: 11px; }
 
-@media (max-width: 720px) {
-  html, body { height: auto; margin: 0; padding: 0; overflow-x: hidden; overflow-y: visible; }
-  body { display: flex; flex-direction: column; min-height: 100svh; font-size: 13px; line-height: 1.45; }
-  h1 { font-size: 18px; margin: 0 0 4px; }
-  h2 { font-size: 13px; margin: 12px 0 4px; }
-  p { margin: 0 0 4px; }
-  ul { padding-left: 14px; margin: 0; }
-  li { margin-bottom: 1px; }
+.auth-shell { min-height: 340px; display: flex; align-items: center; justify-content: center; }
+.auth-card { width: min(100%, 300px); }
+.auth-card form { display: flex; flex-direction: column; gap: 12px; }
 
-  .main-sidebar {
-    position: static; top: auto; left: auto; right: auto;
-    background: transparent; backdrop-filter: none;
-  }
-  /* Single centered row of nav items on phone — wordmark + links + auth all
-     in one line. We pull the inner link group inline so it wraps as a unit. */
-  .main-sidebar nav.athion-nav-top {
-    width: 100%; box-sizing: border-box; padding: 10px 12px !important;
-    flex-direction: row; align-items: center !important;
-    flex-wrap: wrap;
-    gap: 8px 14px !important;
-    font-size: 12px !important;
-    justify-content: center !important;
-    height: auto !important;
-  }
-  .main-sidebar nav.athion-nav-top > div {
-    display: flex; flex-direction: row; flex-wrap: wrap;
-    align-items: center; justify-content: center;
-    gap: 8px 14px !important;
-  }
-  .main-sidebar nav.athion-nav-top a, .main-sidebar nav.athion-nav-top button { font-size: 12px !important; }
-  .main-sidebar nav.athion-nav-top svg { height: 14px !important; }
-  .main-sidebar nav.athion-nav-sub {
-    position: static !important;
-    transform: none !important;
-    left: auto !important;
-    top: auto !important;
-    width: 100%; box-sizing: border-box; padding: 6px 12px 0 !important;
-    flex-direction: row !important; flex-wrap: wrap;
-    gap: 8px 14px !important;
-    font-size: 11px !important;
-    justify-content: center !important;
-  }
-  .main-sidebar nav.athion-nav-sub a { font-size: 11px !important; }
+.admin-nav { display: flex; gap: 16px; margin-bottom: 28px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.admin-apps-table { margin-top: 18px; }
+.email-cell { overflow-wrap: anywhere; }
 
-  .main-stage {
-    position: static; top: auto; bottom: auto; inset: auto;
-    display: flex; overflow: visible; pointer-events: auto;
-    flex: 1; align-items: flex-start; justify-content: center;
-  }
-  .main-stage:has(.home-page) { align-items: center; }
-  .main-stage > main {
-    width: 100%; max-width: none; box-sizing: border-box;
-    padding: 20px 18px 12px; margin: 0;
-  }
-  .main-stage:has(.home-page) > main { padding: 16px 0; }
-  /* Home directory: collapse the metadata columns into the row on phones */
-  .home-directory td { padding: 5px 10px 5px 0; }
-  .home-directory td:nth-child(3),
-  .home-directory td:nth-child(4) { font-size: 10px; }
+.status-page { max-width: 700px; margin: 0 auto; padding: 56px 24px 80px; }
+.status-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px; }
+.status-summary { padding: 12px 14px; color: #fff; font-weight: 500; }
+.status-up { background: #397a2a; }
+.status-down { background: #9a3434; }
+.status-list { margin-top: 22px; border: 1px solid var(--border); background: var(--surface); }
+.status-row { display: flex; justify-content: space-between; gap: 24px; padding: 18px; border-bottom: 1px solid var(--border); }
+.status-row:last-child { border-bottom: 0; }
+.status-text-up { color: #66b54c; }
+.status-text-down { color: #d55; }
+.status-note { margin-top: 18px; text-align: center; color: #555; font-size: 11px; }
 
-  .main-footer-wrap { position: static; bottom: auto; left: auto; right: auto; margin-top: auto; border-top: 1px solid #1a1a1a; }
-  .main-footer-wrap footer { justify-content: center; gap: 4px 12px !important; font-size: 10.5px !important; padding: 6px 16px !important; }
-
-  .dash-sidebar {
-    position: static; left: auto; top: auto; right: auto; bottom: auto;
-    background: transparent; backdrop-filter: none;
-  }
-  .dash-sidebar nav.athion-nav {
-    width: 100%; box-sizing: border-box; padding: 12px 16px !important;
-    flex-direction: row !important; flex-wrap: wrap; gap: 8px 14px !important;
-    align-items: center; justify-content: flex-start;
-    font-size: 13px !important;
-  }
-  .dash-sidebar nav.athion-nav > span { display: none; }
-  .dash-stage { position: static; top: auto; bottom: auto; left: auto; right: auto; display: flex; pointer-events: auto; flex: 1; align-items: flex-start; justify-content: center; }
-  .dash-stage > main { width: 100%; max-width: none; box-sizing: border-box; padding: 28px 18px 16px; }
-  .dash-user-name, .dash-user-email { font-size: 11px !important; }
-
-  .auth-shell { position: static; inset: auto; display: flex; pointer-events: auto; padding: 18px; flex: 1; align-items: center; justify-content: center; }
-  .auth-card { width: 100%; max-width: 340px; margin: 0 auto; }
-
-  table { font-size: 13px; display: block; overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; }
-  table thead, table tbody { display: table; width: 100%; }
-  th, td { padding: 4px 8px 4px 0; white-space: nowrap; }
-  .blog-list, .blog-list thead, .blog-list tbody { display: block; }
-  .blog-list tr { display: block; padding: 8px 0; }
-  .blog-list td { display: block; padding: 0; white-space: normal !important; }
-  .blog-list td:first-child { font-size: 11px; margin-bottom: 2px; }
-
-  /* Card-list pattern: rows stack into vertical cards on mobile. Apply via
-     <table className="mobile-cards"> when a table has too many actions or
-     long-text columns to scroll horizontally without feeling broken.
-     Each cell's data-label renders as a small muted line above the value
-     so multi-line values don't get awkwardly wrapped under a label column. */
-  .mobile-cards, .mobile-cards thead, .mobile-cards tbody { display: block; overflow: visible; width: 100%; }
-  .mobile-cards thead { display: none; }
-  .mobile-cards tr { display: block; padding: 10px 0; border-bottom: 1px solid #2a2a2a; }
-  .mobile-cards tr:last-child { border-bottom: none; }
-  .mobile-cards td { display: block; padding: 4px 0; white-space: normal; }
-  .mobile-cards td::before { content: attr(data-label); display: block; color: #828282; font-size: 11px; margin-bottom: 2px; }
-  .mobile-cards td:not([data-label])::before { display: none; }
-  .mobile-cards td.cell-actions { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px; }
-  .mobile-cards td.cell-actions::before { display: none; }
-  .mobile-cards td.cell-actions button { font-size: 13px !important; padding: 6px 12px !important; }
-  input, textarea, select, button { font-size: 16px !important; padding: 8px 10px !important; }
-  form label { font-size: 12px !important; }
-  form button { padding: 9px 18px !important; }
-
-  .pricing-card { padding: 12px !important; }
-  .pricing-card p { margin-bottom: 1px !important; line-height: 1.45 !important; font-size: 13px !important; }
-  .pricing-card > div:nth-child(4), .pricing-card > div:nth-child(5), .pricing-card > div:nth-child(6) { margin-top: 10px !important; padding-top: 10px !important; }
-
-  /* Admin tables: hide secondary columns on phone, let email wrap rather
-     than overflow the body (html clips overflow-x, so otherwise the right
-     side of long emails/URLs is invisible). */
-  .hide-mobile { display: none !important; }
-  .admin-apps-table { table-layout: fixed; width: 100%; }
-  .admin-apps-table .email-cell { word-break: break-all; overflow-wrap: anywhere; }
-  .admin-apps-table .email-cell a { word-break: break-all; overflow-wrap: anywhere; }
+@media (max-width: 700px) {
+  body { font-size: 14px; }
+  .main-sidebar { padding-top: 20px; }
+  .athion-nav-top { align-items: flex-start; }
+  .nav-links { gap: 8px 13px; }
+  .main-stage { min-height: calc(100vh - 130px); align-items: flex-start; }
+  .main-stage > main { padding-top: 56px; }
+  .home-directory, .home-directory tbody, .home-directory tr, .home-directory td { display: block; width: 100%; }
+  .home-directory tr { padding: 12px 0; }
+  .home-directory td { padding: 1px 0; border: 0; }
+  .home-directory td:last-child { width: auto; text-align: left; margin-top: 4px; }
+  .status-row { flex-direction: column; gap: 5px; }
+  .hide-mobile { display: none; }
+  input, textarea, select, button { font-size: 16px; }
 }

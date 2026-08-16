@@ -3,15 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-type State = {
-  available: number;
-  cap: number;
-  cooldownActive: boolean;
-  cooldownUntil: string | null;
-  nextGrantAt: string | null;
-  unlimited: boolean;
-};
-
 type Code = {
   id: string;
   code: string;
@@ -19,7 +10,7 @@ type Code = {
   revokedAt: string | null;
   expiresAt: string;
   createdAt: string;
-  usedByUser: { username: string | null; memberNumber: number; displayName: string | null } | null;
+  usedByUser: { username: string | null; displayName: string | null } | null;
 };
 
 const SITE = typeof window === "undefined" ? "https://athion.me" : window.location.origin;
@@ -31,9 +22,8 @@ function statusLabel(c: Code): string {
   return "active";
 }
 
-export function InvitesPanel({ initialState, initialCodes }: { initialState: State; initialCodes: Code[] }) {
+export function InvitesPanel({ initialCodes }: { initialCodes: Code[] }) {
   const router = useRouter();
-  const [state, setState] = useState(initialState);
   const [codes, setCodes] = useState(initialCodes);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +39,6 @@ export function InvitesPanel({ initialState, initialCodes }: { initialState: Sta
       router.refresh();
       // Optimistic: show the new code immediately by re-fetching
       const list = await fetch("/api/invites").then((r) => r.json());
-      setState(list.state);
       setCodes(list.codes);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -59,7 +48,7 @@ export function InvitesPanel({ initialState, initialCodes }: { initialState: Sta
   };
 
   const revoke = async (id: string) => {
-    if (!window.confirm("Revoke this code? It will be unusable. Your budget will be refunded.")) return;
+    if (!window.confirm("Revoke this code? It will no longer work.")) return;
     setBusy(true);
     setError(null);
     try {
@@ -67,7 +56,6 @@ export function InvitesPanel({ initialState, initialCodes }: { initialState: Sta
       const data = await r.json();
       if (!r.ok) throw new Error(data.error ?? "Couldn't revoke");
       const list = await fetch("/api/invites").then((r) => r.json());
-      setState(list.state);
       setCodes(list.codes);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -87,35 +75,16 @@ export function InvitesPanel({ initialState, initialCodes }: { initialState: Sta
     }
   };
 
-  const canGenerate = state.unlimited || (!state.cooldownActive && state.available > 0);
-
   return (
     <div style={{ marginTop: 16 }}>
-      <h2>Budget</h2>
-      <p>
-        {state.unlimited ? (
-          <span>Unlimited (admin/founder).</span>
-        ) : (
-          <span>
-            <span style={{ fontFamily: "var(--font-mono)" }}>{state.available}</span> of <span style={{ fontFamily: "var(--font-mono)" }}>{state.cap}</span> available.
-          </span>
-        )}
-      </p>
-      {!state.unlimited && state.cooldownActive && state.cooldownUntil && (
-        <p className="muted">In cooldown until {new Date(state.cooldownUntil).toLocaleDateString()}. New members can&apos;t invite for the first 30 days.</p>
-      )}
-      {!state.unlimited && !state.cooldownActive && state.nextGrantAt && state.available < state.cap && (
-        <p className="muted">Next invite refills on {new Date(state.nextGrantAt).toLocaleDateString()}.</p>
-      )}
-
-      <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 12 }}>
-        <button onClick={generate} disabled={busy || !canGenerate} style={{ padding: "6px 12px", opacity: canGenerate && !busy ? 1 : 0.5 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <button onClick={generate} disabled={busy} style={{ padding: "6px 12px" }}>
           {busy ? "Generating…" : "Generate invite code"}
         </button>
         {error && <span style={{ color: "#c44", fontSize: 12 }}>{error}</span>}
       </div>
 
-      <h2 style={{ marginTop: 32 }}>Codes you&apos;ve issued</h2>
+      <h2 style={{ marginTop: 32 }}>Issued codes</h2>
       {codes.length === 0 ? (
         <p className="muted">None yet.</p>
       ) : (
@@ -138,14 +107,7 @@ export function InvitesPanel({ initialState, initialCodes }: { initialState: Sta
                   <td data-label="Code" style={{ fontFamily: "var(--font-mono)" }}>{c.code}</td>
                   <td data-label="Status" className="muted">{label}</td>
                   <td data-label="Used by" className="muted">
-                    {c.usedByUser ? (
-                      <a href={c.usedByUser.username ? `/u/${c.usedByUser.username}` : "#"}>
-                        <span style={{ fontFamily: "var(--font-mono)" }}>#{String(c.usedByUser.memberNumber).padStart(3, "0")}</span>{" "}
-                        {c.usedByUser.displayName ?? `@${c.usedByUser.username ?? "?"}`}
-                      </a>
-                    ) : (
-                      "—"
-                    )}
+                    {c.usedByUser ? c.usedByUser.displayName ?? `@${c.usedByUser.username ?? "?"}` : "—"}
                   </td>
                   <td data-label="Expires" className="muted" style={{ fontSize: 11 }}>{new Date(c.expiresAt).toLocaleDateString()}</td>
                   <td className="cell-actions">

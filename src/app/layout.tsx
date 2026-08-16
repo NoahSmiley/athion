@@ -6,8 +6,7 @@ export const metadata: Metadata = {
     default: "Athion",
     template: "%s | Athion",
   },
-  description:
-    "Software, infrastructure, and consulting.",
+  description: "Active Athion projects and services.",
 };
 
 export const viewport: Viewport = {

@@ -5,19 +5,16 @@ import { useRouter } from "next/navigation";
 
 const input: React.CSSProperties = { width: "100%", fontFamily: "inherit", fontSize: 13, padding: "6px 8px", marginTop: 4, boxSizing: "border-box" };
 
-export function ProfileForm({ initial }: { initial: { username: string; displayName: string; bio: string } }) {
+export function ProfileForm({ initial }: { initial: { username: string; displayName: string } }) {
   const router = useRouter();
   const [username, setUsername] = useState(initial.username);
   const [displayName, setDisplayName] = useState(initial.displayName);
-  const [bio, setBio] = useState(initial.bio);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<string | null>(null);
 
   const dirty =
-    username !== initial.username ||
-    displayName !== initial.displayName ||
-    bio !== initial.bio;
+    username !== initial.username || displayName !== initial.displayName;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +24,7 @@ export function ProfileForm({ initial }: { initial: { username: string; displayN
       const r = await fetch("/api/me/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, displayName, bio }),
+        body: JSON.stringify({ username, displayName }),
       });
       const data = await r.json();
       if (!r.ok) throw new Error(data.error ?? "Save failed");
@@ -66,18 +63,6 @@ export function ProfileForm({ initial }: { initial: { username: string; displayN
           style={input}
           maxLength={64}
         />
-      </label>
-      <label>
-        <span className="muted" style={{ fontSize: 11 }}>Bio</span>
-        <textarea
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          placeholder="What you're working on, what you care about, what you'd like to talk to other members about."
-          rows={5}
-          maxLength={500}
-          style={{ ...input, resize: "vertical" }}
-        />
-        <span className="muted" style={{ fontSize: 11 }}>{bio.length}/500</span>
       </label>
       {error && <p style={{ color: "#c44", fontSize: 12, margin: 0 }}>{error}</p>}
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>

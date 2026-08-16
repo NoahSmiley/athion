@@ -12,8 +12,6 @@ export type SessionUser = {
   username: string | null;
   displayName: string | null;
   role: string;
-  avatarUrl: string | null;
-  stripeCustomerId: string | null;
 };
 
 export async function getSession(): Promise<SessionUser | null> {
@@ -31,8 +29,6 @@ export async function getSession(): Promise<SessionUser | null> {
       username: users.username,
       displayName: users.displayName,
       role: users.role,
-      avatarUrl: users.avatarUrl,
-      stripeCustomerId: users.stripeCustomerId,
     })
     .from(users)
     .where(eq(users.id, payload.sub))
@@ -50,19 +46,22 @@ export async function setSessionCookie(token: string) {
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 30, // 30 days
-    ...(isProduction && { domain: ".athion.me" }), // share across athion.me subdomains
+    ...(isProduction && { domain: ".athion.me" }),
   });
 }
 
 export async function clearSessionCookie() {
   const cookieStore = await cookies();
   const isProduction = process.env.NODE_ENV === "production";
-  cookieStore.set(COOKIE_NAME, "", {
+  const options = {
     httpOnly: true,
     secure: isProduction,
     sameSite: "lax",
     path: "/",
     maxAge: 0,
-    ...(isProduction && { domain: ".athion.me" }),
-  });
+  } as const;
+  cookieStore.set(COOKIE_NAME, "", options);
+  if (isProduction) {
+    cookieStore.set(COOKIE_NAME, "", { ...options, domain: ".athion.me" });
+  }
 }

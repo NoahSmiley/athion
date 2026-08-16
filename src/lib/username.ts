@@ -4,14 +4,13 @@ import { users } from "@/lib/db/schema";
 
 const USERNAME_RE = /^[a-z0-9][a-z0-9_-]{1,31}$/;
 
-// Reserved names that would let a member spoof an admin/system identity
+// Reserved names that would let an account spoof an admin/system identity
 // or collide with a route segment. Compared after lowercasing.
 const RESERVED = new Set([
   "admin", "administrator", "root", "system", "support", "help", "moderator", "mod",
   "athion", "official", "staff", "team", "owner", "founder", "noah",
-  "api", "auth", "login", "signup", "logout", "settings", "invites", "docs", "blog",
-  "software", "infra", "members", "about", "process", "request-access", "reset-password",
-  "privacy", "terms", "security", "transparency", "careers", "u", "me", "you",
+  "api", "auth", "login", "signup", "logout", "settings", "invites", "reset-password",
+  "privacy", "terms", "status", "minecraft", "prime", "me", "you",
   "null", "undefined", "anonymous", "guest", "test",
 ]);
 
@@ -37,7 +36,7 @@ export function slugify(s: string): string {
 // Pick a unique username from a base. If the base is taken, append a
 // short random suffix and retry.
 export async function pickUniqueUsername(base: string): Promise<string> {
-  const seed = slugify(base) || "member";
+  const seed = slugify(base) || "user";
   for (let attempt = 0; attempt < 8; attempt++) {
     const candidate = attempt === 0 ? seed : `${seed}-${Math.random().toString(36).slice(2, 6)}`;
     if (!isValidUsername(candidate)) continue;
@@ -49,5 +48,5 @@ export async function pickUniqueUsername(base: string): Promise<string> {
     if (taken.length === 0) return candidate;
   }
   // Last resort: random
-  return `member-${Math.random().toString(36).slice(2, 8)}`;
+  return `user-${Math.random().toString(36).slice(2, 8)}`;
 }

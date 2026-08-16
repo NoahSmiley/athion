@@ -55,6 +55,8 @@ application schema or exposed by public routes.
 - `mods.athion.me` and `staging.athion.me` were removed from tunnel ingress.
 - DNS records for `opendock-api`, `mods`, `staging`, `demos`, and `simex` were
   removed after their exact Cloudflare targets were backed up.
+- Unused OpenDock-era contact, encryption, and Stripe variables were removed
+  from the live app environment after it was backed up.
 - Existing tunnel and Caddy configurations were backed up before changes.
 
 ## Still open

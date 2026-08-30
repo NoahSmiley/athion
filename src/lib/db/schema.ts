@@ -41,6 +41,20 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
 // Created lazily on first /api/prime/jellyfin-token request. The Jellyfin password
 // is NOT stored — it's deterministically derived server-side from the athion user
 // id + JELLYFIN_USER_PASSWORD_SECRET so it can be reproduced when issuing tokens.
+// Device-code activation for Prime on TV: the TV creates a row and polls it;
+// the phone (signed-in session) claims the code, which stores a one-shot
+// config payload the TV's next poll consumes. Codes are short-lived and
+// single-use; pollSecret stops third parties from polling someone else's code.
+export const primeDeviceCodes = pgTable("prime_device_codes", {
+  code: text("code").primaryKey(),
+  pollSecret: text("poll_secret").notNull(),
+  status: text("status").notNull().default("pending"), // pending | claimed | consumed
+  claimedBy: uuid("claimed_by").references(() => users.id, { onDelete: "set null" }),
+  payload: text("payload"),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const jellyfinUsers = pgTable("jellyfin_users", {
   athionUserId: uuid("athion_user_id")
     .primaryKey()

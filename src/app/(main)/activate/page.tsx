@@ -26,6 +26,12 @@ function ActivateForm() {
   const activate = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    // Not signed in: the button takes you to sign-in and brings you back —
+    // a silently disabled button reads as "nothing happens".
+    if (me === null) {
+      window.location.href = loginHref;
+      return;
+    }
     setState("working");
     try {
       const res = await fetch("/api/prime/device/claim", {
@@ -73,7 +79,12 @@ function ActivateForm() {
       </p>
       {me === null && (
         <p style={{ marginTop: 16 }}>
-          <Link href={loginHref}>Sign in</Link> first, then come back here — or scan the QR on your TV again after signing in.
+          You&apos;ll be asked to <Link href={loginHref}>sign in</Link> first — you&apos;ll come right back here.
+        </p>
+      )}
+      {me && (
+        <p className="muted" style={{ marginTop: 16, fontSize: 12 }}>
+          Signed in as {me.displayName ?? me.username ?? me.email}
         </p>
       )}
       <form onSubmit={activate} style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 16, maxWidth: 320 }}>
@@ -88,10 +99,10 @@ function ActivateForm() {
           />
         </div>
         <button
-          type="submit" disabled={state === "working" || me === null || code.trim().length < 6}
+          type="submit" disabled={state === "working"}
           style={{ fontFamily: "inherit", fontSize: 13, padding: "6px 12px", cursor: "pointer", marginTop: 4, alignSelf: "flex-start" }}
         >
-          {state === "working" ? "Activating..." : "Activate"}
+          {state === "working" ? "Activating..." : me === null ? "Sign in to activate" : "Activate"}
         </button>
       </form>
     </>

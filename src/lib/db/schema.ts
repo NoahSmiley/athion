@@ -63,3 +63,18 @@ export const jellyfinUsers = pgTable("jellyfin_users", {
   jellyfinUsername: text("jellyfin_username").notNull().unique(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+// Long-lived renewal credential for an activated Prime TV. Only the sha256 of
+// the token is stored; the plaintext lives in the device's Keychain and lets
+// it silently re-provision a Jellyfin session if its token ever dies.
+export const primeDevices = pgTable("prime_devices", {
+  tokenHash: text("token_hash").primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  // The Jellyfin device identity minted at claim ("prime-tv:<uid>:<code>") —
+  // renewals reuse it so each TV stays one device record server-side.
+  deviceId: text("device_id").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  lastRenewedAt: timestamp("last_renewed_at", { withTimezone: true }),
+});

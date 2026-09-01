@@ -1,16 +1,18 @@
 import { NextResponse } from "next/server";
+import { createHash, randomBytes } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { primeDeviceCodes } from "@/lib/db/schema";
+import { primeDeviceCodes, primeDevices } from "@/lib/db/schema";
 import { getSession } from "@/lib/auth/session";
-import { ensureUser, issueUserToken, jellyfinPublicUrl } from "@/lib/jellyfin/admin";
+import { buildPrimeConfig } from "@/lib/prime/device-config";
 import { checkRateLimit, clientIp } from "@/lib/rate-limit";
 
 /**
  * The phone side: a signed-in member enters the TV's code, we provision
- * their Jellyfin identity and park the TV's full config on the row for its
- * next poll to consume. Live TV credentials ride along when the server has
- * an upstream configured (same env the prime-web proxy uses).
+ * their Jellyfin identity (and their own live-TV credential) and park the
+ * TV's full config on the row for its next poll to consume. The payload
+ * also carries a long-lived renewal token — hashed here, plaintext only on
+ * the TV — so the device can silently re-provision if its session dies.
  */
 export async function POST(request: Request) {
   const limit = checkRateLimit(`device-claim:${clientIp(request)}`, 15, 15 * 60 * 1000);
@@ -47,28 +49,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "code_already_used" }, { status: 409 });
   }
 
-  const { jellyfinUsername } = await ensureUser(me.id, me.username);
   const deviceId = `prime-tv:${me.id}:${code}`;
-  const token = await issueUserToken(me.id, jellyfinUsername, deviceId);
+  const config = await buildPrimeConfig(me, deviceId);
 
-  const config: Record<string, unknown> = {
-    memberName: me.displayName ?? me.username ?? me.email,
-    jellyfin: {
-      url: jellyfinPublicUrl(),
-      accessToken: token.accessToken,
-      userId: token.userId,
-      username: token.username,
-      deviceId,
-    },
-  };
-  // Live TV passthrough — present only when this deployment has an upstream.
-  if (process.env.XTREAM_BASE_URL && process.env.XTREAM_USERNAME && process.env.XTREAM_PASSWORD) {
-    config.xtream = {
-      url: process.env.XTREAM_BASE_URL.replace(/\/+$/, ""),
-      username: process.env.XTREAM_USERNAME,
-      password: process.env.XTREAM_PASSWORD,
-    };
-  }
+  const deviceToken = randomBytes(32).toString("base64url");
+  await db.insert(primeDevices).values({
+    tokenHash: createHash("sha256").update(deviceToken).digest("hex"),
+    userId: me.id,
+    deviceId,
+  });
+  config.deviceToken = deviceToken;
 
   await db
     .update(primeDeviceCodes)

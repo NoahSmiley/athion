@@ -14,6 +14,7 @@ const serviceNames = {
   athionWeb: "athion.me",
   minecraft: "Minecraft",
   prime: "Prime",
+  liveTV: "Live TV",
 } as const;
 
 export default async function StatusPage() {

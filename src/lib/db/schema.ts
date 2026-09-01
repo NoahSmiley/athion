@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp, type AnyPgColumn } from "drizzle-orm/pg-core";
+import { bigserial, pgTable, uuid, text, timestamp, type AnyPgColumn } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -77,4 +77,17 @@ export const primeDevices = pgTable("prime_devices", {
   deviceId: text("device_id").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   lastRenewedAt: timestamp("last_renewed_at", { withTimezone: true }),
+});
+
+// Error/crash beacons from Prime devices. Family TVs fail silently otherwise —
+// this turns "the app is broken" texts into readable stack context. Pruned to
+// a rolling two weeks by the ingest route.
+export const primeTelemetry = pgTable("prime_telemetry", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  deviceId: text("device_id"),
+  memberName: text("member_name"),
+  appVersion: text("app_version"),
+  kind: text("kind").notNull(), // error | crash
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });

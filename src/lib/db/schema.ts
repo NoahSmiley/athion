@@ -77,6 +77,13 @@ export const primeDevices = pgTable("prime_devices", {
   deviceId: text("device_id").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   lastRenewedAt: timestamp("last_renewed_at", { withTimezone: true }),
+  // Admin kill switch: a revoked row still exists (audit trail) but renew
+  // answers 410 and the TV sends itself back to pairing.
+  revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  // Free-text name an admin can give a TV ("Living room"), plus the last time
+  // the device touched renew or telemetry.
+  label: text("label"),
+  lastSeenAt: timestamp("last_seen_at", { withTimezone: true }),
 });
 
 // Error/crash beacons from Prime devices. Family TVs fail silently otherwise —

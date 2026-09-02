@@ -14,11 +14,12 @@ function secretsMatch(a: string, b: string): boolean {
  * The TV's poll loop. Pending until the phone claims the code; the first
  * poll after that gets the config payload exactly once (the row is consumed
  * and the payload cleared, so a leaked code can't be re-harvested later).
+ *
+ * Current builds POST {code, secret} so the secret never sits in a query
+ * string (access logs, CDN logs); the GET form stays for TVs still on the
+ * first activation build.
  */
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const code = (url.searchParams.get("code") ?? "").toUpperCase();
-  const secret = url.searchParams.get("secret") ?? "";
+async function poll(code: string, secret: string) {
   if (!code || !secret) {
     return NextResponse.json({ error: "missing_params" }, { status: 400 });
   }
@@ -47,4 +48,21 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.json({ status: "expired" });
+}
+
+export async function POST(request: Request) {
+  let body: { code?: unknown; secret?: unknown };
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "bad_request" }, { status: 400 });
+  }
+  const code = typeof body.code === "string" ? body.code.toUpperCase() : "";
+  const secret = typeof body.secret === "string" ? body.secret : "";
+  return poll(code, secret);
+}
+
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  return poll((url.searchParams.get("code") ?? "").toUpperCase(), url.searchParams.get("secret") ?? "");
 }

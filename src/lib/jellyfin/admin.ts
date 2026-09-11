@@ -159,3 +159,13 @@ export function jellyfinPublicUrl(): string {
   const { url } = requireConfig();
   return JELLYFIN_PUBLIC_URL ?? url;
 }
+
+// LAN-reachable origin handed to Prime clients alongside the public one. A TV
+// on the home network probes it at launch and streams high-bitrate Remuxes
+// straight from the VM instead of hairpinning a 60 Mbps stream through the
+// Cloudflare tunnel (which buffers every few seconds). JELLYFIN_URL is the
+// server's own LAN address, so it is the default.
+const JELLYFIN_LAN_URL = process.env.JELLYFIN_LAN_URL?.replace(/\/$/, "");
+export function jellyfinLanUrl(): string | null {
+  return JELLYFIN_LAN_URL ?? JELLYFIN_URL ?? null;
+}

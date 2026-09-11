@@ -1,4 +1,4 @@
-import { ensureUser, issueUserToken, jellyfinPublicUrl } from "@/lib/jellyfin/admin";
+import { ensureUser, issueUserToken, jellyfinLanUrl, jellyfinPublicUrl } from "@/lib/jellyfin/admin";
 import { ensureLiveUser } from "@/lib/live/dispatcharr";
 
 export interface PrimeMember {
@@ -58,6 +58,7 @@ export async function buildPrimeConfig(
     memberName: member.displayName ?? member.username ?? member.email,
     jellyfin: {
       url: jellyfinPublicUrl(),
+      lanUrl: jellyfinLanUrl(),
       accessToken: token.accessToken,
       userId: token.userId,
       username: token.username,

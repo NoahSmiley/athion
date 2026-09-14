@@ -102,3 +102,102 @@
 @media (prefers-reduced-motion: reduce) {
   .rack-page * { animation: none !important; transition: none !important; }
 }
+
+/* The viewer is the primary surface; controls sit outside the hardware silhouette. */
+.rack-wrap, .rack-nav { max-width: 1600px; }
+.rack-header { padding: 34px 0 28px; border-bottom: 0; }
+.rack-page h1 { font-family: var(--font-sans); font-size: clamp(28px, 3.2vw, 46px); font-weight: 500; text-transform: none; letter-spacing: -0.055em; line-height: 1.18; margin-top: 10px; }
+.rack-header p { font-size: 14px; margin-top: 12px; }
+.rack-eyebrow { display: flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: 0.12em; }
+.rack-live-dot { width: 5px; height: 5px; border-radius: 50%; background: #76aaff; box-shadow: 0 0 10px #3d8bff60; }
+.rack-toggle { border-radius: 8px; padding: 4px; gap: 3px; background: #10151c; font-family: var(--font-sans); font-size: 12px; text-transform: none; letter-spacing: 0; }
+.rack-toggle button { border-radius: 5px; padding: 8px 14px; background: transparent; }
+.rack-toggle button.on { background: #24344b; color: #c4dbff; box-shadow: inset 0 0 0 1px #3b5577; }
+.rack-stage { grid-template-columns: minmax(0, 1fr) 390px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.rack-view-wrap { height: clamp(650px, 78vh, 900px); background: radial-gradient(ellipse at 48% 35%, #253346 0%, #141e2c 40%, #0b111b 75%); }
+.rack-view { inset: 55px 0 111px; touch-action: none; }
+.rack-view-toolbar { position: absolute; top: 16px; left: 20px; right: 20px; display: flex; justify-content: space-between; gap: 8px; z-index: 2; }
+.rack-view-presets { display: flex; padding: 3px; border: 1px solid #ffffff12; border-radius: 7px; background: #0b121cbb; backdrop-filter: blur(12px); }
+.rack-view-presets button, .rack-expand { background: transparent; border: 0; color: #8e9fb5; border-radius: 4px; padding: 6px 12px; font-size: 11px; }
+.rack-view-presets button[aria-pressed="true"] { background: #2c3b50; color: #edf4ff; }
+.rack-expand { border: 1px solid #ffffff18; background: #0b121c99; font-size: 21px; padding: 0 10px; line-height: 1; }
+.rack-scene-caption { position: absolute; left: 24px; top: 78px; pointer-events: none; display: flex; flex-direction: column; gap: 4px; color: #7689a1; font-family: var(--mono); font-size: 9px; letter-spacing: 0.025em; }
+.rack-scene-caption b { color: #c7d4e5; font-size: 11px; font-weight: 500; letter-spacing: 0.17em; }
+.rack-scene-caption b span { color: #6c86a6; }
+.rack-view-bottom { position: absolute; inset: auto 20px 14px; display: grid; gap: 14px; }
+.rack-display-controls { display: flex; justify-content: center; gap: 6px; }
+.rack-display-controls button { display: flex; align-items: center; gap: 7px; background: #111c2abf; border: 1px solid #ffffff12; border-radius: 6px; padding: 7px 11px; font-size: 11px; color: #8291a5; }
+.rack-display-controls i { width: 5px; height: 5px; background: #4a5565; border-radius: 50%; }
+.rack-display-controls button[aria-pressed="true"] { color: #ccdaec; border-color: #4e668350; }
+.rack-display-controls button[aria-pressed="true"] i { background: #8ab8f6; }
+.rack-legend { position: static; display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 14px; padding: 0; border: 0; background: transparent; font-size: 8px; letter-spacing: 0.01em; }
+.rack-legend div { gap: 5px; }
+.rack-legend i { width: 12px; height: 3px; }
+.rack-hint { position: static; display: flex; justify-content: space-between; gap: 12px; font-size: 9px; letter-spacing: 0; text-transform: none; color: #8191a7; }
+.rack-hint span:last-child { color: #93a8c2; }
+.rack-sched { background: #0e131b; max-height: clamp(650px, 78vh, 900px); }
+.rack-sched-h { padding: 20px 18px; }
+.rack-sched-h h2 { font-family: var(--font-sans); font-size: 16px; text-transform: none; letter-spacing: -0.02em; }
+.rack-sched-h span { font-family: var(--mono); font-size: 10px; padding: 3px 7px; background: #1c2735; border-radius: 4px; }
+.rack-rows { max-height: none; scrollbar-width: thin; scrollbar-color: #334056 transparent; }
+.rack-row { width: 100%; text-align: left; background: transparent; border: 0; border-bottom: 1px solid #ffffff09; grid-template-columns: 26px 1fr 1fr 44px; padding: 12px 15px; gap: 8px; }
+.rack-row .ep { font-size: 10px; color: #8592a5; }
+.rack-row .ep b { font-size: 11px; font-weight: 500; margin-bottom: 3px; }
+.rack-row .id { font-size: 10px; color: #63758d; }
+.rack-row .spd { font-size: 12px; }
+.rack-row:hover, .rack-row.sel { background: #1b2a3c; }
+.rack-row.sel { box-shadow: inset 2px 0 #80b2ff; }
+.rack-detail { background: #121c29; color: #95a4b9; font-size: 12px; min-height: 112px; }
+.rack-detail .k { color: #adc5e7; font-size: 9px; margin-bottom: 8px; }
+.rack-detail b { font-weight: 500; }
+.rack-tip { z-index: 3; max-width: min(320px, 75%); white-space: normal; font-size: 10px; background: #e2ecfa; transform: translate(-50%, -120%); }
+.rack-context { border-bottom: 1px solid var(--line); padding: 18px 0; color: var(--ink2); font-size: 12px; }
+.rack-context summary { cursor: pointer; width: fit-content; }
+.rack-context p { max-width: 90ch; margin: 12px 0 0; }
+.rack-page button:focus-visible, .rack-context summary:focus-visible { outline: 2px solid #9cc6ff; outline-offset: -2px; }
+.rack-unavailable { position: absolute; inset: 40% 12% auto; text-align: center; color: var(--ink2); font-size: 14px; }
+.rack-view-wrap:fullscreen { width: 100vw; height: 100dvh; }
+@media (max-width: 1100px) {
+  .rack-stage { grid-template-columns: minmax(0, 1fr) 330px; }
+  .rack-scene-caption { top: 70px; font-size: 8px; }
+  .rack-scene-caption b { font-size: 10px; }
+}
+@media (max-width: 900px) {
+  .rack-stage { grid-template-columns: 1fr; }
+  .rack-view-wrap { height: 720px; }
+  .rack-sched { max-height: 540px; }
+  .rack-header { gap: 20px; padding-top: 26px; }
+}
+@media (max-width: 540px) {
+  .rack-wrap { padding: 0 12px; }
+  .rack-nav { padding: 16px 14px 0; }
+  .rack-header { padding-bottom: 20px; }
+  .rack-header p { font-size: 12px; }
+  .rack-view-wrap { height: 610px; }
+  .rack-view { inset: 84px 0 125px; }
+  .rack-scene-caption { top: 67px; left: 15px; flex-direction: row; gap: 12px; }
+  .rack-view-toolbar { left: 12px; right: 12px; }
+  .rack-view-presets button { padding: 6px 10px; }
+  .rack-view-bottom { left: 12px; right: 12px; gap: 12px; }
+  .rack-display-controls { gap: 4px; }
+  .rack-display-controls button { padding: 7px 8px; font-size: 10px; }
+  .rack-hint { font-size: 8px; }
+  .rack-grid2 { grid-template-columns: 1fr; }
+  .rack-portmap { grid-template-columns: repeat(6, 1fr); }
+}
+.rack-schedule-filters { display: flex; gap: 5px; padding: 10px 15px; border-bottom: 1px solid var(--line); }
+.rack-schedule-filters button { border: 0; background: transparent; border-radius: 4px; color: #8191a7; font-size: 10px; padding: 5px 9px; }
+.rack-schedule-filters button[aria-pressed="true"] { background: #25354b; color: #d1e2f9; }
+.rack-pc-connections { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+.rack-pc-connections > div { border: 1px solid var(--line); background: #0e151f; border-radius: 8px; padding: 16px 18px; }
+.rack-pc-connections > div > div { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.rack-pc-connections b { font-weight: 500; font-size: 13px; }
+.rack-pc-connections span { font-family: var(--mono); color: #91b8ee; font-size: 10px; }
+.rack-pc-connections p { margin: 3px 0 0; font-size: 11px; color: #91a0b4; }
+.rack-schematic-note { margin: 12px 2px 0; font-size: 10px; color: #7c8a9e; }
+.rack-steps li > div { min-width: 0; }
+.rack-page .rack-tw table { min-width: 650px; }
+@media (max-width: 650px) {
+  .rack-pc-connections { grid-template-columns: 1fr; }
+  .rack-pc-connections > div { padding: 14px; }
+}

@@ -1,7 +1,7 @@
 // Devices in the cabinet, top to bottom, per mode. `u` is the top rack unit a device occupies, `h` its height in U.
 // Procedural kinds are drawn from spec in `scene/devices.ts`; kinds with `glb` load Ubiquiti's own product model from
 // /public/rack/models (Draco already decoded, buffers embedded) and use `hint`/`flip` to decide which face is the front.
-import type { Mode } from "./geometry";
+import { FR, U, yOf, type Mode } from "./geometry";
 
 export type DeviceKind = "pdu" | "pp" | "sw" | "udm" | "uci" | "brush" | "rm" | "tpl" | "mdm" | "ap";
 
@@ -26,9 +26,9 @@ export interface Device {
 }
 
 const COMPUTERS: Device[] = [
-  { id: "SRV", u: 6, h: 4, d: 4.69, kind: "rm", name: "Proxmox server · SilverStone RM44", label: "RM44  ·  HOMELAB" },
-  { id: "SPC", u: 10, h: 4, d: 4.69, kind: "rm", name: "Sam's PC · SilverStone RM44", label: "RM44  ·  SAM" },
-  { id: "GPC", u: 14, h: 5, d: 4.9, kind: "rm", name: "Gaming PC · SilverStone RM51", label: "RM51  ·  GAMING" },
+  { id: "SRV", u: 6, h: 4, d: 4.68, kind: "rm", name: "Proxmox server · SilverStone RM44", label: "RM44  ·  HOMELAB" },
+  { id: "SPC", u: 10, h: 4, d: 4.68, kind: "rm", name: "Sam's PC · SilverStone RM44", label: "RM44  ·  SAM" },
+  { id: "GPC", u: 14, h: 5, d: 4.85, kind: "rm", name: "Gaming PC · SilverStone RM51", label: "RM51  ·  GAMING" },
 ];
 
 export function devicesFor(mode: Mode): Device[] {
@@ -56,6 +56,7 @@ export function devicesFor(mode: Mode): Device[] {
  * fx runs left to right across the 442 mm face, fy bottom to top across the 1U height.
  */
 export const FACE = {
+  pdu: { outletCount: 12, outletX: (i: number) => -1.661 + i * 0.302, inletX: -2.01 },
   sw: {
     ports: (i: number): [number, number] => [0.085 + (i * (0.845 - 0.085)) / 23, 0.5],
     sfp: [
@@ -85,5 +86,14 @@ export const FACE = {
   /** Keystone openings sit directly above the switch ports so every panel-to-switch cord is identical. */
   pp: { slot: (i: number): [number, number] => [0.085 + (i * (0.845 - 0.085)) / 23, 0.5] },
   /** Model depths in scene units, used to place rear anchors. */
-  depth: { sw: 3.25, udm: 2.86, uci: 2.6, pp: 0.24, pdu: 1.1 },
+  depth: { sw: 3.25, udm: 2.86, uci: 2.6, pp: 0.24, pdu: 1.14 },
 };
+
+/** Published chassis sizes, centered in their allotted rack units. */
+export function chassisPlacement(d: Device) {
+  const depth = d.d ?? 4.68;
+  const units = d.h ?? 4;
+  return { width: 4.4, height: units === 5 ? 2.2 : 1.76, depth,
+    y: yOf((d.u ?? 6) + units - 1) + units * U / 2,
+    z: FR + 0.02 - depth / 2 };
+}

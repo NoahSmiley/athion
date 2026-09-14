@@ -1,8 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useMemo, useState } from "react";
-import { CSS_COLORS, LEGEND, SCHEDULE, speedLabel, speedLong, type Cable } from "@/lib/rack/cables";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { CSS_COLORS, LEGEND, SCHEDULE, cableCount, isPeripheral, speedLabel, speedLong, type Cable } from "@/lib/rack/cables";
 import { LEAD } from "@/lib/rack/content";
 import type { Mode } from "@/lib/rack/geometry";
 import type { ViewPreset } from "./scene/RackScene";
@@ -17,14 +17,20 @@ const RackScene = dynamic(() => import("./scene/RackScene").then((m) => m.RackSc
 
 export function RackPlan() {
   const [mode, setMode] = useState<Mode>("after");
+  const [filter, setFilter] = useState<"all" | "peripherals" | "power">("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [tip, setTip] = useState<{ x: number; y: number; text: string } | null>(null);
   const [sidePanels, setSidePanels] = useState(true);
-  const [view, setView] = useState<{ preset: ViewPreset; n: number }>({ preset: "front", n: 0 });
-  const [loadState, setLoadState] = useState<"loading" | "loaded" | "fallback">("loading");
+  const [doors, setDoors] = useState(false);
+  const [showCables, setShowCables] = useState(true);
+  const [labels, setLabels] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [view, setView] = useState<{ preset: ViewPreset; n: number }>({ preset: "equipment", n: 0 });
+  const [loadState, setLoadState] = useState<"loading" | "loaded" | "fallback" | "unavailable">("loading");
 
   const list = SCHEDULE[mode];
+  const visibleList = list.filter((c) => filter === "all" || (filter === "peripherals" ? isPeripheral(c) : c.speed === "AC"));
   const selected = useMemo(() => list.find((c) => c.id === selectedId) ?? null, [list, selectedId]);
 
   const onHover = useCallback((c: Cable | null, x: number, y: number) => {
@@ -36,65 +42,84 @@ export function RackPlan() {
     setMode(m);
     setSelectedId(null);
     setHoveredId(null);
+    setTip(null);
   };
 
   return (
     <div className="rack-wrap">
       <header className="rack-header">
         <div>
-          <div className="rack-eyebrow">athion homelab · rack elevation and cable schedule · 2026-09-14</div>
-          <h1>Athion Rack Plan</h1>
-          <p>{LEAD}</p>
+          <div className="rack-eyebrow"><span className="rack-live-dot" /> Athion homelab / infrastructure</div>
+          <h1>Athion rack</h1>
+          <p>Hardware, connections, and the UniFi upgrade.</p>
         </div>
         <div className="rack-toggle" role="group" aria-label="Layout">
-          <button className={mode === "before" ? "on" : ""} onClick={() => switchMode("before")}>
+          <button aria-pressed={mode === "before"} className={mode === "before" ? "on" : ""} onClick={() => switchMode("before")}>
             Today · TP-Link
           </button>
-          <button className={mode === "after" ? "on" : ""} onClick={() => switchMode("after")}>
+          <button aria-pressed={mode === "after"} className={mode === "after" ? "on" : ""} onClick={() => switchMode("after")}>
             Plan · UniFi
           </button>
         </div>
       </header>
 
       <div className="rack-stage">
-        <div className="rack-view-wrap">
+        <div className="rack-view-wrap" ref={stageRef}>
+          <div className="rack-view-toolbar">
+            <div className="rack-view-presets" role="group" aria-label="Camera view">
+              {([['equipment', 'Equipment'], ['overview', 'Overview'], ['front', 'Front'], ['rear', 'Rear']] as const).map(([preset, title]) => (
+                <button key={preset} aria-pressed={view.preset === preset} onClick={() => setView({ preset, n: view.n + 1 })}>{title}</button>
+              ))}
+            </div>
+            <button className="rack-expand" aria-label="Toggle fullscreen viewer" onClick={() => {
+              if (document.fullscreenElement) void document.exitFullscreen();
+              else void stageRef.current?.requestFullscreen?.().catch(() => {});
+            }} title="Fullscreen">⛶</button>
+          </div>
+          <div className="rack-scene-caption"><b>LINIER <span>42U</span></b><span>24 × 24 in · {mode === 'after' ? 'UniFi upgrade' : 'Current layout'}</span></div>
           <RackScene
             mode={mode}
             selectedId={selectedId}
             hoveredId={hoveredId}
             sidePanels={sidePanels}
+            doors={doors}
+            showCables={showCables}
+            labels={labels}
             view={view}
             onHover={onHover}
             onSelect={onSelect}
             onLoadState={setLoadState}
           />
-          <div className="rack-legend">
-            {LEGEND.map((l) => (
-              <div key={l.key}>
-                <i style={{ background: l.key === "AC" ? "#444a54" : CSS_COLORS[l.key] }} />
-                {l.label}
-              </div>
-            ))}
-          </div>
-          {tip && (
-            <div className="rack-tip" style={{ left: tip.x, top: tip.y }}>
-              {tip.text}
-            </div>
+          {tip && showCables && (
+            <div className="rack-tip" style={{ left: tip.x, top: tip.y }}>{tip.text}</div>
           )}
-          <div className="rack-hint">
-            <span>{loadState === "loading" ? "loading ubiquiti 3d models…" : loadState === "loaded" ? "ubiquiti models loaded ·" : "models unavailable, drawn to spec ·"}</span> drag to orbit · wheel to
-            zoom · hover or click a cable ·{" "}
-            <button onClick={() => setView({ preset: "front", n: view.n + 1 })}>front view</button>{" "}
-            <button onClick={() => setView({ preset: "rear", n: view.n + 1 })}>rear view</button>{" "}
-            <button onClick={() => setSidePanels((v) => !v)}>{sidePanels ? "hide side panels" : "show side panels"}</button>
+          {loadState === "unavailable" && <div className="rack-unavailable">3D rendering is unavailable in this browser. The cable schedule and hardware plan are available below.</div>}
+          <div className="rack-view-bottom">
+            <div className="rack-display-controls" role="group" aria-label="Scene layers">
+              {([
+                ['Cables', showCables, () => setShowCables((v) => !v)],
+                ['Labels', labels, () => setLabels((v) => !v)],
+                ['Side panels', sidePanels, () => setSidePanels((v) => !v)],
+                ['Doors', doors, () => setDoors((v) => !v)],
+              ] as const).map(([title, enabled, toggle]) => <button key={title} aria-pressed={enabled} onClick={toggle}><i />{title}</button>)}
+            </div>
+            <div className="rack-legend" aria-label="Cable colors">
+              {LEGEND.filter((l) => l.key !== 'OFF').map((l) => (
+                <div key={l.key}><i style={{ background: l.key === "AC" ? "#758195" : CSS_COLORS[l.key] }} />{l.label}</div>
+              ))}
+            </div>
+            <div className="rack-hint"><span>Drag to orbit · Scroll to zoom · Click a cable</span><span role="status">{loadState === "loading" ? "Loading models…" : loadState === "loaded" ? "Models ready" : loadState === "fallback" ? "Simplified models" : "3D unavailable"}</span></div>
           </div>
         </div>
         <aside className="rack-sched">
           <div className="rack-sched-h">
             <h2>{mode === "after" ? "Cable schedule" : "Current cabling"}</h2>
-            <span>{list.length} runs</span>
+            <span>{cableCount(list)} cables</span>
           </div>
-          <Schedule list={list} selectedId={selectedId} onSelect={setSelectedId} onHover={setHoveredId} />
+          <div className="rack-schedule-filters" role="group" aria-label="Cable category">
+            {([["all", "All"], ["peripherals", "Display & USB"], ["power", "Power"]] as const).map(([value, title]) => <button key={value} aria-pressed={filter === value} onClick={() => { setFilter(value); setSelectedId(null); setHoveredId(null); }}>{title}</button>)}
+          </div>
+          <Schedule list={visibleList} selectedId={selectedId} onSelect={setSelectedId} onHover={setHoveredId} />
           <div className="rack-detail">
             {selected ? (
               <>
@@ -114,6 +139,14 @@ export function RackPlan() {
         </aside>
       </div>
 
+      <section className="rack-pc-connections" aria-label="PC cable inventory">
+        {([["SPC", "Sam's PC", "HDMI to display · USB-C to hub"], ["GPC", "Gaming PC", "DisplayPort to display · USB to hub"], ["SRV", "Remote server", "Headless · no display or USB run"]] as const).map(([id, name, detail]) => {
+          const cables = list.filter((c) => c.from?.[0] === id || c.to?.[0] === id);
+          return <div key={id}><div><b>{name}</b><span>{cableCount(cables)} cables</span></div><p>Power + Ethernet</p><p>{detail}</p></div>;
+        })}
+      </section>
+      <p className="rack-schematic-note">Desk endpoints and PC port locations are schematic. Display and USB lengths: measure on site. Hub-to-peripheral leads and desk power stay outside this rack inventory.</p>
+      <details className="rack-context"><summary>About this rack</summary><p>{LEAD}</p></details>
       <Rationale />
       <PortMap />
       <Bom />

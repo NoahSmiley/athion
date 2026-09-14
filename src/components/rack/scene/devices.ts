@@ -1,10 +1,13 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { AP_POS, FR, U, W19, yOf } from "@/lib/rack/geometry";
-import { FACE, type Device } from "@/lib/rack/devices";
+import { FACE, chassisPlacement, type Device } from "@/lib/rack/devices";
 import type { AnchorMap } from "@/lib/rack/anchors";
-import { box, plane, textMaterial } from "./labels";
+import { box, plane, roundedBox, textMaterial } from "./labels";
 import type { Materials } from "./materials";
+
+import { buildPdu } from "./pdu";
+import { addChassisFront } from "./chassis";
 
 const loader = new GLTFLoader();
 
@@ -125,11 +128,14 @@ function tuneMaterials(scene: THREE.Object3D, intensity: number) {
   scene.traverse((o) => {
     const mesh = o as THREE.Mesh;
     if (!mesh.isMesh || !mesh.material) return;
-    const m = mesh.material as THREE.MeshStandardMaterial;
-    m.envMapIntensity = intensity;
-    if (m.metalness === undefined || m.metalness > 0.75) m.metalness = 0.7;
-    if (m.roughness !== undefined && m.roughness < 0.3 && !m.roughnessMap) m.roughness = 0.3;
-    m.needsUpdate = true;
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    for (const m of (Array.isArray(mesh.material) ? mesh.material : [mesh.material]) as THREE.MeshStandardMaterial[]) {
+      m.envMapIntensity = intensity;
+      if (m.metalness === undefined || m.metalness > 0.75) m.metalness = 0.7;
+      if (m.roughness !== undefined && m.roughness < 0.3 && !m.roughnessMap) m.roughness = 0.3;
+      m.needsUpdate = true;
+    }
   });
 }
 
@@ -209,6 +215,7 @@ export function buildDevices(root: THREE.Group, devices: Device[], anchors: Anch
             .catch((err) => {
               console.warn("rack: model failed, drawing stand-in", d.glb, String(err));
               drawStandIn(d, holder, depth, M);
+              throw err;
             }),
         );
         break;
@@ -221,6 +228,7 @@ export function buildDevices(root: THREE.Group, devices: Device[], anchors: Anch
             .loadAsync(d.glb!)
             .then((gltf) => {
               tuneMaterials(gltf.scene, 1.2);
+              gltf.scene.traverse((o) => { o.castShadow = false; });
               const g = orientModel(gltf.scene, "density");
               placeAP(g);
               holder.add(g);
@@ -234,6 +242,7 @@ export function buildDevices(root: THREE.Group, devices: Device[], anchors: Anch
               ring.rotation.x = Math.PI / 2;
               ring.position.set(AP_POS.x, AP_POS.y - 0.47, AP_POS.z);
               holder.add(ring);
+              throw err;
             }),
         );
         break;
@@ -284,55 +293,7 @@ export function buildDevices(root: THREE.Group, devices: Device[], anchors: Anch
         break;
       }
       case "pdu": {
-        // Tripp Lite PDUMH20: 1U black steel, logo + green amp meter, 2 front outlets, 10 rear outlets, L5-20P cord.
-        const g = new THREE.Group();
-        const h = U - 0.05;
-        const dep = FACE.depth.pdu;
-        const cy = yOf(d.u ?? 1) + U / 2;
-        const cz = FR + 0.02 - dep / 2;
-        const fz = dep / 2;
-        g.position.set(0, cy, cz);
-        root.add(g);
-        g.add(box(W19 - 0.2, h, dep, M.pdu));
-        for (const sd of [-1, 1]) {
-          const e = box(0.2, h, 0.05, M.pdu);
-          e.position.set(sd * (W19 / 2 - 0.1), 0, fz);
-          g.add(e);
-        }
-        const logo = plane(0.7, 0.12, textMaterial("TRIPP·LITE", 0.7, 0.12, "#e8ecf1", null, 70, "700"));
-        logo.position.set(-W19 / 2 + 0.55, 0, fz + 0.003);
-        g.add(logo);
-        const meter = box(0.5, 0.22, 0.01, new THREE.MeshBasicMaterial({ color: 0x0a0c0a }));
-        meter.position.set(-W19 / 2 + 1.15, 0, fz + 0.004);
-        g.add(meter);
-        const digits = plane(0.42, 0.16, textMaterial("20 AMPS", 0.42, 0.16, "#7CFC5A", null, 90, "700"));
-        digits.position.set(-W19 / 2 + 1.15, 0, fz + 0.011);
-        g.add(digits);
-        const outletMat = new THREE.MeshStandardMaterial({ color: 0x1d2024, roughness: 0.8 });
-        const slotMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
-        const outlet = (x: number, z: number, rear: boolean) => {
-          const o = box(0.19, 0.19, 0.02, outletMat);
-          o.position.set(x, 0, z);
-          g.add(o);
-          [
-            [0, 0.05],
-            [-0.035, -0.03],
-            [0.035, -0.03],
-          ].forEach(([dx, dy], i) => {
-            const sl = box(i ? 0.02 : 0.045, i ? 0.05 : 0.03, 0.005, slotMat);
-            sl.position.set(x + dx, dy, z + (rear ? -0.013 : 0.013));
-            g.add(sl);
-          });
-        };
-        outlet(W19 / 2 - 0.75, fz + 0.003, false);
-        outlet(W19 / 2 - 0.45, fz + 0.003, false);
-        for (let i = 0; i < 10; i++) outlet(-W19 / 2 + 0.45 + i * 0.32, -fz - 0.003, true);
-        const cordEntry = box(0.14, 0.14, 0.08, M.pdu);
-        cordEntry.position.set(W19 / 2 - 0.5, 0, -fz - 0.04);
-        g.add(cordEntry);
-        const nm = plane(1.3, 0.09, textMaterial("PDUMH20  ·  20 A METERED PDU", 1.3, 0.09, "#6d7684", null, 56));
-        nm.position.set(0.4, -h / 2 + 0.035, fz + 0.003);
-        g.add(nm);
+        buildPdu(root, d.u ?? 1, M);
         break;
       }
       case "brush": {
@@ -348,50 +309,17 @@ export function buildDevices(root: THREE.Group, devices: Device[], anchors: Anch
         break;
       }
       case "rm": {
-        // SilverStone RM44/RM51: full-width filtered mesh, three 120 mm intake fans, power LED, rack ears; rear I/O + PSU.
+        // SilverStone closed front doors: RM44 keyed grille, RM51 pull handle and lower I/O strip. Rear PC ports are schematic.
         const g = new THREE.Group();
-        const w = W19 - 0.1;
-        const h = (d.h ?? 4) * U - 0.06;
-        const dep = d.d ?? 4.7;
-        const cy = yOf((d.u ?? 6) + (d.h ?? 4) - 1) + h / 2 + 0.03;
-        const cz = FR + 0.02 - dep / 2;
+        const { width: w, height: h, depth: dep, y: cy, z: cz } = chassisPlacement(d);
         const fz = dep / 2;
         g.position.set(0, cy, cz);
         root.add(g);
-        g.add(box(w, h, dep, M.black));
-        const mesh = plane(w - 0.8, h - 0.28, M.mesh);
-        mesh.position.set(0.05, 0, fz + 0.001);
-        g.add(mesh);
-        const fr = Math.min(0.6, (h - 0.5) / 2);
-        for (let i = 0; i < 3; i++) {
-          const x = -1.3 + i * 1.3;
-          const frame = new THREE.Mesh(new THREE.RingGeometry(fr * 0.92, fr, 40), M.hub);
-          frame.position.set(x, 0, fz + 0.006);
-          g.add(frame);
-          const hub = new THREE.Mesh(new THREE.CircleGeometry(fr * 0.3, 24), M.hub);
-          hub.position.set(x, 0, fz + 0.007);
-          g.add(hub);
-          for (let b = 0; b < 7; b++) {
-            const bl = box(fr * 0.62, 0.12, 0.004, M.hub);
-            bl.rotation.z = (b * Math.PI) / 3.5;
-            bl.position.set(x, 0, fz + 0.0065);
-            g.add(bl);
-          }
-        }
-        for (const sd of [-1, 1]) {
-          const ear = box(0.34, h, 0.05, M.black);
-          ear.position.set(sd * (w / 2 - 0.17), 0, fz);
-          g.add(ear);
-        }
-        const led = box(0.05, 0.05, 0.01, new THREE.MeshBasicMaterial({ color: 0x2f8cff }));
-        led.position.set(-w / 2 + 0.5, h / 2 - 0.16, fz + 0.01);
-        g.add(led);
-        const ss = plane(1.0, 0.1, textMaterial("SILVERSTONE", 1.0, 0.1, "#aab2bd", null, 60, "700"));
-        ss.position.set(w / 2 - 0.95, h / 2 - 0.16, fz + 0.02);
-        g.add(ss);
-        const nm = plane(1.9, 0.2, textMaterial(d.label ?? d.id, 1.9, 0.2, "#8f98a6", null, 40));
-        nm.position.set(0, -h / 2 + 0.14, fz + 0.02);
-        g.add(nm);
+        const chassis = roundedBox(w, h, dep, M.black, 0.035);
+        chassis.castShadow = true;
+        chassis.receiveShadow = true;
+        g.add(chassis);
+        addChassisFront(g, w, h, fz, d.h === 5, M);
         const io = box(1.6, 0.45, 0.02, M.rail);
         io.position.set(-0.9, h / 2 - 0.5, -fz);
         g.add(io);
@@ -401,12 +329,41 @@ export function buildDevices(root: THREE.Group, devices: Device[], anchors: Anch
         const psu = box(1.5, 0.86, 0.02, M.rail);
         psu.position.set(-1.2, -h / 2 + 0.55, -fz);
         g.add(psu);
+        // Recessed PSU vents and rear exhaust distinguish the rear from a plain box.
+        for (let i = 0; i < 9; i++) {
+          const vent = box(0.045, 0.56, 0.008, M.port);
+          vent.position.set(-1.47 + i * 0.1, -h / 2 + 0.55, -fz - 0.018);
+          g.add(vent);
+        }
+        const exhaust = new THREE.Mesh(new THREE.CircleGeometry(0.43, 32), M.mesh);
+        exhaust.rotation.y = Math.PI;
+        exhaust.position.set(0.85, -h / 2 + 0.56, -fz - 0.018);
+        g.add(exhaust);
+        for (let i = -4; i <= 4; i++) {
+          const y = i * 0.085;
+          const vent = box(2 * Math.sqrt(0.43 ** 2 - y ** 2), 0.022, 0.012, M.hub);
+          vent.position.set(0.85, -h / 2 + 0.56 + y, -fz - 0.03);
+          g.add(vent);
+        }
+        for (let i = 0; i < 4; i++) {
+          const usb = box(0.065, 0.035, 0.012, M.port);
+          usb.position.set(-0.95 + i * 0.13, h / 2 - 0.38, -fz - 0.02);
+          g.add(usb);
+        }
         const inlet = box(0.2, 0.16, 0.04, M.port);
         inlet.position.set(-1.75, -h / 2 + 0.55, -fz - 0.02);
         g.add(inlet);
         const gpu = box(1.1, 0.35, 0.02, M.rail);
         gpu.position.set(0.9, h / 2 - 0.55, -fz);
         g.add(gpu);
+        if (d.id === "SPC" || d.id === "GPC") {
+          const output = roundedBox(d.id === "SPC" ? 0.16 : 0.18, 0.065, 0.055, M.port, 0.015);
+          output.position.set(0.9, h / 2 - 0.55, -fz - 0.035);
+          g.add(output);
+          const usb = roundedBox(d.id === "SPC" ? 0.09 : 0.12, 0.05, 0.055, M.port, 0.018);
+          usb.position.set(-0.65, h / 2 - 0.5, -fz - 0.035);
+          g.add(usb);
+        }
         break;
       }
       case "tpl":

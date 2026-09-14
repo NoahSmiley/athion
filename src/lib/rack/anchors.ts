@@ -1,8 +1,8 @@
 // Computes every connection point (port, jack, inlet) in world space from the device list alone.
 // The 3D models are decorative: cables and Etherlighting attach to these anchors, not to model geometry,
 // so a missing or differently oriented model never breaks the plan.
-import { AP_POS, ENTRY_POINTS, FR, U, W19, yOf, type Vec3, v3 } from "./geometry";
-import { FACE, type Device } from "./devices";
+import { AP_POS, DESK_ENDPOINTS, ENTRY_POINTS, FR, U, W19, yOf, type Vec3, v3 } from "./geometry";
+import { FACE, chassisPlacement, type Device } from "./devices";
 
 export interface DeviceAnchors {
   /** RJ45 ports (switch 0-23, UDM Pro 0-7, UCI 0, patch panel front slots 0-23, TP-Link 0-3). */
@@ -11,7 +11,7 @@ export interface DeviceAnchors {
   sfp: Vec3[];
   /** Patch panel keystone/coupler side (rear). */
   rear: Vec3[];
-  /** PDU rear outlets 0-9. */
+  /** PDU rear outlets 0-11. */
   out: Vec3[];
   wan?: Vec3;
   coax?: Vec3;
@@ -25,6 +25,10 @@ export interface DeviceAnchors {
   inlet?: Vec3;
   /** Access point port. */
   port?: Vec3;
+  /** Schematic rear GPU output and USB upstream ports. Only present on the two interactive PCs. */
+  display?: Vec3;
+  usb?: Vec3;
+  power?: Vec3;
   /** Top cable access slots (ENTRY pseudo-device). */
   pt?: Vec3[];
 }
@@ -42,6 +46,9 @@ function faceAnchor(d: Device, fx: number, fy: number, depth?: number, rear = fa
 
 export function computeAnchors(devices: Device[]): AnchorMap {
   const map: AnchorMap = { ENTRY: { ...empty(), pt: ENTRY_POINTS.map((p) => ({ ...p })) } };
+  for (const desk of DESK_ENDPOINTS) {
+    map[desk.id] = { ...empty(), display: { ...desk.position }, usb: { ...desk.position, y: desk.position.y - 0.45 } };
+  }
   for (const d of devices) {
     const P = empty();
     map[d.id] = P;
@@ -80,17 +87,18 @@ export function computeAnchors(devices: Device[]): AnchorMap {
         const dep = FACE.depth.pdu;
         const cy = yOf(u) + U / 2;
         const cz = FR + 0.02 - dep / 2;
-        for (let i = 0; i < 10; i++) P.out[i] = v3(-W19 / 2 + 0.45 + i * 0.32, cy, cz - dep / 2 - 0.03);
-        P.inlet = v3(W19 / 2 - 0.5, cy, cz - dep / 2 - 0.1);
+        for (let i = 0; i < FACE.pdu.outletCount; i++) P.out[i] = v3(FACE.pdu.outletX(i), cy, cz - dep / 2 - 0.03);
+        P.inlet = v3(FACE.pdu.inletX, cy, cz - dep / 2 - 0.1);
         break;
       }
       case "rm": {
-        const h = (d.h ?? 4) * U - 0.06;
-        const dep = d.d ?? 4.7;
-        const cy = yOf((d.u ?? 6) + (d.h ?? 4) - 1) + h / 2 + 0.03;
-        const cz = FR + 0.02 - dep / 2;
+        const { height: h, depth: dep, y: cy, z: cz } = chassisPlacement(d);
         P.nic = v3(-1.2, cy + h / 2 - 0.45, cz - dep / 2 - 0.05);
         P.psu = v3(-1.75, cy - h / 2 + 0.55, cz - dep / 2 - 0.05);
+        if (d.id === "SPC" || d.id === "GPC") {
+          P.display = v3(0.9, cy + h / 2 - 0.55, cz - dep / 2 - 0.06);
+          P.usb = v3(-0.65, cy + h / 2 - 0.5, cz - dep / 2 - 0.06);
+        }
         break;
       }
       case "tpl": {
@@ -98,6 +106,7 @@ export function computeAnchors(devices: Device[]): AnchorMap {
         const cz = FR + 0.02 - 1.0;
         for (let i = 0; i < 4; i++) P.p[i] = v3(-1.7 + i * 0.18, cy, cz - 0.85 - 0.03);
         P.wan = v3(-0.6, cy, cz - 0.85 - 0.03);
+        P.power = v3(-0.1, cy, cz - 0.85 - 0.03);
         break;
       }
       case "mdm": {
@@ -105,6 +114,7 @@ export function computeAnchors(devices: Device[]): AnchorMap {
         const cz = FR + 0.02 - 1.0;
         P.p[0] = v3(-0.3, cy, cz - 0.85 - 0.03);
         P.coax = v3(-1.6, cy, cz - 0.85 - 0.05);
+        P.power = v3(-0.1, cy, cz - 0.85 - 0.03);
         break;
       }
       case "ap": {

@@ -41,3 +41,9 @@ export const ENTRY_POINTS: Vec3[] = [0, 1, 2, 3, 4].map((i) => v3(-0.9 + i * 0.2
 
 /** Anything behind this z counts as a rear connection for routing purposes. */
 export const isRear = (p: Vec3): boolean => p.z < FR - 0.3;
+
+/** Off-rack termination markers, not measured desk locations. */
+export const DESK_ENDPOINTS = [
+  { id: "SAM_DESK", label: "SAM'S DESK", position: v3(-6.0, yOf(12), -4.2) },
+  { id: "GAMING_DESK", label: "GAMING DESK", position: v3(-6.0, yOf(17), -4.2) },
+];

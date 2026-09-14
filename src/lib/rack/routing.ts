@@ -1,6 +1,6 @@
 // Orthogonal cable routing. Each cable becomes a polyline through the cabinet's cable channels; the scene
 // turns that polyline into a tube with filleted corners. Pure functions, no three.js, so the routes are testable.
-import { AP_POS, CH, FR, LANE, RR, U, isRear, type Vec3, v3 } from "./geometry";
+import { AP_POS, CH, DESK_ENDPOINTS, FR, LANE, RR, U, isRear, type Vec3, v3 } from "./geometry";
 import type { AnchorMap } from "./anchors";
 import { resolveRef } from "./anchors";
 import type { Cable, Ref } from "./cables";
@@ -48,6 +48,16 @@ export function routeRun(run: Run, anchors: AnchorMap, lanes: LaneState): Route 
   const b = resolveRef(anchors, run.to);
   const ac = c.speed === "AC";
 
+  if (DESK_ENDPOINTS.some((desk) => desk.id === run.to[0])) {
+    // Leave the GPU/USB port along -z, then turn into an off-rack schematic run.
+    const z = RR - 0.75 - lanes.side++ * 0.12;
+    const lane = -LANE - 0.2;
+    return {
+      points: [a, v3(a.x, a.y, z), v3(lane, a.y, z), v3(lane, b.y, z), v3(b.x + 0.35, b.y, b.z), b],
+      mid: v3((lane + b.x) / 2, b.y, b.z),
+      fillet: 0.2,
+    };
+  }
   if (run.to[0] === "ENTRY") {
     // rear port -> back to the rear channel, up, out through the top access
     const lane = ac ? LANE + 0.12 : -LANE;
@@ -74,7 +84,7 @@ export function routeRun(run: Run, anchors: AnchorMap, lanes: LaneState): Route 
     // rear port -> front port: rear channel, up the side gap, forward, across the front
     const lane = -(LANE + lanes.back * 0.07);
     lanes.back++;
-    const zb = RR + 0.35 - lanes.back * 0.03;
+    const zb = Math.min(RR + 0.35 - lanes.back * 0.03, a.z - 0.16);
     const zf = FR + OUT + lanes.back * 0.03;
     return {
       points: [a, v3(a.x, a.y, zb), v3(lane, a.y, zb), v3(lane, b.y, zb), v3(lane, b.y, zf), v3(b.x, b.y, zf), b],
@@ -86,13 +96,13 @@ export function routeRun(run: Run, anchors: AnchorMap, lanes: LaneState): Route 
     // power cords: right rear channel, shallower than data
     const lane = LANE + 0.12 + lanes.power * 0.06;
     lanes.power++;
-    const z = RR + 0.22;
+    const z = Math.min(RR + 0.22, a.z - 0.16, b.z - 0.16);
     return { points: [a, v3(a.x, a.y, z), v3(lane, a.y, z), v3(lane, b.y, z), v3(b.x, b.y, z), b], mid: v3(lane, (a.y + b.y) / 2, z), fillet: 0.14 };
   }
   if (isRear(a) && isRear(b)) {
     const lane = -(LANE + lanes.back * 0.07);
     lanes.back++;
-    const z = RR + 0.35;
+    const z = Math.min(RR + 0.35, a.z - 0.16, b.z - 0.16);
     return { points: [a, v3(a.x, a.y, z), v3(lane, a.y, z), v3(lane, b.y, z), v3(b.x, b.y, z), b], mid: v3(lane, (a.y + b.y) / 2, z), fillet: 0.14 };
   }
   if (Math.abs(a.y - b.y) < U * 1.6) {

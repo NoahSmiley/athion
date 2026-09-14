@@ -1,15 +1,17 @@
 import * as THREE from "three";
 import { AP_POS, CD, CH, CW, FR, RR, TOP, U, W19 } from "@/lib/rack/geometry";
-import { box, plane, textMaterial } from "./labels";
+import { box, plane, roundedBox, textMaterial } from "./labels";
 import type { Materials } from "./materials";
 
 /** Kendall Howard LINIER 42U: base, top with cable access, solid side panels, four rails, glass doors swung open. */
-export function buildCabinet(root: THREE.Group, M: Materials): { sidePanels: THREE.Mesh[] } {
-  const base = box(CW, 0.25, CD, M.steel);
+export function buildCabinet(root: THREE.Group, M: Materials): { sidePanels: THREE.Mesh[]; doors: THREE.Group[] } {
+  const base = roundedBox(CW, 0.25, CD, M.steel);
   base.position.set(0, 0.125, 0);
+  base.castShadow = true;
   root.add(base);
-  const top = box(CW, 0.15, CD, M.steel);
+  const top = roundedBox(CW, 0.15, CD, M.steel);
   top.position.set(0, CH - 0.075, 0);
+  top.castShadow = true;
   root.add(top);
   for (const [sx, sz] of [
     [-1, -1],
@@ -40,10 +42,12 @@ export function buildCabinet(root: THREE.Group, M: Materials): { sidePanels: THR
     for (const z of [CD / 2 - 0.06, -CD / 2 + 0.06]) {
       const b = box(0.12, CH, 0.12, M.steel);
       b.position.set(sd * (CW / 2 - 0.06), CH / 2, z);
+      b.castShadow = true;
       root.add(b);
     }
   }
 
+  const doors: THREE.Group[] = [];
   const door = (hingeX: number, hingeZ: number, dir: number) => {
     const g = new THREE.Group();
     const dw = CW - 0.24;
@@ -71,6 +75,7 @@ export function buildCabinet(root: THREE.Group, M: Materials): { sidePanels: THR
     g.position.set(hingeX, 0, hingeZ);
     g.rotation.y = dir * -1 * Math.PI * 0.86 * (hingeZ > 0 ? 1 : -1);
     root.add(g);
+    doors.push(g);
   };
   door(-CW / 2 + 0.12, CD / 2 + 0.05, 1);
   door(CW / 2 - 0.12, -CD / 2 - 0.05, -1);
@@ -101,24 +106,31 @@ export function buildCabinet(root: THREE.Group, M: Materials): { sidePanels: THR
       b.position.set(sd * (W19 / 2 + 0.09), y, (FR + RR) / 2);
       root.add(b);
     }
+  for (let unit = 1; unit <= TOP; unit++) {
+    const label = plane(0.22, 0.12, textMaterial(String(unit).padStart(2, "0"), 0.22, 0.12, "#91a0b2", null, 400));
+    label.position.set(-W19 / 2 - 0.33, 0.25 + (TOP - unit + 0.5) * U, FR + 0.1);
+    root.add(label);
+  }
   const badge = plane(2.6, 0.24, textMaterial("KENDALL HOWARD  ·  LINIER 42U", 2.6, 0.24, "#7d8694", null, 90));
   badge.position.set(0, CH + 0.35, CD / 2);
+  badge.position.set(0, CH - 0.08, CD / 2 + 0.01);
   root.add(badge);
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), M.floor);
   floor.rotation.x = -Math.PI / 2;
   floor.position.y = -0.2;
+  floor.receiveShadow = true;
   root.add(floor);
-  return { sidePanels };
+  return { sidePanels, doors };
 }
 
 /** Ceiling slab outside the cabinet where the U7 Pro hangs. */
 export function buildCeiling(root: THREE.Group, M: Materials) {
-  const slab = box(7.5, 0.12, 7, M.ceiling);
+  const slab = roundedBox(3.4, 0.09, 3.4, M.ceiling);
   slab.position.set(AP_POS.x, CH + 2.46, AP_POS.z);
   root.add(slab);
   const lb = plane(2.2, 0.2, textMaterial("CEILING  ·  U7 PRO", 2.2, 0.2, "#7d8694", null, 80));
   lb.rotation.x = Math.PI / 2;
   lb.rotation.z = Math.PI;
-  lb.position.set(AP_POS.x, CH + 2.39, 2.2);
+  lb.position.set(AP_POS.x, CH + 2.39, AP_POS.z + 1.4);
   root.add(lb);
 }

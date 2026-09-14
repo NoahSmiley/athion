@@ -9,8 +9,8 @@ export function Steps() {
         <ol className="rack-steps">
           {STEPS.map((s, i) => (
             <li key={i}>
-              <b>{s.title}</b>
-              <span dangerouslySetInnerHTML={{ __html: s.body }} />
+              <div><b>{s.title}</b>
+              <span dangerouslySetInnerHTML={{ __html: s.body }} /></div>
             </li>
           ))}
         </ol>

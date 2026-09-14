@@ -21,10 +21,14 @@ export function Schedule({ list, selectedId, onSelect, onHover }: Props) {
         const a = split(c.a);
         const b = split(c.b);
         return (
-          <div
+          <button
+            type="button"
+            aria-pressed={c.id === selectedId}
             key={c.id}
             className={`rack-row${c.id === selectedId ? " sel" : ""}`}
-            onClick={() => onSelect(c.id)}
+            onClick={() => onSelect(c.id === selectedId ? null : c.id)}
+            onFocus={() => onHover(c.id)}
+            onBlur={() => onHover(null)}
             onMouseEnter={() => onHover(c.id)}
             onMouseLeave={() => onHover(null)}
           >
@@ -40,7 +44,7 @@ export function Schedule({ list, selectedId, onSelect, onHover }: Props) {
             <span className="spd" style={{ color: CSS_COLORS[c.speed] }}>
               {speedLabel(c.speed)}
             </span>
-          </div>
+          </button>
         );
       })}
     </div>

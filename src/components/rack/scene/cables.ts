@@ -7,7 +7,7 @@ import { routeAll } from "@/lib/rack/routing";
 import { speedLabel } from "@/lib/rack/cables";
 import { box, textMaterial } from "./labels";
 
-export type CableObject = THREE.Object3D & { userData: { cable: Cable; off: boolean } };
+export type CableObject = THREE.Object3D & { userData: { cable: Cable; off: boolean; overviewOnly?: boolean } };
 
 const toV = (p: Vec3) => new THREE.Vector3(p.x, p.y, p.z);
 
@@ -53,7 +53,7 @@ export function buildCables(root: THREE.Group, list: Cable[], anchors: AnchorMap
   for (const { run, route } of routeAll(list, anchors)) {
     const c = run.cable;
     const off = c.speed === "OFF";
-    const path = filleted(route.points, route.fillet);
+    const path = filleted(c.via === "AP" ? route.points.slice(3) : route.points, route.fillet);
     const r = c.speed === "10G" ? 0.042 : c.speed === "COAX" ? 0.038 : c.speed === "AC" ? 0.05 : 0.028;
     const mat = new THREE.MeshStandardMaterial({
       color: COLORS[c.speed],
@@ -66,6 +66,12 @@ export function buildCables(root: THREE.Group, list: Cable[], anchors: AnchorMap
     tube.userData = { cable: c, off };
     root.add(tube);
     objects.push(tube);
+    if (c.via === "AP") {
+      const extension = new THREE.Mesh(new THREE.TubeGeometry(filleted(route.points.slice(0, 4), route.fillet), 100, r, 10, false), mat) as unknown as CableObject;
+      extension.userData = { cable: c, off, overviewOnly: true };
+      root.add(extension);
+      objects.push(extension);
+    }
 
     // Etherlighting on the switch, link LEDs on the UDM Pro / UCI
     for (const ref of [run.from, run.to]) {
@@ -94,6 +100,7 @@ export function buildCables(root: THREE.Group, list: Cable[], anchors: AnchorMap
           transparent: true,
         }),
       ) as unknown as CableObject;
+      tag.visible = false;
       tag.scale.set(c.multi ? 0.62 : 0.78, c.multi ? 0.22 : 0.28, 1);
       tag.position.copy(toV(route.mid));
       if (c.multi) tag.position.y += 0.12;
@@ -106,17 +113,19 @@ export function buildCables(root: THREE.Group, list: Cable[], anchors: AnchorMap
 }
 
 /** Dim everything except the cable with `id` (null = show all). */
-export function highlightCables(objects: CableObject[], id: string | null) {
+export function highlightCables(objects: CableObject[], id: string | null, labels = false) {
   for (const o of objects) {
     const on = o.userData.cable.id === id;
     const sprite = o as unknown as THREE.Sprite;
     if (sprite.isSprite) {
+      sprite.visible = labels || on;
       sprite.material.opacity = !id || on ? 1 : 0.2;
       continue;
     }
     const m = (o as unknown as THREE.Mesh).material as THREE.MeshStandardMaterial;
     m.emissiveIntensity = on ? (o.userData.off ? 0.35 : 0.75) : id || o.userData.off ? 0 : 0.12;
-    m.transparent = true;
-    m.opacity = !id || on ? 1 : 0.3;
+    m.transparent = !!id && !on;
+    m.depthWrite = !m.transparent;
+    m.opacity = !id || on ? 1 : 0.18;
   }
 }

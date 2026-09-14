@@ -4,7 +4,7 @@
 // `via: 'AP'` prefixes the run with the ceiling access point path. `ENTRY` is the cabinet's top cable access (index picks a slot).
 import type { Mode } from "./geometry";
 
-export type Speed = "10G" | "2.5G" | "1G" | "COAX" | "OFF" | "AC";
+export type Speed = "10G" | "2.5G" | "1G" | "COAX" | "OFF" | "AC" | "HDMI" | "DP" | "USB-C" | "USB";
 /** [deviceId, anchorKind, index]. For the ENTRY pseudo-device the second element is the slot index. */
 export type Ref = [string, (string | number)?, number?];
 export interface Cable {
@@ -20,20 +20,35 @@ export interface Cable {
   why: string;
 }
 
-export const COLORS: Record<Speed, number> = { "10G": 0xe8973a, "2.5G": 0x2f8cff, "1G": 0xb8c0cc, COAX: 0xd9524f, OFF: 0x5b6472, AC: 0x444a54 };
-export const CSS_COLORS: Record<Speed, string> = { "10G": "var(--c10)", "2.5G": "var(--c25)", "1G": "var(--c1)", COAX: "var(--ccoax)", OFF: "var(--ink2)", AC: "var(--ink2)" };
-export const speedLabel = (k: Speed): string => (k === "COAX" ? "DOCSIS" : k === "OFF" ? "spare" : k === "AC" ? "120 V" : k);
-export const speedLong = (k: Speed): string => (k === "COAX" ? "DOCSIS 3.1" : k === "OFF" ? "no link yet" : k === "AC" ? "120 V AC" : k);
+export const COLORS: Record<Speed, number> = { "10G": 0xe8973a, "2.5G": 0x2f8cff, "1G": 0xb8c0cc, COAX: 0xd9524f, OFF: 0x5b6472, AC: 0x68758a, HDMI: 0xb99aff, DP: 0x72d9b6, "USB-C": 0xe6c269, USB: 0xe6c269 };
+export const CSS_COLORS: Record<Speed, string> = { "10G": "var(--c10)", "2.5G": "var(--c25)", "1G": "var(--c1)", COAX: "var(--ccoax)", OFF: "var(--ink2)", AC: "var(--ink2)", HDMI: "#b99aff", DP: "#72d9b6", "USB-C": "#e6c269", USB: "#e6c269" };
+export const speedLabel = (k: Speed): string => (k === "COAX" ? "DOCSIS" : k === "OFF" ? "spare" : k === "AC" ? "Power" : k);
+export const speedLong = (k: Speed): string => (k === "COAX" ? "DOCSIS 3.1" : k === "OFF" ? "no link yet" : k === "AC" ? "Power" : k === "DP" ? "DisplayPort" : k === "USB-C" ? "USB-C hub upstream" : k === "USB" ? "USB hub upstream" : k);
 export const LEGEND: { key: Speed; label: string }[] = [
   { key: "10G", label: "10G SFP+ DAC" },
   { key: "2.5G", label: "2.5GbE copper" },
   { key: "1G", label: "1GbE copper" },
   { key: "OFF", label: "patched, no link yet" },
   { key: "COAX", label: "DOCSIS 3.1 coax" },
-  { key: "AC", label: "120 V AC power" },
+  { key: "AC", label: "Power" },
+  { key: "HDMI", label: "HDMI" },
+  { key: "DP", label: "DisplayPort" },
+  { key: "USB", label: "USB / USB-C" },
 ];
 
+/** Physical upstream runs reported by the owner; desk positions in the scene are schematic. */
+export const PERIPHERALS: Cable[] = [
+  { id: "D1", from: ["SPC", "display"], to: ["SAM_DESK", "display"], speed: "HDMI", a: "Sam's PC · graphics card HDMI", b: "Sam's display · off rack", len: "Existing · measure", why: "Dedicated HDMI cable from the graphics card to Sam's display. Separate from the USB-C hub cable. Off-rack endpoint placement is schematic; measure the installed path and service slack before replacing the cable." },
+  { id: "U1", from: ["SPC", "usb"], to: ["SAM_DESK", "usb"], speed: "USB-C", a: "Sam's PC · USB-C upstream", b: "Sam's USB hub · off rack", len: "Existing · measure", why: "One USB-C upstream cable connects Sam's hub to the PC. Devices attached to that hub remain at the desk; they do not each need a separate cable back to the rack. Exact PC port placement is schematic." },
+  { id: "D2", from: ["GPC", "display"], to: ["GAMING_DESK", "display"], speed: "DP", a: "Gaming PC · graphics card DisplayPort", b: "Gaming display · off rack", len: "Existing · measure", why: "Dedicated DisplayPort cable from the graphics card to the gaming display. Video is separate from the USB hub connection. Cable version, display mode, and installed length have not been specified." },
+  { id: "U2", from: ["GPC", "usb"], to: ["GAMING_DESK", "usb"], speed: "USB", a: "Gaming PC · USB upstream", b: "Gaming USB hub · all peripherals", len: "Existing · measure", why: "One USB upstream cable carries the gaming PC's desk peripherals through the hub. Connector type and USB generation are unspecified; this plan does not assume USB-C, Thunderbolt, or a particular bandwidth. Exact PC port placement is schematic." },
+];
+
+export const isPeripheral = (c: Cable): boolean => ["HDMI", "DP", "USB-C", "USB"].includes(c.speed);
+export const cableCount = (list: Cable[]): number => list.reduce((count, cable) => count + (cable.multi?.length ?? 1), 0);
+
 const AFTER: Cable[] = [
+ ...PERIPHERALS,
  {id:'H1',from:['ENTRY',0],via:'AP',to:['PP','rear',3],speed:'2.5G',a:'U7 Pro · ceiling mount',b:'Patch panel · keystone 4 (rear)',len:'solid-core Cat6a',why:'The U7 Pro hangs on the ceiling outside the cabinet and is powered by PoE++ from switch port 4 through this single run. Permanent in-wall run. It enters through the LINIER top cable access, comes down the rear of the cabinet, and punches down on a UniFi Cat6A keystone that snaps into slot 4 from the back of the panel. Nothing on the front of the panel is ever cut; you only move patch cords.'},
  {id:'H2',from:['ENTRY',1],to:['PP','rear',8],speed:'1G',a:'Living room TV jack',b:'Patch panel · keystone 9 (rear)',len:'solid-core Cat6a',why:'Same structured-cabling rule: wall-plate keystone at one end, panel keystone at the other, tested once, never touched again. Slot 9 lands on switch port 9, the first 1 GbE port.'},
  {id:'H3',from:['ENTRY',2],to:['PP','rear',9],speed:'1G',a:'Office jack',b:'Patch panel · keystone 10 (rear)',len:'solid-core Cat6a',why:'Runs are numbered to match panel slots, and panel slots match switch ports, so the wall plate number is the switch port number. Pull two per room while the walls are open.'},
@@ -50,7 +65,7 @@ const AFTER: Cable[] = [
  {id:'P5-8',multi:[[4,4],[5,5],[6,6],[7,7]],speed:'OFF',a:'Patch panel · slots 5 to 8',b:'USW Pro Max · ports 5 to 8 (2.5 GbE PoE++)',len:'4 x 0.15 m Etherlighting',why:'Patched now, no link yet. These are the remaining multi-gig PoE++ ports, reserved for more APs, cameras, or a 2.5 GbE dock. Etherlighting stays dark until something links.'},
  {id:'P9',multi:[[8,8]],speed:'1G',a:'Patch panel · slot 9 (TV)',b:'USW Pro Max · port 9 (1 GbE PoE+)',len:'0.15 m Etherlighting',why:'The Apple TV running Prime pulls a 4K Jellyfin stream at well under 100 Mbps. A gigabit port is the right spend.'},
  {id:'P10',multi:[[9,9]],speed:'1G',a:'Patch panel · slot 10 (office)',b:'USW Pro Max · port 10 (1 GbE PoE+)',len:'0.15 m Etherlighting',why:'Reserved for a wired Mac dock at the desk. Runs at gigabit until a dock with a 2.5 GbE NIC shows up, then move it to slot 5.'},
- {id:'A0',from:['PDU','inlet'],to:['ENTRY',4],speed:'AC',a:'Wall receptacle',b:'PDU · L5-20P inlet cord',len:'12 ft, out the top access',why:'The PDUMH20 ships with a twist-lock L5-20P plug and an adapter. Put it on a dedicated 20 A circuit if you can; on a shared 15 A circuit keep the meter under 12 A continuous. Estimated worst case for this rack is around 11 to 12 A: two gaming-class PCs at full load, the 9950X3D server, and 120 W of network gear plus PoE.'},
+ {id:'A0',from:['PDU','inlet'],to:['ENTRY',4],speed:'AC',a:'Wall receptacle',b:'PDU · L5-20P inlet cord',len:'15 ft, out the top access',why:'The PDUMH20 ships with a twist-lock L5-20P plug and an adapter. Put it on a dedicated 20 A circuit if you can; on a shared 15 A circuit keep the meter under 12 A continuous. Estimated worst case for this rack is around 11 to 12 A: two gaming-class PCs at full load, the 9950X3D server, and 120 W of network gear plus PoE.'},
  {id:'A1',from:['SW','iec'],to:['PDU','out',0],speed:'AC',a:'USW Pro Max · rear IEC',b:'PDU · rear outlet 1',len:'0.5 m C13',why:'Network gear on outlets 1 to 3 so the meter reads the rack in a sensible order. The switch draws the most of the three once PoE devices hang off it.'},
  {id:'A2',from:['UDM','iec'],to:['PDU','out',1],speed:'AC',a:'UDM Pro · rear IEC',b:'PDU · rear outlet 2',len:'0.5 m C13',why:'Router on its own outlet. Never share it with a PC on a switched or metered-off group.'},
  {id:'A3',from:['UCI','iec'],to:['PDU','out',2],speed:'AC',a:'UCI · rear IEC',b:'PDU · rear outlet 3',len:'0.5 m C13',why:'Modem next to the router so a single power cycle of outlets 2 and 3 resets the WAN.'},
@@ -61,12 +76,15 @@ const AFTER: Cable[] = [
 ];
 
 const BEFORE: Cable[] = [
+ ...PERIPHERALS,
  {id:'B1',from:['MDM','coax'],to:['ENTRY',3],speed:'COAX',a:'Coax from the street',b:'Spectrum modem',len:'RG6',why:'Same DOCSIS feed as the plan.'},
  {id:'B2',from:['MDM','p',0],to:['TPL','wan'],speed:'1G',a:'ISP modem',b:'TP-Link WAN',len:'0.3 m',why:'Gigabit WAN. Fine for the ISP rate, but the router CPU also does NAT for the seedbox tunnel and every Cloudflare session.'},
  {id:'B3',from:['SRV','nic'],to:['TPL','p',0],speed:'1G',a:'Proxmox host · RTL8126 5GbE',b:'TP-Link LAN 1',len:'1 m',why:'The bottleneck. A 5 GbE NIC negotiated down to 1000 Mb/s because the router only has gigabit ports. Confirmed with ethtool on the host.'},
  {id:'B4',from:['GPC','nic'],to:['TPL','p',1],speed:'1G',a:'Gaming PC',b:'TP-Link LAN 2',len:'2 m',why:'Gigabit, and every LAN-to-LAN flow crosses the consumer router switch chip.'},
  {id:'B5',from:['SPC','nic'],to:['TPL','p',2],speed:'1G',a:"Sam's PC",b:'TP-Link LAN 3',len:'1.5 m',why:'Gigabit. One LAN port left for the whole rest of the house.'},
- {id:'A0',from:['PDU','inlet'],to:['ENTRY',4],speed:'AC',a:'Wall receptacle',b:'PDU · L5-20P inlet cord',len:'12 ft',why:'Same PDU, same wall circuit.'},
+ {id:'B6',from:['TPL','power'],to:['PDU','out',0],speed:'AC',a:'TP-Link router · power adapter',b:'PDU · outlet 1 (proposed)',len:'Existing · measure',why:'Includes the router power adapter and its lead. The original current-layout schedule omitted this power connection. Outlet 1 is a planning assignment; confirm the installed outlet and adapter clearance.'},
+ {id:'B7',from:['MDM','power'],to:['PDU','out',1],speed:'AC',a:'Spectrum modem · power adapter',b:'PDU · outlet 2 (proposed)',len:'Existing · measure',why:'Includes the modem power adapter and its lead. Outlet 2 is a planning assignment; confirm the installed outlet and adapter clearance.'},
+ {id:'A0',from:['PDU','inlet'],to:['ENTRY',4],speed:'AC',a:'Wall receptacle',b:'PDU · L5-20P inlet cord',len:'15 ft',why:'Same PDU, same wall circuit.'},
  {id:'A4',from:['SRV','psu'],to:['PDU','out',5],speed:'AC',a:'Proxmox server · PSU',b:'PDU · rear outlet 6',len:'1 m C13',why:'Unchanged.'},
  {id:'A5',from:['SPC','psu'],to:['PDU','out',7],speed:'AC',a:"Sam's PC · PSU",b:'PDU · rear outlet 8',len:'1.5 m C13',why:'Unchanged.'},
  {id:'A6',from:['GPC','psu'],to:['PDU','out',9],speed:'AC',a:'Gaming PC · PSU',b:'PDU · rear outlet 10',len:'2 m C13',why:'Unchanged.'}

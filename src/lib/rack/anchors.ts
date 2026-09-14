@@ -1,6 +1,5 @@
 // Computes every connection point (port, jack, inlet) in world space from the device list alone.
-// The 3D models are decorative: cables and Etherlighting attach to these anchors, not to model geometry,
-// so a missing or differently oriented model never breaks the plan.
+// Calibrated defaults also support the fallback models. Loaded named sockets refine the anchors before cables are built.
 import { AP_POS, DESK_ENDPOINTS, ENTRY_POINTS, FR, U, W19, yOf, type Vec3, v3 } from "./geometry";
 import { FACE, chassisPlacement, type Device } from "./devices";
 
@@ -56,20 +55,20 @@ export function computeAnchors(devices: Device[]): AnchorMap {
       case "sw": {
         for (let i = 0; i < 24; i++) P.p[i] = faceAnchor(d, ...FACE.sw.ports(i));
         FACE.sw.sfp.forEach(([fx, fy], i) => (P.sfp[i] = faceAnchor(d, fx, fy)));
-        P.iec = faceAnchor(d, FACE.sw.iec, 0.5, FACE.depth.sw, true);
+        P.iec = faceAnchor(d, FACE.sw.iec, 0.1941 / U, FACE.depth.sw, true);
         break;
       }
       case "udm": {
         for (let i = 0; i < 8; i++) P.p[i] = faceAnchor(d, ...FACE.udm.ports(i));
         P.wan = faceAnchor(d, ...FACE.udm.wan);
         FACE.udm.sfp.forEach(([fx, fy], i) => (P.sfp[i] = faceAnchor(d, fx, fy)));
-        P.iec = faceAnchor(d, FACE.udm.iec, 0.5, FACE.depth.udm, true);
+        P.iec = faceAnchor(d, FACE.udm.iec, 0.194 / U, FACE.depth.udm, true);
         break;
       }
       case "uci": {
         P.p[0] = faceAnchor(d, ...FACE.uci.port);
         P.coax = faceAnchor(d, ...FACE.uci.coaxRear, FACE.depth.uci, true);
-        P.iec = faceAnchor(d, FACE.uci.iec, 0.5, FACE.depth.uci, true);
+        P.iec = faceAnchor(d, FACE.uci.iec, 0.194 / U, 0.8002, true);
         break;
       }
       case "pp": {
@@ -77,8 +76,8 @@ export function computeAnchors(devices: Device[]): AnchorMap {
         for (let i = 0; i < 24; i++) {
           const [fx] = FACE.pp.slot(i);
           const x = -W19 / 2 + fx * W19;
-          P.p[i] = v3(x, yOf(u) + U / 2 - 0.01, FR + 0.06);
-          P.rear[i] = v3(x, yOf(u) + U / 2, FR + 0.02 - 0.12 - 0.42);
+          P.p[i] = v3(x, yOf(u) + U / 2 - 0.01, FR + 0.055);
+          P.rear[i] = v3(x, yOf(u) + U / 2 - 0.01, FR + 0.02 - 0.12 - 0.42);
         }
         break;
       }

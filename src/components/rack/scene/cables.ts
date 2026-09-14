@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { COLORS, type Cable } from "@/lib/rack/cables";
+import { COLORS, type Cable, type Ref } from "@/lib/rack/cables";
 import { isRear, type Vec3 } from "@/lib/rack/geometry";
 import type { AnchorMap } from "@/lib/rack/anchors";
 import { resolveRef } from "@/lib/rack/anchors";
@@ -35,12 +35,12 @@ function filleted(pts: Vec3[], r: number): THREE.CurvePath<THREE.Vector3> {
 /** Etherlighting-style frame around a switch port. */
 function etherFrame(g: THREE.Group, x: number, y: number, z: number, col: number) {
   const mat = new THREE.MeshBasicMaterial({ color: col });
-  const t = 0.018;
+  const t = 0.008;
   for (const [dx, dy, w, h] of [
-    [0, 0.075, 0.16, t],
-    [0, -0.075, 0.16, t],
-    [-0.078, 0, t, 0.13],
-    [0.078, 0, t, 0.13],
+    [0, 0.064, 0.134, t],
+    [0, -0.064, 0.134, t],
+    [-0.065, 0, t, 0.12],
+    [0.065, 0, t, 0.12],
   ]) {
     const b = box(w, h, 0.006, mat);
     b.position.set(x + dx, y + dy, z);
@@ -73,23 +73,27 @@ export function buildCables(root: THREE.Group, list: Cable[], anchors: AnchorMap
       objects.push(extension);
     }
 
-    // Etherlighting on the switch, link LEDs on the UDM Pro / UCI
-    for (const ref of [run.from, run.to]) {
-      const dev = ref[0];
-      if (dev === "SW" && overlays.SW) {
-        const v = resolveRef(anchors, ref);
-        etherFrame(overlays.SW, v.x, v.y, v.z + 0.012, off ? 0x2a3038 : COLORS[c.speed]);
-        const boot = box(0.1, 0.1, 0.14, new THREE.MeshBasicMaterial({ color: off ? 0xd8dbe0 : COLORS[c.speed], transparent: true, opacity: off ? 0.5 : 0.75 }));
-        boot.position.set(v.x, v.y, v.z + 0.08);
-        overlays.SW.add(boot);
-      } else if ((dev === "UDM" || dev === "UCI") && overlays[dev]) {
-        const v = resolveRef(anchors, ref);
-        if (!isRear(v)) {
-          const led = box(0.03, 0.018, 0.006, new THREE.MeshBasicMaterial({ color: COLORS[c.speed] }));
-          led.position.set(v.x - 0.04, v.y + 0.075, v.z + 0.012);
-          overlays[dev].add(led);
-        }
-      }
+    // Plugs overlap the socket mouth; the cable leaves along the socket normal before bending.
+    const endpoints: Ref[] = c.via === "AP" ? [["AP", "port"], run.to] : [run.from, run.to];
+    for (const ref of endpoints) {
+      const [dev, kind] = ref;
+      if (dev === "ENTRY" || dev.endsWith("_DESK") || kind === "inlet") continue;
+      const v = resolveRef(anchors, ref);
+      const direction = new THREE.Vector3(0, dev === "AP" ? 1 : 0, dev === "AP" ? 0 : isRear(v) ? -1 : 1);
+      const sfp = kind === "sfp";
+      const power = c.speed === "AC";
+      const video = kind === "display";
+      const usb = kind === "usb";
+      const w = power ? 0.19 : sfp ? 0.132 : video ? 0.15 : usb ? 0.083 : 0.095;
+      const h = power ? 0.14 : sfp ? 0.077 : video || usb ? 0.046 : 0.082;
+      const length = power ? 0.20 : sfp ? 0.23 : 0.16;
+      const plug = box(w, h, length, new THREE.MeshStandardMaterial({ color: power ? 0x28303a : sfp ? 0x737d88 : COLORS[c.speed], roughness: 0.48, metalness: sfp ? 0.65 : 0.08 })) as unknown as CableObject;
+      plug.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), direction);
+      plug.position.copy(toV(v)).addScaledVector(direction, length / 2 - 0.025);
+      plug.userData = { cable: c, off, overviewOnly: dev === "AP" };
+      root.add(plug);
+      objects.push(plug);
+      if (dev === "SW" && kind === "p" && overlays.SW) etherFrame(overlays.SW, v.x, v.y, v.z + 0.001, off ? 0x2a3038 : COLORS[c.speed]);
     }
 
     if (run.tagged) {
@@ -113,9 +117,9 @@ export function buildCables(root: THREE.Group, list: Cable[], anchors: AnchorMap
 }
 
 /** Dim everything except the cable with `id` (null = show all). */
-export function highlightCables(objects: CableObject[], id: string | null, labels = false) {
+export function highlightCables(objects: CableObject[], id: string | string[] | null, labels = false) {
   for (const o of objects) {
-    const on = o.userData.cable.id === id;
+    const on = Array.isArray(id) ? id.includes(o.userData.cable.id) : o.userData.cable.id === id;
     const sprite = o as unknown as THREE.Sprite;
     if (sprite.isSprite) {
       sprite.visible = labels || on;

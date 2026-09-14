@@ -10,6 +10,8 @@ import { Schedule } from "./Schedule";
 import { PortMap } from "./PortMap";
 import { Rationale } from "./Rationale";
 import { Bom } from "./Bom";
+import { SpeedFlow } from "./SpeedFlow";
+import { speedPath, type FlowTarget } from "@/lib/rack/speeds";
 import { Steps } from "./Steps";
 
 // three.js touches window/document, so the scene only renders on the client.
@@ -17,6 +19,10 @@ const RackScene = dynamic(() => import("./scene/RackScene").then((m) => m.RackSc
 
 export function RackPlan() {
   const [mode, setMode] = useState<Mode>("after");
+  const [flowSource, setFlowSource] = useState("GPC");
+  const [flowTarget, setFlowTarget] = useState<FlowTarget>("internet");
+  const [traceFlow, setTraceFlow] = useState(false);
+  const pathIds = useMemo(() => traceFlow ? speedPath(mode, flowSource, flowTarget).ids : [], [mode, flowSource, flowTarget, traceFlow]);
   const [filter, setFilter] = useState<"all" | "peripherals" | "power">("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -37,9 +43,10 @@ export function RackPlan() {
     setHoveredId(c ? c.id : null);
     setTip(c ? { x, y, text: `${c.id}  ${speedLabel(c.speed)}  ${c.a.split(" · ")[0]} → ${c.b.split(" · ")[0]}` } : null);
   }, []);
-  const onSelect = useCallback((c: Cable | null) => setSelectedId(c ? c.id : null), []);
+  const onSelect = useCallback((c: Cable | null) => { setTraceFlow(false); setSelectedId(c ? c.id : null); }, []);
   const switchMode = (m: Mode) => {
     setMode(m);
+    setFlowSource("GPC");
     setSelectedId(null);
     setHoveredId(null);
     setTip(null);
@@ -81,6 +88,7 @@ export function RackPlan() {
             mode={mode}
             selectedId={selectedId}
             hoveredId={hoveredId}
+            pathIds={pathIds}
             sidePanels={sidePanels}
             doors={doors}
             showCables={showCables}
@@ -119,7 +127,7 @@ export function RackPlan() {
           <div className="rack-schedule-filters" role="group" aria-label="Cable category">
             {([["all", "All"], ["peripherals", "Display & USB"], ["power", "Power"]] as const).map(([value, title]) => <button key={value} aria-pressed={filter === value} onClick={() => { setFilter(value); setSelectedId(null); setHoveredId(null); }}>{title}</button>)}
           </div>
-          <Schedule list={visibleList} selectedId={selectedId} onSelect={setSelectedId} onHover={setHoveredId} />
+          <Schedule list={visibleList} selectedId={selectedId} onSelect={(id) => { setTraceFlow(false); setSelectedId(id); }} onHover={setHoveredId} />
           <div className="rack-detail">
             {selected ? (
               <>
@@ -139,6 +147,7 @@ export function RackPlan() {
         </aside>
       </div>
 
+      <SpeedFlow onTrace={() => { setTraceFlow(true); setSelectedId(null); setHoveredId(null); setShowCables(true); stageRef.current?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" }); }} mode={mode} source={flowSource} target={flowTarget} onSource={(id) => { setFlowSource(id); setTraceFlow(true); setSelectedId(null); setShowCables(true); }} onTarget={(target) => { setFlowTarget(target); setTraceFlow(true); setSelectedId(null); setShowCables(true); }} />
       <section className="rack-pc-connections" aria-label="PC cable inventory">
         {([["SPC", "Sam's PC", "HDMI to display · USB-C to hub"], ["GPC", "Gaming PC", "DisplayPort to display · USB to hub"], ["SRV", "Remote server", "Headless · no display or USB run"]] as const).map(([id, name, detail]) => {
           const cables = list.filter((c) => c.from?.[0] === id || c.to?.[0] === id);

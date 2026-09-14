@@ -40,7 +40,7 @@ export interface LaneState {
 }
 export const newLanes = (): LaneState => ({ front: 0, back: 0, side: 0, power: 0 });
 
-const OUT = 0.26;
+const OUT = 0.4;
 
 export function routeRun(run: Run, anchors: AnchorMap, lanes: LaneState): Route {
   const c = run.cable;
@@ -73,7 +73,7 @@ export function routeRun(run: Run, anchors: AnchorMap, lanes: LaneState): Route 
     const lane = LANE;
     const z = RR + 0.45 + lanes.side * 0.06;
     lanes.side++;
-    const pre: Vec3[] = c.via === "AP" ? [{ ...(anchors.AP?.port ?? AP_POS) }, v3(AP_POS.x, CH + 2.7, AP_POS.z), v3(a.x, CH + 2.7, a.z)] : [];
+    const pre: Vec3[] = c.via === "AP" ? [{ ...(anchors.AP?.port ?? AP_POS) }, v3((anchors.AP?.port ?? AP_POS).x, CH + 2.7, (anchors.AP?.port ?? AP_POS).z), v3(a.x, CH + 2.7, a.z)] : [];
     return {
       points: [...pre, a, v3(a.x, a.y - 0.6, a.z), v3(lane, a.y - 0.6, z), v3(lane, b.y, z), v3(b.x, b.y, z), b],
       mid: v3(lane, b.y - 1.0, z),
@@ -84,7 +84,7 @@ export function routeRun(run: Run, anchors: AnchorMap, lanes: LaneState): Route 
     // rear port -> front port: rear channel, up the side gap, forward, across the front
     const lane = -(LANE + lanes.back * 0.07);
     lanes.back++;
-    const zb = Math.min(RR + 0.35 - lanes.back * 0.03, a.z - 0.16);
+    const zb = Math.min(RR + 0.35 - lanes.back * 0.03, a.z - 0.30);
     const zf = FR + OUT + lanes.back * 0.03;
     return {
       points: [a, v3(a.x, a.y, zb), v3(lane, a.y, zb), v3(lane, b.y, zb), v3(lane, b.y, zf), v3(b.x, b.y, zf), b],
@@ -96,18 +96,18 @@ export function routeRun(run: Run, anchors: AnchorMap, lanes: LaneState): Route 
     // power cords: right rear channel, shallower than data
     const lane = LANE + 0.12 + lanes.power * 0.06;
     lanes.power++;
-    const z = Math.min(RR + 0.22, a.z - 0.16, b.z - 0.16);
+    const z = Math.min(RR + 0.22, a.z - 0.30, b.z - 0.30);
     return { points: [a, v3(a.x, a.y, z), v3(lane, a.y, z), v3(lane, b.y, z), v3(b.x, b.y, z), b], mid: v3(lane, (a.y + b.y) / 2, z), fillet: 0.14 };
   }
   if (isRear(a) && isRear(b)) {
     const lane = -(LANE + lanes.back * 0.07);
     lanes.back++;
-    const z = Math.min(RR + 0.35, a.z - 0.16, b.z - 0.16);
+    const z = Math.min(RR + 0.35, a.z - 0.30, b.z - 0.30);
     return { points: [a, v3(a.x, a.y, z), v3(lane, a.y, z), v3(lane, b.y, z), v3(b.x, b.y, z), b], mid: v3(lane, (a.y + b.y) / 2, z), fillet: 0.14 };
   }
   if (Math.abs(a.y - b.y) < U * 1.6) {
     // short cord between adjacent units: straight out of the jack, straight to the other jack, in. No dog-legs.
-    const z = FR + 0.13;
+    const z = FR + (c.speed === "10G" ? 0.44 : 0.36);
     return { points: [a, v3(a.x, a.y, z), v3(b.x, b.y, z), b], mid: v3((a.x + b.x) / 2, (a.y + b.y) / 2, z + 0.05), fillet: 0.06 };
   }
   // front -> front across several units: right-hand front channel

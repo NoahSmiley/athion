@@ -47,7 +47,7 @@ renders a to-spec silver box with the same port layout so the plan still reads.
 - Rack order, bottom to top: RM51 gaming PC, RM44 Sam's PC, RM44 server, UCI, UDM Pro, USW Pro Max 24 PoE, patch
   panel, Tripp Lite PDUMH20 at the very top.
 - Every patch panel slot is patched 1:1 to the same-numbered switch port with 0.15 m Etherlighting cords. The three
-  PCs land on keystone couplers in the back of slots 1 to 3. The DAC uses the rightmost SFP+ (port 26).
+  PCs land on keystone couplers in the back of slots 17 to 19. The DAC uses the rightmost SFP+ (port 26).
 - Subnet stays 192.168.0.0/24 with the gateway at .1 so no guest changes.
 
 ## Viewer and cable inventory
@@ -67,4 +67,12 @@ renders a to-spec silver box with the same port layout so the plan still reads.
 - SilverStone RM51 product sheet: https://gzhls.at/blob/ldb/f/b/3/d/df764bb8e8c62cca944822f1e35ce4e7cf6b.pdf . 440 × 220 mm fascia, approximately 485 mm main chassis; removable rear cage changes overall depth. Distinct trapezoidal pull, lower power/reset/LED/USB strip and two 180 mm intake fans behind the patterned grille.
 - `chassisPlacement()` is shared by chassis geometry and rear cable anchors so dimensional corrections cannot detach cables.
 
-Verification: `node --import tsx --test src/lib/rack/routing.test.ts` checks physical cable totals, the 4/4/2 PC inventory, valid routes, the twelve PDU outlets, and shared chassis/anchor dimensions.
+Verification: `node --import tsx --test src/lib/rack/*.test.ts` checks physical cable totals, the 4/4/2 PC inventory, valid routes, the twelve PDU outlets, and shared chassis/anchor dimensions.
+
+## Socket alignment and speed paths
+
+- `modelNode()` reads GLTFLoader's original `userData.name` (dots are stripped from `node.name`). Front orientation hints and socket lookup use this helper. Rotations around the mounted world axes keep the UCI LCD forward and AP LED down.
+- `calibrateSockets()` resolves the switch port groups, SFP cages, IEC inlet, UCI RJ45/coax/IEC and AP socket from the mounted glTF geometry. The scene waits for all model loads/fallbacks before building cables. UDM is a single textured mesh: its calibrated port centers live in `FACE`, measured in an orthographic front view. Procedural ports and fallback anchors share the same layout.
+- Cable connectors overlap socket mouths; short routes include clearance for the plug before their first bend. `models.test.ts` checks the actual bundled geometry with GLTFLoader-style sanitized names; routing and speed tests check the physical inventory and path limits.
+- Manufacturer port map correction: Pro Max 24 PoE ports 1–8 are 1 GbE PoE+, 9–16 are 1 GbE PoE++, and 17–24 are 2.5 GbE PoE++. Planned server/gaming/Sam/AP drops now occupy panel/switch 17/18/19/20, still patched 1:1. TV/office remain 9/10. See https://techspecs.ui.com/unifi/switching/usw-pro-max-24-poe . This changes the plan only, not physical switch configuration.
+- `speeds.ts` derives access/path ceilings from the cable schedule. `SpeedFlow` traces a selected device to the Internet or the server and highlights all corresponding physical cables in 3D. Same-subnet LAN paths bypass the router. Internet paths share the 1 GbE RJ45 WAN link despite the 10 GbE DAC. See https://techspecs.ui.com/unifi/cloud-gateways/udm-pro . These are ceilings, not telemetry; PC NIC capabilities, client negotiations, ISP tier and Wi-Fi throughput remain explicitly unverified where applicable.

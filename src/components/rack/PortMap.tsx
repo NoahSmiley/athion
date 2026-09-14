@@ -1,6 +1,6 @@
 import { PORT_ASSIGNMENTS, PORT_INTRO } from "@/lib/rack/content";
 
-/** USW Pro Max 24 PoE front port map. Ports 1-8 are 2.5 GbE PoE++, 9-24 are 1 GbE PoE+, 25-26 are 10G SFP+. */
+/** USW Pro Max 24 PoE front port map. Ports 1-16 are 1 GbE, 17-24 are 2.5 GbE PoE++, 25-26 are 10G SFP+. */
 export function PortMap() {
   const ports = Array.from({ length: 24 }, (_, i) => i + 1);
   return (
@@ -12,9 +12,9 @@ export function PortMap() {
         {ports.map((i) => {
           const used = PORT_ASSIGNMENTS[i];
           return (
-            <div key={i} className={`pt ${i <= 8 ? "u25" : "u1"}${used ? " used" : ""}`}>
+            <div key={i} className={`pt ${i >= 17 ? "u25" : "u1"}${used ? " used" : ""}`}>
               <b>{i}</b>
-              {used ?? (i <= 8 ? "2.5G spare" : "1G spare")}
+              {used ?? (i >= 17 ? "2.5G spare" : "1G spare")}
             </div>
           );
         })}

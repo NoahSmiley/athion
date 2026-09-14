@@ -21,6 +21,7 @@ interface Props {
   mode: Mode;
   selectedId: string | null;
   hoveredId: string | null;
+  pathIds: string[];
   sidePanels: boolean;
   doors: boolean;
   showCables: boolean;
@@ -36,7 +37,7 @@ interface Props {
  * Imperative three.js scene behind a React surface. Rebuilds the whole scene when `mode` changes;
  * hover/select/side-panel/view changes only touch materials and the camera.
  */
-export function RackScene({ mode, selectedId, hoveredId, sidePanels, doors, showCables, labels, view, onHover, onSelect, onLoadState }: Props) {
+export function RackScene({ mode, selectedId, hoveredId, pathIds, sidePanels, doors, showCables, labels, view, onHover, onSelect, onLoadState }: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef<{
     renderer: THREE.WebGLRenderer;
@@ -56,6 +57,8 @@ export function RackScene({ mode, selectedId, hoveredId, sidePanels, doors, show
   const cb = useRef({ onHover, onSelect, onLoadState });
   cb.current = { onHover, onSelect, onLoadState };
 
+  const selectionRef = useRef({ id: hoveredId ?? selectedId ?? (pathIds.length ? pathIds : null), labels });
+  selectionRef.current = { id: hoveredId ?? selectedId ?? (pathIds.length ? pathIds : null), labels };
   const viewRef = useRef(view);
   viewRef.current = view;
 
@@ -74,7 +77,7 @@ export function RackScene({ mode, selectedId, hoveredId, sidePanels, doors, show
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.05;
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     host.prepend(renderer.domElement);
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 200);
@@ -238,7 +241,7 @@ export function RackScene({ mode, selectedId, hoveredId, sidePanels, doors, show
     content.add(cableRoot);
     st.cableRoot = cableRoot;
     cableRoot.visible = showCables;
-    st.cables = buildCables(cableRoot, SCHEDULE[mode], anchors, overlays);
+    st.cables = [];
     const desks = new THREE.Group();
     cableRoot.add(desks);
     buildDeskEndpoints(desks);
@@ -254,6 +257,8 @@ export function RackScene({ mode, selectedId, hoveredId, sidePanels, doors, show
     Promise.allSettled(pending).then((rs) => {
       settled = true;
       if (!live) { dispose(); return; }
+      st.cables = buildCables(cableRoot, SCHEDULE[mode], anchors, overlays);
+      highlightCables(st.cables, selectionRef.current.id, selectionRef.current.labels);
       if (live) cb.current.onLoadState(rs.every((r) => r.status === "fulfilled") ? "loaded" : "fallback");
     });
     return () => {
@@ -281,8 +286,8 @@ export function RackScene({ mode, selectedId, hoveredId, sidePanels, doors, show
 
   useEffect(() => {
     const st = stateRef.current;
-    if (st) highlightCables(st.cables, hoveredId ?? selectedId, labels);
-  }, [hoveredId, selectedId, mode, labels]);
+    if (st) highlightCables(st.cables, hoveredId ?? selectedId ?? (pathIds.length ? pathIds : null), labels);
+  }, [hoveredId, selectedId, pathIds, mode, labels]);
 
   useEffect(() => {
     const st = stateRef.current;

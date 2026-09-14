@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { AP_POS, FR, U, W19, yOf } from "@/lib/rack/geometry";
 import { FACE, chassisPlacement, type Device } from "@/lib/rack/devices";
-import type { AnchorMap } from "@/lib/rack/anchors";
+import { computeAnchors, type AnchorMap } from "@/lib/rack/anchors";
 import { box, plane, roundedBox, textMaterial } from "./labels";
 import type { Materials } from "./materials";
 
@@ -29,6 +29,13 @@ function ears(g: THREE.Group, h: number, M: Materials) {
     e.position.set(sd * (W19 / 2 - 0.1), 0, 0);
     g.add(e);
   }
+}
+
+/** GLTFLoader sanitizes dots in node.name but preserves the source name in userData. */
+export function modelNode(root: THREE.Object3D, name: string): THREE.Object3D | undefined {
+  let found: THREE.Object3D | undefined;
+  root.traverse((node) => { if (!found && (node.userData.name === name || node.name === name)) found = node; });
+  return found;
 }
 
 /**
@@ -58,7 +65,7 @@ export function orientModel(obj: THREE.Object3D, hint: string | undefined, flip?
   const gb = new THREE.Box3().setFromObject(g);
   const mid = (gb.min.z + gb.max.z) / 2;
   if (hint && hint !== "density") {
-    const n = obj.getObjectByName(hint);
+    const n = modelNode(obj, hint);
     if (n) {
       const c = new THREE.Box3().setFromObject(n).getCenter(new THREE.Vector3());
       frontIsPlusZ = c.z > mid;
@@ -82,14 +89,14 @@ export function orientModel(obj: THREE.Object3D, hint: string | undefined, flip?
   }
   if (flip) frontIsPlusZ = !frontIsPlusZ;
   if (!frontIsPlusZ) {
-    g.rotateY(Math.PI);
+    g.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), Math.PI);
     g.updateMatrixWorld(true);
   }
   return g;
 }
 
 /** Scale a 1U model to 43.7 mm tall and mount it on the front rail of its rack unit. */
-function placeRackModel(g: THREE.Group, d: Device) {
+export function placeRackModel(g: THREE.Group, d: Device) {
   g.updateMatrixWorld(true);
   const b = new THREE.Box3().setFromObject(g);
   const sz = b.getSize(new THREE.Vector3());
@@ -102,19 +109,19 @@ function placeRackModel(g: THREE.Group, d: Device) {
 }
 
 /** Scale the U7 Pro to 206 mm across, LED face down, and hang it from the ceiling slab. */
-function placeAP(g: THREE.Group) {
+export function placeAP(g: THREE.Group) {
   g.updateMatrixWorld(true);
   const b = new THREE.Box3().setFromObject(g);
   const sz = b.getSize(new THREE.Vector3());
   g.scale.setScalar(2.06 / Math.max(sz.x, sz.z));
   g.updateMatrixWorld(true);
-  const fc = g.getObjectByName("Front_Case.001") || g.getObjectByName("Front_Case");
+  const fc = modelNode(g, "Front_Case.001") || modelNode(g, "Front_Case");
   const b2 = new THREE.Box3().setFromObject(g);
   const mid = (b2.min.y + b2.max.y) / 2;
   if (fc) {
     const c = new THREE.Box3().setFromObject(fc).getCenter(new THREE.Vector3());
     if (c.y > mid) {
-      g.rotateX(Math.PI);
+      g.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), Math.PI);
       g.updateMatrixWorld(true);
     }
   }
@@ -122,6 +129,34 @@ function placeAP(g: THREE.Group) {
   const c3 = b3.getCenter(new THREE.Vector3());
   g.position.add(new THREE.Vector3(AP_POS.x - c3.x, AP_POS.y - b3.max.y, AP_POS.z - c3.z));
   g.updateMatrixWorld(true);
+}
+
+/** Refine defaults from the actual, mounted socket meshes before routing. */
+export function calibrateSockets(g: THREE.Group, d: Device, anchors: AnchorMap) {
+  const target = anchors[d.id];
+  const socket = (name: string, side: "front" | "rear" | "top") => {
+    const mesh = modelNode(g, name);
+    if (!mesh) throw new Error(`rack: missing ${d.id} socket ${name}`);
+    const b = new THREE.Box3().setFromObject(mesh);
+    const p = b.getCenter(new THREE.Vector3());
+    if (side === "top") p.y = b.max.y;
+    else p.z = side === "front" ? b.max.z : b.min.z;
+    return { x: p.x, y: p.y, z: p.z };
+  };
+  if (d.kind === "sw") {
+    ["metal.002", "metal.001", "metal"].forEach((name, group) => {
+      const center = socket(name, "front");
+      for (let i = 0; i < 8; i++) target.p[group * 8 + i] = { ...center, x: center.x + (i - 3.5) * 0.1425 };
+    });
+    target.sfp = [socket("sfp.001", "front"), socket("sfp", "front")];
+    target.iec = socket("black", "rear");
+  } else if (d.kind === "uci") {
+    target.p[0] = socket("Port_Metal", "front");
+    target.iec = socket("Rear_Plug", "rear");
+    target.coax = socket("Cable_Screw", "rear");
+  } else if (d.kind === "ap") {
+    target.port = socket("Metal_Ether.001", "top");
+  }
 }
 
 function tuneMaterials(scene: THREE.Object3D, intensity: number) {
@@ -153,10 +188,10 @@ function drawStandIn(d: Device, holder: THREE.Group, depth: number, M: Materials
     const scr = plane(0.32, 0.24, M.screen);
     scr.position.set(x(FACE.sw.screen[0]) + 0.1, 0, fz + 0.002);
     g.add(scr);
-    for (let i = 0; i < 24; i++) rj45(g, x(FACE.sw.ports(i)[0]), 0, fz, M);
-    for (const [fx] of FACE.sw.sfp) {
+    for (let i = 0; i < 24; i++) rj45(g, x(FACE.sw.ports(i)[0]), (FACE.sw.ports(i)[1] - 0.5) * U, fz, M);
+    for (const [fx, fy] of FACE.sw.sfp) {
       const m = box(0.16, 0.13, 0.05, M.port);
-      m.position.set(x(fx), 0, fz);
+      m.position.set(x(fx), (fy - 0.5) * U, fz);
       g.add(m);
     }
   } else if (d.kind === "udm") {
@@ -180,11 +215,17 @@ function drawStandIn(d: Device, holder: THREE.Group, depth: number, M: Materials
     const scr = plane(0.32, 0.24, M.screen);
     scr.position.set(x(FACE.uci.screen[0]) + 0.1, 0, fz + 0.002);
     g.add(scr);
-    rj45(g, x(FACE.uci.port[0]), 0, fz, M);
+    rj45(g, x(FACE.uci.port[0]), (FACE.uci.port[1] - 0.5) * U, fz, M);
     const fc = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.08, 16), M.rail);
     fc.rotation.x = Math.PI / 2;
     fc.position.set(0, 0, -fz);
     g.add(fc);
+  }
+  const anchor = computeAnchors([d])[d.id].iec;
+  if (anchor) {
+    const inlet = box(0.27, 0.18, 0.05, M.port);
+    inlet.position.set(anchor.x, anchor.y, anchor.z);
+    holder.add(inlet);
   }
 }
 
@@ -210,6 +251,7 @@ export function buildDevices(root: THREE.Group, devices: Device[], anchors: Anch
               tuneMaterials(gltf.scene, 1.3);
               const g = orientModel(gltf.scene, d.hint, d.flip);
               placeRackModel(g, d);
+              calibrateSockets(g, d, anchors);
               holder.add(g);
             })
             .catch((err) => {
@@ -231,6 +273,7 @@ export function buildDevices(root: THREE.Group, devices: Device[], anchors: Anch
               gltf.scene.traverse((o) => { o.castShadow = false; });
               const g = orientModel(gltf.scene, "density");
               placeAP(g);
+              calibrateSockets(g, d, anchors);
               holder.add(g);
             })
             .catch((err) => {
@@ -258,7 +301,7 @@ export function buildDevices(root: THREE.Group, devices: Device[], anchors: Anch
         for (let i = 0; i < 24; i++) {
           const [fx] = FACE.pp.slot(i);
           const x = -W19 / 2 + fx * W19;
-          const coupler = i < 3;
+          const coupler = i >= 16 && i <= 18;
           const hole = box(0.15, 0.19, 0.05, M.keystone);
           hole.position.set(x, 0, 0.115);
           g.add(hole);
@@ -381,6 +424,9 @@ export function buildDevices(root: THREE.Group, devices: Device[], anchors: Anch
         const body = box(2.4, h - 0.12, 1.7, M.black);
         body.position.set(-0.9, 0, 0);
         g.add(body);
+        const power = box(0.08, 0.08, 0.06, M.port);
+        power.position.set(-0.1, 0, -0.85);
+        g.add(power);
         const fz = 0.85;
         if (d.kind === "tpl") {
           for (let i = 0; i < 4; i++) rj45(g, -1.7 + i * 0.18, 0, -fz, M);
@@ -407,6 +453,6 @@ export function buildDevices(root: THREE.Group, devices: Device[], anchors: Anch
       }
     }
   }
-  void anchors;
+
   return { overlays, pending };
 }

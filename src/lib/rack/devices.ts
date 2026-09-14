@@ -1,7 +1,7 @@
 // Devices in the cabinet, top to bottom, per mode. `u` is the top rack unit a device occupies, `h` its height in U.
 // Procedural kinds are drawn from spec in `scene/devices.ts`; kinds with `glb` load Ubiquiti's own product model from
 // /public/rack/models (Draco already decoded, buffers embedded) and use `hint`/`flip` to decide which face is the front.
-import { FR, U, yOf, type Mode } from "./geometry";
+import { FR, U, W19, yOf, type Mode } from "./geometry";
 
 export type DeviceKind = "pdu" | "pp" | "sw" | "udm" | "uci" | "brush" | "rm" | "tpl" | "mdm" | "ap";
 
@@ -39,7 +39,7 @@ export function devicesFor(mode: Mode): Device[] {
           { id: "PP", u: 2, h: 1, kind: "pp", name: "UniFi 24-slot keystone patch panel" },
           { id: "SW", u: 3, h: 1, kind: "sw", name: "USW Pro Max 24 PoE", glb: "/rack/models/sw.gltf", hint: "density" },
           { id: "UDM", u: 4, h: 1, kind: "udm", name: "UDM Pro", glb: "/rack/models/udm.gltf", hint: "density" },
-          { id: "UCI", u: 5, h: 1, kind: "uci", name: "UCI cable modem", glb: "/rack/models/uci.gltf", hint: "LCM.001", flip: true },
+          { id: "UCI", u: 5, h: 1, kind: "uci", name: "UCI cable modem", glb: "/rack/models/uci.gltf", hint: "LCM.001" },
           { id: "AP", kind: "ap", name: "UniFi U7 Pro access point", glb: "/rack/models/u7.gltf" },
         ]
       : [
@@ -52,41 +52,45 @@ export function devicesFor(mode: Mode): Device[] {
 }
 
 /**
- * Front-face anchor fractions measured from Ubiquiti's product photos.
+ * Front-face anchors calibrated against the bundled glTF socket geometry (100 mm units).
  * fx runs left to right across the 442 mm face, fy bottom to top across the 1U height.
  */
+const fx = (x: number) => 0.5 + x / W19;
+const fy = (y: number) => y / U;
+const switchPort = (i: number): [number, number] => [fx([-1.2687, -0.0961, 1.0764][Math.floor(i / 8)] + (i % 8 - 3.5) * 0.1425), fy(0.1635)];
+
 export const FACE = {
   pdu: { outletCount: 12, outletX: (i: number) => -1.661 + i * 0.302, inletX: -2.01 },
   sw: {
-    ports: (i: number): [number, number] => [0.085 + (i * (0.845 - 0.085)) / 23, 0.5],
+    ports: switchPort,
     sfp: [
-      [0.885, 0.5],
-      [0.925, 0.5],
+      [fx(1.7639), fy(0.1445)],
+      [fx(1.9239), fy(0.1445)],
     ] as [number, number][],
     screen: [0.03, 0.5] as [number, number],
-    iec: 0.1,
+    iec: fx(-1.771),
   },
   udm: {
-    ports: (i: number): [number, number] => [[0.714, 0.751, 0.789, 0.826][Math.floor(i / 2)], i % 2 ? 0.3 : 0.68],
-    wan: [0.883, 0.43] as [number, number],
+    ports: (i: number): [number, number] => [fx([0.951, 1.109, 1.267, 1.425][Math.floor(i / 2)]), fy(i % 2 ? 0.1546 : 0.2904)],
+    wan: [fx(1.735), fy(0.160)] as [number, number],
     sfp: [
-      [0.926, 0.68],
-      [0.926, 0.3],
+      [fx(1.922), fy(0.3034)],
+      [fx(1.922), fy(0.142)],
     ] as [number, number][],
     screen: [0.04, 0.5] as [number, number],
     hdd: [0.42, 0.66] as [number, number],
-    iec: 0.12,
+    iec: fx(-1.771),
   },
   uci: {
-    port: [0.89, 0.5] as [number, number],
+    port: [fx(1.7362), fy(0.1615)] as [number, number],
     screen: [0.04, 0.5] as [number, number],
-    coaxRear: [0.5, 0.5] as [number, number],
-    iec: 0.13,
+    coaxRear: [0.5, fy(0.1615)] as [number, number],
+    iec: fx(-1.771),
   },
   /** Keystone openings sit directly above the switch ports so every panel-to-switch cord is identical. */
-  pp: { slot: (i: number): [number, number] => [0.085 + (i * (0.845 - 0.085)) / 23, 0.5] },
+  pp: { slot: switchPort },
   /** Model depths in scene units, used to place rear anchors. */
-  depth: { sw: 3.25, udm: 2.86, uci: 2.6, pp: 0.24, pdu: 1.14 },
+  depth: { sw: 3.252, udm: 2.8775, uci: 0.93235, pp: 0.24, pdu: 1.14 },
 };
 
 /** Published chassis sizes, centered in their allotted rack units. */

@@ -26,7 +26,7 @@ const PUBLIC_PREFIXES = [
   "/robots",
 ];
 
-const PRIVATE_PREFIXES = ["/settings", "/invites", "/admin"];
+const PRIVATE_PREFIXES = ["/settings", "/invites", "/admin", "/rack"];
 const REDIRECT_HOSTS = new Set(["prime.athion.me", "labs.athion.me"]);
 
 function isPublic(pathname: string): boolean {

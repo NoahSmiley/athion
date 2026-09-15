@@ -7,7 +7,7 @@ export function SpeedFlow({ mode, source, target, onSource, onTarget, onTrace }:
   const path = speedPath(mode, source, target);
   const local = target === "server";
   return <section className="rack-section rack-speed-flow" aria-labelledby="speed-flow-title">
-    <div className="rack-flow-heading"><div><div className="rack-eyebrow">Network paths · {plan ? "planned link ceilings" : "current layout ceilings"}</div><h2 id="speed-flow-title">Where the speed goes</h2></div>
+    <div className="rack-flow-heading"><div><div className="rack-eyebrow">Network paths · {plan ? "planned link ceilings" : "previous layout ceilings"}</div><h2 id="speed-flow-title">Where the speed goes</h2></div>
       <div className="rack-toggle" role="group" aria-label="Traffic destination">
         <button aria-pressed={!local} className={!local ? "on" : ""} onClick={() => onTarget("internet")}>To Internet</button>
         <button aria-pressed={local} className={local ? "on" : ""} onClick={() => onTarget("server")}>To server · LAN</button>

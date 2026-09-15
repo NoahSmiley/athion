@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { CSS_COLORS, LEGEND, SCHEDULE, cableCount, isPeripheral, speedLabel, speedLong, type Cable } from "@/lib/rack/cables";
-import { LEAD } from "@/lib/rack/content";
+import { LEAD, OWNED_NETWORK } from "@/lib/rack/content";
 import type { Mode } from "@/lib/rack/geometry";
 import type { ViewPreset } from "./scene/RackScene";
 import { Schedule } from "./Schedule";
@@ -62,7 +62,7 @@ export function RackPlan() {
         </div>
         <div className="rack-toggle" role="group" aria-label="Layout">
           <button aria-pressed={mode === "before"} className={mode === "before" ? "on" : ""} onClick={() => switchMode("before")}>
-            Today · TP-Link
+            Previous · TP-Link
           </button>
           <button aria-pressed={mode === "after"} className={mode === "after" ? "on" : ""} onClick={() => switchMode("after")}>
             Plan · UniFi
@@ -70,6 +70,10 @@ export function RackPlan() {
         </div>
       </header>
 
+      <section className="rack-ownership" aria-label="Confirmed network inventory">
+        <div><b>Owned network gear</b><span>{OWNED_NETWORK.join(" · ")}</span></div>
+        <p>The panel is blank today. The U7 Pro Max, 24 couplers, and 24 short patch cables are in your cart. The UniFi viewer shows the completed plan, including cables still to buy. <a href="#rack-shopping">See what is missing →</a></p>
+      </section>
       <div className="rack-stage">
         <div className="rack-view-wrap" ref={stageRef}>
           <div className="rack-view-toolbar">
@@ -83,7 +87,7 @@ export function RackPlan() {
               else void stageRef.current?.requestFullscreen?.().catch(() => {});
             }} title="Fullscreen">⛶</button>
           </div>
-          <div className="rack-scene-caption"><b>LINIER <span>42U</span></b><span>24 × 24 in · {mode === 'after' ? 'UniFi upgrade' : 'Current layout'}</span></div>
+          <div className="rack-scene-caption"><b>LINIER <span>42U</span></b><span>24 × 24 in · {mode === 'after' ? 'UniFi upgrade' : 'Previous layout'}</span></div>
           <RackScene
             mode={mode}
             selectedId={selectedId}
@@ -121,7 +125,7 @@ export function RackPlan() {
         </div>
         <aside className="rack-sched">
           <div className="rack-sched-h">
-            <h2>{mode === "after" ? "Cable schedule" : "Current cabling"}</h2>
+            <h2>{mode === "after" ? "Planned cable schedule" : "Previous cabling"}</h2>
             <span>{cableCount(list)} cables</span>
           </div>
           <div className="rack-schedule-filters" role="group" aria-label="Cable category">

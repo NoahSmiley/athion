@@ -13,7 +13,7 @@ export function networkEndpoints(mode: Mode): NetworkEndpoint[] {
     { id: "SRV", name: "Remote server", cables: ["C4", "P1"], port: "Port 17 · panel 17", note: "5 GbE NIC → 2.5 GbE switch port" },
     { id: "GPC", name: "Gaming PC", cables: ["C5", "P2"], port: "Port 18 · panel 18", note: "2.5 GbE NIC assumed · confirm motherboard" },
     { id: "SPC", name: "Sam's PC", cables: ["C6", "P3"], port: "Port 19 · panel 19", note: "2.5 GbE NIC assumed · confirm motherboard" },
-    { id: "AP", name: "U7 Pro / Wi-Fi", cables: ["H1", "P4"], port: "Port 20 · panel 20", note: "2.5 GbE wired backhaul · Wi-Fi clients vary" },
+    { id: "AP", name: "U7 Pro Max / Wi-Fi", cables: ["H1", "P4"], port: "Port 20 · panel 20", note: "2.5 GbE wired backhaul · Wi-Fi clients vary" },
     { id: "TV", name: "TV drop", cables: ["H2", "P9"], port: "Port 9 · panel 9", note: "1 GbE port ceiling · endpoint may link lower" },
     { id: "OFFICE", name: "Office drop", cables: ["H3", "P10"], port: "Port 10 · panel 10", note: "1 GbE port ceiling · dock unverified" },
   ];

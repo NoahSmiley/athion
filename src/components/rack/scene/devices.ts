@@ -301,7 +301,7 @@ export function buildDevices(root: THREE.Group, devices: Device[], anchors: Anch
         for (let i = 0; i < 24; i++) {
           const [fx] = FACE.pp.slot(i);
           const x = -W19 / 2 + fx * W19;
-          const coupler = i >= 16 && i <= 18;
+          const coupler = true; // The selected cart populates all 24 slots with pass-through couplers.
           const hole = box(0.15, 0.19, 0.05, M.keystone);
           hole.position.set(x, 0, 0.115);
           g.add(hole);

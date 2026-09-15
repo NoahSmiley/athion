@@ -40,7 +40,7 @@ export function devicesFor(mode: Mode): Device[] {
           { id: "SW", u: 3, h: 1, kind: "sw", name: "USW Pro Max 24 PoE", glb: "/rack/models/sw.gltf", hint: "density" },
           { id: "UDM", u: 4, h: 1, kind: "udm", name: "UDM Pro", glb: "/rack/models/udm.gltf", hint: "density" },
           { id: "UCI", u: 5, h: 1, kind: "uci", name: "UCI cable modem", glb: "/rack/models/uci.gltf", hint: "LCM.001" },
-          { id: "AP", kind: "ap", name: "UniFi U7 Pro access point", glb: "/rack/models/u7.gltf" },
+          { id: "AP", kind: "ap", name: "UniFi U7 Pro Max access point", glb: "/rack/models/u7.gltf" },
         ]
       : [
           { id: "PDU", u: 1, h: 1, kind: "pdu", name: "Tripp Lite PDUMH20 metered PDU" },

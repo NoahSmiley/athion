@@ -84,3 +84,9 @@ Owner confirms the UDM Pro, Pro Max switch, UCI modem and blank 24-slot panel ar
 All 24 planned panel positions now use pass-through couplers, so rear runs require RJ45 ends rather than panel punch-downs. The 24-pack covers the panel front exactly; full population still requires a separate WAN cable, a 10G DAC, three rear PC leads and an AP run. TV/office drops and shortened power leads are conditional. Previously confirmed desk cables/PDU remain owned.
 
 The U7 Pro Max uses a 2.5 GbE PoE+ uplink and has a 206 × 46 mm enclosure (https://techspecs.ui.com/unifi/wifi/u7-pro-max). Existing `u7.gltf` remains a disclosed U7 Pro shape proxy of the same envelope, not an exact Pro Max model. Coupler source: https://store.ui.com/us/en/collections/rackmount-keystone/products/uacc-keystone-coupler-c6 .
+
+### UniFi cable length recommendations
+
+For the current panel 17/18/19 assignments, the orthogonal side-channel model gives C4 server ~1.13 m, C6 Sam ~1.37 m and C5 gaming ~1.53 m before service slack. These are planning estimates from the schematic port locations, not physical measurements. Purchase recommendation: UniFi Etherlighting **2 m server, 2 m Sam, 3 m gaming**. A 2 m gaming lead may suit a fixed chassis; the 3 m choice reserves more slide-out slack. Confirm with string along the actual route plus desired chassis travel. This supersedes the earlier 1 m/1.5 m/2 m guess.
+
+Keep the 0.15 m 24-pack for direct adjacent panel/switch connections; choose a separate 0.3 m Etherlighting WAN cord for more connector clearance. The shown UACC-DAC-SFP10-0.5M is the correct 10G SFP+ DAC for switch 26 → UDM LAN 11; its published minimum bend radius is 22 mm. AP/desk distances are schematic and cannot determine purchase lengths. Product references: https://techspecs.ui.com/unifi/accessories/uacc-cable-patch-el and https://store.ui.com/us/en/category/accessories-cables-dacs/collections/accessories-pro-direct-attach-cables/products/10gbps-direct-attach-cable .

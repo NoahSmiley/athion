@@ -99,3 +99,9 @@ Keep the 0.15 m 24-pack for direct adjacent panel/switch connections; choose a s
 - Config backups: `/data/unifi-backup-sync.sh` on the UDM copies the newest .unf nightly (04:15) to
   `/mnt/backups/unifi/` on the Proxmox host. Trigger a fresh one with `POST cmd/backup {"cmd":"backup","days":-1}`.
 - Reservations are set for every guest, the switch (.211), AP (.213), Mac (.216), Apple TV (.205), gaming PC (.22).
+
+## Public edge (as of 2026-09-23)
+
+Cloudflare tunnel retired. DNS is plain A records (proxy off) to the home IP; the UDM forwards 80/443 to CT 109 where
+Caddy terminates TLS (Let's Encrypt HTTP-01) and reverse-proxies each hostname. Living changelog with plain-English
+reasons: https://claude.ai/code/artifact/d4fdbaf0-ca37-4746-b591-ac4548a52d0e

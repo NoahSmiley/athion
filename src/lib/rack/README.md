@@ -90,3 +90,12 @@ The U7 Pro Max uses a 2.5 GbE PoE+ uplink and has a 206 × 46 mm enclosure (http
 For the current panel 17/18/19 assignments, the orthogonal side-channel model gives C4 server ~1.13 m, C6 Sam ~1.37 m and C5 gaming ~1.53 m before service slack. These are planning estimates from the schematic port locations, not physical measurements. Purchase recommendation: UniFi Etherlighting **2 m server, 2 m Sam, 3 m gaming**. A 2 m gaming lead may suit a fixed chassis; the 3 m choice reserves more slide-out slack. Confirm with string along the actual route plus desired chassis travel. This supersedes the earlier 1 m/1.5 m/2 m guess.
 
 Keep the 0.15 m 24-pack for direct adjacent panel/switch connections; choose a separate 0.3 m Etherlighting WAN cord for more connector clearance. The shown UACC-DAC-SFP10-0.5M is the correct 10G SFP+ DAC for switch 26 → UDM LAN 11; its published minimum bend radius is 22 mm. AP/desk distances are schematic and cannot determine purchase lengths. Product references: https://techspecs.ui.com/unifi/accessories/uacc-cable-patch-el and https://store.ui.com/us/en/category/accessories-cables-dacs/collections/accessories-pro-direct-attach-cables/products/10gbps-direct-attach-cable .
+
+## Live access (as of 2026-09-22)
+
+- UDM Pro: `ssh root@192.168.0.1` (key auth from Noah's Mac). Mongo: `mongo --port 27117 ace`.
+- Network API key: `~/.config/unifi/api-key` on the Mac, header `X-API-Key`. Works for both
+  `/proxy/network/integration/v1/...` and the legacy `/proxy/network/api/s/default/...` (rest/user, rest/device, stat/*).
+- Config backups: `/data/unifi-backup-sync.sh` on the UDM copies the newest .unf nightly (04:15) to
+  `/mnt/backups/unifi/` on the Proxmox host. Trigger a fresh one with `POST cmd/backup {"cmd":"backup","days":-1}`.
+- Reservations are set for every guest, the switch (.211), AP (.213), Mac (.216), Apple TV (.205), gaming PC (.22).

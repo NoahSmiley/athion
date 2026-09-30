@@ -5,6 +5,7 @@ export function AdminNav() {
     <nav className="admin-nav" aria-label="Administration">
       <Link href="/admin/members" className="nav-link">Accounts</Link>
       <Link href="/admin/prime" className="nav-link">Prime devices</Link>
+      <Link href="/admin/wake" className="nav-link">Wake PCs</Link>
     </nav>
   );
 }
